@@ -30,14 +30,21 @@ fi
 
 # Check if old version exists
 if [ -e /var/www/html/assets/tools/version.txt ]; then
-    UPDATE=true;
+    UPDATE=true
+fi
+
+# Check for dev installation
+if [ "$1" = "dev" ]; then
+    GIT_ARG="--branch dev"
+else
+    GIT_ARG=""
 fi
 
 
 header
 # Check if screenly exists
 if [ -e /home/pi/screenly/server.py ]; then
-    SCREENLY=true;
+    SCREENLY=true
 	echo && read -p "Do you want to install the Monitor Extension for Screenly? (y/N)" -n 1 -r -s UPGRADE && echo
 	if [ "$UPGRADE" == 'y' ]; then
 	  MONITOR_EXTENSION=true
@@ -56,7 +63,7 @@ if [ "$UPDATE" != true ]; then
 fi
 
 # Clone git repository
-git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
+git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor $GIT_ARG
 
 # Install monitor extension
 if [ "$MONITOR_EXTENSION" = true ]; then
