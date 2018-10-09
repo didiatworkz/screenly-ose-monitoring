@@ -28,18 +28,15 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+echo && read -p "Do you want to install Screenly OSE Monitor? (y/N)" -n 1 -r -s UPGRADE && echo
+if [ "$UPGRADE" != 'y' ]; then
+  exit
+fi
+
 # Check if old version exists
 if [ -e /var/www/html/assets/tools/version.txt ]; then
     UPDATE=true
 fi
-
-# Check for dev installation
-if [ "$1" = "dev" ]; then
-    GIT_ARG="--branch dev"
-else
-    GIT_ARG=""
-fi
-
 
 header
 # Check if screenly exists
@@ -63,7 +60,7 @@ if [ "$UPDATE" != true ]; then
 fi
 
 # Clone git repository
-git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor $GIT_ARG
+git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 
 # Install monitor extension
 if [ "$MONITOR_EXTENSION" = true ]; then
@@ -73,10 +70,12 @@ if [ "$MONITOR_EXTENSION" = true ]; then
 	/tmp/extension.sh "installer"
 fi
 
+header
 # Copy files and set rights
 mkdir -p /var/www/html
 cp -rf /tmp/monitor/* /var/www/html/
-sudo chown www-data:www-data /var/www/html/*
+chown www-data:www-data /var/www/html
+chown www-data:www-data /var/www/html/*
 
 # Create nginx config
 cat >/etc/nginx/sites-enabled/monitor.conf <<EOF
@@ -91,7 +90,6 @@ server {
         index index.php;
 
         location ~ \.php$ {
-                try_files $uri =404;
                 include /etc/nginx/fastcgi.conf;
                 fastcgi_pass unix:/run/php/php7.0-fpm.sock;
         }
