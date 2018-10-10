@@ -35,6 +35,11 @@ curl -sL http://screenly-monitor.atworkz.de | sudo bash
 3. Answer the questions and installation will be start (This may take a while - Don't be afraid)
 4. Done
 
+### Default User:
+Username: demo
+
+Password: demo
+
 
 Screenshots
 ---------------------------------------
