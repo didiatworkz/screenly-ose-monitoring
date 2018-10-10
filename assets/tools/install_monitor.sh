@@ -28,11 +28,9 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-echo && read -p "Do you want to install Screenly OSE Monitor? (y/N)" -n 1 -r -s RINSTALL && echo
+echo "Install Screenly OSE Monitor"
+sleep 4
 
-if [ "$RINSTALL" != 'y' ]; then
-    exit
-fi
 
 # Check if old version exists
 if [ -e /var/www/html/assets/tools/version.txt ]; then
