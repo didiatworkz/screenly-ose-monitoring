@@ -30,13 +30,14 @@ fi
 
 echo && read -p "Do you want to install Screenly OSE Monitor? (y/N)" -n 1 -r -s RINSTALL && echo
 
-if [ "$RINSTALL" == 'y' ]; then
+if [ "$RINSTALL" != 'y' ]; then
     exit
 fi
 
 # Check if old version exists
 if [ -e /var/www/html/assets/tools/version.txt ]; then
     UPDATE=true
+    echo "Found older Monitor Script version"
 fi
 
 header
