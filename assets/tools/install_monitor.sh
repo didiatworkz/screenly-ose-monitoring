@@ -35,14 +35,6 @@ fi
 
 header
 echo
-if [ "$EUID" -ne 0 ]
-then
-    echo -e "[ \e[91mNO\e[39m ] Run as root"
-    exit
-else
-    echo -e "[ \e[32mYES\e[39m ] Run as root"
-fi
-
 
 # Check if old version exists
 echo
@@ -85,9 +77,9 @@ then
     sudo apt update
     if [ "$SCREENLY" != "1" ]
     then
-        apt install nginx -y
+        sudo apt install nginx -y
     fi
-    apt install git php-fpm php7.0-sqlite php7.0-curl -y
+    sudo apt install git php-fpm php7.0-sqlite php7.0-curl -y
 fi
 
 # Clone git repository
@@ -96,13 +88,13 @@ git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 # Install monitor extension
 if [ "$MONITOR_EXTENSION" = "1" ]
 then
-    cp /tmp/monitor/assets/tools/extension.sh /tmp/extension.sh
-    sed -i 's/reboot now//g' /tmp/extension.sh
-    chmod +x /tmp/extension.sh
+    sudo cp /tmp/monitor/assets/tools/extension.sh /tmp/extension.sh
+    sudo sed -i 's/reboot now//g' /tmp/extension.sh
+    sudo chmod +x /tmp/extension.sh
     header
     echo -e "\e[94mStart extension installation...\e[39m"
     sleep 5
-    /tmp/extension.sh "installer"
+    sudo /tmp/extension.sh "installer"
     echo
     echo -e "\e[94mExtension installed!\e[39m"
 fi
@@ -111,13 +103,13 @@ sleep 2
 header
 echo -e "\e[94mStart configuration...\e[39m"
 # Copy files and set rights
-mkdir -p /var/www/html
-cp -rf /tmp/monitor/* /var/www/html/
-chown www-data:www-data /var/www/html
-chown www-data:www-data /var/www/html/*
+sudo mkdir -p /var/www/html
+sudo cp -rf /tmp/monitor/* /var/www/html/
+sudo chown www-data:www-data /var/www/html
+sudo chown www-data:www-data /var/www/html/*
 
 # Create nginx config
-cat >/etc/nginx/sites-enabled/monitor.conf <<EOF
+sudo cat >/etc/nginx/sites-enabled/monitor.conf <<EOF
 server {
 
         #Nginx should listen on port 80 for requests to yoursite.com
@@ -136,7 +128,7 @@ server {
 EOF
 
 # Restart nginx
-systemctl restart nginx
+sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 
 sleep 2
