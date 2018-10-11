@@ -111,7 +111,7 @@ function monitorScript($url){
 }
 
 function update($v){
-	$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt';
+	$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
     $remoteVersion = file_get_contents($github);
     return version_compare($v, $remoteVersion, '<');
 }
