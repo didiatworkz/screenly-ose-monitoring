@@ -30,7 +30,7 @@ Very simple installation:
 1. Connect to the player via SSH or terminal (ctrl+alt+F1)
 2. Copy this line and execute it
 ```bash
-curl -sL http://screenly-monitor.atworkz.de | sudo bash
+bash <(curl -sL http://screenly-monitor.atworkz.de)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't be afraid)
 4. Done
