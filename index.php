@@ -348,7 +348,7 @@ require_once("_config.php");
 							<p>The Screenly OSE Monitor extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
 								You have the possibility to get a "live" image of the player\'s output. </p>
 								<p>To install, you have to log in to the respective Screenly Player via SSH (How it works: here) and execute this command:</p>
-								<kbd>curl -sL http://'.$_SERVER['SERVER_ADDR'].':9000/assets/tools/extension.sh | sudo bash</kbd>
+								<kbd>bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':9000/assets/tools/extension.sh)</kbd>
 								<p>Then the player restarts and the extension has been installed.</p>
 							</div>
 							<div class="card-footer text-right">
