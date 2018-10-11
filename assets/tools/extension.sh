@@ -24,14 +24,23 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+echo "The installation can may be take a while.."
+echo
+echo
+echo
+
+echo "Check packages"
+sleep 2
 dpkg -s imagemagick &> /dev/null
 if [ $? -ne 0 ]; then
     apt update && sudo apt-get install x11-apps imagemagick -y
 fi
 
 header
-echo "Prepair player..."
-wget https://www.atworkz.de/_git/loading.png -P /home/pi/
+echo "Prepair Screenly Player..."
+sleep 2
+wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.jpg -P /home/pi/
+
 cat >/home/pi/screenshot.sh <<EOF
 #!/bin/bash
 cp /home/pi/loading.png /home/pi/screenly/static/img/screenshot.png
@@ -43,14 +52,18 @@ while true; do
 done
 exit
 EOF
+
 chmod +x /home/pi/screenshot.sh
 chown pi:pi /home/pi/screenshot.sh
 ( crontab -l ; echo "@reboot sleep 20 && /home/pi/screenshot.sh >> /home/pi/screenshot.log 2>1" ) | crontab -
 echo "true" > /home/pi/screenly/static/monitor.txt
 
-header
-echo "Screenly OSE Monitor extension successfuly installed"
-echo "Device is being restarted in 5 seconds!"
-sleep 5
-reboot now
+if [ "$1" != "installer" ]
+then
+    header
+    echo "Screenly OSE Monitor extension successfuly installed"
+    echo "Device is being restarted in 5 seconds!"
+    sleep 5
+    reboot now
+fi
 exit
