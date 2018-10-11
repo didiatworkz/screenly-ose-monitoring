@@ -34,11 +34,11 @@ fi
 header
 echo "Prepair Screenly Player..."
 sleep 2
-wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.jpg -P /home/pi/
+wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.png -P /home/pi/
 
 cat >/home/pi/screenshot.sh <<EOF
 #!/bin/bash
-cp /home/pi/loading.jpg /home/pi/screenly/static/img/screenshot.png
+cp /home/pi/loading.png /home/pi/screenly/static/img/screenshot.png
 sleep 60;
 while true; do
    DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/$DISPLAY xwd -root > /tmp/screenshot.xwd
