@@ -51,7 +51,8 @@ EOF
 sudo chmod +x /home/pi/screenshot.sh
 sudo chown pi:pi /home/pi/screenshot.sh
 ( sudo crontab -l ; echo "@reboot sleep 20 && /home/pi/screenshot.sh >> /home/pi/screenshot.log 2>1" ) | sudo crontab -
-echo "true" > /home/pi/screenly/static/monitor.txt
+echo "true" > /tmp/monitor.txt
+sudo cp -f /tmp/monitor.txt /home/pi/screenly/static/monitor.txt
 
 if [ "$1" != "installer" ]
 then
