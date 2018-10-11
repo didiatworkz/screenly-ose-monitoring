@@ -40,7 +40,7 @@ echo
 echo
 if [ -e /var/www/html/assets/tools/version.txt ]
 then
-    UPDATE=true
+    UPDATE=1
     echo -e "[ \e[93mYES\e[39m ] Found old Monitor Script"
 else
     echo -e "[ \e[32mNO\e[39m ] Found old Monitor Script"
@@ -109,7 +109,7 @@ sudo chown www-data:www-data /var/www/html
 sudo chown www-data:www-data /var/www/html/*
 
 # Create nginx config
-sudo cat >/etc/nginx/sites-enabled/monitor.conf <<EOF
+cat >/tmp/monitor.conf <<EOF
 server {
 
         #Nginx should listen on port 80 for requests to yoursite.com
@@ -127,6 +127,8 @@ server {
 }
 EOF
 
+sudo cp -f /tmp/monitor.conf /etc/nginx/sites-enabled/monitor.conf
+
 # Restart nginx
 sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
@@ -137,7 +139,7 @@ header
 echo -e "\e[94mInstallation finished!"
 echo
 echo
-echo -e "You can now reach the Screenly OSE Monitor at the address: \e[93mhttp://$IP:9000"
+echo -e "You can now reach the Screenly OSE Monitor at the address: \e[93mhttp://$IP:9000\e[39m"
 echo -e "Username: \e[93mdemo\e[39m"
 echo -e "Password: \e[93mdemo\e[39m"
 exit
