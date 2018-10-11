@@ -26,6 +26,7 @@ header
 echo
 echo
 read -p "Do you want to install the Screenly OSE Monitor? (y/N)" -n 1 -r -s INSTALL_BEGIN
+
 if [ "$INSTALL_BEGIN" != 'y' ]
 then
     echo
