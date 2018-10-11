@@ -140,8 +140,12 @@ echo -e "\e[94mInstallation finished!"
 echo
 echo
 echo -e "You can now reach the Screenly OSE Monitor at the address: \e[93mhttp://$IP:9000\e[39m"
-echo -e "Username: \e[93mdemo\e[39m"
-echo -e "Password: \e[93mdemo\e[39m"
+echo
+echo -e "\e[94mUsername: \e[93mdemo\e[39m"
+echo -e "\e[94mPassword: \e[93mdemo\e[39m"
+echo
+echo
+echo
 exit
 
 
