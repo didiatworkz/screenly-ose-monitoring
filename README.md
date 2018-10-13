@@ -20,7 +20,7 @@ The site is also fully responsive, so that you can work with a smartphone.
 
 
 ## Requirements
-+ RaspberryPi 2 or 3
++ RaspberryPi 3
 + PHP 7.0
 + SQLite 3.x
 
