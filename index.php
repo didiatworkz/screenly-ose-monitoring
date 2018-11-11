@@ -90,26 +90,6 @@ require_once("_config.php");
 			} else sysinfo('danger', 'Error! - Can \'t update the Player');
 		}
 
-		if(isset($_GET['action']) && $_GET['action'] == 'order'){
-			if(isset($_GET['playerID'])){
-				$playerID 	= $_GET['playerID'];
-				$orderD 	= $_GET['orderD'];
-				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-				
-				$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-				$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
-				$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-				if($result == 'Asset switched') sysinfo('success', 'Asset switchted!');
-				else sysinfo('danger', 'Switch not possible!');
-				redirect('index.php?action=view&playerID='.$playerID, 1);
-			}
-			else {
-				sysinfo('danger', 'No Player submitted!');
-				redirect('index.php', 3);
-			}
-		}
 		if(isset($_GET['action']) && $_GET['action'] == 'delete'){
 			$playerID = $_GET['playerID'];
 			if(isset($playerID)){
@@ -152,6 +132,19 @@ require_once("_config.php");
 			';
 		if(isset($_GET['action']) && $_GET['action'] == 'view'){
 			if(isset($_GET['playerID'])){
+				if(isset($_GET['set']) && $_GET['set'] == 'order'){
+					$playerID 	= $_GET['playerID'];
+					$orderD 	= $_GET['orderD'];
+					$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+					$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+					
+					$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+					$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+					$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
+					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
+					if($result == 'Asset switched') sysinfo('success', 'Asset switchted!');
+					else sysinfo('danger', 'Switch not possible!');
+				}
 				$playerID 	= $_GET['playerID'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
 				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
@@ -165,7 +158,7 @@ require_once("_config.php");
 				if(pingAddress($player['address'])){
 					$playerAPI = callURL('GET', $player['address'].'/api/v1.1/assets', false, $user, $pass, false);
 					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-					$monitor = callURL('GET', $player['address'].'/static/monitor.txt', false, $user, $pass, false);
+					$monitor = callURL('GET', $player['address'].':9020/monitor.txt', false, $user, $pass, false);
 					
 					if($monitor == 1){
 						$monitorInfo = '<span class="badge badge-success">  installed  </span>';
@@ -173,7 +166,7 @@ require_once("_config.php");
 					
 					$status		 	= 'online';
 					$statusColor 	= 'success';
-					$navigation 	= '<li class="list-group-item"><div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-block btn-sm btn-info"><i class="fas fa-angle-double-left"></i> Previous asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-block btn-sm btn-info">Next asset <i class="fas fa-angle-double-right"></i></a></div></div></li>';
+					$navigation 	= '<li class="list-group-item"><div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-block btn-sm btn-info"><i class="fas fa-angle-double-left"></i> Previous asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-block btn-sm btn-info">Next asset <i class="fas fa-angle-double-right"></i></a></div></div></li>';
 					$script 		= '<li class="list-group-item">Monitor-Script: '.$monitorInfo.'</li>';
 					$assets 		= '<li class="list-group-item">Assets: '.sizeof($playerAPI).'</li>';
 				}
@@ -224,10 +217,9 @@ require_once("_config.php");
 							for($i=0; $i < sizeof($playerAPI); $i++)  {
 								$start_date	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['start_date']));
 								$end_date 	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['end_date']));
-								$yes 		= '<span class="badge badge-success">  Yes  </span>';
-								$no 		= '<span class="badge badge-danger">  No  </span>';
+								$yes 		= '<span class="badge badge-success">  active  </span>';
+								$no 		= '<span class="badge badge-danger">  inactive  </span>';
 								
-								$playerAPI[$i]['is_enabled'] == 1 ? $enable = $yes : $enable = $no;
 								$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
 								
 								if($playerAPI[$i]['mimetype'] == 'webpage'){
@@ -253,8 +245,7 @@ require_once("_config.php");
 												<li class="list-group-item">End: '.$end_date.'</li>
 												<li class="list-group-item">Type: '.$playerAPI[$i]['mimetype'].'</li>
 												'.$mimetypeOutput.'
-												<li class="list-group-item">Enable: '.$enable.'</li>
-												<li class="list-group-item">Active: '.$active.'</li>
+												<li class="list-group-item">Status: '.$active.'</li>
 												<li class="list-group-item">Duration: '.$playerAPI[$i]['duration'].'</li>
 											</ul>
 										</div>

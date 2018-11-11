@@ -23,8 +23,8 @@ echo "The installation can may be take a while.."
 echo
 echo
 echo
-
 echo "Check packages"
+
 sleep 2
 dpkg -s imagemagick &> /dev/null
 if [ $? -ne 0 ]; then
@@ -34,15 +34,25 @@ fi
 header
 echo "Prepair Screenly Player..."
 sleep 2
-wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.png -P /home/pi/
+
+if [ ! -e /home/pi/screenly/server.py ]
+then
+	echo 
+	echo "No ScreenlyOSE found!"
+	exit
+fi
+
+sudo mkdir -p /var/www/html/screen/
+wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.png -P /tmp/
+sudo cp -f /tmp/loading.png /var/www/html/screen/loading.png
 
 cat >/home/pi/screenshot.sh <<EOF
 #!/bin/bash
-cp /home/pi/loading.png /home/pi/screenly/static/img/screenshot.png
+cp /var/www/html/screen/loading.png /var/www/html/screen/screenshot.png
 sleep 60;
 while true; do
    DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/$DISPLAY xwd -root > /tmp/screenshot.xwd
-   convert /tmp/screenshot.xwd /home/pi/screenly/static/img/screenshot.png
+   convert /tmp/screenshot.xwd /var/www/html/screen/screenshot.png
    sleep 10;
 done
 exit
@@ -52,7 +62,39 @@ sudo chmod +x /home/pi/screenshot.sh
 sudo chown pi:pi /home/pi/screenshot.sh
 ( sudo crontab -l ; echo "@reboot sleep 20 && /home/pi/screenshot.sh >> /home/pi/screenshot.log 2>1" ) | sudo crontab -
 echo "true" > /tmp/monitor.txt
-sudo cp -f /tmp/monitor.txt /home/pi/screenly/static/monitor.txt
+sudo cp -f /tmp/monitor.txt /var/www/html/screen/monitor.txt
+
+cat >/tmp/screenshot.conf <<EOF
+server {
+
+        listen 9020;
+        server_name _;
+
+
+        root /var/www/html/screen/;
+        index index.htm;
+}
+EOF
+
+cat >/tmp/index.htm <<EOF
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Screenly OSE Monitor extension</title>
+  <meta name="description" content="Shows the current output of the Screenly Player">
+  <meta name="author" content="didiatworkz">
+</head>
+
+<body>
+  <img src="screenshot.png" alt="screen" title="screen" />
+</body>
+</html>
+EOF
+
+sudo cp -f /tmp/screenshot.conf /etc/nginx/sites-enabled/screenshot.conf
+sudo cp -f /tmp/index.htm /var/www/html/screen/index.htm
 
 if [ "$1" != "installer" ]
 then

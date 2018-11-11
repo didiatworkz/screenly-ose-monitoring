@@ -98,15 +98,13 @@ function callURL($method, $ip, $params = false, $user = false, $pass = false, $s
 
 function pingAddress($ip){
     $pingresult = exec("/bin/ping -c 1 $ip", $outcome, $status);
-	
     if (0 == $status) return true;
     else return false;
 }
 
 function monitorScript($url){
-	$monitor = callURL('GET', $url.'/static/monitor.txt');
-
-	if($monitor == 1) return 'http://'.$url.'/static/img/screenshot.png';
+	$monitor = callURL('GET', $url.':9020/monitor.txt');
+	if($monitor == 1) return 'http://'.$url.':9020/screenshot.png';
 	else return 'assets/img/player.png';
 }
 

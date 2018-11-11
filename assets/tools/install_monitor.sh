@@ -2,7 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitor 
 #
-# October 2018
+# November 2018
 
 header() {
 clear
@@ -38,7 +38,7 @@ echo
 
 # Check if old version exists
 echo
-if [ -e /var/www/html/assets/tools/version.txt ]
+if [ -e /var/www/html/monitor/assets/tools/version.txt ]
 then
     UPDATE=1
     echo -e "[ \e[93mYES\e[39m ] Found old Monitor Script"
@@ -103,21 +103,20 @@ sleep 2
 header
 echo -e "\e[94mStart configuration...\e[39m"
 # Copy files and set rights
-sudo mkdir -p /var/www/html
-sudo cp -rf /tmp/monitor/* /var/www/html/
-sudo chown www-data:www-data /var/www/html
-sudo chown www-data:www-data /var/www/html/*
+sudo mkdir -p /var/www/html/monitor
+sudo cp -rf /tmp/monitor/* /var/www/html/monitor/
+sudo chown www-data:www-data /var/www/html/monitor
+sudo chown www-data:www-data /var/www/html/monitor/*
 
 # Create nginx config
 cat >/tmp/monitor.conf <<EOF
 server {
 
-        #Nginx should listen on port 80 for requests to yoursite.com
         listen 9000;
         server_name _;
 
 
-        root /var/www/html/;
+        root /var/www/html/monitor/;
         index index.php;
 
         location ~ \.php$ {
