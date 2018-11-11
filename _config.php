@@ -1,5 +1,5 @@
 <!--
-							_
+                            _
    ____                    | |
   / __ \__      _____  _ __| | __ ____
  / / _` \ \ /\ / / _ \| '__| |/ /|_  /
@@ -11,7 +11,7 @@
 		   info@atworkz.de
 ________________________________________
 		  Screenly OSE Monitor
-	   Version 1.0 - October 2018
+	   Version 1.2 - November 2018
 ________________________________________
 -->
 <?php
@@ -98,19 +98,26 @@ function callURL($method, $ip, $params = false, $user = false, $pass = false, $s
 
 function pingAddress($ip){
     $pingresult = exec("/bin/ping -c 1 $ip", $outcome, $status);
+	
     if (0 == $status) return true;
     else return false;
 }
 
 function monitorScript($url){
 	$monitor = callURL('GET', $url.':9020/monitor.txt');
+
 	if($monitor == 1) return 'http://'.$url.':9020/screenshot.png';
 	else return 'assets/img/player.png';
 }
 
 function update($v){
 	$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
-    $remoteVersion = file_get_contents($github);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $github);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
+	$remoteVersion = curl_exec($ch);
+	curl_close($ch);
     return version_compare($v, $remoteVersion, '<');
 }
 
