@@ -102,6 +102,6 @@ then
     echo "Screenly OSE Monitor extension successfuly installed"
     echo "Device is being restarted in 5 seconds!"
     sleep 5
-    sudo reboot now
+    sudo systemctl restart nginx
 fi
 exit
