@@ -85,6 +85,18 @@ fi
 # Clone git repository
 git clone https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 
+if [ "$UPDATE" = "1" ]
+then
+	OLD_VERSION=$(</var/www/html/monitor/assets/tools/version.txt)
+	
+	if [ "$OLD_VERSION" = "1.1" ]
+	then
+		echo
+	else
+	    sudo rm -f /tmp/monitor/dbase.db
+	fi
+fi
+
 # Install monitor extension
 if [ "$MONITOR_EXTENSION" = "1" ]
 then
