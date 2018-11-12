@@ -111,7 +111,7 @@ function monitorScript($url){
 }
 
 function update($v){
-	$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
+	$github = 'http://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $github);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
