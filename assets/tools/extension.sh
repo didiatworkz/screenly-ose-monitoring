@@ -28,7 +28,7 @@ echo "Check packages"
 sleep 2
 dpkg -s imagemagick &> /dev/null
 if [ $? -ne 0 ]; then
-    sudo apt update && sudo apt-get install x11-apps imagemagick -y
+    sudo apt update && sudo apt-get install nginx x11-apps imagemagick -y
 fi
 
 header
