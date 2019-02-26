@@ -52,7 +52,8 @@ cp /var/www/html/screen/loading.png /var/www/html/screen/screenshot.png
 sleep 60;
 while true; do
    DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/$DISPLAY xwd -root > /tmp/screenshot.xwd
-   convert /tmp/screenshot.xwd /var/www/html/screen/screenshot.png
+   convert /tmp/screenshot.xwd /tmp/screenshot.png
+   cp -f /tmp/screenshot.png /var/www/html/screen/screenshot.png
    sleep 10;
 done
 exit
