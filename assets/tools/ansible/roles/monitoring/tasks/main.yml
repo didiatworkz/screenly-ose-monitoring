@@ -1,37 +1,34 @@
 # Check older versions
-- stat:
+- name: check if older version installed
+  stat:
     path: /etc/nginx/sites-enabled/monitor.conf
   register: monitorScript_s
+
+- set_fact: old_monitor="{{monitorScript_s.stat.exists}}"
   
-- stat:
+- name: check if version 1.0 installed
+  stat:
     path: /var/www/html/assets/tools/version.txt
   register: version1_0_s
   
 - set_fact: version1_0="{{version1_0_s.stat.exists}}"
-  
-- stat:
+
+- name: check if version 1.1 installed  
+  stat:
     path: /var/www/html/monitor/assets/tools/version.txt
   register: version1_1_s
 
 - set_fact: version1_1="{{version1_1_s.stat.exists}}"
 
-- name: check for existing ose-monitoring install
+- name: check if version >1.1 installed
   stat:
     path: "/usr/bin/ose-monitoring"
-  register: monitorScript_s
-  when: not version1_0 and not version1_1
+  register: version_newer_s
 
-- set_fact: monitorScript="{{monitorScript_s.stat.exists}}"
-
-- name: check ose-monitoring version
-  command: "/usr/bin/ose-monitoring --version"
-  register: monitor_script_version
-  when: monitorScript and not version1_0 and not version1_1
-  changed_when: False
-  failed_when: False
+- set_fact: version_newer="{{version_newer_s.stat.exists}}"
 
 - set_fact: update_version="True"
-  when: (version1_0) or (version1_1) or (monitor_script_version <= "1.4")
+  when: (old_monitor) and (version1_0 or version1_1 or version_newer)
 
 - name: Backup Database
   copy:
@@ -39,7 +36,7 @@
     dest: /home/pi/.monitor/dbase.db.bak
     owner: root
     group: root
-  when: update_version
+  when: update_version and version1_0
   
 - name: Backup Database
   copy:
@@ -47,7 +44,7 @@
     dest: /home/pi/.monitor/dbase.db.bak
     owner: root
     group: root
-  when: update_version
+  when: update_version and (version1_1 or version_newer)
   
 # Update ose-monitoring
 - name: Install packages
@@ -107,7 +104,7 @@
     owner: www-data
     group: www-data
     mode: 0644
-  when: update_version
+  when: update_version and not version_newer
     
 - name: Version update
   command: ose-monitoring --init
