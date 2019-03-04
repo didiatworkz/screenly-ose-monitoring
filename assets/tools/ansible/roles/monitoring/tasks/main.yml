@@ -1,31 +1,37 @@
 # Check older versions
 - stat:
     path: /etc/nginx/sites-enabled/monitor.conf
-  register: monitorScript
+  register: monitorScript_s
   
 - stat:
     path: /var/www/html/assets/tools/version.txt
-  register: version1_0
+  register: version1_0_s
+  
+- set_fact: version1_0="{{version1_0_s.stat.exists}}"
   
 - stat:
     path: /var/www/html/monitor/assets/tools/version.txt
-  register: version1_1
+  register: version1_1_s
+
+- set_fact: version1_1="{{version1_1_s.stat.exists}}"
 
 - name: check for existing ose-monitoring install
   stat:
     path: "/usr/bin/ose-monitoring"
-  register: monitorScript
-  when: not version1_0.stat.exists and not version1_1.stat.exists
+  register: monitorScript_s
+  when: not version1_0 and not version1_1
+
+- set_fact: monitorScript="{{monitorScript_s.stat.exists}}"
 
 - name: check ose-monitoring version
   command: "/usr/bin/ose-monitoring --version"
   register: monitor_script_version
-  when: monitorScript.stat.exists and not version1_0.stat.exists and not version1_1.stat.exists
+  when: monitorScript and not version1_0 and not version1_1
   changed_when: False
   failed_when: False
 
 - set_fact: update_version="True"
-  when: (version1_0.stat.exists) or (version1_1.stat.exists) or (monitor_script_version <= "1.4")
+  when: (version1_0) or (version1_1) or (monitor_script_version <= "1.4")
 
 - name: Backup Database
   copy:
