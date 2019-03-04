@@ -46,7 +46,7 @@ while [[ $# -gt 0 ]] ; do
 		    else
 			  echo -e ${FOUND}index.php exists ${NOCOLOR}
 		    fi
-			
+			echo
 			echo -e ${ACTION}Check if _config.php exists
 		    echo -e =======================${NOCOLOR}
 		    if [ ! -e /var/www/html/monitor/_config.php ]
@@ -55,7 +55,7 @@ while [[ $# -gt 0 ]] ; do
 		    else
 			  echo -e ${FOUND}_config.php exists ${NOCOLOR}
 		    fi
-			
+			echo
 			echo -e ${ACTION}Check if dbase.db exists
 		    echo -e =======================${NOCOLOR}
 		    if [ ! -e /var/www/html/monitor/dbase.db ]
