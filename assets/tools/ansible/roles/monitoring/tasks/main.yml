@@ -49,8 +49,9 @@
 # Update ose-monitoring
 - name: Install packages
   apt:
-    install: "{{ item }}"
+    name: "{{ item }}"
     state: latest
+    update_cache: yes
   with_items:
     - nginx-light
     - php-fpm 
