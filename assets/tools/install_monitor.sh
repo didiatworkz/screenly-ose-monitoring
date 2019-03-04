@@ -51,7 +51,8 @@ else
     echo -e "[ \e[93mYES\e[39m ] Screenly installed"
 fi
 sleep 2
-header
+echo
+echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
 ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=dev"
