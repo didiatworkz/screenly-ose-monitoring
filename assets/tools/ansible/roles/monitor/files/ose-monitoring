@@ -1,0 +1,52 @@
+#!/bin/bash
+VERSION="1.4"
+LOCAL=$(cat /home/pi/.monitor/latest_monitor)
+ONLINE=$(cd /var/www/html/monitor && git rev-parse master@{upstream})
+
+while [[ $# -gt 0 ]] ; do
+    case $1 in
+        -h|-\?|--help)
+            echo "Screenly OSE Monitor"
+			echo "Screenly OSE-Monitoring is an overview page for all Screenly OSE players."
+			echo "You can open it via the IP address \"0.0.0.0:9000\" and manage all players in one place."
+			echo "In addition, the monitoring offers an extension that can be installed on other"
+			echo "players to always display the current display of the player."
+			echo
+			echo "Options: "
+			echo "  --version | Show current installed Version"
+			echo "  --restart | Restart the nginx Server"
+			echo "  --update  | Show current installed Version"
+            ;;
+        -v|--version)            
+			echo "$VERSION"
+			shift
+            ;;
+        --restart)  
+			echo "Restart nginx Server"
+			sudo systemctl restart nginx
+            ;;
+        --update)            
+			echo "Check for newer version..."
+			if [ "$LOCAL" == "$ONLINE" ]
+			then
+			  echo -e "No Update available!"
+		      echo
+		      exit 0
+			else
+		      echo "Update available!"
+			  read -p "Do you want to start the update? [y] (y/N)" -n 1 -r -s UPDATE_BEGIN
+			  if [ "$UPDATE_BEGIN" != 'y' ]
+			  then
+				echo
+				exit 0
+			  fi
+			  bash <(curl -sL http://screenly-monitor.atworkz.de)
+			fi
+            ;;
+		*)            
+			echo "Invalid Option! \nPlease enter --help for more commands"
+            ;;
+    esac
+    shift
+done
+exit 0

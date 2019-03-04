@@ -1,0 +1,97 @@
+---
+- name: Install Screenly OSE Monitor
+  hosts: all
+  user: pi
+  become: yes
+
+  handlers:
+    - name: restart-nginx
+      service:
+        name: nginx
+        state: restarted
+
+# Check older versions
+- file:
+    path: /home/pi/.monitor
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0644
+    
+- stat:
+    path: /etc/nginx/sites-enabled/monitor.conf
+  register: monitorScript
+  
+- stat:
+    path: /var/www/html/assets/tools/version.txt
+  register: version1_0
+  
+- stat:
+    path: /var/www/html/monitor/assets/tools/version.txt
+  register: version1_1
+
+- name: check for existing ose-monitoring install
+  stat:
+    path: "/usr/bin/ose-monitoring"
+  register: monitorScript
+  when: not version1_0.stat.exists and not version1_1.stat.exists
+
+- name: check ose-monitoring version
+  command: "/usr/bin/ose-monitoring --version"
+  register: monitor_script_version
+  when: "monitorScript.stat.exists"
+  changed_when: False
+  failed_when: False
+
+- set_fact: update_version="True"
+  when: (version1_0.stat.exists) or (version1_1.stat.exists) or (monitor_script_version <= "1.4")
+
+- file:
+    src: /var/www/html/dbase.db
+    dest: /home/pi/.monitor/dbase.db.bak
+    owner: root
+    group: root
+  when: update_version
+  
+- file:
+    src: /var/www/html/monitor/dbase.db
+    dest: /home/pi/.monitor/dbase.db.bak
+    owner: root
+    group: root
+  when: update_version
+  
+# Install ose-monitoring
+- name: Install packages
+  apt:
+    install: {{ item }}
+    state: latest
+  with_items:
+    - nginx-light
+    - php-fpm 
+    - php7.0-sqlite 
+    - php7.0-curl
+    
+- name: Copy monitoring.conf
+  copy:
+    src: monitoring.conf
+    dest: /etc/nginx/sites-enabled/monitoring.conf
+    owner: root 
+    group: root
+    mode: 0644
+  notify:
+    - restart-nginx
+    
+- name: Copy ose-monitoring Script
+  copy:
+    src: ose-monitoring
+    dest: /usr/bin/ose-monitoring
+    owner: root 
+    group: root
+    mode: 0644
+
+- file:
+    path: /var/www/html/monitor
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: yes
