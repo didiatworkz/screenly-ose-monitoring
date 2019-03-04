@@ -27,14 +27,16 @@
 - set_fact: update_version="True"
   when: (version1_0.stat.exists) or (version1_1.stat.exists) or (monitor_script_version <= "1.4")
 
-- file:
+- name: Backup Database
+  copy:
     src: /var/www/html/dbase.db
     dest: /home/pi/.monitor/dbase.db.bak
     owner: root
     group: root
   when: update_version
   
-- file:
+- name: Backup Database
+  copy:
     src: /var/www/html/monitor/dbase.db
     dest: /home/pi/.monitor/dbase.db.bak
     owner: root
@@ -51,6 +53,14 @@
     - php-fpm 
     - php7.0-sqlite 
     - php7.0-curl
+
+- name: Copy ose-monitoring
+  copy:
+    src: /tmp/monitor
+    dest: /var/www/html/monitor
+    owner: www-data
+    group: www-data
+    mode: 0644
     
 - name: Copy monitoring.conf
   copy:
@@ -83,3 +93,15 @@
     owner: www-data
     group: www-data
     recurse: yes
+
+- name: Retore Database Backup
+  copy:
+    src: /home/pi/.monitor/dbase.db.bak
+    dest: /var/www/html/monitor/dbase.db
+    owner: www-data
+    group: www-data
+    mode: 0644
+  when: update_version
+    
+- name: Version update
+  command: ose-monitoring --init

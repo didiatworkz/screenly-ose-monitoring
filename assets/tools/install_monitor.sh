@@ -54,11 +54,8 @@ sleep 2
 header
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
-sudo cp -rf /var/www/html/monitor/ /var/www/html/monitor.bak/
-sudo mkdir -p /var/www/html/monitor/
-sudo chown pi:pi /var/www/html/monitor/
-ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/var/www/html/monitor version=dev"
-cd  /var/www/html/monitor/assets/tools/ansible/
+ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=dev"
+cd  /tmp/monitor/assets/tools/ansible/
 ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
