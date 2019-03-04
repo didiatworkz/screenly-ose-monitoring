@@ -56,13 +56,13 @@ while [[ $# -gt 0 ]] ; do
 			  echo -e ${FOUND}_config.php exists ${NOCOLOR}
 		    fi
 			
-			echo -e ${ACTION}Check if dabse.db exists
+			echo -e ${ACTION}Check if dbase.db exists
 		    echo -e =======================${NOCOLOR}
-		    if [ ! -e /var/www/html/monitor/dabse.db ]
+		    if [ ! -e /var/www/html/monitor/dbase.db ]
 		    then
-		      echo -e ${ERROR}dabse.db not exists ${NOCOLOR}
+		      echo -e ${ERROR}dbase.db not exists ${NOCOLOR}
 		    else
-			  echo -e ${FOUND}dabse.db exists ${NOCOLOR}
+			  echo -e ${FOUND}dbase.db exists ${NOCOLOR}
 		    fi
             ;;
         --update)            
