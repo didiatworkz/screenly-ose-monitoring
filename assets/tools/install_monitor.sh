@@ -156,7 +156,6 @@ echo -e "\e[94mUsername: \e[93mdemo\e[39m"
 echo -e "\e[94mPassword: \e[93mdemo\e[39m"
 echo
 echo
-echo
 exit
 
 
