@@ -63,7 +63,7 @@
 # Install ose-monitoring
 - name: Install packages
   apt:
-    install: {{ item }}
+    install: "{{ item }}"
     state: latest
   with_items:
     - nginx-light
