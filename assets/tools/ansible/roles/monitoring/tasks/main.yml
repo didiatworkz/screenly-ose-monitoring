@@ -20,7 +20,7 @@
 - name: check ose-monitoring version
   command: "/usr/bin/ose-monitoring --version"
   register: monitor_script_version
-  when: "monitorScript.stat.exists"
+  when: monitorScript.stat.exists and not version1_0.stat.exists and not version1_1.stat.exists
   changed_when: False
   failed_when: False
 
