@@ -1,4 +1,11 @@
 # Check older versions
+- file:
+    path: /home/pi/.monitor
+    state: directory
+    owner: pi
+    group: pi
+    
+    mode: 0755
 - name: check if older version installed
   stat:
     path: /etc/nginx/sites-enabled/monitor.conf
@@ -82,13 +89,6 @@
     dest: /usr/bin/ose-monitoring
     owner: root 
     group: root
-    mode: 0755
-
-- file:
-    path: /home/pi/.monitor
-    state: directory
-    owner: pi
-    group: pi
     mode: 0755
 
 - file:
