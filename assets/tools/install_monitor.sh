@@ -56,7 +56,7 @@ echo -e "\e[94mStart installation...\e[39m"
 sleep 5
 
 sudo mkdir -p /var/www/html/monitor
-ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/var/www/html/monitor version=master"
+ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/var/www/html/monitor version=dev"
 cd  /var/www/html/monitor/assets/tools/ansible
 ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
