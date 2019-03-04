@@ -55,7 +55,7 @@
   with_items:
     - nginx-light
     - php-fpm 
-    - php7.0-sqlite 
+    - php7.0-sqlite3
     - php7.0-curl
 
 - name: Copy ose-monitoring
