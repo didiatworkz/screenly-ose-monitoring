@@ -19,38 +19,90 @@ echo
 }
 
 header
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
-fi
+echo "The installation can may be take a while.."
+echo
+echo
+echo
+echo "Check packages"
 
+sleep 2
 dpkg -s imagemagick &> /dev/null
 if [ $? -ne 0 ]; then
-    apt update && sudo apt-get install x11-apps imagemagick -y
+    sudo apt update && sudo apt-get install nginx x11-apps imagemagick -y
 fi
 
 header
-echo "Prepair player..."
-wget https://www.atworkz.de/_git/loading.png -P /home/pi/
+echo "Prepair Screenly Player..."
+sleep 2
+
+if [ ! -e /home/pi/screenly/server.py ]
+then
+	echo 
+	echo "No ScreenlyOSE found!"
+	exit
+fi
+
+sudo mkdir -p /var/www/html/screen/
+wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/img/loading.png -P /tmp/
+sudo cp -f /tmp/loading.png /var/www/html/screen/loading.png
+
 cat >/home/pi/screenshot.sh <<EOF
 #!/bin/bash
-cp /home/pi/loading.png /home/pi/screenly/static/img/screenshot.png
+cp /var/www/html/screen/loading.png /var/www/html/screen/screenshot.png
 sleep 60;
 while true; do
    DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/$DISPLAY xwd -root > /tmp/screenshot.xwd
-   convert /tmp/screenshot.xwd /home/pi/screenly/static/img/screenshot.png
+   convert /tmp/screenshot.xwd /tmp/screenshot.png
+   cp -f /tmp/screenshot.png /var/www/html/screen/screenshot.png
    sleep 10;
 done
 exit
 EOF
-chmod +x /home/pi/screenshot.sh
-chown pi:pi /home/pi/screenshot.sh
-( crontab -l ; echo "@reboot sleep 20 && /home/pi/screenshot.sh >> /home/pi/screenshot.log 2>1" ) | crontab -
-echo "true" > /home/pi/screenly/static/monitor.txt
 
-header
-echo "Screenly OSE Monitor extension successfuly installed"
-echo "Device is being restarted in 5 seconds!"
-sleep 5
-reboot now
+sudo chmod +x /home/pi/screenshot.sh
+sudo chown pi:pi /home/pi/screenshot.sh
+( sudo crontab -l ; echo "@reboot sleep 20 && /home/pi/screenshot.sh >> /home/pi/screenshot.log 2>1" ) | sudo crontab -
+echo "true" > /tmp/monitor.txt
+sudo cp -f /tmp/monitor.txt /var/www/html/screen/monitor.txt
+
+cat >/tmp/screenshot.conf <<EOF
+server {
+
+        listen 9020;
+        server_name _;
+
+
+        root /var/www/html/screen/;
+        index index.htm;
+}
+EOF
+
+cat >/tmp/index.htm <<EOF
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Screenly OSE Monitor extension</title>
+  <meta name="description" content="Shows the current output of the Screenly Player">
+  <meta name="author" content="didiatworkz">
+</head>
+
+<body>
+  <img src="screenshot.png" alt="screen" title="screen" />
+</body>
+</html>
+EOF
+
+sudo cp -f /tmp/screenshot.conf /etc/nginx/sites-enabled/screenshot.conf
+sudo cp -f /tmp/index.htm /var/www/html/screen/index.htm
+
+if [ "$1" != "installer" ]
+then
+    header
+    echo "Screenly OSE Monitor extension successfuly installed"
+    echo "Device is being restarted in 5 seconds!"
+    sleep 5
+    sudo systemctl restart nginx
+fi
 exit

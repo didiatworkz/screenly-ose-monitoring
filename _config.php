@@ -90,7 +90,7 @@ function callURL($method, $ip, $params = false, $user = false, $pass = false, $s
 	   return callURL($method, $ip, $params, $user, $pass, true);
 	} 
 	elseif ($code == 401) {
-		sysinfo('warning', 'Can not logged in to the player! - Wrong User or Password!');
+		sysinfo('warning', 'Can not logged in to the player! - Wrong user or password!');
 		return 'authentication error '.$code;
 	} 
 	else return 'error '.$code;
@@ -98,22 +98,21 @@ function callURL($method, $ip, $params = false, $user = false, $pass = false, $s
 
 function pingAddress($ip){
     $pingresult = exec("/bin/ping -c 1 $ip", $outcome, $status);
-	
-    if (0 == $status) return true;
+    if ($status == 0) return true;
     else return false;
 }
 
 function monitorScript($url){
 	$monitor = callURL('GET', $url.'/static/monitor.txt');
-
 	if($monitor == 1) return 'http://'.$url.'/static/img/screenshot.png';
 	else return 'assets/img/player.png';
 }
 
 function update($v){
-	$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt';
-    $remoteVersion = file_get_contents($github);
-    return version_compare($v, $remoteVersion, '<');
+	//$github = 'https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt';
+    //$remoteVersion = file_get_contents($github);
+    //return version_compare($v, $remoteVersion, '<');
+	return 0;
 }
 
 ?>
