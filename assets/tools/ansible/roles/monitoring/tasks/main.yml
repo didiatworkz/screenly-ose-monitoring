@@ -4,8 +4,10 @@
     state: directory
     owner: pi
     group: pi
-    
     mode: 0755
+    
+- set_fact: update_version="False"
+
 - name: check if older version installed
   stat:
     path: /etc/nginx/sites-enabled/monitor.conf
