@@ -426,7 +426,7 @@ require_once("_config.php");
 						$imageTag 	= $player['name'];
 					}
 					echo'
-				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4">
+				<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
 					<div class="card">
 						<div class="card-header">
 							<h4 class="d-inline">'.$name.'</h4>
@@ -571,7 +571,7 @@ require_once("_config.php");
 							<h2>Screenly OSE Monitor</h2>
 							<p>Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'</p>
 							<p>Server IP: '.$_SERVER['SERVER_ADDR'].':9000</p>
-							<p>Support: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a></p>
+							<p>Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a></p>
 						</div>
 					</div>
 					

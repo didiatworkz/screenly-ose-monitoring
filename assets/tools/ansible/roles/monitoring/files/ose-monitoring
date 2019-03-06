@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.4"
+VERSION="2.1"
 LOCAL=$(cat /home/pi/.monitor/latest_monitor)
 ONLINE=$(cd /var/www/html/monitor && git rev-parse master@{upstream})
 ACTION='\033[1;90m'
