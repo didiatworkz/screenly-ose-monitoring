@@ -8,21 +8,31 @@ require_once("_config.php");
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Manage all Screenly players in one place.">
-  <meta name="author" content="didiatworkz">
-  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="assets/img/favicon.png">
-  <title>
-    Screenly OSE Monitoring
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="assets/css/fonts.css" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link href="assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
-  <link href="assets/css/monitor.css" rel="stylesheet" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Manage all Screenly players in one place.">
+	<meta name="author" content="didiatworkz">
+	<title>
+		Screenly OSE Monitoring
+	</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+	<link rel="manifest" href="assets/img/site.webmanifest">
+	<link rel="mask-icon" href="assets/img/safari-pinned-tab.svg" color="#1e1e2f">
+	<link rel="shortcut icon" href="assets/img/favicon.ico">
+	<meta name="msapplication-TileColor" content="#1e1e2f">
+	<meta name="msapplication-config" content="assets/img/browserconfig.xml">
+	<meta name="theme-color" content="#1e1e2f">
+	<link href="assets/css/fonts.css" rel="stylesheet" />
+	<link href="assets/css/nucleo-icons.css" rel="stylesheet" />
+	<link href="assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+	<link href="assets/css/monitor.css" rel="stylesheet" />
+	<script src="assets/js/core/jquery.min.js"></script>
+	<script src="assets/js/core/popper.min.js"></script>
+	<script src="assets/js/core/bootstrap.min.js"></script>
+	<script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+	<script src="assets/js/plugins/bootstrap-notify.js"></script>
+	<script src="assets/js/black-dashboard.min.js?v=1.0.0"></script>
 </head>
 
 <body>
@@ -92,6 +102,28 @@ require_once("_config.php");
 				sysinfo('success', 'Player successfully removed!'); 
 			}
 			else sysinfo('danger', 'Error! - Can \'t remove the Player');
+		}
+		
+		if(isset($_POST['changeAssetState'])){
+			$id 		= $_POST['id'];
+			$asset		= $_POST['asset'];
+			$value 		= $_POST['value'];
+			
+			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+			$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+			$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+			$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+			$data = callURL('GET', $player['address'].'/api/v1.1/assets/'.$asset, false, $user, $pass, false);
+			if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
+				$data['is_enabled'] = "0";
+				$data['is_active'] = "0";
+			}
+			else {
+				$data['is_enabled'] = "1";
+				$data['is_active'] = "1";
+			}
+			callURL('PUT', $player['address'].'/api/v1.1/assets/'.$asset, $data, $user, $pass, false);
+
 		}
 
 
@@ -175,7 +207,7 @@ require_once("_config.php");
 				$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 
-				if(ifOnline($player['address'])){
+				if(checkAddress($player['address'])){
 					$playerAPI = callURL('GET', $player['address'].'/api/v1.1/assets', false, $user, $pass, false);
 					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
 					$monitor = callURL('GET', $player['address'].':9020/monitor.txt', false, $user, $pass, false);
@@ -263,7 +295,11 @@ require_once("_config.php");
 									<td>'.$playerAPI[$i]['name'].'</td>
 									<td>Start: '.$start_date.'<br />End: '.$end_date.'</td>
 									<td>'.$active.'</td>
-									<td></td>
+									<td><form action="" method="POST" name="changeAssetState">
+<input type="text" name="asset" value="'.$playerAPI[$i]['asset_id'].'">
+<input type="text" name="id" value="'.$player['playerID'].'">
+<input type="submit" value="send" name="changeAssetState" />
+</form></td>
 								</tr>
 						';
 					}
@@ -528,26 +564,28 @@ require_once("_config.php");
 
 	<!-- settings -->
 	<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
 				<div class="modal-body">
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
-						<li class="nav-item">
-							<a class="nav-link active" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="true">Account</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Info</a>
-						</li>
-					</ul>
-					<div class="tab-content" id="myTabContent">
-						<div class="tab-pane fade show active mt-3" id="account" role="tabpanel" aria-labelledby="account-tab">
-							<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+					<div class="row">
+                  <div class="col-lg-3 col-md-4">
+                    <ul class="nav nav-pills nav-pills-primary nav-pills-icons flex-column">
+                      <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#account">
+                          Account
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#info">
+                          Info
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="account">
+                        <form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
 								<div class="form-group">
 									<label for="InputUsername">Change Username</label>
 									<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
@@ -566,17 +604,21 @@ require_once("_config.php");
 									<button type="submit" name="saveSettings" class="btn btn-primary">Update</button>
 								</div>
 							</form>
-						</div>
-						<div class="tab-pane fade mt-3" id="info" role="tabpanel" aria-labelledby="info-tab">
-							<h2>Screenly OSE Monitor</h2>
-							<p>Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'</p>
-							<p>Server IP: '.$_SERVER['SERVER_ADDR'].':9000</p>
-							<p>Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a></p>
-						</div>
-					</div>
-					
-
-				</div>
+                      </div>
+                      <div class="tab-pane" id="info">
+                       <h2>Screenly OSE Monitor</h2>
+						Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'<br />
+						Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
+						Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
+						Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
+						<br />
+						<br />
+						<button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
 			</div>
 		</div>
 	</div>
@@ -618,14 +660,6 @@ require_once("_config.php");
       </footer>
     </div>
   </div>
-  <!--   Core JS Files   -->
-  <script src="assets/js/core/jquery.min.js"></script>
-  <script src="assets/js/core/popper.min.js"></script>
-  <script src="assets/js/core/bootstrap.min.js"></script>
-  <script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!--  Notifications Plugin    -->
-  <script src="assets/js/plugins/bootstrap-notify.js"></script>
-  <script src="assets/js/black-dashboard.min.js?v=1.0.0"></script>
   <script>
 	$(function () {
 	  $('[data-tooltip="tooltip"]').tooltip();
@@ -634,6 +668,18 @@ require_once("_config.php");
 });
 	})
   </script>
+  <script>
+			setInterval("reloadPlayerImage();",5000);
+			function reloadPlayerImage(){
+				$('img.player').each(function(){
+					var url = $(this).attr('src').split('?')[0];
+					$(this).attr('src', url + '?' + Math.random());
+				})
+			}
+			$('.modal').on('shown.bs.modal', function(){
+				$(this).find('[autofocus]').focus();
+			});
+		</script>
 </body>
 
 </html>

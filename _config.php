@@ -36,7 +36,7 @@ ________________________________________
 	}
 
 	function sysinfo($status, $message, $refresh = false){
-		echo'<script>$.toaster({ priority : \''.$status.'\', title : \'System\', message : \''.$message.'\'});</script>';
+		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 8000,placement: {from: "top",align: "center"}});</script>';
 		if($refresh){
 			echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 		}
@@ -96,14 +96,20 @@ ________________________________________
 		else return 'error '.$code;
 	}
 
-	function pingAddress($ip){
-		$pingresult = exec("/bin/ping -c 1 $ip", $outcome, $status);
-		if (0 == $status) return true;
+	function checkAddress($ip){
+		$ch = curl_init($ip);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 200);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$data = curl_exec($ch);
+		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		if(($httpcode>=200 && $httpcode<300) || $httpcode==401) return true;
 		else return false;
 	}
 
 	function monitorScript($url){
-		if(pingAddress($url)) {
+		if(checkAddress($url)) {
 			$monitor = callURL('GET', $url.':9020/monitor.txt');
 			if($monitor == 1) return 'http://'.$url.':9020/screenshot.png';
 			else return 'assets/img/online.png';
