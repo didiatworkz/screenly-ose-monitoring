@@ -26,6 +26,7 @@ require_once("_config.php");
 	<link href="assets/css/fonts.css" rel="stylesheet" />
 	<link href="assets/css/nucleo-icons.css" rel="stylesheet" />
 	<link href="assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+	<link rel="stylesheet" href="assets/tools/DataTables/datatables.min.css"/>
 	<link href="assets/css/monitor.css" rel="stylesheet" />
 	<script src="assets/js/core/jquery.min.js"></script>
 	<script src="assets/js/core/popper.min.js"></script>
@@ -33,6 +34,7 @@ require_once("_config.php");
 	<script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
 	<script src="assets/js/plugins/bootstrap-notify.js"></script>
 	<script src="assets/js/black-dashboard.min.js?v=1.0.0"></script>
+	<script src="assets/tools/DataTables/datatables.min.js"></script>
 </head>
 
 <body>
@@ -104,28 +106,75 @@ require_once("_config.php");
 			else sysinfo('danger', 'Error! - Can \'t remove the Player');
 		}
 		
-		if(isset($_POST['changeAssetState'])){
+		if(isset($_POST['saveAsset'])){
 			$id 		= $_POST['id'];
-			$asset		= $_POST['asset'];
-			$value 		= $_POST['value'];
+			$url 		= $_POST['url'];
+			$start 		= date("Y-m-d", strtotime($_POST['start_date']));
+			$start_time	= $_POST['start_time'];
+			$end 		= date("Y-m-d", strtotime($_POST['end_date']));
+			$end_time	= $_POST['end_time'];
+			$duration 	= $_POST['duration'];
+			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+			$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+			$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+			$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+			$data 		= array();
+			$data['mimetype'] = 'webpage';
+			$data['is_enabled'] = 1;
+			$data['name'] = $url;
+			$data['start_date'] = $start.'T'.$start_time.':00.000Z';
+			$data['end_date'] = $end.'T'.$end_time.':00.000Z';
+			$data['duration'] = $duration;
+			$data['play_order'] = 0;
+			$data['nocache'] = 0;
+			$data['uri'] = $url;
+			$data['skip_asset_check'] = 1;
+
+			if(callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $user, $pass, false)){
+				sysinfo('success', 'Asset added successfully');
+			} else sysinfo('danger', 'Error! - Can \'t add the Asset');
+		}
+		
+		if(isset($_POST['updateAsset'])){
+			$id 		= $_POST['id'];
+			$asset 		= $_POST['asset'];
+			$name 		= $_POST['name'];
+			$start 		= date("Y-m-d", strtotime($_POST['start_date']));
+			$start_time	= $_POST['start_time'];
+			$end 		= date("Y-m-d", strtotime($_POST['end_date']));
+			$end_time	= $_POST['end_time'];
+			$duration 	= $_POST['duration'];
 			
 			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 			$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
 			$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 			$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-			$data = callURL('GET', $player['address'].'/api/v1.1/assets/'.$asset, false, $user, $pass, false);
-			if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
-				$data['is_enabled'] = "0";
-				$data['is_active'] = "0";
-			}
-			else {
-				$data['is_enabled'] = "1";
-				$data['is_active'] = "1";
-			}
-			callURL('PUT', $player['address'].'/api/v1.1/assets/'.$asset, $data, $user, $pass, false);
+			$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
+			
+			($data['name'] != $name) ? $data['name'] = $name : NULL;
+			($data['duration'] != $duration) ? $data['duration'] = $duration : NULL;
+			$data['start_date'] = $start.'T'.$start_time.':00.000Z';
+			$data['end_date'] = $end.'T'.$end_time.':00.000Z';
+			
+			if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+				sysinfo('success', 'Asset updated successfully');
+			} else sysinfo('danger', 'Error! - Can \'t update the Asset');
 
 		}
+		
+		if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
+			$id 		= $_GET['id'];
+			$asset 		= $_GET['asset'];
+			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+			$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+			$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+			$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+			
+			if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+				sysinfo('success', 'Asset deleted successfully');
+			} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 
+		}
 
 		echo'
 		
@@ -143,7 +192,7 @@ require_once("_config.php");
 			<div class="collapse navbar-collapse" id="navigation">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
-						<a href="javascript:void(0)" onclick="location.reload(true); return false;" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
+						<a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
 							<i class="tim-icons icon-refresh-02"></i>
 							<p class="d-lg-none">
 								Refresh
@@ -208,7 +257,7 @@ require_once("_config.php");
 				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 
 				if(checkAddress($player['address'])){
-					$playerAPI = callURL('GET', $player['address'].'/api/v1.1/assets', false, $user, $pass, false);
+					$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $user, $pass, false);
 					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
 					$monitor = callURL('GET', $player['address'].':9020/monitor.txt', false, $user, $pass, false);
 					
@@ -218,7 +267,7 @@ require_once("_config.php");
 					
 					$status		 	= 'online';
 					$statusColor 	= 'success';
-					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-block btn-sm btn-info"><i class="fas fa-angle-double-left"></i> Previous asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-block btn-sm btn-info">Next asset <i class="fas fa-angle-double-right"></i></a></div></div>';
+					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></a></div></div>';
 					$script 		= '
 					<tr>
 						<td>Monitor-Script:</td>
@@ -251,7 +300,7 @@ require_once("_config.php");
                 ';
 				if($status == 'online'){
 					echo '
-						<table class="table">
+						<table class="table" id="assets">
 							<thead class="text-primary">
 								<tr>
 									<th>Name</th>
@@ -263,43 +312,27 @@ require_once("_config.php");
 							<tbody>
                       '; 
 					for($i=0; $i < sizeof($playerAPI); $i++)  {
-						$start_date	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['start_date']));
-						$end_date 	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['end_date']));
-						$yes 		= '<span class="badge badge-success">  active  </span>';
-						$no 		= '<span class="badge badge-danger">  inactive  </span>';
+						$start	= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
+						$start_date	= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
+						$start_time	= date('H:m', strtotime($playerAPI[$i]['start_date']));
+						$end 	= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
+						$end_date 	= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
+						$end_time 	= date('H:m', strtotime($playerAPI[$i]['end_date']));
+						$yes 		= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
+						$no 		= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
 						
 						$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
 						
-						if($playerAPI[$i]['mimetype'] == 'webpage'){
-							$mimetypeIcon = '<i class="fas fa-globe fa-10x"></i>';
-							$mimetypeOutput = $playerAPI[$i]['uri'];
-						}
-						else if($playerAPI[$i]['mimetype'] == 'video'){
-							$mimetypeIcon = '<i class="fas fa-video fa-10x"></i>';
-							$mimetypeOutput = 'local';
-						}
-						else {
-							$mimetypeIcon = '<i class="fas fa-image fa-10x"></i>';
-							$mimetypeOutput = 'local';
-						}
 						echo '
-								<!--<tr>
-									<td>'.$playerAPI[$i]['name'].'</td>
-									<td>Start: '.$start_date.'<br />End: '.$end_date.'</td>
-									<td>'.$playerAPI[$i]['mimetype'].'</td>
-									<td>'.$mimetypeOutput.'</td>
-									<td>'.$active.'</td>
-									<td>'.$playerAPI[$i]['duration'].'</td>
-								</tr>-->
 								<tr>
 									<td>'.$playerAPI[$i]['name'].'</td>
-									<td>Start: '.$start_date.'<br />End: '.$end_date.'</td>
+									<td>Start: '.$start.'<br />End: '.$end.'</td>
 									<td>'.$active.'</td>
-									<td><form action="" method="POST" name="changeAssetState">
-<input type="text" name="asset" value="'.$playerAPI[$i]['asset_id'].'">
-<input type="text" name="id" value="'.$player['playerID'].'">
-<input type="submit" value="send" name="changeAssetState" />
-</form></td>
+									<td>
+										<button class="changeState btn btn-info btn-sm" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
+										<button class="options btn btn-warning btn-sm" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'" data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
+										<a href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+									</td>
 								</tr>
 						';
 					}
@@ -321,10 +354,8 @@ require_once("_config.php");
 									<div class="block block-two"></div>
 									<div class="block block-three"></div>
 									<div class="block block-four"></div>
-									<img class="img-fluid" src="'.monitorScript($player['address']).'" alt="player">
-									<p class="description">
-									  '.$playerName.'
-									</p>
+									<img class="img-fluid player" src="'.monitorScript($player['address']).'" alt="'.$playerName.'">
+									<h3 class="mt-3">'.$playerName.'</h3>
 								</div>
 							</p>
 							<div class="card-description">
@@ -347,11 +378,99 @@ require_once("_config.php");
 									</tbody>
 								</table>
 								<hr />
+								<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>
 								'.$navigation.'
+								<hr />
 								<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>
 								<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="btn btn-warning btn-block" title="edit"><i class="tim-icons icon-pencil"></i> Edit</a> 
 								<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="btn btn-danger btn-block" title="delete"><i class="tim-icons icon-trash-simple"></i> Delete</a>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- newAsset -->
+			<div class="modal fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="newAssetModalLabel">New Asset</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
+								<div class="form-group">
+									<label for="InputNewAssetUrl">URL</label>
+									<input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
+								</div>
+								<div class="form-group">
+									<label for="InputNewStart">Start</label>
+									<input name="start_date" type="date" class="form-control" id="InputNewStart" placeholder="Start-Date">
+									<input name="start_time" type="time" class="form-control" id="InputNewStartTime" placeholder="Start-Time" value="12:00">
+								</div>
+								<div class="form-group">
+									<label for="InputNewEnd">End</label>
+									<input name="end_date" type="date" class="form-control" id="InputNewEnd" placeholder="End-Date">
+									<input name="end_time" type="time" class="form-control" id="InputNewEndTime" placeholder="End-Time" value="12:00">
+								</div>
+								<div class="form-group">
+									<label for="InputNewDuration">Duration in sec.</label>
+									<input name="duration" type="number" class="form-control" id="InputNewDuration" value="30">
+								</div>
+								<div class="form-group text-right">
+									<input name="id" type="hidden" value="'.$player['playerID'].'">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="submit" name="saveAsset" class="btn btn-success">Send</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- editAsset -->
+			<div class="modal fade" id="editAsset" tabindex="-1" role="dialog" aria-labelledby="editAssetModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="editAssetModalLabel">Edit Asset</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form id="assetEditForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
+								<div class="form-group">
+									<label for="InputAssetName">Name</label>
+									<input name="name" type="text" class="form-control" id="InputAssetName" placeholder="Name" value="Name">
+								</div>
+								<div class="form-group">
+									<label for="InputAssetUrl">URL</label>
+									<input name="name" type="text" class="form-control" id="InputAssetUrl" disabled="disabled" value="url">
+								</div>
+								<div class="form-group">
+									<label for="InputAssetStart">Start</label>
+									<input name="start_date" type="date" class="form-control" id="InputAssetStart" placeholder="Start-Date" value="01.01.1970">
+									<input name="start_time" type="time" class="form-control" id="InputAssetStartTime" placeholder="Start-Time" value="12:00">
+								</div>
+								<div class="form-group">
+									<label for="InputAssetEnd">End</label>
+									<input name="end_date" type="date" class="form-control" id="InputAssetEnd" placeholder="End-Date" value="01.01.1970">
+									<input name="end_time" type="time" class="form-control" id="InputAssetEndTime" placeholder="End-Time" value="12:00">
+								</div>
+								<div class="form-group">
+									<label for="InputAssetDuration">Duration in sec.</label>
+									<input name="duration" type="number" class="form-control" id="InputAssetDuration" value="30">
+								</div>
+								<div class="form-group text-right">
+									<input name="asset" id="InputAssetId" type="hidden" value="1">
+									<input name="id" id="InputAssetId" type="hidden" value="'.$player['playerID'].'">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="submit" name="updateAsset" class="btn btn-warning">Update</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -368,7 +487,7 @@ require_once("_config.php");
 				$playerID 	= $_GET['playerID'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
 				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-
+				$action		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 				echo '
 			<div class="container mb-5">
 				<header class="jumbotron my-4 bg-warning">
@@ -378,7 +497,7 @@ require_once("_config.php");
 					<div class="col-lg-12"> 
 						<div class="card">
 							<div class="card-body">
-								<form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+								<form id="playerForm" action="'.$action.'" method="POST" data-toggle="validator">
 									<div class="form-group">
 										<label for="InputName">Player name</label>
 										<input name="name" type="text" class="form-control" id="InputName" value="'.$player['name'].'" placeholder="Player-Name">
@@ -664,22 +783,62 @@ require_once("_config.php");
 	$(function () {
 	  $('[data-tooltip="tooltip"]').tooltip();
 	  $("[data-tooltip=tooltip]").hover(function(){
-	$('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
-});
-	})
+		$('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
+	  });
+	});
+	$( ".changeState" ).on('click', function() {
+	  var asset = $(this).data("asset_id");
+	  var id = $(this).data("player_id");
+	  var changeAssetState = 1;
+	  $.ajax({
+		url: "_config.php",
+		type: "POST",
+		data: {asset: asset, id: id, changeAssetState: changeAssetState},
+		success: function(data){
+			$("span[data-asset_id='"+asset+"'").toggle(function() {
+				$(this).toggleClass("badge-success badge-danger").show();
+				if($(this).hasClass("badge-danger")) $(this).text("inactive");
+				else $(this).text("active");
+			});  
+			$.notify({icon: "tim-icons icon-bell-55",message: "Asset status changed"},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
+		},
+		error: function(data){
+			$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
+		}
+	  });
+	});
+	$('#assets').DataTable({
+		"order": [[ 2, "asc" ]],
+	});
+	var eA = $('#editAsset');
+    $('button.options').on('click', function(){
+        eA.find('#InputAssetName').val($(this).data("name"));
+        eA.find('#InputAssetUrl').val($(this).data("uri"));
+        eA.find('#InputAssetStart').val($(this).data("start-date"));
+        eA.find('#InputAssetStartTime').val($(this).data("start-time"));
+        eA.find('#InputAssetEnd').val($(this).data("end-date"));
+        eA.find('#InputAssetEndTime').val($(this).data("end-time"));
+        eA.find('#InputAssetDuration').val($(this).data("duration"));
+        eA.find('#InputAssetId').val($(this).data("asset"));
+        eA.modal('show');
+        return false;
+    });
+	
   </script>
   <script>
-			setInterval("reloadPlayerImage();",5000);
-			function reloadPlayerImage(){
-				$('img.player').each(function(){
-					var url = $(this).attr('src').split('?')[0];
-					$(this).attr('src', url + '?' + Math.random());
-				})
-			}
-			$('.modal').on('shown.bs.modal', function(){
-				$(this).find('[autofocus]').focus();
-			});
-		</script>
+    
+	function reloadPlayerImage(){
+		$('img.player').each(function(){
+			var url = $(this).attr('src').split('?')[0];
+			$(this).attr('src', url + '?' + Math.random());
+		})
+	}
+	setInterval("reloadPlayerImage();",5000);
+	$('.modal').on('shown.bs.modal', function(){
+		$(this).find('[autofocus]').focus();
+	});
+	
+  </script>
 </body>
 
 </html>

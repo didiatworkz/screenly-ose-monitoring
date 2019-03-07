@@ -14,3 +14,6 @@
 .modal-content .modal-header .modal-title {
 	color: #eeeeee;
 }
+select option{
+    color:grey !important;
+}

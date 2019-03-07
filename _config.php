@@ -26,6 +26,7 @@ ________________________________________
 	$loginPassword 	= $set['password'];
 	$loginUserID 	= $set['userID'];
 	$systemVersion  = file_get_contents('assets/tools/version.txt');
+	$apiVersion		= 'v1.2';
 
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];
@@ -36,7 +37,7 @@ ________________________________________
 	}
 
 	function sysinfo($status, $message, $refresh = false){
-		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 8000,placement: {from: "top",align: "center"}});</script>';
+		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
 		if($refresh){
 			echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 		}
@@ -127,5 +128,32 @@ ________________________________________
 		curl_close($ch);
 		return version_compare($v, $remoteVersion, '<');
 	}
+	
+	if(isset($_POST['changeAssetState'])){
+		$id 		= $_POST['id'];
+		$asset		= $_POST['asset'];
+		$value 		= $_POST['value'];
+		
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
+		if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
+			$data['is_enabled'] = "0";
+			$data['is_active'] = "0";
+		}
+		else {
+			$data['is_enabled'] = "1";
+			$data['is_active'] = "1";
+		}
+		if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+			header('HTTP/1.1 200 OK');
+			exit();
+		} else {
+			header('HTTP/1.1 404 Not Found');
+			exit();
+		}
 
+	}
 ?>
