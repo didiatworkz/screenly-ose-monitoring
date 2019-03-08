@@ -46,7 +46,7 @@
     dest: /home/pi/.monitor/dbase.db.bak
     owner: pi
     group: pi
-  when: update_version and version1_1)
+  when: update_version and version1_1
   
 # Update ose-monitoring
 - name: Install packages
