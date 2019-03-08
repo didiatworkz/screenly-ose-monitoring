@@ -15,19 +15,44 @@ ________________________________________
 ________________________________________
 -->
 <?php
-	if (!@file_exists('dbase.db')) die('Database does not exist! Please check if the file "dbase.db" exists.');
 	ini_set('display_errors',0);
 	error_reporting(E_ALL|E_STRICT);
 
-	$db 			= new SQLite3("dbase.db");
+	$dbase_key		= 'assets/tools/key.txt';
+	if(!@file_exists('dbase.db')) {
+		$dbase_file = file_get_contents($dbase_key);
+	} else $dbase_file = 'dbase.db';
+
+	$db 			= new SQLite3($dbase_file);
 	$set 			= $db->query("SELECT * FROM settings WHERE userID = 1");
 	$set 			= $set->fetchArray(SQLITE3_ASSOC);
 	$loginUsername 	= $set['username'];
 	$loginPassword 	= $set['password'];
 	$loginUserID 	= $set['userID'];
+	$securityToken	= $set['token'];
 	$systemVersion  = file_get_contents('assets/tools/version.txt');
 	$apiVersion		= 'v1.2';
-
+	
+	if(!@file_exists($dbase_key)){
+		$token = md5($systemVersion.time().$loginPassword).'.db';
+		$current = file_get_contents($dbase_key);
+		file_put_contents($dbase_key, $token);
+		rename("dbase.db",$token);
+	}
+	
+	if(@file_exists('assets/tools/version_old.txt')){
+		$oldVersion = file_get_contents('assets/tools/version_old.txt');
+		if($oldVersion <= '2.0'){			// Update Database to Version 2.0
+			$db->exec("ALTER TABLE `settings` ADD COLUMN `token` TEXT");
+			$db->exec("ALTER TABLE `settings` ADD COLUMN `end_date` INTEGER");
+			$db->exec("ALTER TABLE `settings` ADD COLUMN `duration` INTEGER");
+			$db->exec("UPDATE `settings` SET token='d1bf93299de1b68e6d382c893bf1215f' WHERE userID=1");
+			$db->exec("UPDATE `settings` SET end_date=1 WHERE userID=1");
+			$db->exec("UPDATE `settings` SET duration=30 WHERE userID=1");
+		}
+		unlink('assets/tools/version_old.txt');
+	}
+	
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];
 	} else $site = NULL;
@@ -38,9 +63,7 @@ ________________________________________
 
 	function sysinfo($status, $message, $refresh = false){
 		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
-		if($refresh){
-			echo'<meta http-equiv="refresh" content="2;URL=index.php">';
-		}
+		if($refresh) echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 	}
 
 	function callURL($method, $ip, $params = false, $user = false, $pass = false, $ssl = false){
@@ -93,7 +116,7 @@ ________________________________________
 		elseif ($code == 401) {
 			sysinfo('warning', 'Can not logged in to the player! - Wrong User or Password!');
 			return 'authentication error '.$code;
-		}	
+		}
 		else return 'error '.$code;
 	}
 
@@ -128,12 +151,11 @@ ________________________________________
 		curl_close($ch);
 		return version_compare($v, $remoteVersion, '<');
 	}
-	
+
 	if(isset($_POST['changeAssetState'])){
 		$id 		= $_POST['id'];
 		$asset		= $_POST['asset'];
 		$value 		= $_POST['value'];
-		
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
@@ -154,6 +176,5 @@ ________________________________________
 			header('HTTP/1.1 404 Not Found');
 			exit();
 		}
-
 	}
 ?>
