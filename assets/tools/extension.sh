@@ -70,10 +70,10 @@ server {
 
         listen 9020;
         server_name _;
-
-
+		
         root /var/www/html/screen/;
         index index.htm;
+		add_header 'Access-Control-Allow-Origin' '*';
 }
 EOF
 
@@ -97,12 +97,9 @@ EOF
 sudo cp -f /tmp/screenshot.conf /etc/nginx/sites-enabled/screenshot.conf
 sudo cp -f /tmp/index.htm /var/www/html/screen/index.htm
 
-if [ "$1" != "installer" ]
-then
-    header
-    echo "Screenly OSE Monitor extension successfuly installed"
-    echo "Device is being restarted in 5 seconds!"
-    sleep 5
-    sudo systemctl restart nginx
-fi
-exit
+
+header
+echo "Screenly OSE Monitor extension successfuly installed"
+echo "Device is being restarted in 5 seconds!"
+sleep 5
+sudo reboot now
