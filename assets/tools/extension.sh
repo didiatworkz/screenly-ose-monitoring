@@ -19,19 +19,6 @@ echo
 }
 
 header
-echo "The installation can may be take a while.."
-echo
-echo
-echo
-echo "Check packages"
-
-sleep 2
-dpkg -s imagemagick &> /dev/null
-if [ $? -ne 0 ]; then
-    sudo apt update && sudo apt-get install nginx x11-apps imagemagick -y
-fi
-
-header
 echo "Prepair Screenly Player..."
 sleep 2
 
@@ -40,6 +27,18 @@ then
 	echo 
 	echo "No ScreenlyOSE found!"
 	exit
+fi
+
+header
+echo "The installation can may be take a while.."
+echo
+echo
+echo
+echo "Check packages"
+sleep 2
+dpkg -s imagemagick &> /dev/null
+if [ $? -ne 0 ]; then
+    sudo apt update && sudo apt install nginx-light x11-apps imagemagick -y
 fi
 
 sudo mkdir -p /var/www/html/screen/
