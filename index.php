@@ -227,7 +227,7 @@ require_once("_config.php");
 							</p>
 						</a>
 					</li>
-          <li class="nav-item">
+					<li class="nav-item">
 						<a href="javascript:void(0)" data-toggle="modal" data-target="#extension" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Extension">
 							<i class="tim-icons icon-puzzle-10"></i>
 							<p class="d-lg-none">
@@ -291,9 +291,9 @@ require_once("_config.php");
 
 					if($monitor == 1){
 						$monitorInfo = '<span class="badge badge-success">  installed  </span>';
-					} else $monitorInfo = '<a href="index.php?action=extension&playerID='.$player['playerID'].'" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
+					} else $monitorInfo = '<a href="#" data-toggle="modal" data-target="#extension" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
 
-					$status		 	  = 'online';
+					$status		 	= 'online';
 					$statusColor 	= 'success';
 					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></a></div></div>';
 					$script 		= '
@@ -340,17 +340,17 @@ require_once("_config.php");
 							<tbody>
                       ';
 					for($i=0; $i < sizeof($playerAPI); $i++)  {
-						$start	= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
-						$start_date	= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
-						$start_time	= date('H:m', strtotime($playerAPI[$i]['start_date']));
-						$end 	= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
-						$end_date 	= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
-						$end_time 	= date('H:m', strtotime($playerAPI[$i]['end_date']));
-						$default_start = date("Y-m-d", time());
-						$default_end = date("Y-m-d", strtotime("+".$set['end_date']." week"));
+						$start			= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
+						$start_date		= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
+						$start_time		= date('H:m', strtotime($playerAPI[$i]['start_date']));
+						$end 			= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
+						$end_date 		= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
+						$end_time 		= date('H:m', strtotime($playerAPI[$i]['end_date']));
+						$default_start 	= date("Y-m-d", time());
+						$default_end 	= date("Y-m-d", strtotime("+".$set['end_date']." week"));
 
-						$yes 		= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
-						$no 		= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
+						$yes 			= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
+						$no 			= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
 
 						$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
 
@@ -693,29 +693,28 @@ require_once("_config.php");
 		</div>
 	</div>
 
-  <!-- extension -->
-  <div class="modal fade" id="extension" tabindex="-1" role="dialog" aria-labelledby="newExtensionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="newExtensionModalLabel">Extension</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <img src="assets/img/extension.png" class="img-fluid mx-auto d-block" alt="extension" style="height: 180px" />
-          The Screenly OSE Monitoring extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
-          You have the possibility to get a "live" image of the player\'s output.<br /><br />
-          To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-          <input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/extension.sh)">
-          After that the player restarts and the extension has been installed.<br />
-
-          <button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+	<!-- extension -->
+	<div class="modal fade" id="extension" tabindex="-1" role="dialog" aria-labelledby="newExtensionModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="newExtensionModalLabel">Extension</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<img src="assets/img/extension.png" class="img-fluid mx-auto d-block" alt="extension" style="height: 180px" />
+					The Screenly OSE Monitoring extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
+					You have the possibility to get a "live" image of the player\'s output.<br /><br />
+					To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
+					<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/extension.sh)">
+					After that the player restarts and the extension has been installed.<br />
+					<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- settings -->
 	<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
@@ -723,83 +722,83 @@ require_once("_config.php");
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="row">
-                  <div class="col-lg-3 col-md-4">
-                    <ul class="nav nav-pills nav-pills-primary nav-pills-icons flex-column">
-                      <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#setting">
-                          Settings
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#account">
-                          Account
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#info">
-                          Info
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-md-8">
-                    <div class="tab-content">
-                      <div class="tab-pane active" id="setting">
-                        <form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-							<div class="form-group">
-								<label for="InputSetDuration">Default Duration for Assets</label>
-								<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required>
+						<div class="col-lg-3 col-md-4">
+							<ul class="nav nav-pills nav-pills-primary nav-pills-icons flex-column">
+								<li class="nav-item">
+									<a class="nav-link active" data-toggle="tab" href="#setting">
+										Settings
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#account">
+										Account
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#info">
+										Info
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-8">
+							<div class="tab-content">
+								<div class="tab-pane active" id="setting">
+									<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+										<div class="form-group">
+											<label for="InputSetDuration">Default Duration for Assets</label>
+											<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required>
+										</div>
+										<div class="form-group">
+											<label for="InputSetEndDate">Delay of weeks for the end date</label>
+											<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required>
+										</div>
+										<div class="form-group">
+											<label for="InputSetToken">Monitoring URL</label>
+											<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=yes&key='.$set['token'].'">
+										</div>
+										<div class="form-group text-right">
+											<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+											<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate Key</a>
+											<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane" id="account">
+									<form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+										<div class="form-group">
+											<label for="InputUsername">Change Username</label>
+											<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
+											<div class="help-block with-errors"></div>
+										</div>
+										<div class="form-group">
+											<label for="InputPassword1">Change Password</label>
+											<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required>
+										</div>
+										<div class="form-group">
+											<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required>
+											<div class="help-block with-errors"></div>
+										</div>
+										<div class="form-group text-right">
+											<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+											<button type="submit" name="saveAccount" class="btn btn-sm btn-primary">Update</button>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane" id="info">
+									<h2>Screenly OSE Monitor</h2>
+									Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'<br />
+									Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
+									Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
+									Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
+									Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
+									<br />
+									<br />
+									<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
+								</div>
 							</div>
-							<div class="form-group">
-								<label for="InputSetEndDate">Delay of weeks for the end date</label>
-								<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required>
-							</div>
-							<div class="form-group">
-								<label for="InputSetToken">Monitoring URL</label>
-								<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=yes&key='.$set['token'].'">
-							</div>
-							<div class="form-group text-right">
-								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-								<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate Key</a>
-								<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
-							</div>
-						  </form>
-                      </div>
-                      <div class="tab-pane" id="account">
-                        <form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-                          <div class="form-group">
-                            <label for="InputUsername">Change Username</label>
-                            <input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
-                            <div class="help-block with-errors"></div>
-                          </div>
-                          <div class="form-group">
-                            <label for="InputPassword1">Change Password</label>
-                            <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required>
-                          </div>
-                          <div class="form-group">
-                            <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required>
-                            <div class="help-block with-errors"></div>
-                          </div>
-                          <div class="form-group text-right">
-                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" name="saveAccount" class="btn btn-sm btn-primary">Update</button>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="tab-pane" id="info">
-                       <h2>Screenly OSE Monitor</h2>
-						Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'<br />
-						Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
-						Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
-            Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
-						Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
-						<br />
-						<br />
-						<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+						</div>
+					</div>
                 </div>
 			</div>
 		</div>
@@ -831,7 +830,7 @@ require_once("_config.php");
       ';
       while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
         if($player['name'] == ''){
-          $name	 	= 'No Player Name';
+          $name	 		= 'No Player Name';
           $imageTag 	= 'No Player Name '.$player['playerID'];
         }
         else {
@@ -839,17 +838,17 @@ require_once("_config.php");
           $imageTag 	= $player['name'];
         }
         echo'
-      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="d-inline">'.$name.'</h4>
-            <h5>'.$player['address'].'</h5>
-          </div>
-          <div class="card-body card-monitor">
-            <img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
-          </div>
-        </div>
-      </div>
+		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="d-inline">'.$name.'</h4>
+					<h5>'.$player['address'].'</h5>
+				</div>
+				<div class="card-body card-monitor">
+					<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
+				</div>
+			</div>
+		</div>
         ';
       }
       echo '
