@@ -100,7 +100,7 @@
     owner: www-data
     group: www-data
     mode: 0644
-  when: update_version and not version_newer
+  when: update_version
     
 - name: Version update
   command: ose-monitoring --init
