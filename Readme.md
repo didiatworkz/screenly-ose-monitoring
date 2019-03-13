@@ -1,28 +1,46 @@
-# Screenly OSE Monitor
+# Screenly OSE Monitoring
 
-![Screenshot show](http://www.atworkz.de/_git/monitor/head.png)
+![Manage Monitoring](http://www.atworkz.de/_git/monitor/manage2.png)
 
 - [Intro](#what-is-this)
+- [Features](#Features)
 - [Requirements](#requirements)
-- [Install instructions](#installation)
-- [Screenshots](#screenshots)
+- [Installation](#installation)
+- [Login](#login)
+
 
 ## What is this?
-Screenly OSE Monitor is a web tool that allows you to manage multiple Screenly OSE players in one place.
-In addition to the actual administration there is also an extension that allows you to display a "live" image of the player. So you can see at a glance which players show what and which are maybe even offline.
-The site is also fully responsive, so that you can work with a smartphone.
+Screenly OSE Monitoring is a web-based application that is installed on a Screenly OSE Player at the same time. With this tool you can manage multiple OSE players with one interface.
 
-### Functions
-+ Manage Players
+In addition to the visual status of the player, you can also manage the assets of a player. Here it is possible to activate or deactivate them, add new ones, edit them or simply delete them.
+
+By installing an extension it is also possible to display a "live image" of the player's output. This will then be displayed in the overview, too.
+
+![Screenshot show](http://www.atworkz.de/_git/monitor/manage.png)
+
+## Features
+
+<img align="right" src="http://www.atworkz.de/_git/monitor/monitoring.png">
+
++ Simple administration
++ Simple overview of all players
++ Quick overview if the player is online or not
++ Extension for the output display of the player
 + Controll Assets
-+ See display content
-+ more comming soon...
++ [NEW] Managing Assets
++ [NEW] Add Assets 
++ [NEW] Edit Assets
++ [NEW] New Design
++ [NEW] Monitoring Token     
 
+---
 
 ## Requirements
-+ RaspberryPi 2 or 3
++ RaspberryPi 3B+
++ Screenly OSE
 + PHP 7.0
 + SQLite 3.x
++ Ansible
 
 ## Installation
 Very simple installation:
@@ -30,14 +48,21 @@ Very simple installation:
 1. Connect to the player via SSH or terminal (ctrl+alt+F1)
 2. Copy this line and execute it
 ```bash
-curl -sL http://screenly-monitor.atworkz.de | sudo bash
+bash <(curl -sL http://screenly-monitor.atworkz.de)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't be afraid)
 4. Done
 
+## Login
+After the installation is the default login:
 
-Screenshots
----------------------------------------
-![Screenshot Settings](http://www.atworkz.de/_git/monitor/layers.png)
+http://[screenly-ip-address]:9000
 
-![Screenshot show](http://www.atworkz.de/_git/monitor/sample1.jpg)
+Username: demo
+
+Password: demo
+
+
+![Monitoring Overview](http://www.atworkz.de/_git/monitor/screens.png)
+
+
