@@ -141,15 +141,14 @@ ________________________________________
 		else return 'assets/img/offline.png';
 	}
 
-	function update($v){
-		$github = 'http://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $github);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
-		$remoteVersion = curl_exec($ch);
-		curl_close($ch);
-		return version_compare($v, $remoteVersion, '<');
+	function update(){
+		if($set['updatecheck']<$now && (date("d",$set['updatecheck'])!=date("d"))){
+			shell_exec('ose-monitoring --scriptupdate')
+			if(@file_exists('update.txt')){
+				return true;
+			} else return false;
+			$db->exec("UPDATE settings SET updatetime='".time()."'");
+		}
 	}
 
 	if(isset($_POST['changeAssetState'])){

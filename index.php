@@ -787,7 +787,7 @@ require_once("_config.php");
 								</div>
 								<div class="tab-pane" id="info">
 									<h2>Screenly OSE Monitor</h2>
-									Version '.$systemVersion.' '.(update($systemVersion) == 1 ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'<br />
+									Version '.$systemVersion.' '.(update() == true ? ' - <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank"><span class="badge badge-warning">Update available</span></a>' : '').'<br />
 									Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
 									Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
 									Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
