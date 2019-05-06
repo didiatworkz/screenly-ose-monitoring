@@ -83,8 +83,18 @@ while [[ $# -gt 0 ]] ; do
 			  bash <(curl -sL http://screenly-monitor.atworkz.de)
 			fi
             ;;
+		--scriptupdate)            
+			if [ "$LOCAL" == "$ONLINE" ]
+			then
+		      exit 0
+			else
+		      echo true > /var/www/html/monitor/update.txt
+			  exit 0
+			fi
+			echo Done!
+            ;;
 		*)            
-			echo "Invalid Option! \nPlease enter --help for more commands"
+			echo "Invalid Option! - Please enter --help for more commands"
             ;;
     esac
     shift
