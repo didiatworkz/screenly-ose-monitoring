@@ -2,7 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitor 
 #
-# March 2019
+# May 2019
 
 header() {
 clear
