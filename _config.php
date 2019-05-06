@@ -33,6 +33,7 @@ ________________________________________
 	$loginPassword 	= $set['password'];
 	$loginUserID 	= $set['userID'];
 	$securityToken	= $set['token'];
+	$updatecheck	= $set['updatecheck'];
 	$systemVersion  = file_get_contents('assets/tools/version.txt');
 	$apiVersion		= 'v1.2';
 	
@@ -42,7 +43,6 @@ ________________________________________
 		file_put_contents($dbase_key, $token);
 		rename("dbase.db",$token);
 	}
-	
 	if(@file_exists('assets/tools/version_old.txt')){
 		$oldVersion = file_get_contents('assets/tools/version_old.txt');
 		if($oldVersion <= '2.0'){			// Update Database to Version 2.0
@@ -147,16 +147,23 @@ ________________________________________
 		else return 'assets/img/offline.png';
 	}
 
-	function update(){
-		$now=time();
-		if($set['updatecheck']<$now && (date("d",$set['updatecheck'])!=date("d"))){
-			shell_exec('ose-monitoring --scriptupdate');
-			if(@file_exists('update.txt')){
-				return true;
-			} else return false;
-			$db->exec("UPDATE settings SET updatetime='".time()."'");
-		}
+
+	if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
+		shell_exec('ose-monitoring --scriptupdate');
+		$db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE userID=1");
 	}
+	
+	if(@file_exists('update.txt')) {
+		$update = '
+					<li class="nav-item">
+						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link">
+							<i class="tim-icons icon-cloud-download-93"></i> Update available
+						</a>
+					</li>';
+		
+	}
+	else $update = '';
+	
 
 	if(isset($_POST['changeAssetState'])){
 		$id 		= $_POST['id'];

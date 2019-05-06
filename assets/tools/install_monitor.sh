@@ -60,7 +60,6 @@ cd  /tmp/monitor/assets/tools/ansible/
 ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
-rm -rf /var/www/html/monitor/update.txt
 sleep 2
 header
 echo -e "\e[94mInstallation finished!"
