@@ -142,8 +142,9 @@ ________________________________________
 	}
 
 	function update(){
+		$now=time();
 		if($set['updatecheck']<$now && (date("d",$set['updatecheck'])!=date("d"))){
-			shell_exec('ose-monitoring --scriptupdate')
+			shell_exec('ose-monitoring --scriptupdate');
 			if(@file_exists('update.txt')){
 				return true;
 			} else return false;
