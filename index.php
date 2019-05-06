@@ -195,6 +195,15 @@ require_once("_config.php");
 				sysinfo('success', 'Asset deleted successfully');
 			} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 		}
+		
+		if(update() == true){
+			$update = '
+					<li class="nav-item">
+						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link">
+							<i class="tim-icons icon-cloud-download-93"></i> Update available
+						</a>
+					</li>';
+		} else $update = '';
 
 		echo'
 
@@ -211,6 +220,7 @@ require_once("_config.php");
 			</button>
 			<div class="collapse navbar-collapse" id="navigation">
 				<ul class="navbar-nav ml-auto">
+					'.$update.'
 					<li class="nav-item">
 						<a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
 							<i class="tim-icons icon-refresh-02"></i>
@@ -257,6 +267,7 @@ require_once("_config.php");
         </div>
     </nav>
     <!-- End Navbar -->
+	
 	<div class="content">
 			';
 		if(isset($_GET['action']) && $_GET['action'] == 'view'){
