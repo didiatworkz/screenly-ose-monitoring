@@ -38,7 +38,7 @@ By installing an extension it is also possible to display a "live image" of the 
 ## Requirements
 + RaspberryPi 3B+
 + Screenly OSE
-+ PHP 7.0
++ PHP 7.x
 + SQLite 3.x
 + Ansible
 
