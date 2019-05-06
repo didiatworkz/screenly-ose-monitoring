@@ -19,9 +19,12 @@ ________________________________________
 	error_reporting(E_ALL|E_STRICT);
 
 	$dbase_key		= 'assets/tools/key.txt';
-	if(!@file_exists('dbase.db')) {
+	if(!@file_exists($dbase_key)) {
+		$dbase_file = 'dbase.db';
+	} else {
 		$dbase_file = file_get_contents($dbase_key);
-	} else $dbase_file = 'dbase.db';
+		unlink('dbase.db');
+	}
 
 	$db 			= new SQLite3($dbase_file);
 	$set 			= $db->query("SELECT * FROM settings WHERE userID = 1");
@@ -46,11 +49,14 @@ ________________________________________
 			$db->exec("ALTER TABLE `settings` ADD COLUMN `token` TEXT");
 			$db->exec("ALTER TABLE `settings` ADD COLUMN `end_date` INTEGER");
 			$db->exec("ALTER TABLE `settings` ADD COLUMN `duration` INTEGER");
+			$db->exec("ALTER TABLE `settings` ADD COLUMN `updatecheck` INTEGER");
 			$db->exec("UPDATE `settings` SET token='d1bf93299de1b68e6d382c893bf1215f' WHERE userID=1");
 			$db->exec("UPDATE `settings` SET end_date=1 WHERE userID=1");
 			$db->exec("UPDATE `settings` SET duration=30 WHERE userID=1");
+			$db->exec("UPDATE `settings` SET updatecheck=0 WHERE userID=1");
 		}
 		unlink('assets/tools/version_old.txt');
+		unlink('update.txt');
 	}
 	
 	if(isset($_GET['site'])){
