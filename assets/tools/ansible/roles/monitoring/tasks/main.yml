@@ -51,10 +51,11 @@
 # Update ose-monitoring
 - name: Install packages
   apt:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: latest
     update_cache: yes
-  with_items:
+  vars:
+    packages:
     - nginx-light
     - php-fpm 
     - php7.0-sqlite3
