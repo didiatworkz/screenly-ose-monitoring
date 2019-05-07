@@ -941,7 +941,14 @@ require_once("_config.php");
         eA.modal('show');
         return false;
     });
-
+	$(function(){ 
+     var navMain = $(".navbar-collapse"); // avoid dependency on #id
+     // "a:not([data-toggle])" - to avoid issues caused
+     // when you have dropdown inside navbar
+     navMain.on("click", "[data-toggle]", null, function () {
+         navMain.collapse('hide');
+     });
+ });
   </script>
   <script>
 
