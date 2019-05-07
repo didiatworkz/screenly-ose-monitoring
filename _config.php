@@ -18,11 +18,12 @@ ________________________________________
 	ini_set('display_errors',0);
 	error_reporting(E_ALL|E_STRICT);
 
-	$dbase_key		= 'assets/tools/key.txt';
+	$dbase_key		= 'assets/tools/key.php';
 	if(!@file_exists($dbase_key)) {
 		$dbase_file = 'dbase.db';
 	} else {
-		$dbase_file = file_get_contents($dbase_key);
+		include_once($dbase_key);
+		$dbase_file = $db_cryproKey;
 		unlink('dbase.db');
 	}
 
@@ -38,7 +39,8 @@ ________________________________________
 	$apiVersion		= 'v1.2';
 	
 	if(!@file_exists($dbase_key)){
-		$token = md5($systemVersion.time().$loginPassword).'.db';
+		$token = '<?php
+		$db_cryproKey = "'.md5($systemVersion.time().$loginPassword).'.db";';
 		$current = file_get_contents($dbase_key);
 		file_put_contents($dbase_key, $token);
 		rename("dbase.db",$token);
