@@ -39,10 +39,11 @@ ________________________________________
 	$apiVersion		= 'v1.2';
 	
 	if(!@file_exists($dbase_key)){
-		$token = '<?php
-		$db_cryproKey = "'.md5($systemVersion.time().$loginPassword).'.db";';
+		$token = md5($systemVersion.time().$loginPassword);
+		$keyFile = '<?php
+		$db_cryproKey = "'.$token.'.db";';
 		$current = file_get_contents($dbase_key);
-		file_put_contents($dbase_key, $token);
+		file_put_contents($dbase_key, $keyFile);
 		rename("dbase.db",$token);
 	}
 	if(@file_exists('assets/tools/version_old.txt')){
