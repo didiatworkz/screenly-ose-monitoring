@@ -4,7 +4,7 @@ LOCAL=$(cat /home/pi/.monitor/latest_monitor)
 ONLINE=$(cd /var/www/html/monitor && git rev-parse master@{upstream})
 ACTION='\033[1;90m'
 FOUND='\033[1;92m'
-NOCOLOR='\033[0m' # No Color
+NOCOLOR='\033[0m'
 ERROR='\033[0;31m'
 
 while [[ $# -gt 0 ]] ; do
@@ -19,6 +19,7 @@ while [[ $# -gt 0 ]] ; do
 			echo "Options: "
 			echo "  --version | Show current installed Version"
 			echo "  --restart | Restart the nginx Server"
+			echo "  --check   | Check all of all required files"
 			echo "  --update  | Show current installed Version"
             ;;
         -v|--version)            
@@ -60,9 +61,9 @@ while [[ $# -gt 0 ]] ; do
 		    echo -e =======================${NOCOLOR}
 		    if [ ! -e /var/www/html/monitor/dbase.db ]
 		    then
-		      echo -e ${ERROR}dbase.db not exists ${NOCOLOR}
+		      echo -e ${ERROR}dbase.db exists ${NOCOLOR}
 		    else
-			  echo -e ${FOUND}dbase.db exists ${NOCOLOR}
+			  echo -e ${FOUND}dbase.db not exists ${NOCOLOR}
 		    fi
             ;;
         --update)            
