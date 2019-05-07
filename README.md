@@ -7,14 +7,15 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Login](#login)
+- [Usage](#usage)
 
 
 ## What is this?
-Screenly OSE Monitoring is a web-based application that is installed on a Screenly OSE Player at the same time. With this tool you can manage multiple OSE players with one interface.
+Screenly OSE Monitoring is a web-based application that is installed on a Screenly OSE Player at the same time. With this tool you can manage multiple OSE players in one interface.
 
-In addition to the visual status of the player, you can also manage the assets of a player. Here it is possible to activate or deactivate them, add new ones, edit them or simply delete them.
+In addition to the visual status, you can also manage the assets of a player. Here it is possible to activate or deactivate assets, add new ones, edit them or simply delete them.
 
-By installing an extension it is also possible to display a "live image" of the player's output. This will then be displayed in the overview, too.
+By installing an extra extension on each player, it is also possible to display a "live image" of the player's output. This will then be displayed in the overview, too.
 
 ![Screenshot show](http://www.atworkz.de/_git/monitor/manage.png)
 
@@ -26,12 +27,14 @@ By installing an extension it is also possible to display a "live image" of the 
 + Simple overview of all players
 + Quick overview if the player is online or not
 + Extension for the output display of the player
-+ Controll Assets
 + [NEW] Managing Assets
 + [NEW] Add Assets 
 + [NEW] Edit Assets
 + [NEW] New Design
-+ [NEW] Monitoring Token     
++ [NEW] Monitoring Token
++ [NEW] Bash Tool
++ [UPDATE] Performance
++ [UPDATE] Controll Assets
 
 ---
 
@@ -65,4 +68,9 @@ Password: demo
 
 ![Monitoring Overview](http://www.atworkz.de/_git/monitor/screens.png)
 
-
+## Bash Controll
+Since version 2.0 there is a small possibility to update or check ose-monitoring via bash.
+For more info check:
+```bash
+ose-monitoring --help
+```
