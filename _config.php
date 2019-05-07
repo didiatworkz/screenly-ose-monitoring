@@ -41,7 +41,7 @@ ________________________________________
 	if(!@file_exists($dbase_key)){
 		$token = md5($systemVersion.time().$loginPassword).'.db';
 		$keyFile = '<?php
-		$db_cryproKey = "'.$token'";';
+		$db_cryproKey = "'.$token.'";';
 		$current = file_get_contents($dbase_key);
 		file_put_contents($dbase_key, $keyFile);
 		rename("dbase.db",$token);
