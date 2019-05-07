@@ -263,19 +263,6 @@ require_once("_config.php");
 			';
 		if(isset($_GET['action']) && $_GET['action'] == 'view'){
 			if(isset($_GET['playerID'])){
-				if(isset($_GET['set']) && $_GET['set'] == 'order'){
-					$playerID 	= $_GET['playerID'];
-					$orderD 	= $_GET['orderD'];
-					$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-					$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-
-					$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-					$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-					$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
-					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-					if($result == 'Asset switched') sysinfo('success', 'Asset switchted!');
-					else sysinfo('danger', 'Switch not possible!');
-				}
 				$playerID 	= $_GET['playerID'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
 				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
@@ -297,7 +284,9 @@ require_once("_config.php");
 
 					$status		 	= 'online';
 					$statusColor 	= 'success';
-					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></a></div></div>';
+					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
+					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
+					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
 					$script 		= '
 					<tr>
 						<td>Monitor-Script:</td>
@@ -317,6 +306,8 @@ require_once("_config.php");
 					$navigation 	= '';
 					$script 		= '';
 					$assets 		= '';
+					$newAsset		= '';
+					$management		= '';
 				}
 
 				echo '
@@ -417,10 +408,10 @@ require_once("_config.php");
 									</tbody>
 								</table>
 								<hr />
-								<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>
+								'.$newAsset.'
 								'.$navigation.'
-								<hr />
-								<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>
+								'.$management.'
+								<hr class="mt-3" />
 								<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="btn btn-warning btn-block" title="edit"><i class="tim-icons icon-pencil"></i> Edit</a>
 								<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="btn btn-danger btn-block" title="delete"><i class="tim-icons icon-trash-simple"></i> Delete</a>
 							</div>
@@ -925,6 +916,22 @@ require_once("_config.php");
 		}
 	  });
 	});
+	$( ".changeAsset" ).on('click', function() {
+	  var order = $(this).data("order");
+	  var id = $(this).data("playerid");
+	  var changeAsset = 1;
+	  $.ajax({
+		url: "_config.php",
+		type: "POST",
+		data: {order: order, playerID: id, changeAsset: changeAsset},
+		success: function(data){
+			$.notify({icon: "tim-icons icon-bell-55",message: "Asset status changed"},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
+		},
+		error: function(data){
+			$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
+		}
+	  });
+	});
 	$('#assets').DataTable({
 		"order": [[ 2, "asc" ]],
 	});
@@ -951,7 +958,6 @@ require_once("_config.php");
  });
   </script>
   <script>
-
 	function reloadPlayerImage(){
 		$('img.player').each(function(){
 			var url = $(this).attr('src').split('?')[0];

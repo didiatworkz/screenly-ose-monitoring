@@ -192,4 +192,17 @@ ________________________________________
 			exit();
 		}
 	}
+	
+	if(isset($_POST['changeAsset'])){
+		$playerID 	= $_POST['playerID'];
+		$orderD 	= $_POST['order'];
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
+		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
+		if($result == 'Asset switched') header('HTTP/1.1 200 OK');
+		else header('HTTP/1.1 404 Not Found');
+	}
 ?>
