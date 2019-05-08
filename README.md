@@ -7,7 +7,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Login](#login)
-- [Usage](#usage)
+- [Bash Controll](#bash-controll)
 
 
 ## What is this?
