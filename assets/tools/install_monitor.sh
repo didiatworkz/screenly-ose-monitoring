@@ -15,9 +15,10 @@ cat << "EOF"
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/                www.atworkz.de
 
+
+        Screenly OSE Monitoring
 EOF
 echo
-echo "         Screenly OSE Monitoring"
 echo
 echo
 }
