@@ -17,6 +17,7 @@ cat << "EOF"
 
         Screenly OSE Monitoring
 EOF
+
 echo
 echo
 echo
