@@ -4,6 +4,7 @@
 
 - [Intro](#what-is-this)
 - [Features](#Features)
+- [Bugs](#Bugs)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Login](#login)
@@ -11,11 +12,12 @@
 
 
 ## What is this?
-Screenly OSE Monitoring is a web-based application that is installed on a Screenly OSE Player at the same time. With this tool you can manage multiple OSE players in one interface.
+Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player. With this tool, you can manage multiple OSE players via one interface.
 
-In addition to the visual status, you can also manage the assets of a player. Here it is possible to activate or deactivate assets, add new ones, edit them or simply delete them.
+In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them.
 
-By installing an extra extension on each player, it is also possible to display a "live image" of the player's output. This will then be displayed in the overview, too.
+By installing an add-on on each player, it is also possible to display a "live feed" of the player's output. This will then be displayed in the overview, as well.
+
 
 ![Screenshot show](http://www.atworkz.de/_git/monitor/manage.png)
 
@@ -23,10 +25,10 @@ By installing an extra extension on each player, it is also possible to display 
 
 <img align="right" src="http://www.atworkz.de/_git/monitor/monitoring.png">
 
-+ Simple administration
++ Easy administration
 + Simple overview of all players
 + Quick overview if the player is online or not
-+ Extension for the output display of the player
++ Add-on for displaying the player’s output remotely
 + [NEW] Managing Assets
 + [NEW] Add Assets 
 + [NEW] Edit Assets
@@ -34,7 +36,10 @@ By installing an extra extension on each player, it is also possible to display 
 + [NEW] Monitoring Token
 + [NEW] Bash Tool
 + [UPDATE] Performance
-+ [UPDATE] Controll Assets
++ [UPDATE] Control Assets
+
+## Bugs
++ live feed from videos are not displayed
 
 ---
 
@@ -53,7 +58,7 @@ Very simple installation:
 ```bash
 bash <(curl -sL http://screenly-monitor.atworkz.de)
 ```
-3. Answer the questions and installation will be start (This may take a while - Don't be afraid)
+3. Answer the questions and installation will be start (This may take a while - Don't worry)
 4. Done
 
 ## Login
