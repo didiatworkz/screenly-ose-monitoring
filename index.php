@@ -71,11 +71,12 @@ require_once("_config.php");
 		}
 
     if(isset($_POST['saveSettings'])){
+			$refreshscreen = $_POST['refreshscreen'];
 			$duration = $_POST['duration'];
 	    $end_date = $_POST['end_date'];
 
 			if($duration AND $end_date){
-				$db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."' WHERE userID='".$loginUserID."'");
+				$db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."', refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'");
 				sysinfo('success', 'Settings saved!', 0);
 			}
 			else sysinfo('danger', 'Error!');
@@ -195,7 +196,7 @@ require_once("_config.php");
 				sysinfo('success', 'Asset deleted successfully');
 			} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 		}
-		
+
 		echo'
 
     <!-- Navbar -->
@@ -258,7 +259,7 @@ require_once("_config.php");
         </div>
     </nav>
     <!-- End Navbar -->
-	
+
 	<div class="content">
 			';
 		if(isset($_GET['action']) && $_GET['action'] == 'view'){
@@ -603,7 +604,7 @@ require_once("_config.php");
 							<h5 class="card-category">'.$player['address'].'</h5>
 						</div>
 						<div class="card-body ">
-							<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'"></a>
+							<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'" onerror="reloadPlayerImage();"></a>
 						</div>
 					</div>
 				</div>
@@ -738,6 +739,10 @@ require_once("_config.php");
 							<div class="tab-content">
 								<div class="tab-pane active" id="setting">
 									<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+										<div class="form-group">
+											<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
+											<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$set['refreshscreen'].'" required>
+										</div>
 										<div class="form-group">
 											<label for="InputSetDuration">Default Duration for Assets</label>
 											<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required>
@@ -948,7 +953,7 @@ require_once("_config.php");
         eA.modal('show');
         return false;
     });
-	$(function(){ 
+	$(function(){
      var navMain = $(".navbar-collapse"); // avoid dependency on #id
      // "a:not([data-toggle])" - to avoid issues caused
      // when you have dropdown inside navbar
@@ -964,7 +969,7 @@ require_once("_config.php");
 			$(this).attr('src', url + '?' + Math.random());
 		})
 	}
-	setInterval("reloadPlayerImage();",5000);
+	setInterval("reloadPlayerImage();",<?php echo $set['refreshscreen']; ?>1000);
 	$('.modal').on('shown.bs.modal', function(){
 		$(this).find('[autofocus]').focus();
 	});

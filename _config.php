@@ -37,7 +37,7 @@ ________________________________________
 	$updatecheck	= $set['updatecheck'];
 	$systemVersion  = file_get_contents('assets/tools/version.txt');
 	$apiVersion		= 'v1.2';
-	
+
 	if(!@file_exists($dbase_key)){
 		$token = md5($systemVersion.time().$loginPassword).'.db';
 		$keyFile = '<?php
@@ -58,12 +58,14 @@ ________________________________________
 		}
 		if($oldVersion <= '2.1'){			// Update Database to Version 2.1
 			$db->exec("ALTER TABLE `settings` ADD COLUMN `updatecheck` INTEGER");
+			$db->exec("ALTER TABLE `settings` ADD COLUMN `refreshscreen` INTEGER");
 			$db->exec("UPDATE `settings` SET updatecheck=0 WHERE userID=1");
+			$db->exec("UPDATE `settings` SET refreshscreen=5 WHERE userID=1");
 		}
 		unlink('assets/tools/version_old.txt');
 		unlink('update.txt');
 	}
-	
+
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];
 	} else $site = NULL;
@@ -146,7 +148,7 @@ ________________________________________
 	function monitorScript($url){
 		if(checkAddress($url)) {
 			$monitor = callURL('GET', $url.':9020/monitor.txt');
-			if($monitor == 1) return 'http://'.$url.':9020/screenshot.png';
+			if($monitor == 1) return 'http://'.$url.':9020/screen/screenshot.png';
 			else return 'assets/img/online.png';
 		}
 		else return 'assets/img/offline.png';
@@ -157,7 +159,7 @@ ________________________________________
 		shell_exec('ose-monitoring --scriptupdate');
 		$db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE userID=1");
 	}
-	
+
 	if(@file_exists('update.txt')) {
 		$update = '
 					<li class="nav-item">
@@ -165,10 +167,10 @@ ________________________________________
 							<i class="tim-icons icon-cloud-download-93"></i> Update available
 						</a>
 					</li>';
-		
+
 	}
 	else $update = '';
-	
+
 
 	if(isset($_POST['changeAssetState'])){
 		$id 		= $_POST['id'];
@@ -195,7 +197,7 @@ ________________________________________
 			exit();
 		}
 	}
-	
+
 	if(isset($_POST['changeAsset'])){
 		$playerID 	= $_POST['playerID'];
 		$orderD 	= $_POST['order'];
