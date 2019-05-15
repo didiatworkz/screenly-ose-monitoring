@@ -969,7 +969,7 @@ require_once("_config.php");
 			$(this).attr('src', url + '?' + Math.random());
 		})
 	}
-	setInterval("reloadPlayerImage();",<?php echo $set['refreshscreen']; ?>1000);
+	setInterval("reloadPlayerImage();",<?php echo $set['refreshscreen']; ?>000);
 	$('.modal').on('shown.bs.modal', function(){
 		$(this).find('[autofocus]').focus();
 	});
