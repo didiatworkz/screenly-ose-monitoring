@@ -35,8 +35,10 @@ By installing an add-on on each player, it is also possible to display a "live f
 + [NEW] New Design
 + [NEW] Monitoring Token
 + [NEW] Bash Tool
++ [NEW] Screenshots are stored in the RAM
 + [UPDATE] Performance
 + [UPDATE] Control Assets
++ [UPDATE] screenshot add-on
 
 ## Bugs
 + live feed from videos are not displayed
