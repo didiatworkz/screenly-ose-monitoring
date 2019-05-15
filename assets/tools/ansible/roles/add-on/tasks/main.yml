@@ -34,6 +34,10 @@
     - nginx
   when: update_version
   
+- name  : remove crontab
+    shell : sudo crontab -r
+  when: update_version
+  
 # Install Add-ons
 - name: Install packages
   apt:
