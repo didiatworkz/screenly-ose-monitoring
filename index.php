@@ -702,7 +702,7 @@ require_once("_config.php");
 					The Screenly OSE Monitoring extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
 					You have the possibility to get a "live" image of the player\'s output.<br /><br />
 					To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-					<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="sudo ansible-pull -U http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/ansible/addon.yml)">
+					<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/extension.sh)">
 					After that the player restarts and the extension has been installed.<br />
 					<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
 				</div>
