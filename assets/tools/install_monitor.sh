@@ -74,8 +74,3 @@ echo
 echo
 echo
 exit
-exit
-
-
-
-
