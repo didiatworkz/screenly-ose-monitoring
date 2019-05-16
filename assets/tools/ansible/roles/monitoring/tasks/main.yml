@@ -70,7 +70,7 @@
 
 - name: Copy ose-monitoring
   copy:
-    src: /tmp/monitoring
+    src: /tmp/monitor
     dest: /var/www/html
     owner: www-data
     group: www-data
