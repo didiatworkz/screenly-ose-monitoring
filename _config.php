@@ -66,6 +66,8 @@ ________________________________________
 		}
 		unlink('assets/tools/version_old.txt');
 		unlink('update.txt');
+		header("Refresh:0");
+		die("Reload this page");
 	}
 
 	if(isset($_GET['site'])){
