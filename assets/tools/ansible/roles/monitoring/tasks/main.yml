@@ -109,6 +109,15 @@
     group: www-data
     mode: 0644
   when: update_version
-    
+
+- name: Set old version when necessary
+  copy:
+    src: backup_version.txt
+    dest: /var/www/html/monitor/assets/tools/version.txt
+    owner: www-data
+    group: www-data
+    mode: 0644
+  when: (old_monitor) and (version1_0 or version1_1)
+
 - name: Version update
   command: ose-monitoring --init
