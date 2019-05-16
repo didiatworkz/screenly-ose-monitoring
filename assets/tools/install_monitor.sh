@@ -1,6 +1,6 @@
 #!/bin/bash
 # Created by didiatworkz
-# Screenly OSE Monitor 
+# Screenly OSE Monitor
 #
 # May 2019
 
@@ -56,6 +56,7 @@ echo
 echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
+rm -rf /tmp/monitor
 ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=master"
 cd  /tmp/monitor/assets/tools/ansible/
 ansible-playbook site.yml
