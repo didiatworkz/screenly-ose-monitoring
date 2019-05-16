@@ -230,10 +230,10 @@ require_once("_config.php");
 						</a>
 					</li>
 					<li class="nav-item">
-						<a href="javascript:void(0)" data-toggle="modal" data-target="#extension" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Extension">
+						<a href="javascript:void(0)" data-toggle="modal" data-target="#addon" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Addon">
 							<i class="tim-icons icon-puzzle-10"></i>
 							<p class="d-lg-none">
-								Extension
+								Addon
 							</p>
 						</a>
 					</li>
@@ -281,7 +281,7 @@ require_once("_config.php");
 
 					if($monitor == 1){
 						$monitorInfo = '<span class="badge badge-success">  installed  </span>';
-					} else $monitorInfo = '<a href="#" data-toggle="modal" data-target="#extension" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
+					} else $monitorInfo = '<a href="#" data-toggle="modal" data-target="#addon" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
 
 					$status		 	= 'online';
 					$statusColor 	= 'success';
@@ -628,7 +628,7 @@ require_once("_config.php");
 						</div>
 						<div class="card-body">
 							<p class="lead">With Screenly OSE Monitoring you can set up an unlimited number of players and manage them at a single screen. <br />
-								Additionally there is the possibility to install extensions on the players to get even more information in Screenly OSE Monitoring.<br />
+								Additionally there is the possibility to install addons on the players to get even more information in Screenly OSE Monitoring.<br />
 								<br />
 								Add your first Screenly OSE Player and discover how easy it can be to work with.
 							</p>
@@ -687,23 +687,23 @@ require_once("_config.php");
 		</div>
 	</div>
 
-	<!-- extension -->
-	<div class="modal fade" id="extension" tabindex="-1" role="dialog" aria-labelledby="newExtensionModalLabel" aria-hidden="true">
+	<!-- addon -->
+	<div class="modal fade" id="addon" tabindex="-1" role="dialog" aria-labelledby="newAddonModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="newExtensionModalLabel">Extension</h5>
+					<h5 class="modal-title" id="newAddonModalLabel">Addon</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<img src="assets/img/extension.png" class="img-fluid mx-auto d-block" alt="extension" style="height: 180px" />
-					The Screenly OSE Monitoring extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
+					<img src="assets/img/addon.png" class="img-fluid mx-auto d-block" alt="addon" style="height: 180px" />
+					The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
 					You have the possibility to get a "live" image of the player\'s output.<br /><br />
 					To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-					<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/extension.sh)">
-					After that the player restarts and the extension has been installed.<br />
+					<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/addon.sh)">
+					After that the player restarts and the addon has been installed.<br />
 					<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
 				</div>
 			</div>

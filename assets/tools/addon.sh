@@ -13,7 +13,7 @@ cat << "EOF"
 
 EOF
 echo
-echo "Screenly OSE Monitor extension"
+echo "Screenly OSE Monitor addon"
 echo
 echo
 }
@@ -39,7 +39,7 @@ cd  /tmp/addon/
 ansible-playbook addon.yml
 
 header
-echo "Screenly OSE Monitor extension successfuly installed"
+echo "Screenly OSE Monitor addon successfuly installed"
 echo "Device is being restarted in 5 seconds!"
 sleep 5
 sudo reboot now

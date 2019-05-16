@@ -69,14 +69,14 @@ For the update you only have to run the installer again.
 The installer checks if there is an old installation and saves it if necessary.
 From version 2.0 there are changes to the database structure which is prepared for future updates and no longer needs to be saved.
 
-But please note that the extensions may have to be reinstalled on the players. (Current for all older versions before version 2.0)
+But please note that the Add-on may have to be reinstalled on the players. (Current for all older versions before version 2.0)
 
 ### Monitoring
 ```bash
 bash <(curl -sL http://screenly-monitor.atworkz.de)
 ```
 
-### Extension
+### Add-on
 Link over Webfrontend or this:
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/extension.sh)
