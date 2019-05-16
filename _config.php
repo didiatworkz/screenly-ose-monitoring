@@ -46,7 +46,7 @@ ________________________________________
 		file_put_contents($dbase_key, $keyFile);
 		rename("dbase.db",$token);
 		header("Refresh:0");
-		die("Please reload this page");
+		die("Reload this page");
 	}
 	if(@file_exists('assets/tools/version_old.txt')){
 		$oldVersion = file_get_contents('assets/tools/version_old.txt');
