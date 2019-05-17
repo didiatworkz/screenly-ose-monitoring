@@ -11,7 +11,11 @@
 		   info@atworkz.de
 ________________________________________
 		  Screenly OSE Monitor
+<<<<<<< HEAD
 	   Version 2.1 - May 2019
+=======
+	   Version 1.2 - November 2018
+>>>>>>> master
 ________________________________________
 -->
 <?php
@@ -136,6 +140,43 @@ ________________________________________
 		}
 		else return 'error '.$code;
 	}
+<<<<<<< HEAD
+=======
+	elseif ($code == 301) {
+	   return callURL($method, $ip, $params, $user, $pass, true);
+	} 
+	elseif ($code == 401) {
+		sysinfo('warning', 'Can not logged in to the player! - Wrong User or Password!');
+		return 'authentication error '.$code;
+	} 
+	else return 'error '.$code;
+}
+
+function pingAddress($ip){
+    $pingresult = exec("/bin/ping -c 1 $ip", $outcome, $status);
+	
+    if (0 == $status) return true;
+    else return false;
+}
+
+function monitorScript($url){
+	$monitor = callURL('GET', $url.':9020/monitor.txt');
+
+	if($monitor == 1) return 'http://'.$url.':9020/screenshot.png';
+	else return 'assets/img/player.png';
+}
+
+function update($v){
+	$github = 'http://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/version.txt'.time();
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $github);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 500);
+	$remoteVersion = curl_exec($ch);
+	curl_close($ch);
+    return version_compare($v, $remoteVersion, '<');
+}
+>>>>>>> master
 
 	function checkAddress($ip){
 		$ch = curl_init($ip);
