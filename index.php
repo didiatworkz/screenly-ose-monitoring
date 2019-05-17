@@ -264,19 +264,6 @@ require_once("_config.php");
 			';
 		if(isset($_GET['action']) && $_GET['action'] == 'view'){
 			if(isset($_GET['playerID'])){
-				if(isset($_GET['set']) && $_GET['set'] == 'order'){
-					$playerID 	= $_GET['playerID'];
-					$orderD 	= $_GET['orderD'];
-					$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-					$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-					
-					$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-					$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-					$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
-					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-					if($result == 'Asset switched') sysinfo('success', 'Asset switchted!');
-					else sysinfo('danger', 'Switch not possible!');
-				}
 				$playerID 	= $_GET['playerID'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
 				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
@@ -291,18 +278,13 @@ require_once("_config.php");
 					$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $user, $pass, false);
 					$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
 					$monitor = callURL('GET', $player['address'].':9020/monitor.txt', false, $user, $pass, false);
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> master
 					if($monitor == 1){
 						$monitorInfo = '<span class="badge badge-success">  installed  </span>';
 					} else $monitorInfo = '<a href="#" data-toggle="modal" data-target="#addon" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
 
 					$status		 	= 'online';
 					$statusColor 	= 'success';
-<<<<<<< HEAD
 					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
 					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
@@ -317,11 +299,6 @@ require_once("_config.php");
 						<td>Assets:</td>
 						<td>'.sizeof($playerAPI).'</td>
 					</tr>';
-=======
-					$navigation 	= '<li class="list-group-item"><div class="row"><div class="col-xs-12 col-md-6"><a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=previous" class="btn btn-block btn-sm btn-info"><i class="fas fa-angle-double-left"></i> Previous asset</a></div> <div class="col-xs-12 col-md-6"> <a href="index.php?action=view&set=order&playerID='.$player['playerID'].'&orderD=next" class="btn btn-block btn-sm btn-info">Next asset <i class="fas fa-angle-double-right"></i></a></div></div></li>';
-					$script 		= '<li class="list-group-item">Monitor-Script: '.$monitorInfo.'</li>';
-					$assets 		= '<li class="list-group-item">Assets: '.sizeof($playerAPI).'</li>';
->>>>>>> master
 				}
 				else {
 					$playerAPI 		= NULL;
@@ -443,7 +420,6 @@ require_once("_config.php");
 					</div>
 				</div>
 			</div>
-<<<<<<< HEAD
 			<!-- newAsset -->
 			<div class="modal fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
 				<div class="modal-dialog" role="document">
@@ -459,48 +435,6 @@ require_once("_config.php");
 								<div class="form-group">
 									<label for="InputNewAssetUrl">URL</label>
 									<input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
-=======
-			<hr />
-			<div class="row">
-						';
-						if($status == 'online'){
-							for($i=0; $i < sizeof($playerAPI); $i++)  {
-								$start_date	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['start_date']));
-								$end_date 	= date('d.m.Y H:m:s', strtotime($playerAPI[$i]['end_date']));
-								$yes 		= '<span class="badge badge-success">  active  </span>';
-								$no 		= '<span class="badge badge-danger">  inactive  </span>';
-								
-								$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
-								
-								if($playerAPI[$i]['mimetype'] == 'webpage'){
-									$mimetypeIcon = '<i class="fas fa-globe fa-10x"></i>';
-									$mimetypeOutput = '<li class="list-group-item">URL: '.$playerAPI[$i]['uri'].'</li>';
-								}
-								else if($playerAPI[$i]['mimetype'] == 'video'){
-									$mimetypeIcon = '<i class="fas fa-video fa-10x"></i>';
-									$mimetypeOutput = '';
-								}
-								else {
-									$mimetypeIcon = '<i class="fas fa-image fa-10x"></i>';
-									$mimetypeOutput = '';
-								}
-								echo '
-								<div class="col-lg-4 col-md-4 mb-4">
-									<div class="card shadow-sm">
-									<div class="card-header text-center">'.$mimetypeIcon.'</div>
-										<div class="card-body">
-											<h4 class="card-title">'.$playerAPI[$i]['name'].'</h4>
-											<ul class="list-group list-group-flush">
-												<li class="list-group-item">Start: '.$start_date.'</li>
-												<li class="list-group-item">End: '.$end_date.'</li>
-												<li class="list-group-item">Type: '.$playerAPI[$i]['mimetype'].'</li>
-												'.$mimetypeOutput.'
-												<li class="list-group-item">Status: '.$active.'</li>
-												<li class="list-group-item">Duration: '.$playerAPI[$i]['duration'].'</li>
-											</ul>
-										</div>
-									</div>
->>>>>>> master
 								</div>
 								<div class="form-group">
 									<label for="InputNewStart">Start</label>
@@ -634,34 +568,6 @@ require_once("_config.php");
 				redirect('index.php', 3);
 			}
 		}
-<<<<<<< HEAD
-=======
-		else if(isset($_GET['action']) && $_GET['action'] == 'extension'){
-			if(isset($_GET['playerID'])){
-				$playerID = $_GET['playerID'];
-				echo '
-			<div class="container mt-5 mb-5">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="card">
-							<div class="card-body">
-							<p>The Screenly OSE Monitor extension allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
-								You have the possibility to get a "live" image of the player\'s output. </p>
-								<p>To install, you have to log in to the respective Screenly Player via SSH (How it works: here) and execute this command:</p>
-								<kbd>bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':9000/assets/tools/extension.sh)</kbd>
-								<p>Then the player restarts and the extension has been installed.</p>
-							</div>
-							<div class="card-footer text-right">
-								<a class="btn btn-secondary" href="index.php?action=view&playerID='.$playerID.'"><i class="fas fa-arrow-left"></i> back</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			';
-			}
-		}
->>>>>>> master
 		else {
 			$playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
 			$playerCount 	= $db->query("SELECT COUNT(*) AS counter FROM player");
