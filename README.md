@@ -79,7 +79,7 @@ bash <(curl -sL http://screenly-monitor.atworkz.de)
 ### Add-on
 Link over Webfrontend or this:
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/extension.sh)
+bash <(curl -sL https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/addon.sh)
 ```
 
 ## Login
