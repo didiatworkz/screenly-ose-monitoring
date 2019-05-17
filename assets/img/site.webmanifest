@@ -1,19 +1,19 @@
 {
-    "name": "Screenly OSE Monitor",
-    "short_name": "Screenly OSE Monitor",
+    "name": "OSE Monitoring",
+    "short_name": "OSE Monitoring",
     "icons": [
         {
-            "src": "/img/android-chrome-192x192.png",
+            "src": "/assets/img/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/img/android-chrome-512x512.png",
+            "src": "/assets/img/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
     ],
-    "theme_color": "#eeeeee",
-    "background_color": "#eeeeee",
+    "theme_color": "#1e1e2f",
+    "background_color": "#1e1e2f",
     "display": "standalone"
 }
