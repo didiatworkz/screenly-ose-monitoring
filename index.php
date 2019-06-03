@@ -893,6 +893,7 @@ require_once("_config.php");
       </footer>
     </div>
   </div>
+</div>
   <script>
 	$(function () {
 	  $('[data-tooltip="tooltip"]').tooltip();
