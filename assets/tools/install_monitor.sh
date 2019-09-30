@@ -46,8 +46,8 @@ echo Check if Screenly installed...
 echo
 if [ ! -e /home/pi/screenly/server.py ]
 then
-  echo -e "[ \e[32mNO\e[39m ] Standalone Installation"
-
+  echo -e "[ \e[32mNO\e[39m ] Screenly installed"
+  echo -e "[ \e[93mYES\e[39m ] Standalone Installation"
   sudo mkdir -p /etc/ansible
   echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
   sudo apt-get purge -y python-setuptools python-pip python-pyasn1
