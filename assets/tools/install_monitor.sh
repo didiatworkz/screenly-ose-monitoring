@@ -2,7 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitor
 #
-# May 2019
+# October 2019
 
 header() {
 clear
@@ -56,10 +56,10 @@ echo
 echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
-rm -rf /tmp/monitor
-ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=master"
+sudo rm -rf /tmp/monitor
+sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=master"
 cd  /tmp/monitor/assets/tools/ansible/
-ansible-playbook site.yml
+sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 sleep 2
