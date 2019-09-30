@@ -20,7 +20,9 @@ select option{
 .tim-icons {
 	width: 20px;
 	height: 12px;
-	line-height: 8px;
+}
+.btn:not(.btn-icon) .tim-icons, .navbar .navbar-nav>a.btn:not(.btn-icon) .tim-icons {
+    top: -2px;
 }
 .card-user .author .block.block-monitor {
   background: rgba(255, 255, 255, 0.6);
@@ -50,6 +52,16 @@ a {
 a:hover {
   color: #c221a9;
 }
+.blink {
+  animation: blinker 4s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
 .btn-primary {
   background-color: #ff9100;
   border-color: #ff9100;
