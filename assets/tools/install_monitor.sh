@@ -3,9 +3,10 @@
 # Screenly OSE Monitor
 #
 # October 2019
-
+_ANSIBLE_VERSION=2.8.2
 _BRANCH=v2.2
 #_BRANCH=master
+
 
 header() {
 clear
@@ -31,7 +32,7 @@ echo
 echo
 read -p "Do you want to install the Screenly OSE Monitoring? (y/N)" -n 1 -r -s INSTALL_BEGIN
 
-if [ "$INSTALL_BEGIN" != 'y' ]
+if [ "$INSTALL_BEGIN" != "y" ]
 then
     echo
     exit
@@ -45,14 +46,18 @@ echo Check if Screenly installed...
 echo
 if [ ! -e /home/pi/screenly/server.py ]
 then
-    echo -e "[ \e[32mNO\e[39m ] Screenly installed"
-	echo
-	echo Installation aborted because no Screenly was found!
-	echo Please check if the file /home/pi/screenly/server.py exists!
+  echo -e "[ \e[32mNO\e[39m ] Standalone Installation"
+
+  sudo mkdir -p /etc/ansible
+  echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
+  sudo apt-get purge -y python-setuptools python-pip python-pyasn1
+  sudo apt-get install -y python-dev git-core libffi-dev libssl-dev
+  curl -s https://bootstrap.pypa.io/get-pip.py | sudo python
+  sudo pip install ansible=="$_ANSIBLE_VERSION"
 	exit
 
 else
-    echo -e "[ \e[93mYES\e[39m ] Screenly installed"
+  echo -e "[ \e[93mYES\e[39m ] Screenly installed"
 fi
 sleep 2
 echo
