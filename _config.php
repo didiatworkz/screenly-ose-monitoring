@@ -1,20 +1,20 @@
-<!--
-                            _
-   ____                    | |
-  / __ \__      _____  _ __| | __ ____
- / / _` \ \ /\ / / _ \| '__| |/ /|_  /
-| | (_| |\ V  V / (_) | |  |   <  / /
- \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
-  \____/
-
-		http://www.atworkz.de
-		   info@atworkz.de
-________________________________________
-		  Screenly OSE Monitor
-	   Version 2.1 - May 2019
-________________________________________
--->
 <?php
+  /*
+	                            _
+	   ____                    | |
+	  / __ \__      _____  _ __| | __ ____
+	 / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+	| | (_| |\ V  V / (_) | |  |   <  / /
+	 \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+	  \____/
+
+			http://www.atworkz.de
+			   info@atworkz.de
+	________________________________________
+			  Screenly OSE Monitor
+		   Version 2.2 - October 2019
+	________________________________________
+	*/
 	ini_set('display_errors',0);
 	error_reporting(E_ALL|E_STRICT);
 
@@ -167,9 +167,7 @@ ________________________________________
 	if(@file_exists('update.txt')) {
 		$update = '
 					<li class="nav-item">
-						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link">
-							<i class="tim-icons icon-cloud-download-93"></i> Update available
-						</a>
+						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link" title="Update available!"><i class="tim-icons icon-cloud-download-93 blink"></i></a>
 					</li>';
 
 	}
@@ -177,11 +175,11 @@ ________________________________________
 
 
 	if(isset($_POST['changeAssetState'])){
-		$id 		= $_POST['id'];
-		$asset		= $_POST['asset'];
-		$value 		= $_POST['value'];
+		$id 				= $_POST['id'];
+		$asset			= $_POST['asset'];
+		$value 			= $_POST['value'];
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 		$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
@@ -204,14 +202,30 @@ ________________________________________
 
 	if(isset($_POST['changeAsset'])){
 		$playerID 	= $_POST['playerID'];
-		$orderD 	= $_POST['order'];
+		$orderD 		= $_POST['order'];
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
 		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-		if($result == 'Asset switched') header('HTTP/1.1 200 OK');
+		if($result != ''){
+			header('HTTP/1.1 200 OK');
+			echo $result;
+		}
 		else header('HTTP/1.1 404 Not Found');
+	}
+
+	if(isset($_POST['exec_reboot'])){
+		$playerID 	= $_POST['playerID'];
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
+		header('HTTP/1.1 200 OK');
+		echo "Reboot command send!";
+		$result = callURL('POST', $player['address'].'/api/v1/reboot_screenly', false, $user, $pass, false);
+
 	}
 ?>
