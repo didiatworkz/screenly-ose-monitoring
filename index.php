@@ -203,7 +203,7 @@ require_once("_config.php");
     <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
         <div class="container-fluid">
 			<div class="navbar-wrapper">
-				<a class="navbar-brand" href="./index.php">Screenyl OSE Monitoring</a>
+				<a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
 			</div>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-bar bar1"></span>
@@ -237,22 +237,23 @@ require_once("_config.php");
 							</p>
 						</a>
 					</li>
-					<li class="nav-item">
-						<a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Settings">
-							<i class="tim-icons icon-settings"></i>
-							<p class="d-lg-none">
-								Settings
-							</p>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a href="index.php?action=logout" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Logout">
-							<i class="tim-icons icon-key-25"></i>
-							<p class="d-lg-none">
-								Logout
-							</p>
-						</a>
-					</li>
+					<li class="dropdown nav-item">
+							 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+								 <div class="photo">
+									 <i class="tim-icons icon-single-02"></i>
+								 </div>
+								 <b class="caret d-none d-lg-block d-xl-block"></b>
+								 <p class="d-lg-none">
+									 User
+								 </p>
+							 </a>
+							 <ul class="dropdown-menu dropdown-navbar">
+								 <li class="nav-link"><a href="javascript:void(0)" data-toggle="modal" data-target="#account" class="nav-item dropdown-item">Account</a></li>
+								 <li class="nav-link"><a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-item dropdown-item">Settings</a></li>
+								 <li class="dropdown-divider"></li>
+								 <li class="nav-link"><a href="index.php?action=logout" class="nav-item dropdown-item">Logout</a></li>
+							 </ul>
+						 </li>
 					<li class="separator d-lg-none"></li>
 				</ul>
 			</div>
@@ -288,6 +289,7 @@ require_once("_config.php");
 					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
 					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
+					$reboot		= '<button data-playerID="'.$player['playerID'].'" class="exec_reboot btn btn-block btn-danger" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button></div>';
 					$script 		= '
 					<tr>
 						<td>Monitor-Script:</td>
@@ -309,6 +311,7 @@ require_once("_config.php");
 					$assets 		= '';
 					$newAsset		= '';
 					$management		= '';
+					$reboot = '';
 				}
 
 				echo '
@@ -364,7 +367,8 @@ require_once("_config.php");
 									<td>'.$active.'</td>
 									<td>
 										<button class="changeState btn btn-info btn-sm" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
-										<button class="options btn btn-warning btn-sm" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'" data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
+										<button class="options btn btn-warning btn-sm" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
+										data-uri="'.$playerAPI[$i]['uri'].'"  title="edit"><i class="tim-icons icon-pencil"></i></button>
 										<a href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
 									</td>
 								</tr>
@@ -412,9 +416,10 @@ require_once("_config.php");
 								'.$newAsset.'
 								'.$navigation.'
 								'.$management.'
+								'.$reboot.'
 								<hr class="mt-3" />
-								<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="btn btn-warning btn-block" title="edit"><i class="tim-icons icon-pencil"></i> Edit</a>
-								<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="btn btn-danger btn-block" title="delete"><i class="tim-icons icon-trash-simple"></i> Delete</a>
+								<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="btn btn-warning btn-sm btn-block" title="edit"><i class="tim-icons icon-pencil"></i> Edit</a>
+								<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="btn btn-danger btn-sm btn-block" title="delete"><i class="tim-icons icon-trash-simple"></i> Delete</a>
 							</div>
 						</div>
 					</div>
@@ -712,92 +717,99 @@ require_once("_config.php");
 
 	<!-- settings -->
 	<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <i class="tim-icons icon-simple-remove"></i>
+        </button>
+      </div>
+				<div class="modal-body">
+						<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+							<div class="form-group">
+								<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
+								<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$set['refreshscreen'].'" required>
+							</div>
+							<div class="form-group">
+								<label for="InputSetDuration">Default Duration for Assets</label>
+								<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required>
+							</div>
+							<div class="form-group">
+								<label for="InputSetEndDate">Delay of weeks for the end date</label>
+								<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required>
+							</div>
+							<div class="form-group">
+								<label for="InputSetToken">Monitoring URL</label>
+								<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=yes&key='.$set['token'].'">
+							</div>
+							<div class="form-group text-right">
+								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+								<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate Key</a>
+								<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
+							</div>
+						</form>
+          </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- account -->
+	<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <i class="tim-icons icon-simple-remove"></i>
+        </button>
+      </div>
+				<div class="modal-body">
+					<form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+						<div class="form-group">
+							<label for="InputUsername">Change Username</label>
+							<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
+							<div class="help-block with-errors"></div>
+						</div>
+						<div class="form-group">
+							<label for="InputPassword1">Change Password</label>
+							<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required>
+						</div>
+						<div class="form-group">
+							<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required>
+							<div class="help-block with-errors"></div>
+						</div>
+						<div class="form-group text-right">
+							<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+							<button type="submit" name="saveAccount" class="btn btn-sm btn-primary">Update</button>
+						</div>
+					</form>
+        </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- info -->
+	<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
+			<div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <i class="tim-icons icon-simple-remove"></i>
+        </button>
+      </div>
 				<div class="modal-body">
-					<div class="row">
-						<div class="col-lg-3 col-md-4">
-							<ul class="nav nav-pills nav-pills-primary nav-pills-icons flex-column">
-								<li class="nav-item">
-									<a class="nav-link active" data-toggle="tab" href="#setting">
-										Settings
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#account">
-										Account
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#info">
-										Info
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div class="col-md-8">
-							<div class="tab-content">
-								<div class="tab-pane active" id="setting">
-									<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-										<div class="form-group">
-											<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
-											<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$set['refreshscreen'].'" required>
-										</div>
-										<div class="form-group">
-											<label for="InputSetDuration">Default Duration for Assets</label>
-											<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required>
-										</div>
-										<div class="form-group">
-											<label for="InputSetEndDate">Delay of weeks for the end date</label>
-											<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required>
-										</div>
-										<div class="form-group">
-											<label for="InputSetToken">Monitoring URL</label>
-											<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=yes&key='.$set['token'].'">
-										</div>
-										<div class="form-group text-right">
-											<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-											<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate Key</a>
-											<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
-										</div>
-									</form>
-								</div>
-								<div class="tab-pane" id="account">
-									<form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-										<div class="form-group">
-											<label for="InputUsername">Change Username</label>
-											<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
-											<div class="help-block with-errors"></div>
-										</div>
-										<div class="form-group">
-											<label for="InputPassword1">Change Password</label>
-											<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required>
-										</div>
-										<div class="form-group">
-											<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required>
-											<div class="help-block with-errors"></div>
-										</div>
-										<div class="form-group text-right">
-											<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-											<button type="submit" name="saveAccount" class="btn btn-sm btn-primary">Update</button>
-										</div>
-									</form>
-								</div>
-								<div class="tab-pane" id="info">
-									<h2>Screenly OSE Monitor</h2>
-									Version '.$systemVersion.' <br />
-									Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
-									Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
-									Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
-									Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
-									<br />
-									<br />
-									<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
-                </div>
+					<h2>Screenly OSE Monitor</h2>
+					Version '.$systemVersion.' <br />
+					Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
+					Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
+					Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
+					Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
+					<br />
+					<br />
+					<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
+        </div>
 			</div>
 		</div>
 	</div>
@@ -887,7 +899,7 @@ require_once("_config.php");
       <footer class="footer">
         <div class="container-fluid">
           <div class="copyright">
-            &copy; <?php echo date('Y') ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  |  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a>
+            &copy; <?php echo date('Y') ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  |  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>
           </div>
         </div>
       </footer>
@@ -927,15 +939,30 @@ require_once("_config.php");
 	  var id = $(this).data("playerid");
 	  var changeAsset = 1;
 	  $.ajax({
-		url: "_config.php",
-		type: "POST",
-		data: {order: order, playerID: id, changeAsset: changeAsset},
-		success: function(data){
-			$.notify({icon: "tim-icons icon-bell-55",message: "Asset status changed"},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
-		},
-		error: function(data){
-			$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
-		}
+			url: "_config.php",
+			type: "POST",
+			data: {order: order, playerID: id, changeAsset: changeAsset},
+			success: function(data){
+				$.notify({icon: "tim-icons icon-bell-55",message: data},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
+			},
+			error: function(data){
+				$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
+			}
+	  });
+	});
+	$( ".exec_reboot" ).on('click', function() {
+	  var id = $(this).data("playerid");
+	  var exec_reboot = 1;
+	  $.ajax({
+			url: "_config.php",
+			type: "POST",
+			data: {playerID: id, exec_reboot: exec_reboot},
+			success: function(data){
+				$.notify({icon: "tim-icons icon-bell-55",message: data},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
+			},
+			error: function(data){
+				$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
+			}
 	  });
 	});
 	$('#assets').DataTable({
