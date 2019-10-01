@@ -17,12 +17,22 @@
 .modal-body {
   color: rgba(255, 255, 255, 0.7) !important;
 }
+.tableTransparency>thead>tr>th, .tableTransparency>tbody>tr>th, .tableTransparency>tfoot>tr>th, .tableTransparency>thead>tr>td, .tableTransparency>tbody>tr>td, .tableTransparency>tfoot>tr>td {
+    border-color: rgba(255, 255, 255, 0);
+}
 select option{
     color:grey !important;
 }
-.tim-icons {
-	width: 20px;
-	height: 12px;
+.playerImageDiv {
+    position: relative;
+}
+.player {
+	position: relative;
+}
+.detailOptionMenu {
+	position: absolute;
+	bottom: 0px;
+	right: 5px;
 }
 .btn:not(.btn-icon) .tim-icons, .navbar .navbar-nav>a.btn:not(.btn-icon) .tim-icons {
     top: -2px;
