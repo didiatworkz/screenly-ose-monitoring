@@ -88,10 +88,11 @@ require_once("_config.php");
       if($token){
         $db->exec("UPDATE settings SET token='".$token."' WHERE userID='".$loginUserID."'");
         sysinfo('success', 'Token generated! - wait....', 0);
-        redirect('index.php');
+        redirect('index.php?showToken=1');
       }
       else sysinfo('danger', 'Error!');
     }
+
 
 		if(isset($_POST['saveIP'])){
 			$name 		= $_POST['name'];
@@ -250,6 +251,7 @@ require_once("_config.php");
 							 <ul class="dropdown-menu dropdown-navbar">
 								 <li class="nav-link"><a href="javascript:void(0)" data-toggle="modal" data-target="#account" class="nav-item dropdown-item">Account</a></li>
 								 <li class="nav-link"><a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-item dropdown-item">Settings</a></li>
+								 <li class="nav-link"><a href="javascript:void(0)" data-toggle="modal" data-target="#publicLink" class="nav-item dropdown-item">Public Link</a></li>
 								 <li class="dropdown-divider"></li>
 								 <li class="nav-link"><a href="index.php?action=logout" class="nav-item dropdown-item">Logout</a></li>
 							 </ul>
@@ -286,10 +288,10 @@ require_once("_config.php");
 
 					$status		 	= 'online';
 					$statusColor 	= 'success';
-					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
+					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
 					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
-					$reboot		= '<button data-playerID="'.$player['playerID'].'" class="exec_reboot btn btn-block btn-danger" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button></div>';
+					$reboot		= '<button data-playerID="'.$player['playerID'].'" class="exec_reboot btn btn-block btn-danger" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
 					$script 		= '
 					<tr>
 						<td>Monitor-Script:</td>
@@ -319,11 +321,18 @@ require_once("_config.php");
 					<div class="col-xl-9 col-lg-8 col-md-7">
 						<div class="card">
 							<div class="card-header">
-								<h5 class="title">Assets</h5>
+								<div class="row">
+									<div class="col-md-10">
+									  <h5 class="title">Assets</h5>
+									</div>
+									<div class="col-md-2 float-right">
+									  '.$newAsset.'
+									</div>
+								</div>
 							</div>
 						<div class="card-body">
                 ';
-				if($status == 'online'){
+				if($status == 'online' && $playerAPI != 'authentication error 401'){
 					echo '
 						<table class="table" id="assets">
 							<thead class="text-primary">
@@ -366,10 +375,10 @@ require_once("_config.php");
 									<td>Start: '.$start.'<br />End: '.$end.'</td>
 									<td>'.$active.'</td>
 									<td>
-										<button class="changeState btn btn-info btn-sm" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
-										<button class="options btn btn-warning btn-sm" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
+										<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
+										<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
 										data-uri="'.$playerAPI[$i]['uri'].'"  title="edit"><i class="tim-icons icon-pencil"></i></button>
-										<a href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+										<a href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
 									</td>
 								</tr>
 						';
@@ -377,6 +386,13 @@ require_once("_config.php");
 					echo '
 							</tbody>
 						</table>
+					';
+				}
+				else {
+					echo  '
+					<div class="alert alert-danger">
+            <span><b> Offline - </b> No data could be collected!</span>
+          </div>
 					';
 				}
 				echo '
@@ -394,8 +410,11 @@ require_once("_config.php");
 								</div>
 							</p>
 							<div class="card-description">
-								<table class="table tablesorter " id="">
+								<table class="table tablesorter" id="playerInfo">
 									<tbody>
+										<tr>
+											<td colspan="2">'.$navigation.'</td>
+										</tr>
 										<tr>
 											<td>Status:</td>
 											<td><span class="badge badge-'.$statusColor.'">'.$status.'</span></td>
@@ -413,13 +432,18 @@ require_once("_config.php");
 									</tbody>
 								</table>
 								<hr />
-								'.$newAsset.'
-								'.$navigation.'
 								'.$management.'
 								'.$reboot.'
 								<hr class="mt-3" />
-								<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="btn btn-warning btn-sm btn-block" title="edit"><i class="tim-icons icon-pencil"></i> Edit</a>
-								<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="btn btn-danger btn-sm btn-block" title="delete"><i class="tim-icons icon-trash-simple"></i> Delete</a>
+								<div class="dropup">
+								  <button class="btn btn-secondary btn-block btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    <i class="tim-icons icon-settings-gear-63"></i> Options
+								  </button>
+								  <div class="dropdown-menu dropdown-black" aria-labelledby="dropdownMenuButton">
+										<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit">Edit</a>
+										<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">Delete</a>
+								  </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -457,8 +481,8 @@ require_once("_config.php");
 								</div>
 								<div class="form-group text-right">
 									<input name="id" type="hidden" value="'.$player['playerID'].'">
-									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 									<button type="submit" name="saveAsset" class="btn btn-success btn-sm">Send</button>
+									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 								</div>
 							</form>
 						</div>
@@ -503,8 +527,8 @@ require_once("_config.php");
 								<div class="form-group text-right">
 									<input name="asset" id="InputAssetId" type="hidden" value="1">
 									<input name="id" id="InputAssetId" type="hidden" value="'.$player['playerID'].'">
-									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 									<button type="submit" name="updateAsset" class="btn btn-warning btn-sm">Update</button>
+									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 								</div>
 							</form>
 						</div>
@@ -557,8 +581,8 @@ require_once("_config.php");
 									</div>
 									<div class="form-group text-right">
 										<input name="playerID" type="hidden" value="'.$_GET['playerID'].'">
-										<a href="'.$action.'" class="btn btn-secondary btn-sm">Close</a>
 										<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">Update</button>
+										<a href="'.$action.'" class="btn btn-secondary btn-sm">Close</a>
 									</div>
 								</form>
 							</div>
@@ -683,8 +707,8 @@ require_once("_config.php");
 							<input name="pass" type="password" class="form-control" id="InputPassword" placeholder="Password">
 						</div>
 						<div class="form-group text-right">
-							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 							<button type="submit" name="saveIP" class="btn btn-success btn-sm">Save</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 						</div>
 					</form>
 				</div>
@@ -719,12 +743,9 @@ require_once("_config.php");
 	<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-			<div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          <i class="tim-icons icon-simple-remove"></i>
-        </button>
-      </div>
+				<div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+	      </div>
 				<div class="modal-body">
 						<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
 							<div class="form-group">
@@ -739,14 +760,9 @@ require_once("_config.php");
 								<label for="InputSetEndDate">Delay of weeks for the end date</label>
 								<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required>
 							</div>
-							<div class="form-group">
-								<label for="InputSetToken">Monitoring URL</label>
-								<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=yes&key='.$set['token'].'">
-							</div>
 							<div class="form-group text-right">
-								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-								<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate Key</a>
 								<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
+								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 							</div>
 						</form>
           </div>
@@ -758,12 +774,9 @@ require_once("_config.php");
 	<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-			<div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Account</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          <i class="tim-icons icon-simple-remove"></i>
-        </button>
-      </div>
+				<div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Account</h5>
+	      </div>
 				<div class="modal-body">
 					<form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
 						<div class="form-group">
@@ -780,8 +793,8 @@ require_once("_config.php");
 							<div class="help-block with-errors"></div>
 						</div>
 						<div class="form-group text-right">
-							<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
 							<button type="submit" name="saveAccount" class="btn btn-sm btn-primary">Update</button>
+							<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
 						</div>
 					</form>
         </div>
@@ -793,29 +806,45 @@ require_once("_config.php");
 	<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
-			<div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Information</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          <i class="tim-icons icon-simple-remove"></i>
-        </button>
-      </div>
+				<div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Screenly OSE Monitor</h5>
+	      </div>
 				<div class="modal-body">
-					<h2>Screenly OSE Monitor</h2>
 					Version '.$systemVersion.' <br />
 					Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
+					<hr />
 					Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
 					Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
 					Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
-					<br />
-					<br />
 					<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
         </div>
 			</div>
 		</div>
 	</div>
+
+	<!-- publicLink -->
+	<div class="modal fade" id="publicLink" tabindex="-1" role="dialog" aria-labelledby="publicLinkModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Public Link</h5>
+				</div>
+				<div class="modal-body">
+							<div class="form-group">
+								<label for="InputSetToken">Public link that can be used without authentication!</label>
+								<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'">
+							</div>
+							<div class="form-group text-right">
+								<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate new token</a>
+								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+							</div>
+					</div>
+			</div>
+		</div>
+	</div>
 		';
 	}
-  else if((isset($_GET['monitoring']) && $_GET['monitoring'] == 'yes') && isset($_GET['key'])){
+  else if((isset($_GET['monitoring']) && $_GET['monitoring'] == '1') && isset($_GET['key'])){
     $key 		= $_GET['key'];
     echo '
     <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
@@ -836,33 +865,34 @@ require_once("_config.php");
 
     if($playerCount['counter'] > 0 && $key == $securityToken){
       echo'
-    <div class="row">
+    	<div class="row">
       ';
       while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
         if($player['name'] == ''){
-          $name	 		= 'No Player Name';
+          $name	 			= 'No Player Name';
           $imageTag 	= 'No Player Name '.$player['playerID'];
         }
         else {
-          $name 		= $player['name'];
+          $name 			= $player['name'];
           $imageTag 	= $player['name'];
         }
         echo'
-		<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-			<div class="card">
-				<div class="card-header">
-					<h4 class="d-inline">'.$name.'</h4>
-					<h5>'.$player['address'].'</h5>
+				<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="d-inline">'.$name.'</h4>
+							<h5>'.$player['address'].'</h5>
+						</div>
+						<div class="card-body card-monitor">
+							<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
+						</div>
+					</div>
 				</div>
-				<div class="card-body card-monitor">
-					<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
-				</div>
-			</div>
-		</div>
         ';
       }
       echo '
-    </div>
+    	</div>
+		</div>
     ';
     }
     else sysinfo('danger', 'Token incorrect - Access denied!');
@@ -982,9 +1012,7 @@ require_once("_config.php");
         return false;
     });
 	$(function(){
-     var navMain = $(".navbar-collapse"); // avoid dependency on #id
-     // "a:not([data-toggle])" - to avoid issues caused
-     // when you have dropdown inside navbar
+     var navMain = $(".navbar-collapse");
      navMain.on("click", "[data-toggle]", null, function () {
          navMain.collapse('hide');
      });
@@ -1003,6 +1031,13 @@ require_once("_config.php");
 	});
 
   </script>
+	<?php
+	if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
+		echo '<script>
+			$(\'#publicLink\').modal(\'show\');
+			</script>';
+	}
+	?>
 </body>
 
 </html>
