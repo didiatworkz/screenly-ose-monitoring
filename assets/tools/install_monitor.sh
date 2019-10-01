@@ -54,7 +54,6 @@ then
   sudo apt-get install -y python-dev git-core libffi-dev libssl-dev
   curl -s https://bootstrap.pypa.io/get-pip.py | sudo python
   sudo pip install ansible=="$_ANSIBLE_VERSION"
-	exit
 
 else
   echo -e "[ \e[93mYES\e[39m ] Screenly installed"
