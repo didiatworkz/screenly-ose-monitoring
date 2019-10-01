@@ -14,6 +14,9 @@
 .modal-content .modal-header .modal-title {
 	color: #eeeeee;
 }
+.modal-body {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
 select option{
     color:grey !important;
 }
@@ -61,7 +64,9 @@ a:hover {
     opacity: 0;
   }
 }
-
+.footer {
+    padding: 22px 0 22px 0px;
+}
 .btn-primary {
   background-color: #ff9100;
   border-color: #ff9100;
