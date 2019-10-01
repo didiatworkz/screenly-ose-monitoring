@@ -213,20 +213,20 @@ require_once("_config.php");
 			</button>
 			<div class="collapse navbar-collapse" id="navigation">
 				<ul class="navbar-nav ml-auto">
-					'.$update.'
-					<li class="nav-item">
-						<a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
-							<i class="tim-icons icon-refresh-02"></i>
-							<p class="d-lg-none">
-								Refresh
-							</p>
-						</a>
-					</li>
 					<li class="nav-item">
 						<a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Add player">
 							<i class="tim-icons icon-simple-add"></i>
 							<p class="d-lg-none">
 								Add player
+							</p>
+						</a>
+					</li>
+						'.$update.'
+					<li class="nav-item">
+						<a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
+							<i class="tim-icons icon-refresh-02"></i>
+							<p class="d-lg-none">
+								Refresh
 							</p>
 						</a>
 					</li>
@@ -289,7 +289,7 @@ require_once("_config.php");
 					$status		 	= 'online';
 					$statusColor 	= 'success';
 					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
-					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
+					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
 					$reboot		= '<button data-playerID="'.$player['playerID'].'" class="exec_reboot btn btn-block btn-danger" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
 					$script 		= '
@@ -339,8 +339,8 @@ require_once("_config.php");
 								<tr>
 									<th>Name</th>
 									<th>Date</th>
-									<th>Status</th>
-									<th>Options</th>
+									<th class="d-none d-sm-block">Status</th>
+									<th><span class="d-none d-sm-block">Options</span></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -371,14 +371,14 @@ require_once("_config.php");
 						}
 						echo '
 								<tr>
-									<td>'.$mimetypeIcon.' '.$playerAPI[$i]['name'].'</td>
+									<td>'.$mimetypeIcon.' <span class="d-inline d-sm-none">'.$active.' <br /></span> '.$playerAPI[$i]['name'].'</td>
 									<td>Start: '.$start.'<br />End: '.$end.'</td>
-									<td>'.$active.'</td>
+									<td class="d-none d-sm-block">'.$active.'</td>
 									<td>
 										<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
 										<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
 										data-uri="'.$playerAPI[$i]['uri'].'"  title="edit"><i class="tim-icons icon-pencil"></i></button>
-										<a href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+										<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
 									</td>
 								</tr>
 						';
@@ -401,16 +401,28 @@ require_once("_config.php");
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-5">
 					<div class="card card-user">
+
 						<div class="card-body">
-							<p class="card-text">
+
 								<div class="author">
 									<div class="block block-monitor"></div>
-									<img class="img-fluid player" src="'.monitorScript($player['address']).'" alt="'.$playerName.'">
+									<div class="playerImageDiv">
+										<img class="img-fluid player" src="'.monitorScript($player['address']).'" alt="'.$playerName.'" />
+										<div class="dropdown detailOptionMenu">
+										  <button class="btn btn-secondary btn-block btn-sm dropdown-toggle btn-icon" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										    <i class="tim-icons icon-settings-gear-63"></i>
+										  </button>
+										  <div class="dropdown-menu dropdown-black dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+												<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit">Edit</a>
+												<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">Delete</a>
+										  </div>
+										</div>
+									</div>
 									<h3 class="mt-3">'.$playerName.'</h3>
 								</div>
-							</p>
+
 							<div class="card-description">
-								<table class="table tablesorter" id="playerInfo">
+								<table class="table tablesorter tableTransparency" id="playerInfo">
 									<tbody>
 										<tr>
 											<td colspan="2">'.$navigation.'</td>
@@ -434,16 +446,6 @@ require_once("_config.php");
 								<hr />
 								'.$management.'
 								'.$reboot.'
-								<hr class="mt-3" />
-								<div class="dropup">
-								  <button class="btn btn-secondary btn-block btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    <i class="tim-icons icon-settings-gear-63"></i> Options
-								  </button>
-								  <div class="dropdown-menu dropdown-black" aria-labelledby="dropdownMenuButton">
-										<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit">Edit</a>
-										<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">Delete</a>
-								  </div>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -624,10 +626,10 @@ require_once("_config.php");
 								<button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
 									<i class="tim-icons icon-settings-gear-63"></i>
 								</button>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+								<div class="dropdown-menu dropdown-menu-right dropdown-black" aria-labelledby="dropdownMenuLink">
 									<a href="index.php?action=view&playerID='.$player['playerID'].'" class="dropdown-item" title="view"><i class="tim-icons icon-tablet-2"></i> details</a>
 									<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit"><i class="tim-icons icon-pencil"></i> edit</a>
-									<a href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete"><i class="tim-icons icon-trash-simple"></i> delete</a>
+									<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete"><i class="tim-icons icon-trash-simple"></i> delete</a>
 								</div>
 							</div>
 							<h5 class="card-category">'.$player['address'].'</h5>
@@ -842,6 +844,24 @@ require_once("_config.php");
 			</div>
 		</div>
 	</div>
+
+	<!-- confirmDelete -->
+	<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Attention!</h5>
+				</div>
+				<div class="modal-body">
+							Do you really want to delete this entry?
+							<div class="form-group text-right">
+							<a class="btn btn-danger btn-ok btn-sm">Delete</a>
+							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+							</div>
+					</div>
+			</div>
+		</div>
+	</div>
 		';
 	}
   else if((isset($_GET['monitoring']) && $_GET['monitoring'] == '1') && isset($_GET['key'])){
@@ -1011,14 +1031,16 @@ require_once("_config.php");
         eA.modal('show');
         return false;
     });
+		$('#confirmDelete').on('show.bs.modal', function(e) {
+	    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+	  });
+
 	$(function(){
      var navMain = $(".navbar-collapse");
      navMain.on("click", "[data-toggle]", null, function () {
          navMain.collapse('hide');
      });
  });
-  </script>
-  <script>
 	function reloadPlayerImage(){
 		$('img.player').each(function(){
 			var url = $(this).attr('src').split('?')[0];
