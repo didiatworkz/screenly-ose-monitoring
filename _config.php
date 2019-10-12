@@ -75,11 +75,11 @@
 	} else $site = NULL;
 
 	function redirect($url, $time = 1){
-		echo'<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
+		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
 	}
 
 	function sysinfo($status, $message, $refresh = false){
-		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
+		echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
 		if($refresh) echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 	}
 
@@ -190,12 +190,12 @@
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 		$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
 		if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
-			$data['is_enabled'] = "0";
-			$data['is_active'] = "0";
+			$data['is_enabled'] = '0';
+			$data['is_active'] = '0';
 		}
 		else {
-			$data['is_enabled'] = "1";
-			$data['is_active'] = "1";
+			$data['is_enabled'] = '1';
+			$data['is_active'] = '1';
 		}
 		if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
 			header('HTTP/1.1 200 OK');
@@ -214,7 +214,7 @@
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
-		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
+		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
 		if($result != ''){
 			header('HTTP/1.1 200 OK');
 			echo $result;
@@ -228,10 +228,21 @@
 		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
+		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
 		header('HTTP/1.1 200 OK');
-		echo "Reboot command send!";
+		echo 'Reboot command send!';
 		$result = callURL('POST', $player['address'].'/api/v1/reboot_screenly', false, $user, $pass, false);
 
+	}
+	if(isset($_POST['editInformation'])){
+		$playerID 	= $_POST['playerID'];
+    $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+    $player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		if($playerID != ''){
+			header('HTTP/1.1 200 OK');
+			$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => $player['player_password']);
+			echo json_encode($return_arr);
+		}
+		else header('HTTP/1.1 404 Not Found');
 	}
 ?>

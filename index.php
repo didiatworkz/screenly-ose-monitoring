@@ -1,7 +1,7 @@
 <?php
 session_set_cookie_params(36000, '/' );
 session_start();
-require_once("_config.php");
+require_once('_config.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,8 +42,9 @@ require_once("_config.php");
     <div class="main-panel">
 	<?php
 	if(isset($_POST['Login']) && md5($_POST['passwort']) == $loginPassword && $_POST['user'] == $loginUsername){
-		$_SESSION['user'] 		= $_POST['user'];
+		$_SESSION['user'] 			= $_POST['user'];
 		$_SESSION['passwort'] 	= $loginPassword;
+		redirect('index.php');
 	}
 
 	if(isset($_GET['action']) && $_GET['action'] == 'logout'){
@@ -55,6 +56,8 @@ require_once("_config.php");
 	}
 
 	if(isset($_SESSION['passwort']) AND $_SESSION['passwort'] == $loginPassword && $_SESSION['user'] == $loginUsername){
+
+		$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 
 		if(isset($_POST['saveAccount'])){
 			$user = $_POST['username'];
@@ -68,6 +71,7 @@ require_once("_config.php");
 				sysinfo('success', 'Account data saved!', 0);
 			}
 			else sysinfo('danger', 'Error!');
+			redirect($backLink, 2);
 		}
 
     if(isset($_POST['saveSettings'])){
@@ -80,6 +84,7 @@ require_once("_config.php");
 				sysinfo('success', 'Settings saved!', 0);
 			}
 			else sysinfo('danger', 'Error!');
+			redirect($backLink, 2);
 		}
 
     if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes'){
@@ -103,8 +108,9 @@ require_once("_config.php");
 
 			if($address){
 				$db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
-				sysinfo('success', 'Player added successfully');
+				sysinfo('success', $name.' added successfully');
 			} else sysinfo('danger', 'Error! - Can \'t add the Player');
+			redirect($backLink, 2);
 		}
 
 		if(isset($_POST['updatePlayer'])){
@@ -119,6 +125,7 @@ require_once("_config.php");
 				$db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
 				sysinfo('success', 'Player successfully updated!');
 			} else sysinfo('danger', 'Error! - Can \'t update the Player');
+			redirect($backLink, 2);
 		}
 
 		if(isset($_GET['action']) && $_GET['action'] == 'delete'){
@@ -128,6 +135,7 @@ require_once("_config.php");
 				sysinfo('success', 'Player successfully removed!');
 			}
 			else sysinfo('danger', 'Error! - Can \'t remove the Player');
+			redirect($backLink, 2);
 		}
 
 		if(isset($_POST['saveAsset'])){
@@ -157,6 +165,7 @@ require_once("_config.php");
 			if(callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $user, $pass, false)){
 				sysinfo('success', 'Asset added successfully');
 			} else sysinfo('danger', 'Error! - Can \'t add the Asset');
+			redirect($backLink, 2);
 		}
 
 		if(isset($_POST['updateAsset'])){
@@ -183,6 +192,7 @@ require_once("_config.php");
 			if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
 				sysinfo('success', 'Asset updated successfully');
 			} else sysinfo('danger', 'Error! - Can \'t update the Asset');
+			redirect($backLink, 2);
 		}
 
 		if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
@@ -196,6 +206,7 @@ require_once("_config.php");
 			if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
 				sysinfo('success', 'Asset deleted successfully');
 			} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
+			redirect($backLink, 2);
 		}
 
 		echo'
@@ -291,7 +302,7 @@ require_once("_config.php");
 					$newAsset		= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
 					$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 					$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
-					$reboot		= '<button data-playerID="'.$player['playerID'].'" class="exec_reboot btn btn-block btn-danger" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
+					$reboot		= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-danger reboot" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
 					$script 		= '
 					<tr>
 						<td>Monitor-Script:</td>
@@ -377,7 +388,7 @@ require_once("_config.php");
 									<td>
 										<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
 										<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
-										data-uri="'.$playerAPI[$i]['uri'].'"  title="edit"><i class="tim-icons icon-pencil"></i></button>
+										data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
 										<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
 									</td>
 								</tr>
@@ -413,7 +424,7 @@ require_once("_config.php");
 										    <i class="tim-icons icon-settings-gear-63"></i>
 										  </button>
 										  <div class="dropdown-menu dropdown-black dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-												<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit">Edit</a>
+												<a href="#" data-playerid="'.$player['playerID'].'" class="dropdown-item editPlayerOpen" title="edit">Edit</a>
 												<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">Delete</a>
 										  </div>
 										</div>
@@ -514,12 +525,12 @@ require_once("_config.php");
 								</div>
 								<div class="form-group">
 									<label for="InputAssetStart">Start</label>
-									<input name="start_date" type="date" class="form-control" id="InputAssetStart" placeholder="Start-Date" value="01.01.1970">
+									<input name="start_date" type="date" class="form-control" id="InputAssetStart" placeholder="Start-Date" value="'.date('Y-m-d', strtotime('now')).'">
 									<input name="start_time" type="time" class="form-control" id="InputAssetStartTime" placeholder="Start-Time" value="12:00">
 								</div>
 								<div class="form-group">
 									<label for="InputAssetEnd">End</label>
-									<input name="end_date" type="date" class="form-control" id="InputAssetEnd" placeholder="End-Date" value="01.01.1970">
+									<input name="end_date" type="date" class="form-control" id="InputAssetEnd" placeholder="End-Date" value="'.date('Y-m-d', strtotime('+1 week')).'">
 									<input name="end_time" type="time" class="form-control" id="InputAssetEndTime" placeholder="End-Time" value="12:00">
 								</div>
 								<div class="form-group">
@@ -527,67 +538,12 @@ require_once("_config.php");
 									<input name="duration" type="number" class="form-control" id="InputAssetDuration" value="30">
 								</div>
 								<div class="form-group text-right">
-									<input name="asset" id="InputAssetId" type="hidden" value="1">
+									<input name="asset" id="InputSubmitId" type="hidden" value="1">
 									<input name="id" id="InputAssetId" type="hidden" value="'.$player['playerID'].'">
 									<button type="submit" name="updateAsset" class="btn btn-warning btn-sm">Update</button>
 									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 								</div>
 							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			';
-			}
-			else {
-				sysinfo('danger', 'No Player submitted!');
-				redirect('index.php', 3);
-			}
-		}
-		else if(isset($_GET['action']) && $_GET['action'] == 'edit'){
-			if(isset($_GET['playerID'])){
-				$playerID 	= $_GET['playerID'];
-				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-				$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-				$action		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
-				echo '
-			<div class="container mb-5">
-				<header class="jumbotron my-4 bg-warning">
-					<h2 class="h2_edit">Edit Player: '.$player['name'].'</h2>
-				</header>
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="card">
-							<div class="card-body">
-								<form id="playerForm" action="'.$action.'" method="POST" data-toggle="validator">
-									<div class="form-group">
-										<label for="InputName">Player name</label>
-										<input name="name" type="text" class="form-control" id="InputName" value="'.$player['name'].'" placeholder="Player-Name">
-									</div>
-									<div class="form-group">
-										<label for="InputLocation">Player location</label>
-										<input name="location" type="text" class="form-control" id="InputLocation" value="'.$player['location'].'" placeholder="Player-Location">
-									</div>
-									<div class="form-group">
-										<label for="InputAdress">IP address</label>
-										<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text"  value="'.$player['address'].'" class="form-control" id="InputAdress" placeholder="192.168.1.100" required>
-										<div class="help-block with-errors"></div>
-									</div>
-									<hr />
-									<div class="form-group">
-										<label for="InputUser">Player authentication </label>
-										<input name="user" type="text" class="form-control" id="InputUser" value="'.$player['player_user'].'" placeholder="Username">
-									</div>
-									<div class="form-group">
-										<input name="pass" type="password" class="form-control" id="InputPassword" value="'.$player['player_password'].'" placeholder="Password">
-									</div>
-									<div class="form-group text-right">
-										<input name="playerID" type="hidden" value="'.$_GET['playerID'].'">
-										<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">Update</button>
-										<a href="'.$action.'" class="btn btn-secondary btn-sm">Close</a>
-									</div>
-								</form>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -628,7 +584,7 @@ require_once("_config.php");
 								</button>
 								<div class="dropdown-menu dropdown-menu-right dropdown-black" aria-labelledby="dropdownMenuLink">
 									<a href="index.php?action=view&playerID='.$player['playerID'].'" class="dropdown-item" title="view"><i class="tim-icons icon-tablet-2"></i> details</a>
-									<a href="index.php?action=edit&playerID='.$player['playerID'].'" class="dropdown-item" title="edit"><i class="tim-icons icon-pencil"></i> edit</a>
+									<a href="#" data-playerid="'.$player['playerID'].'" class="dropdown-item editPlayerOpen" title="edit"><i class="tim-icons icon-pencil"></i> edit</a>
 									<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete"><i class="tim-icons icon-trash-simple"></i> delete</a>
 								</div>
 							</div>
@@ -718,6 +674,50 @@ require_once("_config.php");
 		</div>
 	</div>
 
+	<!-- editPlayer -->
+	<div class="modal fade" id="editPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editPlayerModalLabel">Edit <span id="playerNameTitle" /></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="playerFormEdit" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+						<div class="form-group">
+							<label for="InputPlayerNameEdit">Enter the Screenly Player name</label>
+							<input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="Player-Name" autofocus>
+						</div>
+						<div class="form-group">
+							<label for="InputLocationEdit">Enter the Player location</label>
+							<input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="Player-Location">
+						</div>
+						<div class="form-group">
+							<label for="InputAdressEdit">Enter the IP address of the Screenly Player</label>
+							<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required>
+							<div class="help-block with-errors"></div>
+						</div>
+						<hr />
+						<div class="form-group">
+							<label for="InputUserEdit">Player authentication </label>
+							<input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="Username">
+						</div>
+						<div class="form-group">
+							<input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="Password">
+						</div>
+						<div class="form-group text-right">
+							<input name="playerID" id="playerIDEdit" type="hidden" value="">
+							<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">Update</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- addon -->
 	<div class="modal fade" id="addon" tabindex="-1" role="dialog" aria-labelledby="newAddonModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
@@ -749,7 +749,7 @@ require_once("_config.php");
 	        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
 	      </div>
 				<div class="modal-body">
-						<form id="settingsForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+						<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 							<div class="form-group">
 								<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
 								<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$set['refreshscreen'].'" required>
@@ -780,7 +780,7 @@ require_once("_config.php");
 	        <h5 class="modal-title" id="exampleModalLabel">Account</h5>
 	      </div>
 				<div class="modal-body">
-					<form id="accountForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+					<form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 						<div class="form-group">
 							<label for="InputUsername">Change Username</label>
 							<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required>
@@ -834,7 +834,7 @@ require_once("_config.php");
 				<div class="modal-body">
 							<div class="form-group">
 								<label for="InputSetToken">Public link that can be used without authentication!</label>
-								<input type="text" class="form-control" id="InputSetDuration" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'">
+								<input type="text" class="form-control" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'">
 							</div>
 							<div class="form-group text-right">
 								<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate new token</a>
@@ -859,6 +859,24 @@ require_once("_config.php");
 							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
 							</div>
 					</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- confirmReboot -->
+	<div class="modal fade" id="confirmReboot" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Attention!</h5>
+				</div>
+				<div class="modal-body">
+					Do you really want to reboot the Player now?
+					<div class="form-group text-right">
+						<button class="exec_reboot btn btn-sm btn-danger" title="Reboot now">Reboot now</button>
+						<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -957,106 +975,151 @@ require_once("_config.php");
   </div>
 </div>
   <script>
-	$(function () {
 	  $('[data-tooltip="tooltip"]').tooltip();
-	  $("[data-tooltip=tooltip]").hover(function(){
-		$('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
+	  $('[data-tooltip=tooltip]').hover(function(){
+			$('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
 	  });
-	});
-	$( ".changeState" ).on('click', function() {
-	  var asset = $(this).data("asset_id");
-	  var id = $(this).data("player_id");
-	  var changeAssetState = 1;
-	  $.ajax({
-		url: "_config.php",
-		type: "POST",
-		data: {asset: asset, id: id, changeAssetState: changeAssetState},
-		success: function(data){
-			$("span[data-asset_id='"+asset+"'").toggle(function() {
-				$(this).toggleClass("badge-success badge-danger").show();
-				if($(this).hasClass("badge-danger")) $(this).text("inactive");
-				else $(this).text("active");
+
+		$('.changeState').on('click', function() {
+		  var asset = $(this).data('asset_id');
+		  var id = $(this).data('player_id');
+		  var changeAssetState = 1;
+		  $.ajax({
+				url: '_config.php',
+				type: 'POST',
+				data: {asset: asset, id: id, changeAssetState: changeAssetState},
+				success: function(data){
+					$('span[data-asset_id="'+asset+'"').toggle(function() {
+						$(this).toggleClass('badge-success badge-danger').show();
+						if($(this).hasClass('badge-danger')) $(this).text('inactive');
+						else $(this).text('active');
+					});
+					$.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+				},
+				error: function(data){
+					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+				}
+		  });
+		});
+
+		$('.changeAsset').on('click', function() {
+		  var order = $(this).data('order');
+		  var id = $(this).data('playerid');
+		  var changeAsset = 1;
+		  $.ajax({
+				url: '_config.php',
+				type: 'POST',
+				data: { order: order, playerID: id, changeAsset: changeAsset },
+				success: function(data){
+					$.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+				},
+				error: function(data){
+					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+				}
+		  });
+		});
+
+		$('#assets').DataTable({
+			'order': [[ 2, 'asc' ]],
+			'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
+			'stateSave': true
+		});
+
+	  $('button.options').on('click', function(){
+			var eA = $('#editAsset');
+      eA.find('#InputAssetName').val($(this).data('name'));
+      eA.find('#InputAssetUrl').val($(this).data('uri'));
+      eA.find('#InputAssetStart').val($(this).data('start-date'));
+      eA.find('#InputAssetStartTime').val($(this).data('start-time'));
+      eA.find('#InputAssetEnd').val($(this).data('end-date'));
+      eA.find('#InputAssetEndTime').val($(this).data('end-time'));
+      eA.find('#InputAssetDuration').val($(this).data('duration'));
+      eA.find('#InputAssetId').val($(this).data('asset'));
+      eA.modal('show');
+      return false;
+	  });
+
+		$('.editPlayerOpen').on('click', function() {
+		  var id = $(this).data('playerid');
+		  var editInformation = 1;
+			console.log(id);
+		  $.ajax({
+				url: '_config.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: { playerID: id, editInformation: editInformation },
+				success: function(response){
+					var eP = $('#editPlayer');
+					console.log(response.player_name);
+			      eP.find('#playerIDEdit').val(id);
+						eP.find('#InputPlayerNameEdit').val(response.player_name);
+						eP.find('#playerNameTitle').val(response.player_name);
+			      eP.find('#InputLocationEdit').val(response.player_location);
+						eP.find('#InputAdressEdit').val(response.player_address);
+						eP.find('#InputUserEdit').val(response.player_user);
+						eP.find('#InputPasswordEdit').val(response.player_password);
+			      eP.modal('show');
+			      return false;
+				},
+				error: function(data){
+					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+				}
+		  });
+		});
+
+
+	  $('button.reboot').on('click', function(){
+			var eR = $('#confirmReboot');
+			var id = $(this).data('playerid');
+      eR.modal('show');
+
+			$('.exec_reboot').on('click', function() {
+			  var exec_reboot = 1;
+			  $.ajax({
+					url: '_config.php',
+					type: 'POST',
+					data: { playerID: id, exec_reboot: exec_reboot },
+					success: function(data){
+						$.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+						eR.modal('hide');
+					},
+					error: function(data){
+						$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+						eR.modal('hide');
+					}
+			  });
 			});
-			$.notify({icon: "tim-icons icon-bell-55",message: "Asset status changed"},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
-		},
-		error: function(data){
-			$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
-		}
 	  });
-	});
-	$( ".changeAsset" ).on('click', function() {
-	  var order = $(this).data("order");
-	  var id = $(this).data("playerid");
-	  var changeAsset = 1;
-	  $.ajax({
-			url: "_config.php",
-			type: "POST",
-			data: {order: order, playerID: id, changeAsset: changeAsset},
-			success: function(data){
-				$.notify({icon: "tim-icons icon-bell-55",message: data},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
-			},
-			error: function(data){
-				$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
-			}
-	  });
-	});
-	$( ".exec_reboot" ).on('click', function() {
-	  var id = $(this).data("playerid");
-	  var exec_reboot = 1;
-	  $.ajax({
-			url: "_config.php",
-			type: "POST",
-			data: {playerID: id, exec_reboot: exec_reboot},
-			success: function(data){
-				$.notify({icon: "tim-icons icon-bell-55",message: data},{type: "success",timer: 1000,placement: {from: "top",align: "center"}});
-			},
-			error: function(data){
-				$.notify({icon: "tim-icons icon-bell-55",message: "Error! - Can \'t change the Asset"},{type: "danger",timer: 1000,placement: {from: "top",align: "center"}});
-			}
-	  });
-	});
-	$('#assets').DataTable({
-		"order": [[ 2, "asc" ]],
-	});
-	var eA = $('#editAsset');
-    $('button.options').on('click', function(){
-        eA.find('#InputAssetName').val($(this).data("name"));
-        eA.find('#InputAssetUrl').val($(this).data("uri"));
-        eA.find('#InputAssetStart').val($(this).data("start-date"));
-        eA.find('#InputAssetStartTime').val($(this).data("start-time"));
-        eA.find('#InputAssetEnd').val($(this).data("end-date"));
-        eA.find('#InputAssetEndTime').val($(this).data("end-time"));
-        eA.find('#InputAssetDuration').val($(this).data("duration"));
-        eA.find('#InputAssetId').val($(this).data("asset"));
-        eA.modal('show');
-        return false;
-    });
+
 		$('#confirmDelete').on('show.bs.modal', function(e) {
 	    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 	  });
 
-	$(function(){
-     var navMain = $(".navbar-collapse");
-     navMain.on("click", "[data-toggle]", null, function () {
-         navMain.collapse('hide');
-     });
- });
-	function reloadPlayerImage(){
-		$('img.player').each(function(){
-			var url = $(this).attr('src').split('?')[0];
-			$(this).attr('src', url + '?' + Math.random());
-		})
-	}
-	setInterval("reloadPlayerImage();",<?php echo $set['refreshscreen']; ?>000);
-	$('.modal').on('shown.bs.modal', function(){
-		$(this).find('[autofocus]').focus();
-	});
+		$(function(){
+      var navMain = $('.navbar-collapse');
+      navMain.on('click', '[data-toggle]', null, function () {
+        navMain.collapse('hide');
+      });
+	 	});
+
+		function reloadPlayerImage(){
+			$('img.player').each(function(){
+				var url = $(this).attr('src').split('?')[0];
+				$(this).attr('src', url + '?' + Math.random());
+			})
+		}
+
+		setInterval('reloadPlayerImage();',<?php echo $set['refreshscreen']; ?>000);
+		$('.modal').on('shown.bs.modal', function(){
+			$(this).find('[autofocus]').focus();
+		});
 
   </script>
 	<?php
 	if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
-		echo '<script>
-			$(\'#publicLink\').modal(\'show\');
+		echo '
+			<script>
+				$(\'#publicLink\').modal(\'show\');
 			</script>';
 	}
 	?>

@@ -4,6 +4,13 @@
 .navbar .navbar-brand {
 	position: unset;
 }
+.modal.show .modal-dialog {
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+.modal-backdrop {
+    opacity: 0.9 !important;
+}
 .modal-content {
 	background-color: #212529;
 	border: 1px solid rgba(34, 42, 66, 0.2);
@@ -141,7 +148,10 @@ a:hover {
 }
 .page-item.active .page-link {
   background-color: #ff9100;
-  border-color: #ff9100;
+  border-color: #e3e3e3;
+}
+.page-item.disabled .page-link {
+  color: #ff9100;
 }
 .badge-primary {
   background-color: #ff9100;
