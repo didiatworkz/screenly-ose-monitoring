@@ -1,3 +1,6 @@
+body {
+    background-color: #1e1e24 !important;
+}
 .main-panel > .content {
 	padding: 78px 30px 30px 30px;
 }
@@ -82,7 +85,7 @@ a:hover {
   }
 }
 .footer {
-    padding: 22px 0 22px 0px;
+    padding: 0px 0 22px 0px;
 }
 .btn-primary {
   background-color: #ff9100;
