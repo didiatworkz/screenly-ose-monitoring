@@ -24,7 +24,7 @@ sleep 2
 
 if [ ! -e /home/pi/screenly/server.py ]
 then
-	echo 
+	echo
 	echo "No ScreenlyOSE found!"
 	exit
 fi
@@ -34,9 +34,9 @@ echo "The installation can may be take a while.."
 echo
 echo
 echo
-ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitoring-addon.git} dest=/tmp/addon version=master"
+sudo -u pi ansible localhost -m git -a  "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitoring-addon.git} dest=/tmp/addon version=master"
 cd  /tmp/addon/
-ansible-playbook addon.yml
+sudo -E ansible-playbook addon.yml
 
 header
 echo "Screenly OSE Monitor addon successfuly installed"

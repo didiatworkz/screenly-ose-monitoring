@@ -5,7 +5,7 @@
     owner: pi
     group: pi
     mode: 0755
-    
+
 - set_fact: update_version="False"
 
 - name: check if older version installed
@@ -14,22 +14,22 @@
   register: monitorScript_s
 
 - set_fact: old_monitor="{{monitorScript_s.stat.exists}}"
-  
+
 - name: check if version 1.0 installed
   stat:
     path: /var/www/html/assets/tools/version.txt
   register: version1_0_s
-  
+
 - set_fact: version1_0="{{version1_0_s.stat.exists}}"
 
-- name: check if version 1.1 installed  
+- name: check if version 1.1 installed
   stat:
     path: /var/www/html/monitor/assets/tools/version.txt
   register: version1_1_s
 
 - set_fact: version1_1="{{version1_1_s.stat.exists}}"
 
-- name: check if version 2.0 installed  
+- name: check if version 2.0 installed
   stat:
     path: /var/www/html/monitor/assets/tools/key.php
   register: version2_0_s
@@ -46,7 +46,7 @@
     owner: pi
     group: pi
   when: update_version and version1_0
-  
+
 - name: Backup Database
   copy:
     src: /var/www/html/monitor/dbase.db
@@ -54,7 +54,7 @@
     owner: pi
     group: pi
   when: update_version and version1_1 and not version2_0
-  
+
 # Update ose-monitoring
 - name: Install packages
   apt:
@@ -64,9 +64,9 @@
   vars:
     packages:
     - nginx-light
-    - php-fpm 
-    - php7.0-sqlite3
-    - php7.0-curl
+    - php-fpm
+    - php-sqlite3
+    - php-curl
 
 - name: Copy ose-monitoring
   copy:
@@ -75,22 +75,22 @@
     owner: www-data
     group: www-data
     mode: 0644
-    
+
 - name: Copy monitoring.conf
   copy:
     src: monitoring.conf
     dest: /etc/nginx/sites-enabled/monitoring.conf
-    owner: root 
+    owner: root
     group: root
     mode: 0644
   notify:
     - restart-nginx
-    
+
 - name: Copy ose-monitoring Script
   copy:
     src: ose-monitoring
     dest: /usr/bin/ose-monitoring
-    owner: root 
+    owner: root
     group: root
     mode: 0755
 

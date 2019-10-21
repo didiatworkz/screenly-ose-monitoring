@@ -1,8 +1,18 @@
+body {
+    background-color: #1e1e24 !important;
+}
 .main-panel > .content {
 	padding: 78px 30px 30px 30px;
 }
 .navbar .navbar-brand {
 	position: unset;
+}
+.modal.show .modal-dialog {
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+.modal-backdrop {
+    opacity: 0.9 !important;
 }
 .modal-content {
 	background-color: #212529;
@@ -14,13 +24,28 @@
 .modal-content .modal-header .modal-title {
 	color: #eeeeee;
 }
+.modal-body {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.tableTransparency>thead>tr>th, .tableTransparency>tbody>tr>th, .tableTransparency>tfoot>tr>th, .tableTransparency>thead>tr>td, .tableTransparency>tbody>tr>td, .tableTransparency>tfoot>tr>td {
+    border-color: rgba(255, 255, 255, 0);
+}
 select option{
     color:grey !important;
 }
-.tim-icons {
-	width: 20px;
-	height: 12px;
-	line-height: 8px;
+.playerImageDiv {
+    position: relative;
+}
+.player {
+	position: relative;
+}
+.detailOptionMenu {
+	position: absolute;
+	bottom: 0px;
+	right: 5px;
+}
+.btn:not(.btn-icon) .tim-icons, .navbar .navbar-nav>a.btn:not(.btn-icon) .tim-icons {
+    top: -2px;
 }
 .card-user .author .block.block-monitor {
   background: rgba(255, 255, 255, 0.6);
@@ -49,6 +74,18 @@ a {
 }
 a:hover {
   color: #c221a9;
+}
+.blink {
+  animation: blinker 4s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.footer {
+    padding: 0px 0 22px 0px;
 }
 .btn-primary {
   background-color: #ff9100;
@@ -114,7 +151,10 @@ a:hover {
 }
 .page-item.active .page-link {
   background-color: #ff9100;
-  border-color: #ff9100;
+  border-color: #e3e3e3;
+}
+.page-item.disabled .page-link {
+  color: #ff9100;
 }
 .badge-primary {
   background-color: #ff9100;

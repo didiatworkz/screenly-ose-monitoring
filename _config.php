@@ -1,20 +1,20 @@
-<!--
-                            _
-   ____                    | |
-  / __ \__      _____  _ __| | __ ____
- / / _` \ \ /\ / / _ \| '__| |/ /|_  /
-| | (_| |\ V  V / (_) | |  |   <  / /
- \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
-  \____/
-
-		http://www.atworkz.de
-		   info@atworkz.de
-________________________________________
-		  Screenly OSE Monitor
-	   Version 2.1 - May 2019
-________________________________________
--->
 <?php
+  /*
+	                            _
+	   ____                    | |
+	  / __ \__      _____  _ __| | __ ____
+	 / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+	| | (_| |\ V  V / (_) | |  |   <  / /
+	 \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+	  \____/
+
+			http://www.atworkz.de
+			   info@atworkz.de
+	________________________________________
+			  Screenly OSE Monitor
+		   Version 2.2 - October 2019
+	________________________________________
+	*/
 	ini_set('display_errors',0);
 	error_reporting(E_ALL|E_STRICT);
 
@@ -75,11 +75,11 @@ ________________________________________
 	} else $site = NULL;
 
 	function redirect($url, $time = 1){
-		echo'<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
+		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
 	}
 
 	function sysinfo($status, $message, $refresh = false){
-		echo'<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
+		echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
 		if($refresh) echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 	}
 
@@ -167,31 +167,35 @@ ________________________________________
 	if(@file_exists('update.txt')) {
 		$update = '
 					<li class="nav-item">
-						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link">
-							<i class="tim-icons icon-cloud-download-93"></i> Update available
+						<a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Update available!">
+							<i class="tim-icons icon-cloud-download-93 blink"></i>
+							<p class="d-lg-none">
+								Update available!
+							</p>
 						</a>
-					</li>';
+					</li>
+		';
 
 	}
 	else $update = '';
 
 
 	if(isset($_POST['changeAssetState'])){
-		$id 		= $_POST['id'];
-		$asset		= $_POST['asset'];
-		$value 		= $_POST['value'];
+		$id 				= $_POST['id'];
+		$asset			= $_POST['asset'];
+		$value 			= $_POST['value'];
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 		$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
 		if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
-			$data['is_enabled'] = "0";
-			$data['is_active'] = "0";
+			$data['is_enabled'] = '0';
+			$data['is_active'] = '0';
 		}
 		else {
-			$data['is_enabled'] = "1";
-			$data['is_active'] = "1";
+			$data['is_enabled'] = '1';
+			$data['is_active'] = '1';
 		}
 		if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
 			header('HTTP/1.1 200 OK');
@@ -204,14 +208,41 @@ ________________________________________
 
 	if(isset($_POST['changeAsset'])){
 		$playerID 	= $_POST['playerID'];
-		$orderD 	= $_POST['order'];
+		$orderD 		= $_POST['order'];
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
+		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
+		if($result != ''){
+			header('HTTP/1.1 200 OK');
+			echo $result;
+		}
+		else header('HTTP/1.1 404 Not Found');
+	}
+
+	if(isset($_POST['exec_reboot'])){
+		$playerID 	= $_POST['playerID'];
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
 		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
 		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
-		$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-		if($result == 'Asset switched') header('HTTP/1.1 200 OK');
+		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
+		header('HTTP/1.1 200 OK');
+		echo 'Reboot command send!';
+		$result = callURL('POST', $player['address'].'/api/v1/reboot_screenly', false, $user, $pass, false);
+
+	}
+	if(isset($_POST['editInformation'])){
+		$playerID 	= $_POST['playerID'];
+    $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+    $player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		if($playerID != ''){
+			header('HTTP/1.1 200 OK');
+			$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => $player['player_password']);
+			echo json_encode($return_arr);
+		}
 		else header('HTTP/1.1 404 Not Found');
 	}
 ?>
