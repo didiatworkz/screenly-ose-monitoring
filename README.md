@@ -31,7 +31,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Quick overview if the player is online or not
 + Add-on for displaying the player’s output remotely
 + [NEW] Managing Assets
-+ [NEW] Add Assets 
++ [NEW] Add Assets
 + [NEW] Edit Assets
 + [NEW] New Design
 + [NEW] Monitoring Token
@@ -42,13 +42,12 @@ By installing an add-on on each player, it is also possible to display a "live f
 + [UPDATE] screenshot add-on
 
 ## Bugs
-+ live feed from videos are not displayed
+None
 
 ---
 
 ## Requirements
 + RaspberryPi 3B+
-+ Screenly OSE
 + PHP 7.x
 + SQLite 3.x
 + Ansible
@@ -63,6 +62,8 @@ bash <(curl -sL http://screenly-monitor.atworkz.de)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
 4. Done
+
+---
 
 ## Update
 For the update you only have to run the installer again.
