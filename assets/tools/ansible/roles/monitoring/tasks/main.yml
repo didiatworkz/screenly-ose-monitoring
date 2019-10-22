@@ -64,9 +64,9 @@
   vars:
     packages:
     - nginx-light
-    - php-fpm
-    - php-sqlite3
-    - php-curl
+    - php7.3-fpm
+    - php7.3-sqlite3
+    - php7.3-curl
 
 - name: Copy ose-monitoring
   copy:
