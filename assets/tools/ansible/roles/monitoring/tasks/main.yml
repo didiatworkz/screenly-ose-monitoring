@@ -56,7 +56,7 @@
   when: update_version and version1_1 and not version2_0
 
 # Update ose-monitoring
-- name: Install packages
+- name: Install packages for Raspbian
   apt:
     name: "{{ packages }}"
     state: latest
@@ -67,6 +67,20 @@
     - php-fpm
     - php-sqlite3
     - php-curl
+  when: facter_lsbdistid == 'Raspbian'
+
+- name: Install packages for other OS
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - nginx-light
+    - php7.3-fpm
+    - php7.3-sqlite3
+    - php7.3-curl
+  when: not facter_lsbdistid == 'Raspbian'
 
 - name: Copy ose-monitoring
   copy:
