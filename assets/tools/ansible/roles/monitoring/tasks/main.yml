@@ -67,21 +67,28 @@
     - php-fpm
     - php-sqlite3
     - php-curl
-  when: facter_lsbdistid == 'Raspbian' and ansible_distribution_release == 'buster'
+    
+- name: Looking for the php version
+  shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+\.[0-9]+)'"
+  register: php_output
 
-- name: Install packages for other OS
-  apt:
-    name: "{{ packages }}"
-    state: latest
-    update_cache: yes
-  vars:
-    packages:
-    - nginx-light
-    - php7.3-fpm
-    - php7.3-sqlite3
-    - php7.3-curl
-  when: not facter_lsbdistid == 'Raspbian' and ansible_distribution_release == 'buster'
+- set_fact:
+    MONITORING_PHP_VERSION: "{{ php_output.stdout }}"
 
+- name: Copy monitoing.conf
+  template:
+    src: monitoring.j2
+    dest: /etc/nginx/sites-enabled/monitoring.conf
+
+- name: Change permissons for monitoring.conf
+  file:
+    path: /etc/nginx/sites-enabled/monitoring.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart-nginx
+    
 - name: Copy ose-monitoring
   copy:
     src: /tmp/monitor
@@ -89,16 +96,6 @@
     owner: www-data
     group: www-data
     mode: 0644
-
-- name: Copy monitoring.conf
-  copy:
-    src: monitoring.conf
-    dest: /etc/nginx/sites-enabled/monitoring.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart-nginx
 
 - name: Copy ose-monitoring Script
   copy:
