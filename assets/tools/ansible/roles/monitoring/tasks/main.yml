@@ -65,8 +65,8 @@
     packages:
     - nginx-light
     - php-fpm
-    - php7.3-sqlite3
-    - php7.3-curl
+    - php-sqlite3
+    - php-curl
 
 - name: Copy ose-monitoring
   copy:
