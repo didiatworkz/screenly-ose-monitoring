@@ -64,7 +64,7 @@
   vars:
     packages:
     - nginx-light
-    - php7.3-fpm
+    - php-fpm
     - php7.3-sqlite3
     - php7.3-curl
 
