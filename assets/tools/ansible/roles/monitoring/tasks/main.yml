@@ -56,7 +56,7 @@
   when: update_version and version1_1 and not version2_0
 
 # Update ose-monitoring
-- name: Install packages for Raspbian
+- name: Install packages for Raspbian Buster
   apt:
     name: "{{ packages }}"
     state: latest
@@ -67,7 +67,7 @@
     - php-fpm
     - php-sqlite3
     - php-curl
-  when: facter_lsbdistid == 'Raspbian'
+  when: facter_lsbdistid == 'Raspbian' and ansible_distribution_release == 'buster'
 
 - name: Install packages for other OS
   apt:
@@ -80,7 +80,7 @@
     - php7.3-fpm
     - php7.3-sqlite3
     - php7.3-curl
-  when: not facter_lsbdistid == 'Raspbian'
+  when: not facter_lsbdistid == 'Raspbian' and ansible_distribution_release == 'buster'
 
 - name: Copy ose-monitoring
   copy:
