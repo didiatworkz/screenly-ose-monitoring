@@ -903,41 +903,42 @@ require_once('_config.php');
 	    header("Cache-Control: post-check=0, pre-check=0", false);
 	    header("Pragma: no-cache");
 
-	    if($playerCount['counter'] > 0 && $key == $securityToken){
-	      echo'
-	    	<div class="row">
-	      ';
-	      while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
-	        if($player['name'] == ''){
-	          $name	 			= 'No Player Name';
-	          $imageTag 	= 'No Player Name '.$player['playerID'];
-	        }
-	        else {
-	          $name 			= $player['name'];
-	          $imageTag 	= $player['name'];
-	        }
-	        echo'
-					<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-						<div class="card">
-							<div class="card-header">
-								<h4 class="d-inline">'.$name.'</h4>
-								<h5>'.$player['address'].'</h5>
-							</div>
-							<div class="card-body card-monitor">
-								<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
+	    if($key == $securityToken){
+				if($playerCount['counter'] > 0){
+		      echo'
+		    	<div class="row">
+		      ';
+		      while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+		        if($player['name'] == ''){
+		          $name	 			= 'No Player Name';
+		          $imageTag 	= 'No Player Name '.$player['playerID'];
+		        }
+		        else {
+		          $name 			= $player['name'];
+		          $imageTag 	= $player['name'];
+		        }
+		        echo'
+						<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="d-inline">'.$name.'</h4>
+									<h5>'.$player['address'].'</h5>
+								</div>
+								<div class="card-body card-monitor">
+									<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
+								</div>
 							</div>
 						</div>
-					</div>
-	        ';
-	      }
-	      echo '
-	    	</div>
-			</div>
-	    ';
-	    }
+		        ';
+		      }
+		      echo '
+		    	</div>
+				</div>
+		    ';
+		    }
+				else sysinfo('warning', 'No Player available!');
+			}
 	    else sysinfo('danger', 'Token incorrect - Access denied!');
-
-
 	  }
 		else {
 			if (isset($logedout)){
