@@ -540,9 +540,10 @@ require_once('_config.php');
 											<input name="duration" type="number" class="form-control" id="InputAssetDuration" value="30" />
 										</div>
 										<div class="form-group text-right">
-											<input name="asset" id="InputSubmitId" type="hidden" value="1" />
-											<input name="id" id="InputAssetId" type="hidden" value="'.$player['playerID'].'" />
-											<button type="submit" name="updateAsset" class="btn btn-warning btn-sm">Update</button>
+											<input name="updateAsset" type="hidden" value="1" />
+											<input name="asset" id="InputAssetId"type="hidden" value="1" />
+											<input name="id" id="InputSubmitId" type="hidden" value="'.$player['playerID'].'" />
+											<button type="submit" class="btn btn-warning btn-sm">Update</button>
 											<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 										</div>
 									</form>
