@@ -12,7 +12,7 @@
 			   info@atworkz.de
 	________________________________________
 			  Screenly OSE Monitor
-		   Version 2.4 - November 2019
+		   Version 3.0 - November 2019
 	________________________________________
 	*/
 	ini_set('display_errors',0);
