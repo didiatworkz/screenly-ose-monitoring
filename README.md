@@ -1,6 +1,7 @@
+
 # Screenly OSE Monitoring
 
-![Manage Monitoring](http://www.atworkz.de/_git/monitor/manage2.png)
+<img title="Manage Monitoring" alt="Manage Monitoring" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/manage2.png" />
 
 - [Intro](#what-is-this)
 - [Features](#Features)
@@ -13,6 +14,7 @@
 
 
 ## What is this?
+<img align="right" width="400px" title="Monitoring Overview" alt="Monitoring Overview" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/manage.png" />
 Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player. With this tool, you can manage multiple OSE players via one interface.
 
 In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them.
@@ -20,7 +22,7 @@ In addition to its current display status, you can also manage the assets of a p
 By installing an add-on on each player, it is also possible to display a "live feed" of the player's output. This will then be displayed in the overview, as well.
 
 
-![Screenshot show](http://www.atworkz.de/_git/monitor/manage.png)
+
 
 ## Features
 
@@ -30,24 +32,24 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Simple overview of all players
 + Quick overview if the player is online or not
 + Add-on for displaying the player’s output remotely
-+ [NEW] Managing Assets
-+ [NEW] Add Assets
-+ [NEW] Edit Assets
-+ [NEW] New Design
-+ [NEW] Monitoring Token
-+ [NEW] Bash Tool
-+ [NEW] Screenshots are stored in the RAM
-+ [UPDATE] Performance
-+ [UPDATE] Control Assets
-+ [UPDATE] screenshot add-on
++ Managing Assets
++ Add Assets
++ Edit Assets
++ New Design
++ Public Link Token
++ Bash Tool
++ Screenshots are stored in the RAM
++ Control Assets
++ screenshot extension
 
 ## Bugs
-None
+[Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:open%20is:issue%20label:bug)
 
 ---
 
 ## Requirements
 + RaspberryPi 3B+
++ Raspbian Lite
 + PHP 7.x
 + SQLite 3.x
 + Ansible
@@ -58,7 +60,7 @@ Very simple installation:
 1. Connect to the player via SSH or terminal (ctrl+alt+F1)
 2. Copy this line and execute it
 ```bash
-bash <(curl -sL http://screenly-monitor.atworkz.de)
+bash <(curl -sL https://git.io/fjg7h)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
 4. Done
@@ -74,13 +76,13 @@ But please note that the Add-on may have to be reinstalled on the players. (Curr
 
 ### Monitoring
 ```bash
-bash <(curl -sL http://screenly-monitor.atworkz.de)
+bash <(curl -sL https://git.io/fjg7h)
 ```
 
-### Add-on
+### Extensions
 Link over Webfrontend or this:
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/assets/tools/addon.sh)
+bash <(curl -sL https://git.io/fjg5e)
 ```
 
 ## Login
@@ -92,12 +94,12 @@ Username: demo
 
 Password: demo
 
-
-![Monitoring Overview](http://www.atworkz.de/_git/monitor/screens.png)
-
 ## Bash Controll
 Since version 2.0 there is a small possibility to update or check ose-monitoring via bash.
 For more info check:
 ```bash
 ose-monitoring --help
 ```
+
+
+<img title="Monitoring Overview" alt="Monitoring Overview" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/screens.png" />
