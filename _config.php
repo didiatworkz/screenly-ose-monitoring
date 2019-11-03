@@ -15,7 +15,7 @@
 		   Version 3.0 - November 2019
 	________________________________________
 	*/
-	ini_set('display_errors',0);
+	ini_set('display_errors',1);
 	error_reporting(E_ALL|E_STRICT);
 
 	$dbase_key		= 'assets/tools/key.php';
@@ -24,7 +24,10 @@
 	} else {
 		include_once($dbase_key);
 		$dbase_file = $db_cryproKey;
-		unlink('dbase.db');
+		if(@file_exists('dbase.db')) {
+			unlink('dbase.db');
+		}
+
 	}
 
 	$db 			= new SQLite3($dbase_file);
@@ -48,6 +51,7 @@
 		header("Refresh:0");
 		die("Reload this page");
 	}
+
 	if(@file_exists('assets/tools/version_old.txt')){
 		$oldVersion = file_get_contents('assets/tools/version_old.txt');
 		if($oldVersion <= '2.0'){			// Update Database to Version 2.0
@@ -63,6 +67,9 @@
 			$db->exec("ALTER TABLE `settings` ADD COLUMN `refreshscreen` INTEGER");
 			$db->exec("UPDATE `settings` SET updatecheck=0 WHERE userID=1");
 			$db->exec("UPDATE `settings` SET refreshscreen=5 WHERE userID=1");
+		}
+		if($oldVersion <= '3.0'){			// Update Database to Version 3.0
+			//Nothing
 		}
 		unlink('assets/tools/version_old.txt');
 		unlink('update.txt');
@@ -83,7 +90,23 @@
 		if($refresh) echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 	}
 
-	function callURL($method, $ip, $params = false, $user = false, $pass = false, $ssl = false){
+	function playerAuthentication($value = null){
+		global $dbase_file;
+		$db = new SQLite3($dbase_file);
+		if(filter_var($value, FILTER_VALIDATE_IP)){
+			$playerSQL 	= $db->query("SELECT * FROM player WHERE address='".$value."'");
+		}
+		else if(is_numeric($value)){
+			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$value."'");
+		}
+		else return FALSE;
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
+		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		return array('username' => $user, 'password' => $pass);
+	}
+
+	function callURL($method, $ip, $params = false, $playerID = null, $ssl = false){
 		$headers = array(
 			'Accept: application/json',
 			'Content-Type: application/json',
@@ -92,6 +115,15 @@
 		if($ssl) $prefix = 'https://';
 		else $prefix = 'http://';
 
+		$playerAuth = playerAuthentication($playerID);
+		if($playerAuth['username'] != '' AND $playerAuth['password'] !=''){
+			$user = $playerAuth['username'];
+			$pass = $playerAuth['password'];
+		}
+		else {
+			$user = false;
+			$pass = false;
+		}
 		if($user AND $pass) $url = $prefix.$user.':'.$pass.'@'.$ip;
 		else $url = $prefix.$ip;
 
@@ -109,7 +141,7 @@
 				break;
 			case 'DELETE':
 				curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
-				$url .= '?' . http_build_query($params);
+				//$url .= '?' . http_build_query($params);
 				break;
 		}
 
@@ -128,10 +160,10 @@
 			return $response = json_decode($response, true);
 		}
 		elseif ($code == 301) {
-		   return callURL($method, $ip, $params, $user, $pass, true);
+		   return callURL($method, $ip, $params, $playerID, true);
 		}
 		elseif ($code == 401) {
-			sysinfo('warning', 'Can not logged in to the player! - Wrong User or Password!');
+			sysinfo('warning', 'Can not logged in to the player! - Wrong Username or Password!');
 			return 'authentication error '.$code;
 		}
 		else return 'error '.$code;
@@ -179,25 +211,63 @@
 	}
 	else $update = '';
 
-
-	if(isset($_POST['changeAssetState'])){
+	if(isset($_POST['newAsset'])){
+		$now				= strtotime("-10 minutes");
 		$id 				= $_POST['id'];
-		$asset			= $_POST['asset'];
-		$value 			= $_POST['value'];
+		$url 				= $_POST['url'];
+		$name 			= (isset($_POST['name']) ? $_POST['name'] : $_POST['url']);
+		$mimetype		= $_POST['mimetype'];
+		$start 			= date("Y-m-d", $now);
+		$start_time	= "00:00";
+		$end 				= date("Y-m-d", strtotime("+".$set['end_date']." week"));
+		$end_time		= $start_time;
+		$duration 	= $set['duration'];
+
+		if($name == '') $name = $url;
+
 		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-		$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
+
+		$data 										= array();
+		$data['mimetype'] 				= $mimetype;
+		$data['is_enabled'] 			= 1;
+		$data['name'] 						= $name;
+		$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
+		$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
+		$data['duration'] 				= $duration;
+		$data['play_order']				= 0;
+		$data['nocache'] 					= 0;
+		$data['uri'] 							= $url;
+		$data['skip_asset_check'] = 1;
+
+		if(callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id, false)){
+			header('HTTP/1.1 200 OK');
+			echo 'Asset added successfully';
+			die();
+		}
+		else {
+			header('HTTP/1.1 404 Not Found');
+			echo 'Error! - Can \'t add the Asset';
+			die();
+		}
+	}
+
+	if(isset($_POST['changeAssetState'])){
+		$playerID 			= $_POST['id'];
+		$asset					= $_POST['asset'];
+		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+    $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$playerAddress 	= $player['address'];
+		$data = callURL('GET', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, false, $playerID, false);
 		if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
 			$data['is_enabled'] = '0';
-			$data['is_active'] = '0';
+			$data['is_active'] 	= '0';
 		}
 		else {
 			$data['is_enabled'] = '1';
-			$data['is_active'] = '1';
+			$data['is_active'] 	= '1';
 		}
-		if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+		if(callURL('PUT', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, $data, $playerID, false)){
 			header('HTTP/1.1 200 OK');
 			exit();
 		} else {
@@ -207,13 +277,12 @@
 	}
 
 	if(isset($_POST['changeAsset'])){
-		$playerID 	= $_POST['playerID'];
-		$orderD 		= $_POST['order'];
-		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-		$result = callURL('GET', $player['address'].'/api/v1/assets/control/'.$orderD.'', false, $user, $pass, false);
+		$playerID 			= $_POST['playerID'];
+		$orderD 				= $_POST['order'];
+		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+    $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$playerAddress 	= $player['address'];
+		$result = callURL('GET', $playerAddress.'/api/v1/assets/control/'.$orderD.'', false, $playerID, false);
 		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
 		if($result != ''){
 			header('HTTP/1.1 200 OK');
@@ -223,21 +292,20 @@
 	}
 
 	if(isset($_POST['exec_reboot'])){
-		$playerID 	= $_POST['playerID'];
-		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-		$player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+		$playerID 			= $_POST['playerID'];
+		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$playerAddress 	= $player['address'];
 		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
 		header('HTTP/1.1 200 OK');
 		echo 'Reboot command send!';
-		$result = callURL('POST', $player['address'].'/api/v1/reboot_screenly', false, $user, $pass, false);
-
+		$result = callURL('POST', $playerAddress.'/api/v1/reboot_screenly', false, $playerID, false);
 	}
+
 	if(isset($_POST['editInformation'])){
 		$playerID 	= $_POST['playerID'];
     $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
-    $player 	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+    $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		if($playerID != ''){
 			header('HTTP/1.1 200 OK');
 			$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => $player['player_password']);

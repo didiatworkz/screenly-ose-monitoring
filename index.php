@@ -25,6 +25,7 @@ require_once('_config.php');
 	<link href="assets/css/nucleo-icons.css" rel="stylesheet" />
 	<link href="assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
 	<link rel="stylesheet" href="assets/tools/DataTables/datatables.min.css" />
+	<link rel="stylesheet" href="assets/tools/dropzone/dropzone.min.css">
 	<link href="assets/css/monitor.css" rel="stylesheet" />
 	<script src="assets/js/core/jquery.min.js"></script>
 	<script src="assets/js/core/popper.min.js"></script>
@@ -33,6 +34,8 @@ require_once('_config.php');
 	<script src="assets/js/plugins/bootstrap-notify.js"></script>
 	<script src="assets/js/black-dashboard.min.js?v=1.0.0"></script>
 	<script src="assets/tools/DataTables/datatables.min.js"></script>
+	<script src="assets/tools/dropzone/dropzone.min.js"></script>
+
 </head>
 
 <body>
@@ -83,6 +86,18 @@ require_once('_config.php');
 				else sysinfo('danger', 'Error!');
 				redirect($backLink, 2);
 			}
+
+
+			$scriptAuthUsername = 'dummy';
+			$scriptAuthPassword = 'dummy';
+			if(isset($_GET['playerID']) AND $_GET['playerID'] != ''){
+				$scriptAuth = playerAuthentication($_GET['playerID']);
+				if($scriptAuth["username"] != '' AND $scriptAuth["password"] != ''){
+					$scriptAuthUsername = $scriptAuth["username"];
+					$scriptAuthPassword = $scriptAuth["password"];
+				}
+			}
+			$scriptPlayerAuth = base64_encode($scriptAuthUsername.':'.$scriptAuthPassword);
 
 	    if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes'){
 	      $now 	 = time();
@@ -136,39 +151,6 @@ require_once('_config.php');
 				redirect($backLink, 2);
 			}
 
-			if(isset($_POST['saveAsset'])){
-				$id 				= $_POST['id'];
-				$url 				= $_POST['url'];
-				$start 			= date("Y-m-d", strtotime($_POST['start_date']));
-				$start_time	= $_POST['start_time'];
-				$end 				= date("Y-m-d", strtotime($_POST['end_date']));
-				$end_time		= $_POST['end_time'];
-				$duration 	= $_POST['duration'];
-
-				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-				$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-
-				$data 										= array();
-				$data['mimetype'] 				= 'webpage';
-				$data['is_enabled'] 			= 1;
-				$data['name'] 						= $url;
-				$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
-				$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
-				$data['duration'] 				= $duration;
-				$data['play_order']				= 0;
-				$data['nocache'] 					= 0;
-				$data['uri'] 							= $url;
-				$data['skip_asset_check'] = 1;
-
-				if(callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $user, $pass, false)){
-					sysinfo('success', 'Asset added successfully');
-				}
-				else sysinfo('danger', 'Error! - Can \'t add the Asset');
-				redirect($backLink, 2);
-			}
-
 			if(isset($_POST['updateAsset'])){
 				$id 				= $_POST['id'];
 				$asset 			= $_POST['asset'];
@@ -181,20 +163,18 @@ require_once('_config.php');
 
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-				$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 
-				$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $user, $pass, false);
-				($data['name'] != $name) ? $data['name'] = $name : NULL;
-				($data['duration'] != $duration) ? $data['duration'] = $duration : NULL;
+				$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
+				if($data['name'] != $name) $data['name'] = $name;
+				if($data['duration'] != $duration AND $duration > 1) $data['duration'] = $duration;
+				else $data['duration'] = 30;
 				$data['start_date'] = $start.'T'.$start_time.':00.000Z';
 				$data['end_date'] = $end.'T'.$end_time.':00.000Z';
-
-				if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+				if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					sysinfo('success', 'Asset updated successfully');
 				}
 				else sysinfo('danger', 'Error! - Can \'t update the Asset');
-				redirect($backLink, 2);
+			  redirect($backLink, 2);
 			}
 
 			if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
@@ -202,10 +182,9 @@ require_once('_config.php');
 				$asset 			= $_GET['asset'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-				$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-				$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+				$data 			= NULL;
 
-				if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $user, $pass, false)){
+				if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					sysinfo('success', 'Asset deleted successfully');
 				}
 				else sysinfo('danger', 'Error! - Can \'t delete the Asset');
@@ -288,13 +267,11 @@ require_once('_config.php');
 
 					$player['name'] != '' ? $playerName = $player['name'] : $playerName = 'Unkown Name';
 					$player['location'] != '' ? $playerLocation = $player['location'] : $playerLocation = '';
-					$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-					$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
 
 					if(checkAddress($player['address'])){
-						$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $user, $pass, false);
+						$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $playerID, false);
 						$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-						$monitor	 = callURL('GET', $player['address'].':9020/monitor.txt', false, $user, $pass, false);
+						$monitor	 = callURL('GET', $player['address'].':9020/monitor.txt', false, $playerID, false);
 
 						if($monitor == 1){
 							$monitorInfo = '<span class="badge badge-success">  installed  </span>';
@@ -361,19 +338,21 @@ require_once('_config.php');
 										<tbody>
 	                      ';
 						for($i=0; $i < sizeof($playerAPI); $i++)  {
-							$start					= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
-							$start_date			= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
-							$start_time			= date('H:m', strtotime($playerAPI[$i]['start_date']));
-							$end 						= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
-							$end_date 			= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
-							$end_time 			= date('H:m', strtotime($playerAPI[$i]['end_date']));
-							$default_start 	= date("Y-m-d", time());
-							$default_end 		= date("Y-m-d", strtotime("+".$set['end_date']." week"));
-							$yes 						= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
-							$no 						= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
-
+							$startAsset				= explode("T", $playerAPI[$i]['start_date']);
+							$startAssetTime		= explode("+", $startAsset['1']);
+							$startAssetTimeHM	= explode(":", $startAssetTime['0']);
+							$start						= date('d.m.Y', strtotime($startAsset['0']));
+							$start_date				= date('Y-m-d', strtotime($startAsset['0']));
+							$start_time				= $startAssetTimeHM['0'].':'.$startAssetTimeHM['1'];
+							$endAsset					= explode("T", $playerAPI[$i]['end_date']);
+							$endAssetTime			= explode("+", $endAsset['1']);
+							$endAssetTimeHM		= explode(":", $endAssetTime['0']);
+							$end							= date('d.m.Y', strtotime($endAsset['0']));
+							$end_date					= date('Y-m-d', strtotime($endAsset['0']));
+							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+							$yes 							= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
+							$no 							= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
 							$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
-
 							if($playerAPI[$i]['mimetype'] == 'webpage'){
 								$mimetypeIcon = '<i class="tim-icons icon-world"></i>';
 							}
@@ -475,31 +454,43 @@ require_once('_config.php');
 									</button>
 								</div>
 								<div class="modal-body">
-									<form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
-										<div class="form-group">
-											<label for="InputNewAssetUrl">URL</label>
-											<input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
+									<ul class="nav nav-tabs" role="tablist">
+									  <li class="nav-item">
+									    <a class="nav-link active" href="#url" role="tab" data-toggle="tab">URL</a>
+									  </li>
+									  <li class="nav-item">
+									    <a class="nav-link" href="#upload" role="tab" data-toggle="tab">Upload</a>
+									  </li>
+									</ul>
+
+									<div class="tab-content">
+									  <div role="tabpanel" class="tab-pane active" id="url">
+											<form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
+												<div class="form-group">
+													<label for="InputNewAssetUrl">Asset URL</label>
+													<input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
+												</div>
+												<div class="form-group text-right">
+													<input name="id" type="hidden" value="'.$player['playerID'].'" />
+													<input name="mimetype" type="hidden" value="webpage" />
+													<input name="newAsset" type="hidden" value="1" />
+													<button type="submit" name="saveAsset" class="btn btn-success btn-sm">Send</button>
+													<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+												</div>
+											</form>
 										</div>
-										<div class="form-group">
-											<label for="InputNewStart">Start</label>
-											<input name="start_date" type="date" class="form-control" id="InputNewStart" placeholder="Start-Date" value="'.$default_start.'" />
-											<input name="start_time" type="time" class="form-control" id="InputNewStartTime" placeholder="Start-Time" value="12:00" />
+										<div role="tabpanel" class="tab-pane" id="upload">
+											<form action="http://'.$player['address'].'/api/v1/file_asset" class="dropzone" id="dropzone">
+												<div class="form-group">
+													<input type="file" multiple />
+												</div>
+											</form>
+											<div class="form-group text-right">
+											<br />
+												<button type="button" class="btn btn-secondary btn-sm close_upload">Close</button>
+											</div>
 										</div>
-										<div class="form-group">
-											<label for="InputNewEnd">End</label>
-											<input name="end_date" type="date" class="form-control" id="InputNewEnd" placeholder="End-Date" value="'.$default_end.'" />
-											<input name="end_time" type="time" class="form-control" id="InputNewEndTime" placeholder="End-Time" value="12:00" />
-										</div>
-										<div class="form-group">
-											<label for="InputNewDuration">Duration in sec.</label>
-											<input name="duration" type="number" class="form-control" id="InputNewDuration" value="'.$set['duration'].'" />
-										</div>
-										<div class="form-group text-right">
-											<input name="id" type="hidden" value="'.$player['playerID'].'" />
-											<button type="submit" name="saveAsset" class="btn btn-success btn-sm">Send</button>
-											<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-										</div>
-									</form>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -838,6 +829,7 @@ require_once('_config.php');
 						<hr />
 						Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
 						Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
+						Scripts: <a href="https://datatables.net" target="_blank">DataTables</a><br />
 						Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
 						<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
 	        </div>
@@ -978,148 +970,15 @@ require_once('_config.php');
     </div>
   </div>
 </div>
-  <script>
-	  $('[data-tooltip="tooltip"]').tooltip();
-	  $('[data-tooltip=tooltip]').hover(function(){
-			$('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
-	  });
+  <script type="text/javascript">
 
-		$('.changeState').on('click', function() {
-		  var asset = $(this).data('asset_id');
-		  var id = $(this).data('player_id');
-		  var changeAssetState = 1;
-		  $.ajax({
-				url: '_config.php',
-				type: 'POST',
-				data: {asset: asset, id: id, changeAssetState: changeAssetState},
-				success: function(data){
-					$('span[data-asset_id="'+asset+'"').toggle(function() {
-						$(this).toggleClass('badge-success badge-danger').show();
-						if($(this).hasClass('badge-danger')) $(this).text('inactive');
-						else $(this).text('active');
-					});
-					$.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
-				},
-				error: function(data){
-					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-				}
-		  });
-		});
-
-		$('.changeAsset').on('click', function() {
-		  var order = $(this).data('order');
-		  var id = $(this).data('playerid');
-		  var changeAsset = 1;
-		  $.ajax({
-				url: '_config.php',
-				type: 'POST',
-				data: { order: order, playerID: id, changeAsset: changeAsset },
-				success: function(data){
-					$.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
-				},
-				error: function(data){
-					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-				}
-		  });
-		});
-
-		$('#assets').DataTable({
-			'order': [[ 2, 'asc' ]],
-			'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
-			'stateSave': true
-		});
-
-	  $('button.options').on('click', function(){
-			var eA = $('#editAsset');
-      eA.find('#InputAssetName').val($(this).data('name'));
-      eA.find('#InputAssetUrl').val($(this).data('uri'));
-      eA.find('#InputAssetStart').val($(this).data('start-date'));
-      eA.find('#InputAssetStartTime').val($(this).data('start-time'));
-      eA.find('#InputAssetEnd').val($(this).data('end-date'));
-      eA.find('#InputAssetEndTime').val($(this).data('end-time'));
-      eA.find('#InputAssetDuration').val($(this).data('duration'));
-      eA.find('#InputAssetId').val($(this).data('asset'));
-      eA.modal('show');
-      return false;
-	  });
-
-		$('.editPlayerOpen').on('click', function() {
-		  var id = $(this).data('playerid');
-		  var editInformation = 1;
-			console.log(id);
-		  $.ajax({
-				url: '_config.php',
-				type: 'POST',
-				dataType: 'JSON',
-				data: { playerID: id, editInformation: editInformation },
-				success: function(response){
-					var eP = $('#editPlayer');
-					console.log(response.player_name);
-			      eP.find('#playerIDEdit').val(id);
-						eP.find('#InputPlayerNameEdit').val(response.player_name);
-						eP.find('#playerNameTitle').val(response.player_name);
-			      eP.find('#InputLocationEdit').val(response.player_location);
-						eP.find('#InputAdressEdit').val(response.player_address);
-						eP.find('#InputUserEdit').val(response.player_user);
-						eP.find('#InputPasswordEdit').val(response.player_password);
-			      eP.modal('show');
-			      return false;
-				},
-				error: function(data){
-					$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-				}
-		  });
-		});
-
-
-	  $('button.reboot').on('click', function(){
-			var eR = $('#confirmReboot');
-			var id = $(this).data('playerid');
-      eR.modal('show');
-
-			$('.exec_reboot').on('click', function() {
-			  var exec_reboot = 1;
-			  $.ajax({
-					url: '_config.php',
-					type: 'POST',
-					data: { playerID: id, exec_reboot: exec_reboot },
-					success: function(data){
-						$.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
-						eR.modal('hide');
-					},
-					error: function(data){
-						$.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-						eR.modal('hide');
-					}
-			  });
-			});
-	  });
-
-		$('#confirmDelete').on('show.bs.modal', function(e) {
-	    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-	  });
-
-		$(function(){
-      var navMain = $('.navbar-collapse');
-      navMain.on('click', '[data-toggle]', null, function () {
-        navMain.collapse('hide');
-      });
-	 	});
-
-		function reloadPlayerImage(){
-			$('img.player').each(function(){
-				var url = $(this).attr('src').split('?')[0];
-				$(this).attr('src', url + '?' + Math.random());
-			})
-		}
-
-		setInterval('reloadPlayerImage();',<?php echo $set['refreshscreen']; ?>000);
-		$('.modal').on('shown.bs.modal', function(){
-			$(this).find('[autofocus]').focus();
-		});
+	var scriptPlayerAuth = "<?php echo $scriptPlayerAuth ?>";
+	var settingsRefreshRate = "<?php echo $set['refreshscreen'] ?>000";
 
   </script>
-	<?php
+<script type="text/javascript" src="assets/js/monitor.js"></script>
+
+<?php
 	if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
 		echo '
 			<script>
