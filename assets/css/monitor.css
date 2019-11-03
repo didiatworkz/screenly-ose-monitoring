@@ -7,6 +7,11 @@ body {
 .navbar .navbar-brand {
 	position: unset;
 }
+@media (min-width: 576px){
+  .modal-dialog {
+      max-width: 530px !important;
+  }
+}
 .modal.show .modal-dialog {
     -webkit-transform: none !important;
     transform: none !important;
@@ -336,6 +341,32 @@ a:focus {
 }
 .modal .modal-header .close {
     color: #ffa126;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #ff9100;
+    background-color: transparent;
+}
+.nav-tabs .nav-link:hover{
+    border-color: #acaeaf #acaeaf #e3e3e3;
+}
+.tab-content {
+  margin-top: 10px;
+  padding: 10px;
+}
+.dropzone {
+    min-height: 150px;
+    border: 2px dashed #ff9100;
+    background: none;
+    margin-top: 15px;
+    padding-top: 30px;
+}
+.dropzone .dz-preview.dz-image-preview {
+    background: none;
+}
+.dropzone .dz-preview .dz-image {
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
 }
 @media screen and (max-width: 991px){
 	.navbar .container-fluid {
