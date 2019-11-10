@@ -69,6 +69,7 @@ sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz
 cd  /tmp/monitor/assets/tools/ansible/
 sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
+sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 sleep 2
 header
