@@ -1,7 +1,7 @@
 <?php
 session_set_cookie_params(36000, '/' );
 session_start();
-require_once('_config.php');
+require_once('_functions.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,21 +42,7 @@ require_once('_config.php');
   <div class="wrapper">
     <div class="main-panel">
 	<?php
-		if(isset($_POST['Login']) && md5($_POST['passwort']) == $loginPassword && $_POST['user'] == $loginUsername){
-			$_SESSION['user'] 			= $_POST['user'];
-			$_SESSION['passwort'] 	= $loginPassword;
-			redirect('index.php');
-		}
-
-		if(isset($_GET['action']) && $_GET['action'] == 'logout'){
-			if(session_destroy()){
-				$logedout = true;
-				$_SESSION['passwort'] = '';
-			}
-			else $logedout = false;
-		}
-
-		if(isset($_SESSION['passwort']) AND $_SESSION['passwort'] == $loginPassword && $_SESSION['user'] == $loginUsername){
+		if($loggedIn){
 			$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 
 			if(isset($_POST['saveAccount'])){
@@ -111,11 +97,11 @@ require_once('_config.php');
 	    }
 
 			if(isset($_POST['saveIP'])){
-				$name 		= $_POST['name'];
-				$address 	= $_POST['address'];
-				$location = $_POST['location'];
-				$user 		= $_POST['user'];
-				$pass 		= $_POST['pass'];
+				$name 		= isset($_POST['name']) ? $_POST['name'] : '';
+				$address 	= isset($_POST['address']) ? $_POST['address'] : '';
+				$location = isset($_POST['location']) ? $_POST['location'] : '';
+				$user 		= isset($_POST['user']) ? $_POST['user'] : '';
+				$pass 		= isset($_POST['pass']) ? $_POST['pass'] : '';
 
 				if($address){
 					$db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
@@ -227,9 +213,7 @@ require_once('_config.php');
 							</li>
 							<li class="dropdown nav-item">
 							  <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-								  <div class="photo">
-									  <i class="tim-icons icon-single-02"></i>
-								  </div>
+									<i class="tim-icons icon-single-02"></i>
 								  <b class="caret d-none d-lg-block d-xl-block"></b>
 								  <p class="d-lg-none">User</p>
 							  </a>
@@ -567,12 +551,13 @@ require_once('_config.php');
 					redirect('index.php', 3);
 				}
 			}
+			else if(isset($_GET['action']) && $_GET['action'] == 'addon'){
+				echo 'Addon';
+			}
 			else {
 				$playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
-				$playerCount 	= $db->query("SELECT COUNT(*) AS counter FROM player");
-				$playerCount 	= $playerCount->fetchArray(SQLITE3_ASSOC);
 
-				if($playerCount['counter'] > 0){
+				if($playerCount > 0){
 					echo'
 				<div class="row">
 					';
@@ -614,30 +599,115 @@ require_once('_config.php');
 				';
 				}
 				else {
-					echo '
-				<div class="row">
-					<div class="col-sm-8 offset-sm-2">
-						<div class="card">
-							<div class="card-header ">
-								<div class="row">
-									<div class="col-sm-12 text-left">
-										<h2 class="card-title">Welcome</h2>
+					if($firstSetup == 1){
+						echo '
+						<div class="row">
+							<div class="col-sm-8 offset-sm-2">
+								<div class="card">
+									<div class="card-header ">
+										<div class="row">
+											<div class="col-sm-12 text-left">
+												<h2 class="card-title">First Setup Wizard</h2>
+												<h4 class="text-right">Step 1</h4>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<p class="lead">Thank you for using Screenly OSE Monitoring.<br />
+												To get started, you need to change your username and password.
+										</p>
+										<hr />
+										<form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+											<div class="form-group">
+												<label for="InputUsername">Change Username</label>
+												<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" autofocus required />
+												<div class="help-block with-errors"></div>
+											</div>
+											<div class="form-group">
+												<label for="InputPassword1">Change Password</label>
+												<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required />
+											</div>
+											<div class="form-group">
+												<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required />
+												<div class="help-block with-errors"></div>
+											</div>
+											<div class="form-group">
+											<br />
+												<input name="mode" type="hidden" value="firstStep"/>
+												<button type="submit" name="saveAccount" class="btn btn-primary btn-lg btn-block">Next Step</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
-							<div class="card-body">
-								<p class="lead">With Screenly OSE Monitoring you can set up an unlimited number of players and manage them at a single screen. <br />
-									Additionally there is the possibility to install addons on the players to get even more information in Screenly OSE Monitoring.<br />
+						</div>
+						';
+					}
+					else if($firstSetup == 2 AND checkAddress($_SERVER['SERVER_ADDR'])){
+						$firstSetup = 3;
+						echo '
+						<div class="row">
+							<div class="col-sm-8 offset-sm-2">
+								<div class="card">
+									<div class="card-header ">
+										<div class="row">
+											<div class="col-sm-12 text-left">
+												<h2 class="card-title">First Setup Wizard</h2>
+												<h4 class="text-right">Step 2</h4>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<p class="lead">Do you want to add this Screenly OSE Player to your monitoring?</p>
+										<hr />
+										<form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+											<div class="form-group">
+												<label for="InputPlayerName">Enter the Screenly Player name</label>
+												<input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="Player-Name" autofocus />
+											</div>
+											<div class="form-group">
+												<label for="InputLocation">Enter the Player location</label>
+												<input name="location" type="text" class="form-control" id="InputLocation" placeholder="Player-Location" />
+											</div>
+											<hr />
+											<div class="form-group">
+												<input name="address" type="hidden" id="InputAdress" value="'.$_SERVER['SERVER_ADDR'].'" />
+												<button type="submit" name="saveIP" class="btn btn-primary btn-lg btn-block">Yes</button>
+												<button type="text" onClick="window.location.reload();" class="btn btn-danger btn-lg btn-block">No</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						';
+					}
+					else {
+						echo '
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2">
+							<div class="card">
+								<div class="card-header ">
+									<div class="row">
+										<div class="col-sm-12 text-left">
+											<h2 class="card-title">Welcome</h2>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<p class="lead">With Screenly OSE Monitoring you can set up an unlimited number of players and manage them at a single screen. <br />
+										Additionally there is the possibility to install addons on the players to get even more information in Screenly OSE Monitoring.<br />
+										<br />
+										Add your first Screenly OSE Player and discover how easy it can be to work with.
+									</p>
 									<br />
-									Add your first Screenly OSE Player and discover how easy it can be to work with.
-								</p>
-								<br />
-								<a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#newPlayer">Add your first Screenly OSE Player</a>
+									<a href="#" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#newPlayer">Add your first Screenly OSE Player</a>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				';
+					';
+					}
 				}
 			}
 			echo '
@@ -889,15 +959,13 @@ require_once('_config.php');
 	    </nav>
 	    <div class="content">';
 	    $playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
-	    $playerCount 	= $db->query("SELECT COUNT(*) AS counter FROM player");
-	    $playerCount 	= $playerCount->fetchArray(SQLITE3_ASSOC);
 	    header("refresh:100;url=".$_SERVER['REQUEST_URI']);
 	    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 	    header("Cache-Control: post-check=0, pre-check=0", false);
 	    header("Pragma: no-cache");
 
 	    if($key == $securityToken){
-				if($playerCount['counter'] > 0){
+				if($playerCount > 0){
 		      echo'
 		    	<div class="row">
 		      ';

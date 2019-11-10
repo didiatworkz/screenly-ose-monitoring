@@ -18,7 +18,7 @@ $('.changeState').on('click', function() {
   var id = getUrlParameterByName('playerID');
   var changeAssetState = 1;
   $.ajax({
-    url: '_config.php',
+    url: '_functions.php',
     type: 'POST',
     data: {asset: asset, id: id, changeAssetState: changeAssetState},
     success: function(data){
@@ -40,7 +40,7 @@ $('.changeAsset').on('click', function() {
   var id = getUrlParameterByName('playerID');
   var changeAsset = 1;
   $.ajax({
-    url: '_config.php',
+    url: '_functions.php',
     type: 'POST',
     data: { order: order, playerID: id, changeAsset: changeAsset },
     success: function(data){
@@ -79,7 +79,7 @@ Dropzone.options.dropzone = {
     else if (ftype.includes("video")) mimetype = "video";
     else mimetype = "unknown";
     $.ajax({
-     url: '_config.php',
+     url: '_functions.php',
      type: 'POST',
      data: { name: fname, url: response, mimetype: mimetype, id: playerID, newAsset: upload_asset  },
      success: function(data){
@@ -95,7 +95,7 @@ $("#assetNewForm").submit(function(e) {
   e.preventDefault();
   var form = $(this);
   $.ajax({
-   url: '_config.php',
+   url: '_functions.php',
    type: 'POST',
    data: form.serialize(),
    success: function(data){
@@ -133,7 +133,7 @@ $('.editPlayerOpen').on('click', function() {
   var id = getUrlParameterByName('playerID');
   var editInformation = 1;
   $.ajax({
-    url: '_config.php',
+    url: '_functions.php',
     type: 'POST',
     dataType: 'JSON',
     data: { playerID: id, editInformation: editInformation },
@@ -164,7 +164,7 @@ $('button.reboot').on('click', function(){
   $('.exec_reboot').on('click', function() {
     var exec_reboot = 1;
     $.ajax({
-      url: '_config.php',
+      url: '_functions.php',
       type: 'POST',
       data: { playerID: id, exec_reboot: exec_reboot },
       success: function(data){
