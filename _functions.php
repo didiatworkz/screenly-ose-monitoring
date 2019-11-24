@@ -19,13 +19,13 @@
 
 	ini_set('display_errors',1);
 	error_reporting(E_ALL|E_STRICT);
+	date_default_timezone_set("Europe/Berlin");
+	$apiVersion		  = 'v1.2';
 
 
 /* _______________________________ */
-	include_once('assets/php/database.php');
-	global $loggedIn;
-	$logedout = FALSE;
 	$firstSetup = 0;
+
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];
 	} else $site = NULL;
@@ -34,29 +34,12 @@
 		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
 	}
 
-	if(isset($_POST['Login']) && md5($_POST['passwort']) == $loginPassword && $_POST['user'] == $loginUsername){
-		$_SESSION['user'] 			= $_POST['user'];
-		$_SESSION['passwort'] 	= $loginPassword;
-		redirect('index.php');
-	}
-
-	if(isset($_GET['action']) && $_GET['action'] == 'logout'){
-		if(session_destroy()){
-			$logedout = true;
-			$_SESSION['passwort'] = '';
-		}
-	}
-
-	if(isset($_SESSION['passwort']) AND $_SESSION['passwort'] == $loginPassword && $_SESSION['user'] == $loginUsername) {
-	  $loggedIn = TRUE;
-	}
-	else $loggedIn = FALSE;
-
 	function sysinfo($status, $message, $refresh = false){
 		echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
 		if($refresh) echo'<meta http-equiv="refresh" content="2;URL=index.php">';
 	}
-
+include_once('assets/php/database.php');
+include_once('assets/php/user.php');
 include_once('assets/php/player.php');
 include_once('assets/php/update.php');
 include_once('assets/php/actions.php');

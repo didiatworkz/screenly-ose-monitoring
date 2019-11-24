@@ -58,6 +58,17 @@ $('#assets').DataTable({
   'stateSave': true
 });
 
+$('#extension').DataTable({
+  'order': [[ 1, 'asc' ]],
+  'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
+  'stateSave': false
+});
+
+$('#users').DataTable({
+  'order': [[ 0, 'asc' ]],
+  'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
+  'stateSave': false
+});
 // New Asset
 
 
@@ -127,6 +138,66 @@ $('button.options').on('click', function(){
   eA.find('#InputAssetId').val($(this).data('asset'));
   eA.modal('show');
   return false;
+});
+
+// New player
+$("#newPlayerDiscover").submit(function(e) {
+  e.preventDefault();
+  $(".start_discovery").html('Loading...');
+  $('.start_discovery').prop('disabled', true);
+  $("#InputCIDR").blur();
+  $("#discoverStatus").empty();
+  var form = $(this);
+  $.ajax({
+   url: 'assets/php/discover.php',
+   type: 'GET',
+   data: form.serialize(),
+   success: function(data){
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan complete'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $("#discoverStatus").html(data);
+     $(".start_discovery").html('Discover');
+     $('.start_discovery').prop('disabled', false);
+   },
+   error: function(data){
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan failed!'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $("#discoverStatus").html(data);
+     $(".start_discovery").html('Discover');
+     $('.start_discovery').prop('disabled', false);
+   }
+ });
+
+});
+$('.close_player').on('click', function(){
+  $('#newPlayer').modal('hide');
+  location.reload(0);
+});
+
+// Install Extensions
+$("#installExtension").submit(function(e) {
+  e.preventDefault();
+  $(".install").html('Wait...');
+  $('.install').prop('disabled', true);
+  var form = $(this);
+  $.ajax({
+   url: 'assets/php/extensions.php',
+   type: 'POST',
+   data: form.serialize(),
+   success: function(data){
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan complete'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $(".install").html('Discover');
+     $('.install').prop('disabled', false);
+   },
+   error: function(data){
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan failed!'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $(".install").html('Discover');
+     $('.install').prop('disabled', false);
+   }
+ });
+
+});
+$('.install_close').on('click', function(){
+  $('#installer').modal('hide');
+  location.reload(0);
 });
 
 $('.editPlayerOpen').on('click', function() {

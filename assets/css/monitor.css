@@ -7,6 +7,11 @@ body {
 .navbar .navbar-brand {
 	position: unset;
 }
+@media (min-width: 576px){
+  .modal-dialog {
+      max-width: 530px !important;
+  }
+}
 .modal.show .modal-dialog {
     -webkit-transform: none !important;
     transform: none !important;
@@ -38,6 +43,9 @@ select option{
 }
 .player {
 	position: relative;
+}
+.account-icon {
+  font-size: 100px;
 }
 .detailOptionMenu {
 	position: absolute;

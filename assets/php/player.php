@@ -95,10 +95,9 @@
 		else return false;
 	}
 
-	function monitorScript($url){
+	function playerImage($url){
 		if(checkAddress($url)) {
-			$monitor = callURL('GET', $url.':9020/monitor.txt');
-			if($monitor == 1) return 'http://'.$url.':9020/screen/screenshot.png';
+			if(checkAddress($url.':9020/screen/screenshot.png')) return 'http://'.$url.':9020/screen/screenshot.png';
 			else return 'assets/img/online.png';
 		}
 		else return 'assets/img/offline.png';

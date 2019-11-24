@@ -46,14 +46,20 @@ require_once('_functions.php');
 			$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 
 			if(isset($_POST['saveAccount'])){
+				$firstname = $_POST['firstname'];
+				$name = $_POST['name'];
 				$user = $_POST['username'];
-				if($_POST['password2'] !== ''){
-					$pass = md5($_POST['password2']);
+				if($_POST['password1'] != '' AND $_POST['password2'] != ''){
+					$pass1 = md5($_POST['password1']);
+					$pass2 = md5($_POST['password2']);
 				}
-				else $pass = $set['password'];
+				else {
+					$pass1 = $loginPassword;
+					$pass2 = $loginPassword;
+				}
 
-				if($user AND $pass){
-					$db->exec("UPDATE settings SET username='".$user."', password='".$pass."' WHERE userID='".$loginUserID."'");
+				if($user AND $pass1 == $pass2){
+					$db->exec("UPDATE users SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."' WHERE userID='".$loginUserID."'");
 					sysinfo('success', 'Account data saved!', 0);
 				}
 				else sysinfo('danger', 'Error!');
@@ -206,9 +212,9 @@ require_once('_functions.php');
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="javascript:void(0)" data-toggle="modal" data-target="#addon" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Addon">
+								<a href="index.php?site=extensions" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Extensions">
 									<i class="tim-icons icon-puzzle-10"></i>
-									<p class="d-lg-none">Addon</p>
+									<p class="d-lg-none">Extensions</p>
 								</a>
 							</li>
 							<li class="dropdown nav-item">
@@ -221,9 +227,8 @@ require_once('_functions.php');
 								 	<li class="nav-link">
 									 	<a href="javascript:void(0)" data-toggle="modal" data-target="#account" class="nav-item dropdown-item">Account</a>
 									</li>
-								 	<li class="nav-link">
-										<a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-item dropdown-item">Settings</a>
-									</li>
+									'.$adminUserManagement.'
+									'.$adminSettings.'
 							 		<li class="nav-link">
 										<a href="javascript:void(0)" data-toggle="modal" data-target="#publicLink" class="nav-item dropdown-item">Public Link</a>
 									</li>
@@ -252,21 +257,22 @@ require_once('_functions.php');
 					$player['name'] != '' ? $playerName = $player['name'] : $playerName = 'Unkown Name';
 					$player['location'] != '' ? $playerLocation = $player['location'] : $playerLocation = '';
 
-					if(checkAddress($player['address'])){
+					if(checkAddress($player['address'].'/api/'.$apiVersion.'/assets')){
 						$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $playerID, false);
 						$db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
-						$monitor	 = callURL('GET', $player['address'].':9020/monitor.txt', false, $playerID, false);
+						$monitor	 = checkAddress($player['address'].':9020/screen/screenshot.png');
+						$playerAPICall = TRUE;
 
-						if($monitor == 1){
+						if($monitor == true){
 							$monitorInfo = '<span class="badge badge-success">  installed  </span>';
 						}
-						else $monitorInfo = '<a href="#" data-toggle="modal" data-target="#addon" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
+						else $monitorInfo = '<a href="#" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
 
 						$status		 		= 'online';
 						$statusColor 	= 'success';
 						$newAsset			= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
 						$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
-						$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-components"></i> Open Player Management</a>';
+						$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-spaceship"></i> Open Player Management</a>';
 						$reboot				= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-danger reboot" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
 						$script 			= '
 						<tr>
@@ -274,22 +280,21 @@ require_once('_functions.php');
 							<td>'.$monitorInfo.'</td>
 						</tr>
 						';
-						$assets 			= '
-						<tr>
-							<td>Assets:</td>
-							<td>'.sizeof($playerAPI).'</td>
-						</tr>';
 					}
 					else {
-						$playerAPI 		= NULL;
-						$status 			= 'offline';
-						$statusColor 	= 'danger';
-						$navigation 	= '';
-						$script 			= '';
-						$assets 			= '';
-						$newAsset			= '';
-						$management		= '';
-						$reboot 			= '';
+						$playerAPICall 	= FALSE;
+						$playerAPI 			= NULL;
+						$status 				= 'offline';
+						$statusColor 		= 'danger';
+						$navigation 		= '';
+						$script 				= '';
+						$newAsset				= '';
+						$management			= '';
+						$reboot 				= '';
+						if(checkAddress($player['address'])){
+							$status		 		= 'online';
+							$statusColor 	= 'success';
+						}
 					}
 
 					echo '
@@ -308,7 +313,7 @@ require_once('_functions.php');
 								</div>
 								<div class="card-body">
 	                ';
-					if($status == 'online' && $playerAPI != 'authentication error 401'){
+					if($playerAPICall && $playerAPI != 'authentication error 401'){
 						echo '
 									<table class="table" id="assets">
 										<thead class="text-primary">
@@ -368,7 +373,7 @@ require_once('_functions.php');
 					else {
 						echo  '
 						<div class="alert alert-danger">
-	            <span><b> Offline - </b> No data could be collected!</span>
+	            <span><b> No Screenly API detected! - </b> No data could be collected...</span>
 	          </div>
 						';
 					}
@@ -382,7 +387,7 @@ require_once('_functions.php');
 									<div class="author">
 										<div class="block block-monitor"></div>
 										<div class="playerImageDiv">
-											<img class="img-fluid player" src="'.monitorScript($player['address']).'" alt="'.$playerName.'" />
+											<img class="img-fluid player" src="'.playerImage($player['address']).'" alt="'.$playerName.'" />
 											<div class="dropdown detailOptionMenu">
 											  <button class="btn btn-secondary btn-block btn-sm dropdown-toggle btn-icon" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											    <i class="tim-icons icon-settings-gear-63"></i>
@@ -415,7 +420,6 @@ require_once('_functions.php');
 													<td>'.$playerLocation.'</td>
 												</tr>
 												'.$script.'
-												'.$assets.'
 											</tbody>
 										</table>
 										<hr />
@@ -551,8 +555,11 @@ require_once('_functions.php');
 					redirect('index.php', 3);
 				}
 			}
-			else if(isset($_GET['action']) && $_GET['action'] == 'addon'){
-				echo 'Addon';
+			else if(isset($_GET['site']) && $_GET['site'] == 'extensions'){
+				include('assets/php/extensions.php');
+			}
+			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement' AND getGroupID($loginUserID) == 1){
+				include('assets/php/usermanagement.php');
 			}
 			else {
 				$playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
@@ -588,7 +595,7 @@ require_once('_functions.php');
 								<h5 class="card-category">'.$player['address'].'</h5>
 							</div>
 							<div class="card-body ">
-								<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'" onerror="reloadPlayerImage();"></a>
+								<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.playerImage($player['address']).'" alt="'.$imageTag.'" onerror="reloadPlayerImage();"></a>
 							</div>
 						</div>
 					</div>
@@ -724,33 +731,65 @@ require_once('_functions.php');
 						</button>
 					</div>
 					<div class="modal-body">
-						<form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-							<div class="form-group">
-								<label for="InputPlayerName">Enter the Screenly Player name</label>
-								<input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="Player-Name" autofocus />
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" href="#manual" role="tab" data-toggle="tab">Manual</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#auto" role="tab" data-toggle="tab">Auto</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="manual">
+								<form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+									<div class="form-group">
+										<label for="InputPlayerName">Enter the Screenly Player name</label>
+										<input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="Player-Name" autofocus />
+									</div>
+									<div class="form-group">
+										<label for="InputLocation">Enter the Player location</label>
+										<input name="location" type="text" class="form-control" id="InputLocation" placeholder="Player-Location" />
+									</div>
+									<div class="form-group">
+										<label for="InputAdress">Enter the IP address of the Screenly Player</label>
+										<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
+										<div class="help-block with-errors"></div>
+									</div>
+									<hr />
+									<div class="form-group">
+										<label for="InputUser">Player authentication </label>
+										<input name="user" type="text" class="form-control" id="InputUser" placeholder="Username" />
+									</div>
+									<div class="form-group">
+										<input name="pass" type="password" class="form-control" id="InputPassword" placeholder="Password" />
+									</div>
+									<div class="form-group text-right">
+										<button type="submit" name="saveIP" class="btn btn-success btn-sm">Save</button>
+										<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+									</div>
+								</form>
 							</div>
-							<div class="form-group">
-								<label for="InputLocation">Enter the Player location</label>
-								<input name="location" type="text" class="form-control" id="InputLocation" placeholder="Player-Location" />
+							<div role="tabpanel" class="tab-pane" id="auto">
+								<form id="newPlayerDiscover" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+									<div class="form-group">
+										<label for="InputCIDR">Enter the IP Range</label>
+										<input name="range" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$" data-error="No valid IPv4 address with CIDR" type="text" class="form-control" id="InputCIDR" placeholder="192.168.1.0/24" required />
+										<div class="help-block with-errors"></div>
+									</div>
+									<div class="form-group">
+										<label for="discoverStatus">Status</label>
+										<hr />
+										<div id="discoverStatus"></div>
+									</div>
+									<div class="form-group text-right">
+										<input name="userID" type="hidden" value="'.$loginUserID.'" />
+										<button type="submit" name="startDiscover" class="btn btn-primary btn-sm start_discovery">Discover</button>
+										<button type="button" class="btn btn-secondary btn-sm close_player">Close</button>
+									</div>
+								</form>
 							</div>
-							<div class="form-group">
-								<label for="InputAdress">Enter the IP address of the Screenly Player</label>
-								<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
-								<div class="help-block with-errors"></div>
-							</div>
-							<hr />
-							<div class="form-group">
-								<label for="InputUser">Player authentication </label>
-								<input name="user" type="text" class="form-control" id="InputUser" placeholder="Username" />
-							</div>
-							<div class="form-group">
-								<input name="pass" type="password" class="form-control" id="InputPassword" placeholder="Password" />
-							</div>
-							<div class="form-group text-right">
-								<button type="submit" name="saveIP" class="btn btn-success btn-sm">Save</button>
-								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-							</div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -800,60 +839,6 @@ require_once('_functions.php');
 			</div>
 		</div>
 
-		<!-- addon -->
-		<div class="modal fade" id="addon" tabindex="-1" role="dialog" aria-labelledby="newAddonModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="newAddonModalLabel">Addon</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<img src="assets/img/addon.png" class="img-fluid mx-auto d-block" alt="addon" style="height: 180px" />
-						The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
-						You have the possibility to get a "live" image of the player\'s output.<br /><br />
-						To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-						<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/tools/addon.sh)">
-						After that the player restarts and the addon has been installed.<br />
-						<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- settings -->
-		<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-		        <h5 class="modal-title">Settings</h5>
-		      </div>
-					<div class="modal-body">
-							<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-								<div class="form-group">
-									<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
-									<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$set['refreshscreen'].'" required />
-								</div>
-								<div class="form-group">
-									<label for="InputSetDuration">Default Duration for Assets</label>
-									<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
-								</div>
-								<div class="form-group">
-									<label for="InputSetEndDate">Delay of weeks for the end date</label>
-									<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
-								</div>
-								<div class="form-group text-right">
-									<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
-									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-								</div>
-							</form>
-	          </div>
-				</div>
-			</div>
-		</div>
-
 		<!-- account -->
 		<div class="modal fade" id="account" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -862,18 +847,44 @@ require_once('_functions.php');
 		        <h5 class="modal-title">Account</h5>
 		      </div>
 					<div class="modal-body">
+            <div class="card card-user">
+              <div class="card-body">
+                <p class="card-text">
+                  <div class="author">
+                    <div class="block block-one"></div>
+                    <div class="block block-two"></div>
+                    <div class="block block-three"></div>
+                    <div class="block block-four"></div>
+  									<i class="tim-icons icon-single-02 account-icon"></i><br /><br />
+                    <h4 class="title">'.$loginFullname.'</h4>
+                    <span class="badge badge-secondary" title="Usergroup">'.$loginGroupName.'</span>
+                  </div>
+                </p>
+	            </div>
+						</div>
 						<form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 							<div class="form-group">
+								<label for="InputFirstname">Firstname</label>
+								<input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" value="'.$loginFirstname.'" />
+								<div class="help-block with-errors"></div>
+							</div>
+							<div class="form-group">
+								<label for="InputName">Name</label>
+								<input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" value="'.$loginName.'" />
+								<div class="help-block with-errors"></div>
+							</div>
+							<hr />
+							<div class="form-group">
 								<label for="InputUsername">Change Username</label>
-								<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$set['username'].'" required />
+								<input name="username" type="text" class="form-control" id="InputUsername" placeholder="New Username" value="'.$loginUsername.'" />
 								<div class="help-block with-errors"></div>
 							</div>
 							<div class="form-group">
 								<label for="InputPassword1">Change Password</label>
-								<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required />
+								<input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" />
 							</div>
 							<div class="form-group">
-								<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required />
+								<input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" />
 								<div class="help-block with-errors"></div>
 							</div>
 							<div class="form-group text-right">
@@ -885,7 +896,43 @@ require_once('_functions.php');
 				</div>
 			</div>
 		</div>
+		';
+		if($loginGroupID == 1){
+			echo '
+			<!-- settings -->
+			<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+			        <h5 class="modal-title">Settings</h5>
+			      </div>
+						<div class="modal-body">
+								<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+									<div class="form-group">
+										<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
+										<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+									</div>
+									<div class="form-group">
+										<label for="InputSetDuration">Default Duration for Assets</label>
+										<input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
+									</div>
+									<div class="form-group">
+										<label for="InputSetEndDate">Delay of weeks for the end date</label>
+										<input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
+									</div>
+									<div class="form-group text-right">
+										<button type="submit" name="saveSettings" class="btn btn-primary btn-sm">Update</button>
+										<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+									</div>
+								</form>
+		          </div>
+					</div>
+				</div>
+			</div>
+			';
+		}
 
+		echo '
 		<!-- info -->
 		<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg" role="document">
@@ -986,7 +1033,7 @@ require_once('_functions.php');
 									<h5>'.$player['address'].'</h5>
 								</div>
 								<div class="card-body card-monitor">
-									<img class="player" src="'.monitorScript($player['address']).'" alt="'.$imageTag.'">
+									<img class="player" src="'.playerImage($player['address']).'" alt="'.$imageTag.'">
 								</div>
 							</div>
 						</div>
@@ -1018,9 +1065,9 @@ require_once('_functions.php');
 								<input name="user" type="text" class="form-control" placeholder="Username" autofocus>
 							</div>
 							<div class="form-group">
-								<input name="passwort" type="password" class="form-control" placeholder="Password">
+								<input name="password" type="password" class="form-control" placeholder="Password">
 							</div>
-							<button type="submit" name="Login" class="btn btn-primary btn-block">Login</button>
+							<button type="submit" name="Login" class="btn btn-primary btn-block" value="1">Login</button>
 						</form>
 					</div>
 				</div>
@@ -1041,7 +1088,7 @@ require_once('_functions.php');
   <script type="text/javascript">
 
 	var scriptPlayerAuth = "<?php echo $scriptPlayerAuth ?>";
-	var settingsRefreshRate = "<?php echo $set['refreshscreen'] ?>000";
+	var settingsRefreshRate = "<?php echo $loginRefreshTime ?>000";
 
   </script>
 <script type="text/javascript" src="assets/js/monitor.js"></script>

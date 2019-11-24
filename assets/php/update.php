@@ -1,7 +1,7 @@
 <?php
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
   shell_exec('ose-monitoring --scriptupdate');
-  $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE userID=1");
+  $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");
 }
 
 if(@file_exists('update.txt')) {

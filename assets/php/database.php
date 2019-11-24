@@ -1,4 +1,5 @@
-<?php $dbase_key		= 'assets/tools/key.php';
+<?php
+$dbase_key		= 'assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
   $dbase_file = 'dbase.db';
 } else {
@@ -10,17 +11,6 @@ if(!@file_exists($dbase_key)) {
 
 }
 
-$db 			= new SQLite3($dbase_file);
-$set 			= $db->query("SELECT * FROM settings WHERE userID = 1");
-$set 			= $set->fetchArray(SQLITE3_ASSOC);
-$loginUsername 	= $set['username'];
-$loginPassword 	= $set['password'];
-$loginUserID 	= $set['userID'];
-$securityToken	= $set['token'];
-$updatecheck	= $set['updatecheck'];
-$systemVersion  = file_get_contents('assets/tools/version.txt');
-$apiVersion		= 'v1.2';
-
 if(!@file_exists($dbase_key)){
   $token = md5($systemVersion.time().$loginPassword).'.db';
   $keyFile = '<?php
@@ -31,6 +21,14 @@ if(!@file_exists($dbase_key)){
   header("Refresh:0");
   die("Reload this page");
 }
+
+$db 			      = new SQLite3($dbase_file);
+$set 			      = $db->query("SELECT * FROM settings");
+$set 			      = $set->fetchArray(SQLITE3_ASSOC);
+$securityToken	= $set['token'];
+$updatecheck	  = $set['updatecheck'];
+$systemVersion  = file_get_contents('assets/tools/version.txt');
+
 
 if(@file_exists('assets/tools/version_old.txt')){
   $oldVersion = file_get_contents('assets/tools/version_old.txt');
@@ -49,10 +47,27 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("UPDATE `settings` SET refreshscreen=5 WHERE userID=1");
   }
   if($oldVersion <= '3.0'){			// Update Database to Version 3.0
-    //Nothing
+    $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`end_date`	INTEGER,	`updatecheck`	INTEGER)");
+    $db->exec("INSERT INTO `settings`(duration,token,end_date,updatecheck) SELECT duration,token,end_date,updatecheck FROM `settings_tmp`");
+    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `groupID`	INTEGER,  `username`	TEXT NOT NULL,`password`	TEXT NOT NULL, `firstname`	TEXT, `name`	TEXT, 	`refreshscreen`	INTEGER,	`updateEntry`	INTEGER, `active`	INTEGER, `last_login`	INTEGER)");
+    $db->exec("INSERT INTO `users`(username,password,refreshscreen) SELECT username,password,refreshscreen FROM `settings_tmp`");
+    $db->exec("UPDATE `users` SET groupID=1 WHERE userID=1");
+    $db->exec("UPDATE `users` SET updateEntry=0 WHERE userID=1");
+    $db->exec("UPDATE `users` SET firstname='John' WHERE userID=1");
+    $db->exec("UPDATE `users` SET name='Doe' WHERE userID=1");
+    $db->exec("UPDATE `users` SET active=1 WHERE userID=1");
+    $db->exec("UPDATE `users` SET updateEntry='".time()."' WHERE userID=1");
+    $db->exec("DROP TABLE `settings_tmp`");
+    $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT,`name`	TEXT)");
+    $db->exec("INSERT INTO `userGroups` (name) VALUES('Admin')");
+    $db->exec("INSERT INTO `userGroups` (name) VALUES('User')");
+    $db->exec("CREATE TABLE `userGroupMapping` (`mappingID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER, `groupID`	INTEGER)");
+    $db->exec("INSERT INTO `userGroupMapping` (userID,groupID) VALUES(1,1)");
+
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
-  header("Refresh:0");
+  //header("Refresh:0");
   die("Reload this page");
 }
