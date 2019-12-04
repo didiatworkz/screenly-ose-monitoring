@@ -48,7 +48,7 @@
     $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$playerAddress 	= $player['address'];
 		$data = callURL('GET', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, false, $playerID, false);
-		if($data['is_enabled'] == 1 AND $data['is_active'] == 1){
+		if($data['is_enabled'] == 1){
 			$data['is_enabled'] = '0';
 			$data['is_active'] 	= '0';
 		}
@@ -56,6 +56,7 @@
 			$data['is_enabled'] = '1';
 			$data['is_active'] 	= '1';
 		}
+		if($data['mimetype'] == 'video') $data['duration'] = 0;
 		if(callURL('PUT', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, $data, $playerID, false)){
 			header('HTTP/1.1 200 OK');
 			exit();
