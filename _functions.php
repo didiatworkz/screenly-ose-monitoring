@@ -24,6 +24,7 @@
 
 
 /* _______________________________ */
+	$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 	$firstSetup = 0;
 
 	if(isset($_GET['site'])){
@@ -44,11 +45,11 @@ include_once('assets/php/player.php');
 include_once('assets/php/update.php');
 include_once('assets/php/actions.php');
 
-if($loginUsername == 'demo' AND $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
+if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
 	setcookie('firstSetup', true, time() + (86400 * 999), '/');
 	$firstSetup = 1;
 }
-else if (isset($_COOKIE['firstSetup']) AND $playerCount == 0) {
+else if (isset($_COOKIE['firstSetup']) && $playerCount == 0) {
 	$firstSetup = 2;
 }
 else if($playerCount >= 1) {
