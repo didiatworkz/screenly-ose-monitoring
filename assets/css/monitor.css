@@ -35,6 +35,9 @@ body {
 .tableTransparency>thead>tr>th, .tableTransparency>tbody>tr>th, .tableTransparency>tfoot>tr>th, .tableTransparency>thead>tr>td, .tableTransparency>tbody>tr>td, .tableTransparency>tfoot>tr>td {
     border-color: rgba(255, 255, 255, 0);
 }
+table.dataTable tr.dtrg-group td {
+    background-color: transparent;
+}
 select option{
     color:grey !important;
 }
