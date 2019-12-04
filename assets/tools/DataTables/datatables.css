@@ -4,10 +4,10 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#bs4/dt-1.10.18/r-2.2.2
+ *   https://datatables.net/download/#bs4/dt-1.10.20/r-2.2.3/rg-1.1.1/rr-1.2.6
  *
  * Included libraries:
- *   DataTables 1.10.18, Responsive 2.2.2
+ *   DataTables 1.10.20, Responsive 2.2.3, RowGroup 1.1.1, RowReorder 1.2.6
  */
 
 table.dataTable {
@@ -397,6 +397,52 @@ div.dtr-modal div.dtr-modal-background {
 }
 div.dtr-bs-modal table.table tr:first-child td {
   border-top: none;
+}
+
+
+table.dataTable tr.dtrg-group td {
+  background-color: #e0e0e0;
+}
+
+table.dataTable tr.dtrg-group.dtrg-level-0 td {
+  font-weight: bold;
+}
+
+table.dataTable tr.dtrg-group.dtrg-level-1 td,
+table.dataTable tr.dtrg-group.dtrg-level-2 td {
+  background-color: #f0f0f0;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  padding-left: 2em;
+  font-size: 0.9em;
+}
+
+table.dataTable tr.dtrg-group.dtrg-level-2 td {
+  background-color: #f3f3f3;
+}
+
+
+table.dt-rowReorder-float {
+  position: absolute !important;
+  opacity: 0.8;
+  table-layout: fixed;
+  outline: 2px solid #0275d8;
+  outline-offset: -2px;
+  z-index: 2001;
+}
+
+tr.dt-rowReorder-moving {
+  outline: 2px solid #888;
+  outline-offset: -2px;
+}
+
+body.dt-rowReorder-noOverflow {
+  overflow-x: hidden;
+}
+
+table.dataTable td.reorder {
+  text-align: center;
+  cursor: move;
 }
 
 
