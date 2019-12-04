@@ -158,7 +158,7 @@ session_start();
 					sysinfo('success', 'Asset deleted successfully');
 				}
 				else sysinfo('danger', 'Error! - Can \'t delete the Asset');
-				redirect($backLink, 2);
+				redirect($backLink, 1);
 			}
 
 			echo'
@@ -299,6 +299,7 @@ session_start();
 												<th>Name</th>
 												<th>Date</th>
 												<th class="d-none d-sm-block">Status</th>
+												<th class="d-none">Show</th>
 												<th><span class="d-none d-sm-block">Options</span></th>
 											</tr>
 										</thead>
@@ -319,7 +320,7 @@ session_start();
 							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
 							$yes 							= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
 							$no 							= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
-							$playerAPI[$i]['is_active'] == 1 ? $active = $yes : $active = $no;
+							$playerAPI[$i]['is_enabled'] == 1 ? $active = $yes : $active = $no;
 							if($playerAPI[$i]['mimetype'] == 'webpage'){
 								$mimetypeIcon = '<i class="tim-icons icon-world"></i>';
 							}
@@ -329,11 +330,13 @@ session_start();
 							else {
 								$mimetypeIcon = '<i class="tim-icons icon-image-02"></i>';
 							}
+							$playerAPI[$i]['is_active'] == 1 ? $shown = 'Shown' : $shown = 'Hidden';
 							echo '
 											<tr>
-												<td>'.$mimetypeIcon.' <span class="d-inline d-sm-none">'.$active.' <br /></span> '.$playerAPI[$i]['name'].'</td>
+												<td>'.$mimetypeIcon.' <span class="d-inline d-sm-none"><br /></span> '.$playerAPI[$i]['name'].' <span class="d-inline d-sm-none"><br />'.$active.'</span></td>
 												<td>Start: '.$start.'<br />End: '.$end.'</td>
 												<td class="d-none d-sm-block">'.$active.'</td>
+												<td class="d-none">'.$shown.'</td>
 												<td>
 													<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
 													<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
@@ -808,6 +811,7 @@ session_start();
 							</div>
 							<div class="form-group text-right">
 								<input name="playerID" id="playerIDEdit" type="hidden" value="" />
+								<input name="mimetype" id="playerMimetype" type="hidden" value="" />
 								<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">Update</button>
 								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 							</div>
