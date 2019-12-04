@@ -53,21 +53,27 @@ $('.changeAsset').on('click', function() {
 });
 
 $('#assets').DataTable({
-  'order': [[ 2, 'asc' ]],
-  'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  'stateSave': true
+  responsive: true,
+  orderFixed: [[ 3, 'desc' ], [ 2, 'asc' ]],
+  rowGroup: {
+    dataSrc: 3,
+  },
+  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+  stateSave: true
 });
 
 $('#extension').DataTable({
-  'order': [[ 1, 'asc' ]],
-  'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  'stateSave': false
+  responsive: true,
+  order: [[ 1, 'asc' ]],
+  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+  stateSave: false
 });
 
 $('#users').DataTable({
-  'order': [[ 0, 'asc' ]],
-  'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  'stateSave': false
+  responsive: true,
+  order: [[ 0, 'asc' ]],
+  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+  stateSave: false
 });
 // New Asset
 
