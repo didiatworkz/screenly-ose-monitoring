@@ -1,7 +1,6 @@
 <?php
 session_set_cookie_params(36000, '/' );
 session_start();
-require_once('_functions.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,39 +38,18 @@ require_once('_functions.php');
 </head>
 
 <body>
+	<?php	require_once('_functions.php');	?>
   <div class="wrapper">
     <div class="main-panel">
 	<?php
 		if($loggedIn){
-			$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 
-			if(isset($_POST['saveAccount'])){
-				$firstname = $_POST['firstname'];
-				$name = $_POST['name'];
-				$user = $_POST['username'];
-				if($_POST['password1'] != '' AND $_POST['password2'] != ''){
-					$pass1 = md5($_POST['password1']);
-					$pass2 = md5($_POST['password2']);
-				}
-				else {
-					$pass1 = $loginPassword;
-					$pass2 = $loginPassword;
-				}
-
-				if($user AND $pass1 == $pass2){
-					$db->exec("UPDATE users SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."' WHERE userID='".$loginUserID."'");
-					sysinfo('success', 'Account data saved!', 0);
-				}
-				else sysinfo('danger', 'Error!');
-				redirect($backLink, 2);
-			}
-
-	    if(isset($_POST['saveSettings'])){
+	    if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
 				$refreshscreen = $_POST['refreshscreen'];
 				$duration			 = $_POST['duration'];
 		    $end_date 		 = $_POST['end_date'];
 
-				if($duration AND $end_date){
+				if($duration && $end_date){
 					$db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."', refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'");
 					sysinfo('success', 'Settings saved!', 0);
 				}
@@ -82,9 +60,9 @@ require_once('_functions.php');
 
 			$scriptAuthUsername = 'dummy';
 			$scriptAuthPassword = 'dummy';
-			if(isset($_GET['playerID']) AND $_GET['playerID'] != ''){
+			if(isset($_GET['playerID']) && $_GET['playerID'] != ''){
 				$scriptAuth = playerAuthentication($_GET['playerID']);
-				if($scriptAuth["username"] != '' AND $scriptAuth["password"] != ''){
+				if($scriptAuth["username"] != '' && $scriptAuth["password"] != ''){
 					$scriptAuthUsername = $scriptAuth["username"];
 					$scriptAuthPassword = $scriptAuth["password"];
 				}
@@ -158,7 +136,7 @@ require_once('_functions.php');
 
 				$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
 				if($data['name'] != $name) $data['name'] = $name;
-				if($data['duration'] != $duration AND $duration > 1) $data['duration'] = $duration;
+				if($data['duration'] != $duration && $duration > 1) $data['duration'] = $duration;
 				else $data['duration'] = 30;
 				$data['start_date'] = $start.'T'.$start_time.':00.000Z';
 				$data['end_date'] = $end.'T'.$end_time.':00.000Z';
@@ -558,7 +536,7 @@ require_once('_functions.php');
 			else if(isset($_GET['site']) && $_GET['site'] == 'extensions'){
 				include('assets/php/extensions.php');
 			}
-			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement' AND getGroupID($loginUserID) == 1){
+			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement' && getGroupID($loginUserID) == 1){
 				include('assets/php/usermanagement.php');
 			}
 			else {
@@ -650,7 +628,7 @@ require_once('_functions.php');
 						</div>
 						';
 					}
-					else if($firstSetup == 2 AND checkAddress($_SERVER['SERVER_ADDR'])){
+					else if($firstSetup == 2 && checkAddress($_SERVER['SERVER_ADDR'])){
 						$firstSetup = 3;
 						echo '
 						<div class="row">
@@ -941,6 +919,7 @@ require_once('_functions.php');
 		        <h5 class="modal-title">Screenly OSE Monitor</h5>
 		      </div>
 					<div class="modal-body">
+					  <a href="https://atworkz.de" target="_blank"><img src="assets/img/atworkz-logo.png" class="img-fluid mx-auto d-block" /></a>
 						Version '.$systemVersion.' <br />
 						Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
 						<hr />
@@ -1052,9 +1031,6 @@ require_once('_functions.php');
 			if (isset($logedout)){
 				sysinfo('success', '<i class="fa fa-check"></i> You have been successfully logged out.');
 			}
-			if(isset($_POST['Login'])){
-				sysinfo('danger', 'The entered login data are not correct!');
-			}
 			echo '
 				<div class="content">
 					<div class="col-xs-12 col-md-4 offset-md-4 text-center p-3 mb-5">
@@ -1087,11 +1063,12 @@ require_once('_functions.php');
 </div>
   <script type="text/javascript">
 
-	var scriptPlayerAuth = "<?php echo $scriptPlayerAuth ?>";
-	var settingsRefreshRate = "<?php echo $loginRefreshTime ?>000";
+	var scriptPlayerAuth = "<?php echo ($loggedIn ? $scriptPlayerAuth : '10'); ?>";
+	var settingsRefreshRate = "<?php echo ($loggedIn ? $loginRefreshTime : '1'); ?>000";
 
   </script>
 <script type="text/javascript" src="assets/js/monitor.js"></script>
+<script type="text/javascript" src="assets/js/validator.js"></script>
 
 <?php
 	if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
