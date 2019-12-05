@@ -52,15 +52,30 @@ $('.changeAsset').on('click', function() {
   });
 });
 
-$('#assets').DataTable({
+var asset_table=$('#assets').DataTable({
   responsive: true,
   orderFixed: [[ 3, 'desc' ], [ 2, 'asc' ]],
   rowGroup: {
     dataSrc: 3,
   },
+  // rowReorder: {
+  //      dataSrc: 5,
+  //       columnDefs: [
+  //           { orderable: true, className: 'reorder', targets: 0 },
+  //           { orderable: false, targets: '_all' }
+  //       ]
+  // },
   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
   stateSave: true
 });
+
+asset_table.on( 'row-reorder', function ( e, details, edit ) {
+
+            setTimeout(function() {
+            console.log(asset_table.columns(5).data().eq( 0 ));
+            }, 10);
+
+    });
 
 $('#extension').DataTable({
   responsive: true,
@@ -262,7 +277,7 @@ $('#confirmDelete').on('show.bs.modal', function(e) {
 
 $(function(){
   var navMain = $('.navbar-collapse');
-  navMain.on('click', '[data-toggle]', null, function () {
+  navMain.on('click', '[data-toggle="modal"]', null, function () {
     navMain.collapse('hide');
   });
 });
