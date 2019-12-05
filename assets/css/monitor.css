@@ -38,6 +38,9 @@ body {
 table.dataTable tr.dtrg-group td {
     background-color: transparent;
 }
+table.dataTable tr.dtrg-group.dtrg-level-0 td {
+    font-weight: unset;
+}
 select option{
     color:grey !important;
 }
@@ -96,7 +99,7 @@ a:hover {
   }
 }
 .footer {
-    padding: 0px 0 22px 0px;
+    padding: 0px 0 0px 0px;
 }
 .btn-primary {
   background-color: #ff9100;
