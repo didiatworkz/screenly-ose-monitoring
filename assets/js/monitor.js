@@ -52,30 +52,16 @@ $('.changeAsset').on('click', function() {
   });
 });
 
-var asset_table=$('#assets').DataTable({
-  responsive: true,
+$('#assets').DataTable({
+  responsive: false,
   orderFixed: [[ 3, 'desc' ], [ 2, 'asc' ]],
   rowGroup: {
     dataSrc: 3,
   },
-  // rowReorder: {
-  //      dataSrc: 5,
-  //       columnDefs: [
-  //           { orderable: true, className: 'reorder', targets: 0 },
-  //           { orderable: false, targets: '_all' }
-  //       ]
-  // },
   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  stateSave: true
+  stateSave: true,
+  autoWidth: false
 });
-
-asset_table.on( 'row-reorder', function ( e, details, edit ) {
-
-            setTimeout(function() {
-            console.log(asset_table.columns(5).data().eq( 0 ));
-            }, 10);
-
-    });
 
 $('#extension').DataTable({
   responsive: true,
@@ -222,7 +208,7 @@ $('.install_close').on('click', function(){
 });
 
 $('.editPlayerOpen').on('click', function() {
-  var id = getUrlParameterByName('playerID');
+  var id = $(this).data('playerid');
   var editInformation = 1;
   $.ajax({
     url: '_functions.php',
@@ -242,7 +228,7 @@ $('.editPlayerOpen').on('click', function() {
         return false;
     },
     error: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
     }
   });
 });
