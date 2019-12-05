@@ -38,13 +38,12 @@ session_start();
 </head>
 
 <body>
-	<?php	require_once('_functions.php');	?>
+	<?php require_once('_functions.php'); ?>
   <div class="wrapper">
     <div class="main-panel">
 	<?php
 		if($loggedIn){
-
-	    if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
+			if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
 				$refreshscreen = $_POST['refreshscreen'];
 				$duration			 = $_POST['duration'];
 		    $end_date 		 = $_POST['end_date'];
@@ -277,92 +276,7 @@ session_start();
 
 					echo '
 					<div class="row">
-						<div class="col-xl-9 col-lg-8 col-md-7">
-							<div class="card">
-								<div class="card-header">
-									<div class="row">
-										<div class="col-md-10">
-										  <h5 class="title">Assets</h5>
-										</div>
-										<div class="col-md-2 float-right">
-										  '.$newAsset.'
-										</div>
-									</div>
-								</div>
-								<div class="card-body">
-	                ';
-					if($playerAPICall && $playerAPI != 'authentication error 401'){
-						echo '
-									<table class="table" id="assets">
-										<thead class="text-primary">
-											<tr>
-												<th>Name</th>
-												<th>Date</th>
-												<th class="d-none d-sm-block">Status</th>
-												<th class="d-none">Show</th>
-												<th><span class="d-none d-sm-block">Options</span></th>
-											</tr>
-										</thead>
-										<tbody>
-	                      ';
-						for($i=0; $i < sizeof($playerAPI); $i++)  {
-							$startAsset				= explode("T", $playerAPI[$i]['start_date']);
-							$startAssetTime		= explode("+", $startAsset['1']);
-							$startAssetTimeHM	= explode(":", $startAssetTime['0']);
-							$start						= date('d.m.Y', strtotime($startAsset['0']));
-							$start_date				= date('Y-m-d', strtotime($startAsset['0']));
-							$start_time				= $startAssetTimeHM['0'].':'.$startAssetTimeHM['1'];
-							$endAsset					= explode("T", $playerAPI[$i]['end_date']);
-							$endAssetTime			= explode("+", $endAsset['1']);
-							$endAssetTimeHM		= explode(":", $endAssetTime['0']);
-							$end							= date('d.m.Y', strtotime($endAsset['0']));
-							$end_date					= date('Y-m-d', strtotime($endAsset['0']));
-							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
-							$yes 							= '<span class="badge badge-success" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
-							$no 							= '<span class="badge badge-danger" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
-							$playerAPI[$i]['is_enabled'] == 1 ? $active = $yes : $active = $no;
-							if($playerAPI[$i]['mimetype'] == 'webpage'){
-								$mimetypeIcon = '<i class="tim-icons icon-world"></i>';
-							}
-							else if($playerAPI[$i]['mimetype'] == 'video'){
-								$mimetypeIcon = '<i class="tim-icons icon-video-66"></i>';
-							}
-							else {
-								$mimetypeIcon = '<i class="tim-icons icon-image-02"></i>';
-							}
-							$playerAPI[$i]['is_active'] == 1 ? $shown = 'Shown' : $shown = 'Hidden';
-							echo '
-											<tr>
-												<td>'.$mimetypeIcon.' <span class="d-inline d-sm-none"><br /></span> '.$playerAPI[$i]['name'].' <span class="d-inline d-sm-none"><br />'.$active.'</span></td>
-												<td>Start: '.$start.'<br />End: '.$end.'</td>
-												<td class="d-none d-sm-block">'.$active.'</td>
-												<td class="d-none">'.$shown.'</td>
-												<td>
-													<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
-													<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
-													data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
-													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
-												</td>
-											</tr>
-							';
-						}
-						echo '
-										</tbody>
-									</table>
-						';
-					}
-					else {
-						echo  '
-						<div class="alert alert-danger">
-	            <span><b> No Screenly API detected! - </b> No data could be collected...</span>
-	          </div>
-						';
-					}
-					echo '
-								</div>
-							</div>
-						</div>
-						<div class="col-xl-3 col-lg-4 col-md-5">
+						<div class="col-xl-3 col-lg-4 col-md-5 order-sm-1">
 							<div class="card card-user">
 								<div class="card-body">
 									<div class="author">
@@ -370,13 +284,13 @@ session_start();
 										<div class="playerImageDiv">
 											<img class="img-fluid player" src="'.playerImage($player['address']).'" alt="'.$playerName.'" />
 											<div class="dropdown detailOptionMenu">
-											  <button class="btn btn-secondary btn-block btn-sm dropdown-toggle btn-icon" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											    <i class="tim-icons icon-settings-gear-63"></i>
-											  </button>
-											  <div class="dropdown-menu dropdown-black dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+												<button class="btn btn-secondary btn-block btn-sm dropdown-toggle btn-icon" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<i class="tim-icons icon-settings-gear-63"></i>
+												</button>
+												<div class="dropdown-menu dropdown-black dropdown-menu-right" aria-labelledby="dropdownMenuButton">
 													<a href="#" data-playerid="'.$player['playerID'].'" class="dropdown-item editPlayerOpen" title="edit">Edit</a>
 													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">Delete</a>
-											  </div>
+												</div>
 											</div>
 										</div>
 										<h3 class="mt-3">'.$playerName.'</h3>
@@ -407,6 +321,121 @@ session_start();
 										'.$management.'
 										'.$reboot.'
 									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-9 col-lg-8 col-md-7 order-sm-0">
+							<div class="card">
+								<div class="card-header">
+									<div class="row">
+										<div class="col-md-10">
+										  <h5 class="title">Assets</h5>
+										</div>
+										<div class="col-md-2 float-right">
+										  '.$newAsset.'
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+	                ';
+					if($playerAPICall && $playerAPI != 'authentication error 401'){
+						echo '
+									<table class="table" id="assets">
+										<thead class="text-primary">
+											<tr class="d-none d-sm-table-row">
+												<th>Name</th>
+												<th>Date</th>
+												<th class="d-none d-sm-block">Status</th>
+												<th class="d-none">Show</th>
+												<th><span class="d-none d-sm-block">Options</span></th>
+												<th class="d-none">assetid</th>
+											</tr>
+										</thead>
+										<thead class="text-primary d-table-row d-sm-none">
+											<tr>
+												<th>Asset</th>
+												<th class="d-none"></th>
+												<th class="d-none"></th>
+												<th class="d-none"></th>
+												<th class="d-none"></th>
+												<th class="d-none"></th>
+											</tr>
+										</thead>
+										<tbody>
+	                      ';
+						for($i=0; $i < sizeof($playerAPI); $i++)  {
+							$startAsset				= explode("T", $playerAPI[$i]['start_date']);
+							$startAssetTime		= explode("+", $startAsset['1']);
+							$startAssetTimeHM	= explode(":", $startAssetTime['0']);
+							$start						= date('d.m.Y', strtotime($startAsset['0']));
+							$start_date				= date('Y-m-d', strtotime($startAsset['0']));
+							$start_time				= $startAssetTimeHM['0'].':'.$startAssetTimeHM['1'];
+							$endAsset					= explode("T", $playerAPI[$i]['end_date']);
+							$endAssetTime			= explode("+", $endAsset['1']);
+							$endAssetTimeHM		= explode(":", $endAssetTime['0']);
+							$end							= date('d.m.Y', strtotime($endAsset['0']));
+							$end_date					= date('Y-m-d', strtotime($endAsset['0']));
+							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+							$yes 							= '<span class="badge badge-success m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
+							$no 							= '<span class="badge badge-danger m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
+							$playerAPI[$i]['is_enabled'] == 1 ? $active = $yes : $active = $no;
+							if($playerAPI[$i]['mimetype'] == 'webpage'){
+								$mimetypeIcon = '<i class="tim-icons icon-world"></i>';
+							}
+							else if($playerAPI[$i]['mimetype'] == 'video'){
+								$mimetypeIcon = '<i class="tim-icons icon-video-66"></i>';
+							}
+							else {
+								$mimetypeIcon = '<i class="tim-icons icon-image-02"></i>';
+							}
+							$playerAPI[$i]['is_active'] == 1 ? $shown = 'Shown' : $shown = 'Hidden';
+							echo '
+											<tr class="d-none d-sm-table-row">
+												<td>'.$mimetypeIcon.' '.$playerAPI[$i]['name'].'</td>
+												<td>Start: '.$start.'<br />End: '.$end.'</td>
+												<td class="d-none d-sm-block">'.$active.'</td>
+												<td class="d-none">'.$shown.'</td>
+												<td>
+													<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
+													<button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
+													data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
+													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+												</td>
+												<td class="d-none">'.$playerAPI[$i]['asset_id'].'</td>
+											</tr>
+							';
+							echo '
+											<tr class="d-table-row d-sm-none">
+												<td class="text-center">
+													'.$mimetypeIcon.'  '.$playerAPI[$i]['name'].' <br />
+													<p >'.$active.'</p>
+												  Start: '.$start.' - End: '.$end.'<br />
+													<button class="changeState btn btn-info btn-sm m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
+													<button class="options btn btn-warning btn-sm m-2" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
+													data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
+													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm m-2" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+												</td>
+												<td class="d-none"></td>
+												<td class="d-none">'.$active.'</td>
+												<td class="d-none">'.$shown.'</td>
+												<td class="d-none"></td>
+												<td class="d-none">'.$playerAPI[$i]['asset_id'].'</td>
+											</tr>
+							';
+						}
+						echo '
+										</tbody>
+									</table>
+						';
+					}
+					else {
+						echo  '
+						<div class="alert alert-danger">
+	            <span><b> No Screenly API detected! - </b> No data could be collected...</span>
+	          </div>
+						';
+					}
+					echo '
 								</div>
 							</div>
 						</div>
@@ -539,11 +568,11 @@ session_start();
 			else if(isset($_GET['site']) && $_GET['site'] == 'extensions'){
 				include('assets/php/extensions.php');
 			}
-			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement' && getGroupID($loginUserID) == 1){
+			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement'){
 				include('assets/php/usermanagement.php');
 			}
 			else {
-				$playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
+				$playerSQL = $db->query("SELECT * FROM player ORDER BY name DESC");
 
 				if($playerCount > 0){
 					echo'
@@ -978,58 +1007,7 @@ session_start();
 			';
 		}
 	  else if((isset($_GET['monitoring']) && $_GET['monitoring'] == '1') && isset($_GET['key'])){
-	    $key 		= $_GET['key'];
-	    echo '
-	    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
-	        <div class="container-fluid">
-				     <div class="navbar-wrapper">
-					       <a class="navbar-brand" href="./index.php">Screenyl OSE Monitoring</a>
-				     </div>
-	        </div>
-	    </nav>
-	    <div class="content">';
-	    $playerSQL 		= $db->query("SELECT * FROM player ORDER BY name");
-	    header("refresh:100;url=".$_SERVER['REQUEST_URI']);
-	    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-	    header("Cache-Control: post-check=0, pre-check=0", false);
-	    header("Pragma: no-cache");
-
-	    if($key == $securityToken){
-				if($playerCount > 0){
-		      echo'
-		    	<div class="row">
-		      ';
-		      while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
-		        if($player['name'] == ''){
-		          $name	 			= 'No Player Name';
-		          $imageTag 	= 'No Player Name '.$player['playerID'];
-		        }
-		        else {
-		          $name 			= $player['name'];
-		          $imageTag 	= $player['name'];
-		        }
-		        echo'
-						<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-							<div class="card">
-								<div class="card-header">
-									<h4 class="d-inline">'.$name.'</h4>
-									<h5>'.$player['address'].'</h5>
-								</div>
-								<div class="card-body card-monitor">
-									<img class="player" src="'.playerImage($player['address']).'" alt="'.$imageTag.'">
-								</div>
-							</div>
-						</div>
-		        ';
-		      }
-		      echo '
-		    	</div>
-				</div>
-		    ';
-		    }
-				else sysinfo('warning', 'No Player available!');
-			}
-	    else sysinfo('danger', 'Token incorrect - Access denied!');
+	    include('assets/php/publicLink.php');
 	  }
 		else {
 			if (isset($logedout)){
@@ -1058,7 +1036,7 @@ session_start();
       <footer class="footer">
         <div class="container-fluid">
           <div class="copyright">
-            &copy; <?php echo date('Y') ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  |  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>
+            <?php if(isset($pagination)) echo $pagination; echo '&copy '.date('Y'); ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  <?php if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '|  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>'; ?>
           </div>
         </div>
       </footer>
