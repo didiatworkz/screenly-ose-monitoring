@@ -113,6 +113,16 @@ if(getGroupID($loginUserID) == 1){
     $userID   = $_GET['userID'];
     $userSQL  = $db->query("SELECT * FROM `users` WHERE userID='".$userID."'");
     $user     = $userSQL->fetchArray(SQLITE3_ASSOC);
+    if($userID == $loginUserID) {
+      $disable  = ' disabled="disabled"';
+      $group    = '<input type="hidden" name="group" value="'.getGroupID($user['userID']).'" />';
+      $status   = '<input type="hidden" name="status" value="'.$user['active'].'" />';
+    }
+    else {
+      $disable  = '';
+      $group    ='';
+      $status   = '';
+    }
     echo '
     <div class="row justify-content-md-center">
       <div class="col-md-10">
@@ -137,13 +147,13 @@ if(getGroupID($loginUserID) == 1){
               </div>
               <div class="form-group">
                 <label for="InputGroup">Role</label>
-                <select class="form-control" id="InputGroup" name="group">
+                <select class="form-control" id="InputGroup" name="group"'.$disable.'>
                   '.createGroupsSelect(getGroupID($user['userID'])).'
                 </select>
               </div>
               <div class="form-group">
                 <label for="InputStatus">Status</label>
-                <select class="form-control" id="InputStatus" name="status">
+                <select class="form-control" id="InputStatus" name="status"'.$disable.'>
                   '.createStatusSelect($user['active']).'
                 </select>
               </div>
@@ -160,6 +170,8 @@ if(getGroupID($loginUserID) == 1){
               </div>
               <div class="form-group text-right">
                 <input type="hidden" name="userID" value="'.$user['userID'].'" />
+                '.$group.'
+                '.$status.'
                 <button type="submit" name="edit" class="btn btn-sm btn-primary">Update User</button>
                 <a href="'.$_moduleLink.'" class="btn btn-sm btn-danger">Cancel</a>
               </div>
