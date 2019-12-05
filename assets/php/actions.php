@@ -14,7 +14,7 @@
 
 		if($name == '') $name = $url;
 
-		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id."'");
 		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
 		$data 										= array();
@@ -44,7 +44,7 @@
 	if(isset($_POST['changeAssetState'])){
 		$playerID 			= $_POST['id'];
 		$asset					= $_POST['asset'];
-		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
     $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$playerAddress 	= $player['address'];
 		$data = callURL('GET', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, false, $playerID, false);
@@ -69,7 +69,7 @@
 	if(isset($_POST['changeAsset'])){
 		$playerID 			= $_POST['playerID'];
 		$orderD 				= $_POST['order'];
-		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
     $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$playerAddress 	= $player['address'];
 		$result = callURL('GET', $playerAddress.'/api/v1/assets/control/'.$orderD.'', false, $playerID, false);
@@ -83,7 +83,7 @@
 
 	if(isset($_POST['exec_reboot'])){
 		$playerID 			= $_POST['playerID'];
-		$playerSQL 			= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
 		$player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		$playerAddress 	= $player['address'];
 		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
@@ -94,10 +94,11 @@
 
 	if(isset($_POST['editInformation'])){
 		$playerID 	= $_POST['playerID'];
-    $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+    $playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
     $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 		if($playerID != ''){
 			header('HTTP/1.1 200 OK');
+			header('Content-Type: application/json');
 			$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => $player['player_password']);
 			echo json_encode($return_arr);
 		}
