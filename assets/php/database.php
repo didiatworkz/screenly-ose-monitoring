@@ -67,6 +67,6 @@ if(@file_exists('assets/tools/version_old.txt')){
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
-  //header("Refresh:0");
+  header("Refresh:0");
   die("Reload this page");
 }
