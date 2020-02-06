@@ -572,7 +572,7 @@ session_start();
 				include('assets/php/usermanagement.php');
 			}
 			else {
-				$playerSQL = $db->query("SELECT * FROM player ORDER BY name DESC");
+				$playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 
 				if($playerCount > 0){
 					echo'
