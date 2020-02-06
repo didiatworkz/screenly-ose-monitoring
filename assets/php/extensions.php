@@ -1,16 +1,18 @@
 <?php
 if(isset($_POST['install']) && $_POST['install'] == 'yes'){
   include("ssh.class.php");
-  $server_host = $_POST['ip'];
+  $server_host = $_POST['address'];
   $server_login = $_POST['user'];
   $server_password = $_POST['password'];
 
   $cmd = "rm -rf addon.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/v3.0/addon.sh && chmod +x addon.sh && ./addon.sh";
   $cmd = "echo '" . $server_password . "' | sudo -S " . $cmd;
 
-  echo "Start Installation";
+  header("HTTP/1.1 200 OK");
+  echo json_encode('Start Installation');
   $ssh = new ssh($server_host, $server_login, $server_password);
-  echo $ssh($cmd);
+  $output = $ssh($cmd);
+  echo json_encode($output);
 }
 else{
   $playerSQL 		= $db->query("SELECT name, address FROM player ORDER BY address");
@@ -26,6 +28,7 @@ else{
             </div>
             <div class="col-md-2 float-right">
               <a href="#" data-toggle="modal" data-target="#addon" class="btn btn-info btn-sm btn-block"><i class="tim-icons icon-app"></i> Manual Installation</a>
+              <a href="#" data-toggle="modal" data-target="#installer" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-app"></i> Auto Installation</a>
             </div>
           </div>
         </div>
@@ -119,28 +122,20 @@ else{
 					<div class="modal-body">
 						<form id="installExtension" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 							<div class="form-group">
-								<label for="InputPlayerNameEdit">Enter the Screenly Player name</label>
-								<input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="Player-Name" autofocus />
-							</div>
-							<div class="form-group">
-								<label for="InputLocationEdit">Enter the Player location</label>
-								<input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="Player-Location" />
-							</div>
-							<div class="form-group">
-								<label for="InputAdressEdit">Enter the IP address of the Screenly Player</label>
-								<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
+								<label for="InputAdressEdit">Enter the IP address</label>
+								<input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required autofocus />
 								<div class="help-block with-errors"></div>
 							</div>
-							<hr />
-							<div class="form-group">
-								<label for="InputUserEdit">Player authentication </label>
-								<input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="Username" />
+              <div class="form-group">
+								<label for="InputLoginname">Username</label>
+								<input name="user" type="text" class="form-control" id="InputLoginname" placeholder="pi" />
 							</div>
 							<div class="form-group">
-								<input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="Password" />
+								<label for="InputPassword">Password</label>
+								<input name="password" type="password" class="form-control" id="InputPassword" placeholder="raspberry" />
 							</div>
 							<div class="form-group text-right">
-								<input name="playerID" id="playerIDEdit" type="hidden" value="" />
+								<input name="install" type="hidden" value="yes" />
 								<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning install">Install</button>
 								<button type="button" class="btn btn-secondary btn-sm install_close" data-dismiss="modal">Close</button>
 							</div>
