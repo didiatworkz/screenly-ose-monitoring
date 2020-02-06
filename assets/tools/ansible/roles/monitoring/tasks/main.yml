@@ -67,7 +67,7 @@
     - php-fpm
     - php-sqlite3
     - php-curl
-    
+
 - name: Looking for the php version
   shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)'"
   register: php_output
@@ -88,14 +88,6 @@
     mode: 0644
   notify:
     - restart-nginx
-    
-- name: Copy ose-monitoring
-  copy:
-    src: /tmp/monitor
-    dest: /var/www/html
-    owner: www-data
-    group: www-data
-    mode: 0644
 
 - name: Copy ose-monitoring Script
   copy:
