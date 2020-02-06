@@ -268,14 +268,32 @@ $(function(){
   });
 });
 
+
 function reloadPlayerImage(){
-  $('img.player').each(function(){
-    var url = $(this).attr('src').split('?')[0];
-    $(this).attr('src', url + '?' + Math.random());
+  $('img.player').each(function(index, element){
+      var url = $(element).attr('data-src');
+      $.ajax({
+        url: 'assets/php/image.php',
+        data: {image: 1, ip: url},
+        dataType: 'json',
+        type: 'GET',
+        timeout: 5000,
+        success: function(data){
+            $(element).attr('src', data);
+        },
+        error: function(data){
+            $(element).attr('src', 'assets/img/offline.png');
+            console.log('No connection - ' + url);
+        },
+      });
   })
 }
-
+$(document).ready(function() {
+    reloadPlayerImage();
+});
 setInterval('reloadPlayerImage();',settingsRefreshRate);
+
+
 $('.modal').on('shown.bs.modal', function(){
   $(this).find('[autofocus]').focus();
 });

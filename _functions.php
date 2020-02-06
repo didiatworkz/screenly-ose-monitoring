@@ -12,7 +12,7 @@
 			   info@atworkz.de
 	________________________________________
 			  Screenly OSE Monitor
-		   Version 3.0 - November 2019
+		   Version 3.0 - February 2020
 	________________________________________
 	*/
 
@@ -26,6 +26,7 @@
 /* _______________________________ */
 	$backLink		= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 	$firstSetup = 0;
+	$loadingImage = 'assets/img/spinner.gif';
 
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];

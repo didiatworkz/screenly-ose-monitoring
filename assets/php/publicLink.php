@@ -6,7 +6,7 @@ echo '
 <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
     <div class="container-fluid">
        <div class="navbar-wrapper">
-           <a class="navbar-brand" href="./index.php">Screenyl OSE Monitoring</a>
+           <a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
        </div>
     </div>
 </nav>
@@ -34,7 +34,7 @@ if($_key == $securityToken){
 
     $pagination = 'Site '.$current_site.' of '.$total_site.' - ';
 
-    redirect($site, 10);
+    redirect($site, 30);
 
 
     $playerSQL 		= $db->query("SELECT * FROM player ORDER BY name LIMIT ".$next.",".$_boxes);
@@ -58,7 +58,7 @@ if($_key == $securityToken){
             <h5>'.$player['address'].'</h5>
           </div>
           <div class="card-body card-monitor">
-            <img class="player" src="'.playerImage($player['address']).'" alt="'.$imageTag.'">
+            <img class="player" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" />
           </div>
         </div>
       </div>

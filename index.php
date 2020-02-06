@@ -282,7 +282,7 @@ session_start();
 									<div class="author">
 										<div class="block block-monitor"></div>
 										<div class="playerImageDiv">
-											<img class="img-fluid player" src="'.playerImage($player['address']).'" alt="'.$playerName.'" />
+											<img class="img-fluid player" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$playerName.'" />
 											<div class="dropdown detailOptionMenu">
 												<button class="btn btn-secondary btn-block btn-sm dropdown-toggle btn-icon" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 													<i class="tim-icons icon-settings-gear-63"></i>
@@ -605,7 +605,8 @@ session_start();
 								<h5 class="card-category">'.$player['address'].'</h5>
 							</div>
 							<div class="card-body ">
-								<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.playerImage($player['address']).'" alt="'.$imageTag.'" onerror="reloadPlayerImage();"></a>
+								<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'"></a>
+
 							</div>
 						</div>
 					</div>
@@ -1046,7 +1047,7 @@ session_start();
   <script type="text/javascript">
 
 	var scriptPlayerAuth = "<?php echo ($loggedIn ? $scriptPlayerAuth : '10'); ?>";
-	var settingsRefreshRate = "<?php echo ($loggedIn ? $loginRefreshTime : '1'); ?>000";
+	var settingsRefreshRate = "<?php echo ($loggedIn ? $loginRefreshTime : '5'); ?>000";
 
   </script>
 <script type="text/javascript" src="assets/js/monitor.js"></script>
