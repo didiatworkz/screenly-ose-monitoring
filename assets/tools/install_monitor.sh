@@ -64,14 +64,15 @@ echo
 echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
-#sudo rm -rf /tmp/monitor
-#sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=$_BRANCH"
-#cd  /tmp/monitor/assets/tools/ansible/
-sudo rm -rf /var/www/html/monitor
-sudo mkdir -p /var/www/html
-sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /var/www/html/monitor
-cd /var/www/html/monitor/assets/tools/ansible/
-sudo -E ansible-playbook site.yml
+sudo rm -rf /tmp/monitor
+sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=$_BRANCH"
+cd /tmp/monitor/assets/tools/ansible/
+#sudo rm -rf /var/www/html/monitor
+#sudo mkdir -p /var/www/html
+#sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /var/www/html/monitor
+#cd /var/www/html/monitor/assets/tools/ansible/
+
+sudo -E ansible-playbook site.yml --extra-vars "MONITOR_BRANCH=$_BRANCH"
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
