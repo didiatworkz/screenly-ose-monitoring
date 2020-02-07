@@ -65,7 +65,7 @@ echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
 sudo rm -rf /tmp/monitor
-sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=$_BRANCH"
+sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 cd /tmp/monitor/assets/tools/ansible/
 #sudo rm -rf /var/www/html/monitor
 sudo mkdir -p /var/www/html
