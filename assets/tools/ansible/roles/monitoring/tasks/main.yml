@@ -89,6 +89,11 @@
   notify:
     - restart-nginx
 
+- git:
+    repo: "https://github.com/didiatworkz/screenly-ose-monitor.git"
+    dest: /var/www/html/monitor
+    version: {{ MONITOR_BRANCH }}
+
 - name: Copy ose-monitoring Script
   copy:
     src: ose-monitoring
