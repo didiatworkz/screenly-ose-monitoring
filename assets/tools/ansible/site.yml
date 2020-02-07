@@ -2,6 +2,8 @@
   hosts: all
   user: pi
   become: yes
+  vars:
+    monitor_branch: "{{ lookup('env', 'MONITOR_BRANCH') }}"
 
   handlers:
     - name: restart-nginx

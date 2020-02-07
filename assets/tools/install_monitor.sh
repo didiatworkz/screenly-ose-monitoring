@@ -71,8 +71,8 @@ cd /tmp/monitor/assets/tools/ansible/
 sudo mkdir -p /var/www/html
 #sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /var/www/html/monitor
 #cd /var/www/html/monitor/assets/tools/ansible/
-
-sudo -E ansible-playbook site.yml --extra-vars "MONITOR_BRANCH=$_BRANCH"
+export MONITOR_BRANCH=$_BRANCH
+sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
