@@ -9,7 +9,7 @@ _BRANCH=v3.0
 
 
 header() {
-clear
+#clear
 cat << "EOF"
                             _
    ____                    | |
