@@ -217,15 +217,15 @@ $('.editPlayerOpen').on('click', function() {
     data: { playerID: id, editInformation: editInformation },
     success: function(response){
       var eP = $('#editPlayer');
-        eP.find('#playerIDEdit').val(id);
-        eP.find('#InputPlayerNameEdit').val(response.player_name);
-        eP.find('#playerNameTitle').val(response.player_name);
-        eP.find('#InputLocationEdit').val(response.player_location);
-        eP.find('#InputAdressEdit').val(response.player_address);
-        eP.find('#InputUserEdit').val(response.player_user);
-        eP.find('#InputPasswordEdit').val(response.player_password);
-        eP.modal('show');
-        return false;
+      eP.find('#playerIDEdit').val(id);
+      eP.find('#InputPlayerNameEdit').val(response.player_name);
+      eP.find('#playerNameTitle').val(response.player_name);
+      eP.find('#InputLocationEdit').val(response.player_location);
+      eP.find('#InputAdressEdit').val(response.player_address);
+      eP.find('#InputUserEdit').val(response.player_user);
+      eP.find('#InputPasswordEdit').val(response.player_password);
+      eP.modal('show');
+      return false;
     },
     error: function(data){
       $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
@@ -277,7 +277,6 @@ function reloadPlayerImage(){
         data: {image: 1, ip: url},
         dataType: 'json',
         type: 'GET',
-        timeout: 5000,
         success: function(data){
             $(element).attr('src', data);
         },
@@ -288,6 +287,7 @@ function reloadPlayerImage(){
       });
   })
 }
+
 $(document).ready(function() {
     reloadPlayerImage();
 });
