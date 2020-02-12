@@ -1,4 +1,21 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+      Usermanagement Module
+________________________________________
+*/
+
 if(getGroupID($loginUserID) == 1){
 
   $_moduleName = 'User Management';

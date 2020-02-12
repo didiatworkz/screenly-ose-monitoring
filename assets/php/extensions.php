@@ -1,4 +1,36 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+        Extension Module
+________________________________________
+*/
+
+function checkState($url){
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 200);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
+  curl_setopt($ch, CURLOPT_HEADER, true);
+  curl_setopt($ch, CURLOPT_NOBODY, true);
+  $data = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  if(($httpcode >= 200 && $httpcode < 300) || $httpcode == 401) return true;
+  else return false;
+}
+
 if(isset($_POST['install']) && $_POST['install'] == 'yes'){
   include("ssh.class.php");
   $server_host = $_POST['address'];
@@ -50,12 +82,12 @@ else{
 
       $offline = '<span class="badge badge-dark">offline</span>';
       $not = '<span class="badge badge-danger">Not installed</span>';
-      if(checkAddress($ip)){
-        if(checkAddress($ip.':9020/screen/screenshot.png')){
+      if(checkState($ip)){
+        if(checkState($ip.':9020/screen/screenshot.png')){
           $screenS = '<span class="badge badge-success">Version 1</span>';
         } else $screenS = $not;
 
-        if(checkAddress($ip.':9020/index.php?get=version')){
+        if(checkState($ip.':9020/index.php?get=version')){
           $apiV = callURL('GET', $player['address'].':9020/index.php?get=version', false, false, false);
           $apiV = json_decode($apiV, true);
           if($apiV['screenshotversion'] != ''){

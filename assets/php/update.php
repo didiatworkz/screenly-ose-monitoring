@@ -1,4 +1,21 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+         Update Module
+________________________________________
+*/
+
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
   shell_exec('ose-monitoring --scriptupdate');
   $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");

@@ -1,5 +1,21 @@
 <?php
-  //  discover.php?range=192.168.178.0/24
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+        Discover Module
+________________________________________
+*/
+//  discover.php?range=192.168.178.0/24
 
   if(isset($_GET['range']) AND isset($_GET['userID'])){
     list($ip, $mask) = explode('/', $_GET['range']);
@@ -38,8 +54,11 @@
   function checkAddress($ip){
 		$ch = curl_init($ip);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 5);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);

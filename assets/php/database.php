@@ -1,4 +1,21 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+        Database Module
+________________________________________
+*/
+
 $dbase_key		= 'assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
   $dbase_file = 'dbase.db';
