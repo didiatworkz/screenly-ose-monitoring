@@ -120,3 +120,23 @@ ________________________________________
 		}
 		else header('HTTP/1.1 404 Not Found');
 	}
+
+	if(isset($_POST['changeOrder'])){
+		$playerID 			= $_POST['id'];
+		$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
+		$player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$playerAddress 	= $player['address'];
+		$data						= 'ids=';
+		$i = 0;
+		foreach ($_POST['order'] as $value) {
+			$data .= $value.',';
+		}
+		$data = substr($data, 0, -1);
+		$result = callURL('POST2', $playerAddress.'/api/v1/assets/order', $data, $playerID, false);
+		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
+		if(json_encode($result) != ''){
+			header('HTTP/1.1 200 OK');
+			print_r(json_encode($result));
+		}
+		else header('HTTP/1.1 404 Not Found');
+	}

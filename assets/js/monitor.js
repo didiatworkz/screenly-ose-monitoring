@@ -52,15 +52,53 @@ $('.changeAsset').on('click', function() {
   });
 });
 
-$('#assets').DataTable({
+var asset_table = $('#assets').DataTable({
   responsive: false,
-  orderFixed: [[ 3, 'desc' ], [ 2, 'asc' ]],
+  orderFixed: [[ 2, 'desc' ], [ 4, 'desc' ]],
   rowGroup: {
-    dataSrc: 3,
+    dataSrc: 4,
   },
+  ordering: false,
+  responsive: {
+    details: {
+      type: 'column'
+    }
+  },
+  columnDefs: [{
+    className: 'control',
+    orderable: false,
+    targets:   0
+  }],
   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
   stateSave: true,
   autoWidth: false
+})
+
+$("#assets tbody").sortable({
+  //placeholder: "ui-state-highlight",
+  cursor: 'move',
+  items: 'tr:not(.asset-hidden)',
+  axis: 'y',
+  helper: function(e, tr){
+    var $originals = tr.children();
+    var $helper = tr.clone();
+    $helper.children().each(function(index){
+     $(this).width($originals.eq(index).width());
+    });
+    return $helper;
+  },
+	update: function (event, ui) {
+    var player = ui.item["0"].dataset.playerid;
+    var data = $(this).sortable('serialize', {key: 'order[]', expression: /(.+)/});
+    data += '&id=' + player;
+    data += '&changeOrder=1';
+
+		$.ajax({
+      type: "POST",
+      url: "_functions.php",
+      data: data,
+		});
+  }
 });
 
 $('#extension').DataTable({

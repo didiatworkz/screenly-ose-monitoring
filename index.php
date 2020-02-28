@@ -32,6 +32,7 @@ session_start();
 	<script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
 	<script src="assets/js/plugins/bootstrap-notify.js"></script>
 	<script src="assets/js/black-dashboard.min.js?v=1.0.0"></script>
+	<script src="assets/js/jquery-ui.min.js"></script>
 	<script src="assets/tools/DataTables/datatables.min.js"></script>
 	<script src="assets/tools/dropzone/dropzone.min.js"></script>
 
@@ -342,23 +343,13 @@ session_start();
 						echo '
 									<table class="table" id="assets">
 										<thead class="text-primary">
-											<tr class="d-none d-sm-table-row">
-												<th>Name</th>
-												<th>Date</th>
-												<th class="d-none d-sm-block">Status</th>
-												<th class="d-none">Show</th>
-												<th><span class="d-none d-sm-block">Options</span></th>
-												<th class="d-none">assetid</th>
-											</tr>
-										</thead>
-										<thead class="text-primary d-table-row d-sm-none">
 											<tr>
-												<th>Asset</th>
-												<th class="d-none"></th>
-												<th class="d-none"></th>
-												<th class="d-none"></th>
-												<th class="d-none"></th>
-												<th class="d-none"></th>
+												<th></th>
+												<th data-priority="1">Name</th>
+												<th data-priority="3">Status</th>
+												<th>Date</th>
+												<th class="d-none">Show</th>
+												<th data-priority="2"> </th>
 											</tr>
 										</thead>
 										<tbody>
@@ -388,12 +379,20 @@ session_start();
 							else {
 								$mimetypeIcon = '<i class="tim-icons icon-image-02"></i>';
 							}
-							$playerAPI[$i]['is_active'] == 1 ? $shown = 'Shown' : $shown = 'Hidden';
+
+							if($playerAPI[$i]['is_active'] == 1){
+								$shown = 'Shown';
+								$shown_class = '';
+							} else {
+								$shown = 'Hidden';
+								$shown_class = 'class="asset-hidden"';
+							}
 							echo '
-											<tr class="d-none d-sm-table-row">
+											<tr id="'.$playerAPI[$i]['asset_id'].'" data-playerID="'.$player['playerID'].'"'.$shown_class.'>
+												<td>'.$player['playerID'].'</td>
 												<td>'.$mimetypeIcon.' '.$playerAPI[$i]['name'].'</td>
-												<td>Start: '.$start.'<br />End: '.$end.'</td>
-												<td class="d-none d-sm-block">'.$active.'</td>
+												<td>'.$active.'</td>
+												<td><span class="d-block d-sm-none"><br /></span>Start: '.$start.'<br />End:&nbsp;&nbsp;&nbsp;'.$end.'</td>
 												<td class="d-none">'.$shown.'</td>
 												<td>
 													<button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
@@ -401,25 +400,6 @@ session_start();
 													data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
 													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
 												</td>
-												<td class="d-none">'.$playerAPI[$i]['asset_id'].'</td>
-											</tr>
-							';
-							echo '
-											<tr class="d-table-row d-sm-none">
-												<td class="text-center">
-													'.$mimetypeIcon.'  '.$playerAPI[$i]['name'].' <br />
-													<p >'.$active.'</p>
-												  Start: '.$start.' - End: '.$end.'<br />
-													<button class="changeState btn btn-info btn-sm m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
-													<button class="options btn btn-warning btn-sm m-2" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
-													data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
-													<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm m-2" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
-												</td>
-												<td class="d-none"></td>
-												<td class="d-none">'.$active.'</td>
-												<td class="d-none">'.$shown.'</td>
-												<td class="d-none"></td>
-												<td class="d-none">'.$playerAPI[$i]['asset_id'].'</td>
 											</tr>
 							';
 						}
