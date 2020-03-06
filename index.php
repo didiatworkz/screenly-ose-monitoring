@@ -891,7 +891,7 @@ require_once('_config.php');
 	    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
 	        <div class="container-fluid">
 				     <div class="navbar-wrapper">
-					       <a class="navbar-brand" href="./index.php">Screenyl OSE Monitoring</a>
+					       <a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
 				     </div>
 	        </div>
 	    </nav>
