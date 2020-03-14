@@ -161,68 +161,9 @@ session_start();
 				redirect($backLink, 1);
 			}
 
+			include('assets/php/menu.php');
+
 			echo'
-
-	    <!-- Navbar -->
-	    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
-	    	<div class="container-fluid">
-					<div class="navbar-wrapper">
-				 		<a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
-				 	</div>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-bar bar1"></span>
-						<span class="navbar-toggler-bar bar2"></span>
-						<span class="navbar-toggler-bar bar3"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navigation">
-						<ul class="navbar-nav ml-auto">
-							<li class="nav-item">
-								<a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Add player">
-									<i class="tim-icons icon-simple-add"></i>
-									<p class="d-lg-none">Add player</p>
-								</a>
-							</li>
-								'.$update.'
-							<li class="nav-item">
-								<a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Refresh">
-									<i class="tim-icons icon-refresh-02"></i>
-									<p class="d-lg-none">Refresh</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="index.php?site=extensions" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Extensions">
-									<i class="tim-icons icon-puzzle-10"></i>
-									<p class="d-lg-none">Extensions</p>
-								</a>
-							</li>
-							<li class="dropdown nav-item">
-							  <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-									<i class="tim-icons icon-single-02"></i>
-								  <b class="caret d-none d-lg-block d-xl-block"></b>
-								  <p class="d-lg-none">User</p>
-							  </a>
-							  <ul class="dropdown-menu dropdown-navbar">
-								 	<li class="nav-link">
-									 	<a href="javascript:void(0)" data-toggle="modal" data-target="#account" class="nav-item dropdown-item">Account</a>
-									</li>
-									'.$adminUserManagement.'
-									'.$adminSettings.'
-							 		<li class="nav-link">
-										<a href="javascript:void(0)" data-toggle="modal" data-target="#publicLink" class="nav-item dropdown-item">Public Link</a>
-									</li>
-							 		<li class="dropdown-divider"></li>
-							 		<li class="nav-link">
-										<a href="index.php?action=logout" class="nav-item dropdown-item">Logout</a>
-									</li>
-						 		</ul>
-					 		</li>
-							<li class="separator d-lg-none"></li>
-						</ul>
-					</div>
-	    	</div>
-	  	</nav>
-	    <!-- End Navbar -->
-
 			<div class="content">
 				';
 			if(isset($_GET['action']) && $_GET['action'] == 'view'){
@@ -545,11 +486,15 @@ session_start();
 					redirect('index.php', 3);
 				}
 			}
-			else if(isset($_GET['site']) && $_GET['site'] == 'extensions'){
-				include('assets/php/extensions.php');
-			}
-			else if(isset($_GET['site']) && $_GET['site'] == 'usermanagement'){
-				include('assets/php/usermanagement.php');
+			else if(isset($_GET['site'])){
+				$moduleName = $_GET['site'];
+				if (@file_get_contents('assets/php/'.$moduleName.'.php',0,NULL,0,1)) {
+					if(in_array(basename($moduleName), $_modules)){
+						include('assets/php/'.basename($moduleName).'.php');
+					}
+					else sysinfo('danger', 'Module not allowed');
+				}
+				else sysinfo('danger', 'Module not exits');
 			}
 			else {
 				$playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
@@ -934,13 +879,43 @@ session_start();
 		      </div>
 					<div class="modal-body">
 					  <a href="https://atworkz.de" target="_blank"><img src="assets/img/atworkz-logo.png" class="img-fluid mx-auto d-block" /></a>
-						Version '.$systemVersion.' <br />
-						Server IP: '.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'<br />
-						<hr />
-						Project: <a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a><br />
-						Design: <a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a><br />
-						Scripts: <a href="https://datatables.net" target="_blank">DataTables</a><br />
-						Copyright: <a href="https://atworkz.de" target="_blank">atworkz.de</a><br />
+						<table class="table table-sm">
+						  <tr>
+						    <td>Monitor Version:</td>
+						    <td>'.$systemVersion.'</td>
+						  </tr>
+							<tr>
+						    <td>Used Screenly API:</td>
+						    <td>'.$apiVersion.'</td>
+						  </tr>
+						  <tr>
+						    <td>Server IP:</td>
+						    <td>'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'</td>
+						  </tr>
+							<tr>
+						    <td>&nbsp;</td>
+						    <td>&nbsp;</td>
+						  </tr>
+						  <tr>
+						    <td>Project:</td>
+						    <td><a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a></td>
+						  </tr>
+							<tr>
+						    <td>Copyright:</td>
+						    <td><a href="https://atworkz.de" target="_blank">atworkz.de</a></td>
+						  </tr>
+						  <tr>
+						    <td>Design:</td>
+						    <td><a href="https://github.com/creativetimofficial/black-dashboard" target="_blank">Black Dashboard</a></td>
+						  </tr>
+						  <tr>
+						    <td>Scripts:</td>
+						    <td>
+									<a href="https://datatables.net" target="_blank">DataTables</a><br />
+									<a href="https://www.dropzonejs.com/" target="_blank">dropzoneJS</a>
+								</td>
+						  </tr>
+						</table>
 						<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
 	        </div>
 				</div>
@@ -1018,6 +993,7 @@ session_start();
         <div class="container-fluid">
           <div class="copyright">
             <?php if(isset($pagination)) echo $pagination; echo '&copy '.date('Y'); ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  <?php if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '|  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>'; ?>
+							<?php $totalTime = array_sum(explode(' ',  microtime())) - $_loadMessureStart; echo '<script>console.log("Loaded in: '.$totalTime.'")</script>'; ?>
           </div>
         </div>
       </footer>
