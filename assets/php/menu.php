@@ -39,6 +39,12 @@
               <p class="d-lg-none">Refresh</p>
             </a>
           </li>
+          <li class="nav-item">
+						<a href="javascript:void(0)" data-toggle="modal" data-target="#addon" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Addon">
+							<i class="tim-icons icon-puzzle-10"></i>
+							<p class="d-lg-none">Addon</p>
+						</a>
+					</li>
           <!--<li class="nav-item">
             <a href="index.php?site=extensions" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Extensions">
               <i class="tim-icons icon-puzzle-10"></i>
