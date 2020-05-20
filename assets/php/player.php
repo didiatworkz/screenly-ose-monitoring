@@ -69,6 +69,15 @@ ________________________________________
 				curl_setopt($curl, CURLOPT_POST, 1);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 				break;
+			case 'POST3':
+				$headers = array(
+					'Accept: */*',
+					'Content-Type: multipart/form-data',
+				);
+				curl_setopt($curl, CURLOPT_POST, true);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+				curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+				break;
 			case 'PUT':
 				curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
 				curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
