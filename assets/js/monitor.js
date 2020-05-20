@@ -72,7 +72,7 @@ var asset_table = $('#assets').DataTable({
   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
   stateSave: true,
   autoWidth: false
-})
+});
 
 $("#assets tbody").sortable({
   //placeholder: "ui-state-highlight",
@@ -114,58 +114,145 @@ $('#users').DataTable({
   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
   stateSave: false
 });
+
 // New Asset
+Dropzone.autoDiscover = false;
 
+if ($('.drop').length) {
+  var acceptedFileTypes = "image/*, video/*";
+  var upload_asset = 1;
+  var myDropzone = new Dropzone(".dropzone", {
+    parallelUploads: 100,
+    parallelUploads: 100,
+    addRemoveLinks: true,
+    maxFilesize: 100,
+    timeout: 60000,
+    paramName: "file_upload",
+    acceptedFiles: acceptedFileTypes,
+    headers:{'Authorization':'Basic ' + scriptPlayerAuth},
+    complete: function(file){ $('#newAsset').modal('hide'); location.reload(); },
+    success: function(file, response){
+      var mimetype = "unknown";
+      var fname = file.name;
+      var ftype = file.type;
+      var playerID = getUrlParameterByName('playerID');
+      if(ftype.includes("image")) mimetype = "image";
+      else if (ftype.includes("video")) mimetype = "video";
+      else mimetype = "unknown";
+      $.ajax({
+       url: '_functions.php',
+       type: 'POST',
+       data: { name: fname, url: response, mimetype: mimetype, id: playerID, newAsset: upload_asset  },
+       timeout: 5000,
+       success: function(data){
+         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+         myDropzone.removeFile(file);
+       },
+       error: function(data){
+         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+       }
+     });
+    }
+  });
+}
 
-var acceptedFileTypes = "image/*, video/*";
-var upload_asset = 1;
-Dropzone.options.dropzone = {
-  parallelUploads: 1,
-  autoDiscover: false,
-  paramName: "file_upload",
-  createImageThumbnails: true,
-  acceptedFiles: acceptedFileTypes,
-  headers:{'Authorization':'Basic ' + scriptPlayerAuth},
-  success: function(file, response){
-    var mimetype = "unknown";
-    var fname = file.name;
-    var ftype = file.type;
-    var playerID = getUrlParameterByName('playerID');
-    if(ftype.includes("image")) mimetype = "image";
-    else if (ftype.includes("video")) mimetype = "video";
-    else mimetype = "unknown";
+if ($('.dropzoneMulti').length) {
+  var myMulitDropzone = new Dropzone(".dropzoneMulti", {
+    acceptedFiles: acceptedFileTypes,
+    autoProcessQueue: false,
+    parallelUploads: 100,
+    addRemoveLinks: true,
+    maxFilesize: 60,
+    timeout: 60000,
+    method: 'post',
+    url: '_functions.php',
+    dictFileTooBig: 'This file is to big! Max allowed {{maxFilesize}}MB. Please upload this file via the Player Management driectly',
+    accept: function(file, done) {
+        console.log("uploaded");
+        done();
+    },
+
+    init: function (e) {
+      var myMulitDropzone = this;
+
+      $('#uploadfiles').on("click", function() {
+          myMulitDropzone.processQueue();
+      });
+
+      myMulitDropzone.on("sending", function(file, xhr, data) {
+        var ids = [];
+        var mimetype = "unknown";
+        var fname = file.name;
+        var ftype = file.type;
+        if(ftype.includes("image")) mimetype = "image";
+        else if (ftype.includes("video")) mimetype = "video";
+        else mimetype = "unknown";
+
+        $("input:checkbox[name='id[]']:checked").each(function(){
+          ids.push($(this).val());
+        });
+        data.append("playerID", ids);
+        data.append("multidrop", '1');
+        data.append("newAsset", '1');
+        data.append("mimetype", mimetype);
+        data.append("name", fname);
+        $('#uploadfiles').hide();
+      });
+
+      this.on("success", function(file){
+        myMulitDropzone.removeFile(file);
+        var response = file.xhr.response;
+        console.log(file.xhr.response);
+      });
+
+      this.on("complete", function(file){
+        $('#refresh').show();
+      });
+    }
+  });
+}
+
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+  $('.card-body').find('input[type=checkbox]:checked').remove();
+});
+
+$("#assetNewForm").submit(function(e) {
+  e.preventDefault();
+  var form = $(this);
+  var loopLength = 1;
+  if(form.data('multiloader') == true) {
+    loopLength = form[0].length;
+  }
+
+  var formData = form.serialize();
+
+  for (var i = 0; i < loopLength; i++) {
+    if(form.data('multiloader') == true) {
+      if(form[0][i].checked == true){
+        var newID = form[0][i].value;
+        formData = $('input:not([name^=id])', this).serialize() + '&id=' + newID;
+      }
+      else continue;
+    }
+
     $.ajax({
      url: '_functions.php',
      type: 'POST',
-     data: { name: fname, url: response, mimetype: mimetype, id: playerID, newAsset: upload_asset  },
+     data: formData,
      success: function(data){
+       $('#newAsset').modal('hide');
        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+       setTimeout(function() {
+         location.reload();
+       }, 2000);
      },
      error: function(data){
        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
      }
    });
   }
-}
-$("#assetNewForm").submit(function(e) {
-  e.preventDefault();
-  var form = $(this);
-  $.ajax({
-   url: '_functions.php',
-   type: 'POST',
-   data: form.serialize(),
-   success: function(data){
-     $('#newAsset').modal('hide');
-     $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
-     setTimeout(function() {
-      location.reload();
-    }, 2000);
-   },
-   error: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-   }
- });
 });
+
 $('.close_upload').on('click', function(){
   $('#newAsset').modal('hide');
   location.reload();
@@ -210,8 +297,8 @@ $("#newPlayerDiscover").submit(function(e) {
      $('.start_discovery').prop('disabled', false);
    }
  });
-
 });
+
 $('.close_player').on('click', function(){
   $('#newPlayer').modal('hide');
   location.reload(0);
@@ -238,8 +325,8 @@ $("#installExtension").submit(function(e) {
      $('.install').prop('disabled', false);
    }
  });
-
 });
+
 $('.install_close').on('click', function(){
   $('#installer').modal('hide');
   location.reload(0);
@@ -271,7 +358,6 @@ $('.editPlayerOpen').on('click', function() {
   });
 });
 
-
 $('button.reboot').on('click', function(){
   var eR = $('#confirmReboot');
   var id = getUrlParameterByName('playerID');
@@ -295,7 +381,7 @@ $('button.reboot').on('click', function(){
   });
 });
 
-$('#confirmDelete').on('show.bs.modal', function(e) {
+$('#confirmDelete, #confirmDeleteAssets').on('show.bs.modal', function(e) {
   $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 });
 
@@ -309,28 +395,28 @@ $(function(){
 
 function reloadPlayerImage(){
   $('img.player').each(function(index, element){
-      var url = $(element).attr('data-src');
-      $.ajax({
-        url: 'assets/php/image.php',
-        data: {image: 1, ip: url},
-        dataType: 'json',
-        type: 'GET',
-        success: function(data){
-            $(element).attr('src', data);
-        },
-        error: function(data){
-            $(element).attr('src', 'assets/img/offline.png');
-            console.log('No connection - ' + url);
-        },
-      });
+    var url = $(element).attr('data-src');
+    $.ajax({
+      url: 'assets/php/image.php',
+      data: {image: 1, ip: url},
+      dataType: 'json',
+      type: 'GET',
+      success: function(data){
+        $(element).attr('src', data);
+      },
+      error: function(data){
+        $(element).attr('src', 'assets/img/offline.png');
+        console.log('No connection - ' + url);
+      },
+    });
   })
 }
 
 $(document).ready(function() {
     reloadPlayerImage();
 });
-setInterval('reloadPlayerImage();',settingsRefreshRate);
 
+setInterval('reloadPlayerImage();',settingsRefreshRate);
 
 $('.modal').on('shown.bs.modal', function(){
   $(this).find('[autofocus]').focus();
