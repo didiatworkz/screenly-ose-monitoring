@@ -121,6 +121,26 @@ session_start();
 				redirect($backLink, 2);
 			}
 
+			if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAllAssets')){
+				$id 				= $_GET['playerID'];
+				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+				$data 			= NULL;
+				$playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $id, false);
+
+				foreach ($playerAPI as $value) {
+					if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
+						//sysinfo('success', 'Asset deleted successfully');
+						redirect($backLink, 0);
+					}
+					else sysinfo('danger', 'Error! - Can \'t delete the Asset');
+				}
+
+
+
+
+			}
+
 			if(isset($_POST['updateAsset'])){
 				$id 				= $_POST['id'];
 				$asset 			= $_POST['asset'];
@@ -155,10 +175,11 @@ session_start();
 				$data 			= NULL;
 
 				if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
-					sysinfo('success', 'Asset deleted successfully');
+					//sysinfo('success', 'Asset deleted successfully');
+					redirect($backLink, 0);
 				}
 				else sysinfo('danger', 'Error! - Can \'t delete the Asset');
-				redirect($backLink, 1);
+
 			}
 
 			include('assets/php/menu.php');
@@ -190,9 +211,10 @@ session_start();
 						$status		 		= 'online';
 						$statusColor 	= 'success';
 						$newAsset			= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New Asset</a>';
+						$bulkDelete		= '<a href="#" data-toggle="modal" data-target="#confirmDeleteAssets" data-href="index.php?action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-block btn-danger" title="delete"><i class="tim-icons icon-simple-remove"></i> Clean Assets</a>';
 						$navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="Previous asset"><i class="tim-icons icon-double-left"></i> Asset</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="Next asset">Asset <i class="tim-icons icon-double-right"></i></button></div></div>';
 						$management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-spaceship"></i> Open Player Management</a>';
-						$reboot				= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-danger reboot" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
+						$reboot				= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-info reboot" title="Reboot Player"><i class="tim-icons icon-refresh-01"></i> Reboot Player</button>';
 						$script 			= '
 						<tr>
 							<td>Monitor-Script:</td>
@@ -208,6 +230,7 @@ session_start();
 						$navigation 		= '';
 						$script 				= '';
 						$newAsset				= '';
+						$bulkDelete			= '';
 						$management			= '';
 						$reboot 				= '';
 						if(checkAddress($player['address'])){
@@ -262,6 +285,7 @@ session_start();
 										<hr />
 										'.$management.'
 										'.$reboot.'
+										'.$bulkDelete.'
 									</div>
 								</div>
 							</div>
@@ -399,7 +423,7 @@ session_start();
 											</form>
 										</div>
 										<div role="tabpanel" class="tab-pane" id="upload">
-											<form action="http://'.$player['address'].'/api/v1/file_asset" class="dropzone" id="dropzone">
+											<form action="http://'.$player['address'].'/api/v1/file_asset" class="dropzone drop">
 												<div class="form-group">
 													<input type="file" multiple />
 												</div>
@@ -893,6 +917,10 @@ session_start();
 						    <td>'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'</td>
 						  </tr>
 							<tr>
+						    <td>PHP Version:</td>
+						    <td>'.phpversion().'</td>
+						  </tr>
+							<tr>
 						    <td>&nbsp;</td>
 						    <td>&nbsp;</td>
 						  </tr>
@@ -952,6 +980,24 @@ session_start();
 					</div>
 					<div class="modal-body">
 								Do you really want to delete this entry?
+								<div class="form-group text-right">
+								<a class="btn btn-danger btn-ok btn-sm">Delete</a>
+								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+								</div>
+						</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- confirmDeleteAssets -->
+		<div class="modal fade" id="confirmDeleteAssets" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAssets" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Attention!</h5>
+					</div>
+					<div class="modal-body">
+								Do you really want to clean all assets on this player?
 								<div class="form-group text-right">
 								<a class="btn btn-danger btn-ok btn-sm">Delete</a>
 								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
