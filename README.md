@@ -40,7 +40,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Add-on for displaying the player’s output remotely
 
 ## Bugs
-No errors were found in the tests. If you find a problem or bug, please report it:
+No errors were found in the tests. If you find a problem or bug, please report it:<br />
 [Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:issue%20label:bug)
 
 ---
@@ -55,7 +55,7 @@ No errors were found in the tests. If you find a problem or bug, please report i
 ## Installation
 Very simple installation:
 
-1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+F1)
+1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+[F1])
 2. Copy this line and execute it
 ```bash
 bash <(curl -sL https://git.io/fjg7h)
@@ -108,5 +108,5 @@ ose-monitoring --help
 There's something else that wasn't answered here?
 Then just have a look at the [wiki]([https://github.com/didiatworkz/screenly-ose-monitor/wiki](https://github.com/didiatworkz/screenly-ose-monitor/wiki)). Maybe you will find an answer there.
 
-Thanks for using this project!
+Thanks for using this project! <br />
 -- didiatworkz
