@@ -17,9 +17,10 @@ ________________________________________
 */
 
 	if(isset($_POST['newAsset'])){
+		$id 				= array();
 		$now				= strtotime("-10 minutes");
-		$id 				= $_POST['id'];
-		$url 				= $_POST['url'];
+		$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
+		$url 				= isset($_POST['url']) ? $_POST['url'] : '';
 		$name 			= (isset($_POST['name']) ? $_POST['name'] : $_POST['url']);
 		$mimetype		= $_POST['mimetype'];
 		$start 			= date("Y-m-d", $now);
@@ -27,34 +28,65 @@ ________________________________________
 		$end 				= date("Y-m-d", strtotime("+".$set['end_date']." week"));
 		$end_time		= $start_time;
 		$duration 	= $set['duration'];
+		$cancel 		= FALSE;
+		$output			= '';
 
 		if($name == '') $name = $url;
 
-		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id."'");
-		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		if(isset($_POST['multidrop'])){
+			$images			= curl_file_create($_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['name']);
+			$images			= array('file_upload' => $images);
+			$ids 			= $_POST['playerID'];
+			$id				= explode(',', $ids);
+		}
 
-		$data 										= array();
-		$data['mimetype'] 				= $mimetype;
-		$data['is_enabled'] 			= 1;
-		$data['name'] 						= $name;
-		$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
-		$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
-		$data['duration'] 				= $duration;
-		$data['play_order']				= 0;
-		$data['nocache'] 					= 0;
-		$data['uri'] 							= $url;
-		$data['skip_asset_check'] = 1;
+		for ($i=0; $i < count($id); $i++) {
+			$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
+			$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
-		if(callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id, false)){
+			if(isset($_POST['multidrop'])){
+				print_r($images);
+				$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id[$i], false);
+				if (strpos($url, '/home/pi/screenly_assets') === false) $cancel = TRUE;
+			}
+
+			$data 										= array();
+			$data['mimetype'] 				= $mimetype;
+			$data['is_enabled'] 			= 1;
+			$data['name'] 						= $name;
+			$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
+			$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
+			$data['duration'] 				= $duration;
+			$data['play_order']				= 0;
+			$data['nocache'] 					= 0;
+			$data['uri'] 							= $url;
+			$data['skip_asset_check'] = 1;
+
+			//print_r($data);
+
+			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id, false)){
+				if(strpos($out, '201') === false OR $cancel){
+					$output .= $player['name'].'
+					';
+				} else echo 'Asset added successfully to Player: '.$player['name'];
+			}
+			else {
+				header('HTTP/1.1 404 Not Found');
+				echo 'Error! - Can \'t add the Asset';
+			}
+		}
+
+		if(strpos($output, 'Error') === false){
 			header('HTTP/1.1 200 OK');
-			echo 'Asset added successfully';
-			die();
+		} else {
+			header('HTTP/1.1 500 Internal Server Error');
+			echo 'Can\'t upload Asset '.$_FILES['file']['name'].' to:
+
+			'.$output;
 		}
-		else {
-			header('HTTP/1.1 404 Not Found');
-			echo 'Error! - Can \'t add the Asset';
-			die();
-		}
+	die();
+
+
 	}
 
 	if(isset($_POST['changeAssetState'])){
