@@ -38,7 +38,6 @@ then
     exit
 fi
 
-header
 echo
 
 # Check if screenly exists
