@@ -1,7 +1,8 @@
 <?php
-session_set_cookie_params(36000, '/' );
-session_start();
+	session_set_cookie_params(36000, '/' );
+	session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +36,6 @@ session_start();
 	<script src="assets/js/jquery-ui.min.js"></script>
 	<script src="assets/tools/DataTables/datatables.min.js"></script>
 	<script src="assets/tools/dropzone/dropzone.min.js"></script>
-
 </head>
 
 <body>
@@ -52,16 +52,17 @@ session_start();
 				if($duration && $end_date){
 					$db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."', refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'");
 					sysinfo('success', 'Settings saved!', 0);
-				}
-				else sysinfo('danger', 'Error!');
+				}	else sysinfo('danger', 'Error!');
 				redirect($backLink, 2);
 			}
 
-
+			// Player authentication
 			$scriptAuthUsername = 'dummy';
 			$scriptAuthPassword = 'dummy';
+
 			if(isset($_GET['playerID']) && $_GET['playerID'] != ''){
 				$scriptAuth = playerAuthentication($_GET['playerID']);
+
 				if($scriptAuth["username"] != '' && $scriptAuth["password"] != ''){
 					$scriptAuthUsername = $scriptAuth["username"];
 					$scriptAuthPassword = $scriptAuth["password"];
@@ -72,14 +73,15 @@ session_start();
 	    if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes'){
 	      $now 	 = time();
 	      $token = md5($loginUsername.$loginPassword.$now);
-	      if($token){
+
+				if($token){
 	        $db->exec("UPDATE settings SET token='".$token."' WHERE userID='".$loginUserID."'");
 	        sysinfo('success', 'Token generated! - wait....', 0);
 	        redirect('index.php?showToken=1');
-	      }
-	      else sysinfo('danger', 'Error!');
+	      } else sysinfo('danger', 'Error!');
 	    }
 
+			// POST: saveIP - Auto discovery function
 			if(isset($_POST['saveIP'])){
 				$name 		= isset($_POST['name']) ? $_POST['name'] : '';
 				$address 	= isset($_POST['address']) ? $_POST['address'] : '';
@@ -90,11 +92,11 @@ session_start();
 				if($address){
 					$db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
 					sysinfo('success', $name.' added successfully');
-				}
-				else sysinfo('danger', 'Error! - Can \'t add the Player');
+				}	else sysinfo('danger', 'Error! - Can \'t add the Player');
 				redirect($backLink, 2);
 			}
 
+			// POST: updatePlayer - Update player data in database
 			if(isset($_POST['updatePlayer'])){
 				$name 		= $_POST['name'];
 				$address	= $_POST['address'];
@@ -106,21 +108,22 @@ session_start();
 				if($address){
 					$db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
 					sysinfo('success', 'Player successfully updated!');
-				}
-				else sysinfo('danger', 'Error! - Can \'t update the Player');
+				}	else sysinfo('danger', 'Error! - Can \'t update the Player');
 				redirect($backLink, 2);
 			}
 
+			// GET: action:delete - Delete player from database
 			if(isset($_GET['action']) && $_GET['action'] == 'delete'){
 				$playerID = $_GET['playerID'];
+
 				if(isset($playerID)){
 					$db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
 					sysinfo('success', 'Player successfully removed!');
-				}
-				else sysinfo('danger', 'Error! - Can \'t remove the Player');
+				} else sysinfo('danger', 'Error! - Can \'t remove the Player');
 				redirect($backLink, 2);
 			}
 
+			// GET: action2:deleteAllAssets - Delete all assets from a player via API
 			if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAllAssets')){
 				$id 				= $_GET['playerID'];
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
@@ -132,15 +135,11 @@ session_start();
 					if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
 						//sysinfo('success', 'Asset deleted successfully');
 						redirect($backLink, 0);
-					}
-					else sysinfo('danger', 'Error! - Can \'t delete the Asset');
+					}	else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 				}
-
-
-
-
 			}
 
+			// POST: updateAsset - Update Asset information from a player via API
 			if(isset($_POST['updateAsset'])){
 				$id 				= $_POST['id'];
 				$asset 			= $_POST['asset'];
@@ -153,20 +152,22 @@ session_start();
 
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+				$data 			= callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
 
-				$data = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
 				if($data['name'] != $name) $data['name'] = $name;
+
 				if($data['duration'] != $duration && $duration > 1) $data['duration'] = $duration;
 				else $data['duration'] = 30;
 				$data['start_date'] = $start.'T'.$start_time.':00.000Z';
 				$data['end_date'] = $end.'T'.$end_time.':00.000Z';
+
 				if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					sysinfo('success', 'Asset updated successfully');
-				}
-				else sysinfo('danger', 'Error! - Can \'t update the Asset');
+				}	else sysinfo('danger', 'Error! - Can \'t update the Asset');
 			  redirect($backLink, 2);
 			}
 
+			// GET: action2:deleteAsset - Delete asset from a player via API
 			if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
 				$id 				= $_GET['id'];
 				$asset 			= $_GET['asset'];
@@ -177,16 +178,18 @@ session_start();
 				if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					//sysinfo('success', 'Asset deleted successfully');
 					redirect($backLink, 0);
-				}
-				else sysinfo('danger', 'Error! - Can \'t delete the Asset');
-
+				} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 			}
 
+			// INCLUDE: Top menubar
 			include('assets/php/menu.php');
 
+			// START CONTENT
 			echo'
 			<div class="content">
 				';
+
+			// GET: action:view - Player detail overview
 			if(isset($_GET['action']) && $_GET['action'] == 'view'){
 				if(isset($_GET['playerID'])){
 					$playerID 	= $_GET['playerID'];
@@ -205,8 +208,7 @@ session_start();
 
 						if($monitor == true){
 							$monitorInfo = '<span class="badge badge-success">  installed  </span>';
-						}
-						else $monitorInfo = '<a href="#" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
+						} else $monitorInfo = '<a href="#" title="What does that mean?"><span class="badge badge-info">not installed</span></a>';
 
 						$status		 		= 'online';
 						$statusColor 	= 'success';
@@ -233,6 +235,7 @@ session_start();
 						$bulkDelete			= '';
 						$management			= '';
 						$reboot 				= '';
+
 						if(checkAddress($player['address'])){
 							$status		 		= 'online';
 							$statusColor 	= 'success';
@@ -375,9 +378,9 @@ session_start();
 					}
 					else {
 						echo  '
-						<div class="alert alert-danger">
-	            <span><b> No Screenly API detected! - </b> No data could be collected...</span>
-	          </div>
+									<div class="alert alert-danger">
+				            <span><b> No Screenly API detected! - </b> No data could be collected...</span>
+				          </div>
 						';
 					}
 					echo '
@@ -429,8 +432,8 @@ session_start();
 												</div>
 											</form>
 											<div class="form-group text-right">
-											<br />
-												<button type="button" class="btn btn-secondary btn-sm close_upload">Close</button>
+												<br />
+												<button type="button" class="btn btn-secondary btn-sm close_modal" data-close="#newAsset">Close</button>
 											</div>
 										</div>
 									</div>
@@ -503,6 +506,24 @@ session_start();
 							</div>
 						</div>
 					</div>
+
+					<!-- confirmDeleteAssets -->
+					<div class="modal fade" id="confirmDeleteAssets" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAssets" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Attention!</h5>
+								</div>
+								<div class="modal-body">
+									Do you really want to clean all assets on this player?
+									<div class="form-group text-right">
+										<a class="btn btn-danger btn-ok btn-sm">Delete</a>
+										<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				';
 				}
 				else {
@@ -512,13 +533,12 @@ session_start();
 			}
 			else if(isset($_GET['site'])){
 				$moduleName = $_GET['site'];
-				if (@file_get_contents('assets/php/'.$moduleName.'.php',0,NULL,0,1)) {
+
+				if (@file_get_contents('assets/php/'.$moduleName.'.php', 0, NULL, 0, 1)) {
 					if(in_array(basename($moduleName), $_modules)){
 						include('assets/php/'.basename($moduleName).'.php');
-					}
-					else sysinfo('danger', 'Module not allowed');
-				}
-				else sysinfo('danger', 'Module not exits');
+					}	else sysinfo('danger', 'Module not allowed');
+				}	else sysinfo('danger', 'Module not exits');
 			}
 			else {
 				$playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
@@ -555,7 +575,6 @@ session_start();
 							</div>
 							<div class="card-body ">
 								<a href="index.php?action=view&playerID='.$player['playerID'].'"><img class="player" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'"></a>
-
 							</div>
 						</div>
 					</div>
@@ -599,7 +618,7 @@ session_start();
 												<div class="help-block with-errors"></div>
 											</div>
 											<div class="form-group">
-											<br />
+												<br />
 												<input name="mode" type="hidden" value="firstStep"/>
 												<button type="submit" name="saveAccount" class="btn btn-primary btn-lg btn-block">Next Step</button>
 											</div>
@@ -679,7 +698,9 @@ session_start();
 			}
 			echo '
 
-		</div> <!-- END CONTENT -->
+		</div>
+		<!-- END CONTENT -->
+
 		<!-- newPlayer -->
 		<div class="modal fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -745,7 +766,7 @@ session_start();
 									<div class="form-group text-right">
 										<input name="userID" type="hidden" value="'.$loginUserID.'" />
 										<button type="submit" name="startDiscover" class="btn btn-primary btn-sm start_discovery">Discover</button>
-										<button type="button" class="btn btn-secondary btn-sm close_player">Close</button>
+										<button type="button" class="btn btn-secondary btn-sm close_modal" data-close="#newPlayer">Close</button>
 									</div>
 								</form>
 							</div>
@@ -880,6 +901,7 @@ session_start();
 				</div>
 			</div>
 		</div>
+
 		';
 		if($loginGroupID == 1){
 			echo '
@@ -909,7 +931,7 @@ session_start();
 										<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 									</div>
 								</form>
-		          </div>
+		         </div>
 					</div>
 				</div>
 			</div>
@@ -962,9 +984,9 @@ session_start();
 						  <tr>
 						    <td>Scripts:</td>
 						    <td>
-									<a href="https://datatables.net" target="_blank">DataTables</a><br />
-									<a href="https://www.dropzonejs.com/" target="_blank">dropzoneJS</a>
-								</td>
+							  <a href="https://datatables.net" target="_blank">DataTables</a><br />
+							  <a href="https://www.dropzonejs.com/" target="_blank">dropzoneJS</a>
+							</td>
 						  </tr>
 						</table>
 						<button type="button" class="btn btn-sm btn-secondary pull-right" data-dismiss="modal">Close</button>
@@ -981,15 +1003,15 @@ session_start();
 						<h5 class="modal-title">Public Link</h5>
 					</div>
 					<div class="modal-body">
-								<div class="form-group">
-									<label for="InputSetToken">Public link that can be used without authentication!</label>
-									<input type="text" class="form-control" id="InputSetToken" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'" />
-								</div>
-								<div class="form-group text-right">
-									<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate new token</a>
-									<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-								</div>
+						<div class="form-group">
+							<label for="InputSetToken">Public link that can be used without authentication!</label>
+							<input type="text" class="form-control" id="InputSetToken" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'" />
 						</div>
+						<div class="form-group text-right">
+							<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">Generate new token</a>
+							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -1002,30 +1024,12 @@ session_start();
 						<h5 class="modal-title">Attention!</h5>
 					</div>
 					<div class="modal-body">
-								Do you really want to delete this entry?
-								<div class="form-group text-right">
-								<a class="btn btn-danger btn-ok btn-sm">Delete</a>
-								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
-								</div>
+						Do you really want to delete this entry?
+						<div class="form-group text-right">
+							<a class="btn btn-danger btn-ok btn-sm">Delete</a>
+							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
 						</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- confirmDeleteAssets -->
-		<div class="modal fade" id="confirmDeleteAssets" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAssets" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Attention!</h5>
 					</div>
-					<div class="modal-body">
-								Do you really want to clean all assets on this player?
-								<div class="form-group text-right">
-								<a class="btn btn-danger btn-ok btn-sm">Delete</a>
-								<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
-								</div>
-						</div>
 				</div>
 			</div>
 		</div>
@@ -1057,13 +1061,17 @@ session_start();
 			';
 		}
 		$db->close();
-	?>
+
+		echo '
       <footer class="footer">
         <div class="container-fluid">
-          <div class="copyright">
-            <?php if(isset($pagination)) echo $pagination; echo '&copy '.date('Y'); ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  <?php if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '|  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>'; ?>
-							<?php $totalTime = array_sum(explode(' ',  microtime())) - $_loadMessureStart; echo '<script>console.log("Loaded in: '.$totalTime.'")</script>'; ?>
-          </div>
+          <div class="copyright">';
+            if(isset($pagination)) echo $pagination; echo '
+			&copy '.date('Y'); ?> by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>  <?php if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '|  <a href="https://www.github.com/didiatworkz" target="_blank">Github</a> | <a href="javascript:void(0)" data-toggle="modal" data-target="#info">Information</a>';
+						$totalTime = array_sum(explode(' ',  microtime())) - $_loadMessureStart; echo '
+			<script>console.log("Loaded in: '.$totalTime.'")</script>';
+						echo'
+		  </div>
         </div>
       </footer>
     </div>
@@ -1071,14 +1079,13 @@ session_start();
 </div>
   <script type="text/javascript">
 
-	var scriptPlayerAuth = "<?php echo ($loggedIn ? $scriptPlayerAuth : '10'); ?>";
-	var settingsRefreshRate = "<?php echo ($loggedIn ? $loginRefreshTime : '5'); ?>000";
+	var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
+	var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
 
   </script>
 <script type="text/javascript" src="assets/js/monitor.js"></script>
-<script type="text/javascript" src="assets/js/validator.js"></script>
+<script type="text/javascript" src="assets/js/validator.js"></script>';
 
-<?php
 	if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
 		echo '
 			<script>

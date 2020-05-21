@@ -12,7 +12,7 @@
 			   info@atworkz.de
 	________________________________________
 			  Screenly OSE Monitor
-		   Version 3.0 - March 2020
+		   Version 3.0 - May 2020
 	________________________________________
 	*/
 

@@ -2,7 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitor
 #
-# October 2019
+# May 2020
 _ANSIBLE_VERSION=2.8.2
 _BRANCH=v3.0
 #_BRANCH=master
@@ -67,10 +67,7 @@ sleep 5
 sudo rm -rf /tmp/monitor
 sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 cd /tmp/monitor/assets/tools/ansible/
-#sudo rm -rf /var/www/html/monitor
 sudo mkdir -p /var/www/html
-#sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /var/www/html/monitor
-#cd /var/www/html/monitor/assets/tools/ansible/
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
