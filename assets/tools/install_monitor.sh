@@ -55,6 +55,8 @@ then
   sudo apt-get install -y python-dev git-core libffi-dev libssl-dev
   curl -s https://bootstrap.pypa.io/get-pip.py | sudo python
   sudo pip install ansible=="$_ANSIBLE_VERSION"
+  _SERVERMODE="listen 80 default_server;"
+  _PORT=""
 
 else
   echo -e "[ \e[93mYES\e[39m ] Screenly installed"
@@ -68,17 +70,25 @@ sudo rm -rf /tmp/monitor
 sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 cd /tmp/monitor/assets/tools/ansible/
 sudo mkdir -p /var/www/html
+_SERVERMODE="listen 9000;"
+_PORT=":9000"
+export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 sleep 2
+echo
+echo
+echo
+echo
+echo
 header
 echo -e "\e[94mInstallation finished!"
 echo
 echo
-echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP:9000\e[39m"
+echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP$_PORT\e[39m"
 echo
 echo -e "\e[94mUsername: \e[93mdemo\e[39m"
 echo -e "\e[94mPassword: \e[93mdemo\e[39m"

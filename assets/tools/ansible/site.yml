@@ -3,7 +3,8 @@
   user: pi
   become: yes
   vars:
-    monitor_branch: "{{ lookup('env', 'MONITOR_BRANCH') }}"
+    MONITOR_BRANCH: "{{ lookup('env', 'MONITOR_BRANCH') }}"
+    SERVER_MODE: "{{ lookup('env', 'SERVER_MODE') }}"
 
   handlers:
     - name: restart-nginx

@@ -1,6 +1,6 @@
 server {
 
-  listen 9000;
+  {{ SERVER_MODE }}
   server_name _;
   client_max_body_size	20M;
 
@@ -10,6 +10,6 @@ server {
 
   location ~ \.php$ {
     include /etc/nginx/fastcgi.conf;
-    fastcgi_pass unix:/run/php/php{{MONITORING_PHP_VERSION}}-fpm.sock;
+    fastcgi_pass unix:/run/php/php{{ MONITORING_PHP_VERSION }}-fpm.sock;
   }
 }
