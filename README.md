@@ -6,17 +6,21 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v3.0) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
 - [Intro](#what-is-this)
-- [Features](#Features)
+- [Features](#features)
 - [Bugs](#Bugs)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Update](#update)
 - [Login](#login)
+- [Update](#update)
+- [Changelog](#changelog)
 - [Bash Controll](#bash-controll)
+- [More Questions?](#any-more-questions)
 
 
 ## What is this?
+<p align="center">
 <img align="right" width="400px" title="Monitoring Overview" alt="Monitoring Overview" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/manage.png" />
+</p>
 Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone solution. With this tool, you can manage multiple OSE players in one interface.
 
 In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them all from the player.
@@ -39,9 +43,11 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Public access to integrate in Monitoring tools
 + Add-on for displaying the player’s output remotely
 
+
+
 ## Bugs
 No errors were found in the tests. If you find a problem or bug, please report it:<br />
-[Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:issue%20label:bug)
+[Open Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:issue%20label:bug)
 
 ---
 
@@ -61,15 +67,14 @@ Very simple installation:
 bash <(curl -sL https://git.io/fjg7h)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
-4. Open your Browser to the IP address of the Raspberry Pi like: 192.168.178.2:9000
+4. Open your Browser to the IP address of the Raspberry Pi like: http://[screenly-ip-address]:9000
 
 ## Login
 After the installation is the default login:
 
 http://[screenly-ip-address]:9000
 
-Username: demo
-
+Username: demo<br />
 Password: demo
 
 ## Update
