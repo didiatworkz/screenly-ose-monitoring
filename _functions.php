@@ -55,6 +55,18 @@
 		if($refresh) echo'<meta http-equiv="refresh" content="1;URL=index.php">';
 	}
 
+	function firstStart($mode, $value=null){
+		if($mode == 'set' AND $value != NULL){
+			$db->exec("UPDATE `settings` SET firstStart='".$value."' WHERE userID=1");
+			return true;
+		}
+		else {
+			$SQL = $db->query("SELECT firstStart FROM settings");
+			$fetch = $SQL->fetchArray(SQLITE3_ASSOC);
+			return $fetch['firstStart'];
+		}
+	}
+
 	include_once('assets/php/database.php');
 	include_once('assets/php/user.php');
 	include_once('assets/php/player.php');
@@ -63,10 +75,10 @@
 
 	if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
 		setcookie('firstSetup', true, time() + (86400 * 999), '/');
-		$firstSetup = 1;
+		firstStart('set', 1);
 	}
 	else if (isset($_COOKIE['firstSetup']) && $playerCount == 0) {
-		$firstSetup = 2;
+		firstStart('set', 2);
 	}
 	else if($playerCount >= 1) {
 		setcookie('firstSetup',  null, -1, '/');

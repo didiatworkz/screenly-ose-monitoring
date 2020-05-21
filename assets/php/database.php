@@ -65,9 +65,9 @@ if(@file_exists('assets/tools/version_old.txt')){
   }
   if($oldVersion <= '3.0'){			// Update Database to Version 3.0
     $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
-    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`end_date`	INTEGER,	`updatecheck`	INTEGER)");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER)");
     $db->exec("INSERT INTO `settings`(duration,token,end_date,updatecheck) SELECT duration,token,end_date,updatecheck FROM `settings_tmp`");
-    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,`password`	TEXT NOT NULL, `firstname`	TEXT, `name`	TEXT, 	`refreshscreen`	INTEGER,	`updateEntry`	INTEGER, `active`	INTEGER, `last_login`	INTEGER)");
+    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,`password`	TEXT NOT NULL, `firstname`	TEXT, `name`	TEXT, 	`refreshscreen`	INTEGER, `new` INTEGER,	`updateEntry`	INTEGER, `active`	INTEGER, `last_login`	INTEGER)");
     $db->exec("INSERT INTO `users`(username,password,refreshscreen) SELECT username,password,refreshscreen FROM `settings_tmp`");
     $db->exec("UPDATE `users` SET updateEntry=0 WHERE userID=1");
     $db->exec("UPDATE `users` SET firstname='John' WHERE userID=1");
@@ -80,7 +80,6 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `userGroups` (name) VALUES('User')");
     $db->exec("CREATE TABLE `userGroupMapping` (`mappingID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER, `groupID`	INTEGER)");
     $db->exec("INSERT INTO `userGroupMapping` (userID,groupID) VALUES(1,1)");
-
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');

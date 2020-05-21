@@ -585,7 +585,7 @@
 				';
 				}
 				else {
-					if($firstSetup == 1){
+					if(firstStart() == 1){
 						echo '
 						<div class="row">
 							<div class="col-sm-8 offset-sm-2">
@@ -629,8 +629,8 @@
 						</div>
 						';
 					}
-					else if($firstSetup == 2 && checkAddress($_SERVER['SERVER_ADDR'])){
-						$firstSetup = 3;
+					else if(firstStart() == 2 && checkAddress($_SERVER['SERVER_ADDR'])){
+						firstStart('set', 3);
 						echo '
 						<div class="row">
 							<div class="col-sm-8 offset-sm-2">
