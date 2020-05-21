@@ -123,7 +123,7 @@
 - git:
     repo: "https://github.com/didiatworkz/screenly-ose-monitor.git"
     dest: /var/www/html/monitor
-    version: "{{ monitor_branch }}"
+    version: "{{ MONITOR_BRANCH }}"
     force: yes
 
 - name: Copy ose-monitoring Script
