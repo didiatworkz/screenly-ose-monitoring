@@ -22,7 +22,7 @@
 
 	$_modules = array(
 					'usermanagement',
-					'multiuploader'
+					'multiuploader',
 	);
 
 
@@ -78,9 +78,9 @@
 		setcookie('firstSetup', true, time() + (86400 * 999), '/');
 		firstStart('set', 1);
 	}
-	else if (isset($_COOKIE['firstSetup']) && $playerCount == 0) {
+	else if (isset($_COOKIE['firstSetup']) && $playerCount == 0 && firstStart() <= 2) {
 		firstStart('set', 2);
 	}
-	else if($playerCount >= 1) {
+	else if($playerCount >= 1 OR firstStart() == 3) {
 		setcookie('firstSetup',  null, -1, '/');
 	}
