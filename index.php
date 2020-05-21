@@ -654,11 +654,11 @@
 										<form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
 											<div class="form-group">
 												<label for="InputPlayerName">Enter the Screenly Player name</label>
-												<input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="Player-Name" autofocus />
+												<input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="Player-Name" autofocus required />
 											</div>
 											<div class="form-group">
 												<label for="InputLocation">Enter the Player location</label>
-												<input name="location" type="text" class="form-control" id="InputLocation" placeholder="Player-Location" />
+												<input name="location" type="text" class="form-control" id="InputLocation" placeholder="Player-Location" required />
 											</div>
 											<hr />
 											<div class="form-group">
