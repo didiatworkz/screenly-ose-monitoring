@@ -2,7 +2,7 @@
 
 # Screenly OSE Monitoring
 <p align="center">
-<img title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage5.png" style="width:800px" />
+<img width="800px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage5.png" />
 </p>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v3.0) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
@@ -20,9 +20,11 @@
 
 
 ## What is this?
-<img align="left" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage4.png" style="width: 400px; padding-right: 12px; padding-bottom: 12px" />
+<img align="left" width="300px" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage4.png" style="padding-right: 12px;" />
 
-Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone solution. With this tool, you can manage multiple OSE players in one interface.
+Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone solution.
+
+With this tool, you can manage multiple OSE players in one interface.
 
 In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them all from the player.
 
@@ -33,7 +35,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 
 ## Features
 
-<img align="right" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/monitoring2.png" width="300px">
+<img width="300px" align="right" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/monitoring2.png">
 
 + Easy administration
 + User management
@@ -60,6 +62,8 @@ No errors were found in the tests. If you find a problem or bug, please report i
 + Ansible (will be installed)
 
 ## Installation
+__IMPORTANT__: The monitoring was designed to run on the local network with the Screenly OSE Player. Problems or restrictions may occur if the server is hosted externally or accessed from an external network!
+
 Very simple installation:
 
 1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+[F1])
@@ -79,7 +83,7 @@ Username: demo<br />
 Password: demo
 
 <p align="center">
-<img title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/livecase.png" />
+<img width="500px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/livecase.png" />
 </p>
 
 ## Update
@@ -117,7 +121,11 @@ ose-monitoring --help
 
 ## Any more questions?
 There's something else that wasn't answered here?
-Then just have a look at the [wiki]([https://github.com/didiatworkz/screenly-ose-monitor/wiki](https://github.com/didiatworkz/screenly-ose-monitor/wiki)). Maybe you will find an answer there.
+Then just have a look at the [wiki-page]([https://github.com/didiatworkz/screenly-ose-monitor/wiki](https://github.com/didiatworkz/screenly-ose-monitor/wiki)). Maybe you will find an answer there.
 
 Thanks for using this project! <br />
 -- didiatworkz
+
+<p align="center">
+<img width="128px" title="atworkz logo" alt="atworkz logo" src="https://assets.atworkz.de/img/atworkz_logo_512.png" />
+</p>
