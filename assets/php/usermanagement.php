@@ -60,7 +60,7 @@ if(getGroupID($loginUserID) == 1){
     }
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'delete'){
+  if(isset($_GET['action']) && $_GET['action'] == 'deleteUser'){
     $userID = $_GET['userID'];
     if(isset($userID) AND $userID != $loginUserID){
       $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
@@ -69,7 +69,7 @@ if(getGroupID($loginUserID) == 1){
     redirect($backLink, 0);
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'new'){
+  if(isset($_GET['action']) && $_GET['action'] == 'newUser'){
     echo '
     <div class="row justify-content-md-center">
       <div class="col-md-10">
@@ -126,7 +126,7 @@ if(getGroupID($loginUserID) == 1){
     </div>';
   }
 
-  elseif(isset($_GET['action']) && $_GET['action'] == 'edit'){
+  elseif(isset($_GET['action']) && $_GET['action'] == 'editUser'){
     $userID   = $_GET['userID'];
     $userSQL  = $db->query("SELECT * FROM `users` WHERE userID='".$userID."'");
     $user     = $userSQL->fetchArray(SQLITE3_ASSOC);
@@ -211,7 +211,7 @@ if(getGroupID($loginUserID) == 1){
                 <h5 class="title">'.$_moduleName.'</h5>
               </div>
               <div class="col-md-2 float-right">
-                <a href="'.$_moduleLink.'&action=new" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New User</a>
+                <a href="'.$_moduleLink.'&action=newUser" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> New User</a>
               </div>
             </div>
           </div>
@@ -240,8 +240,8 @@ if(getGroupID($loginUserID) == 1){
                   <td>'.$active.'</td>
                   <td>'.lastLogin($user['userID']).'</td>
                   <td>
-                    <a href="'.$_moduleLink.'&action=edit&userID='.$user['userID'].'" class="options btn btn-warning btn-sm mb-1" title="edit"><i class="tim-icons icon-pencil"></i></a>
-                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="'.$_moduleLink.'&action=delete&userID='.$user['userID'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+                    <a href="'.$_moduleLink.'&action=editUser&userID='.$user['userID'].'" class="options btn btn-warning btn-sm mb-1" title="edit"><i class="tim-icons icon-pencil"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="'.$_moduleLink.'&action=deleteUser&userID='.$user['userID'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
                   </td>
                 </tr>
                 ';
