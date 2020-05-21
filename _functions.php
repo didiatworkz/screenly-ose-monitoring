@@ -16,7 +16,7 @@
 	________________________________________
 	*/
 
-	$_DEBUG 		= 'YES';
+	$_DEBUG 		= 'NO';
 	$_TIMEZONE 	= 'Europe/Berlin';
 	$apiVersion	= 'v1.2';
 
