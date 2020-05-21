@@ -55,6 +55,12 @@
 		if($refresh) echo'<meta http-equiv="refresh" content="1;URL=index.php">';
 	}
 
+	include_once('assets/php/database.php');
+	include_once('assets/php/user.php');
+	include_once('assets/php/player.php');
+	include_once('assets/php/update.php');
+	include_once('assets/php/actions.php');
+
 	function firstStart($mode, $value=null){
 		if($mode == 'set' AND $value != NULL){
 			$db->exec("UPDATE `settings` SET firstStart='".$value."' WHERE userID=1");
@@ -66,12 +72,6 @@
 			return $fetch['firstStart'];
 		}
 	}
-
-	include_once('assets/php/database.php');
-	include_once('assets/php/user.php');
-	include_once('assets/php/player.php');
-	include_once('assets/php/update.php');
-	include_once('assets/php/actions.php');
 
 	if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
 		setcookie('firstSetup', true, time() + (86400 * 999), '/');
