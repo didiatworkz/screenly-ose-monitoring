@@ -59,6 +59,8 @@ then
 
 else
   echo -e "[ \e[93mYES\e[39m ] Screenly installed"
+  _SERVERMODE="listen 9000;"
+  _PORT=":9000"
 fi
 sleep 2
 echo
@@ -69,8 +71,6 @@ sudo rm -rf /tmp/monitor
 sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
 cd /tmp/monitor/assets/tools/ansible/
 sudo mkdir -p /var/www/html
-_SERVERMODE="listen 9000;"
-_PORT=":9000"
 export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
