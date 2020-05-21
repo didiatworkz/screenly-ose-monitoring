@@ -20,7 +20,7 @@
 
 
 ## What is this?
-<img align="left" width="300px" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage4.png" style="padding-right: 12px;" />
+<img align="left" width="300px" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage4.png" style="padding-right: 12px; padding-bottom:12px" />
 
 Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone solution.
 
@@ -47,8 +47,6 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Public access to integrate in Monitoring tools
 + Add-on for displaying the player’s output remotely
 
-
-
 ## Bugs
 No errors were found in the tests. If you find a problem or bug, please report it:<br />
 [Open Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:issue%20label:bug)
@@ -69,7 +67,7 @@ Very simple installation:
 
 1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+[F1])
 2. Copy this line and execute it
-```bash
+```sh
 bash <(curl -sL https://git.io/fjg7h)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
@@ -87,6 +85,8 @@ Password: demo
 <img width="500px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/livecase.png" />
 </p>
 
+---
+
 ## Update
 For the update you only have to run the installer again.
 The installer checks if there is an old installation and saves it if necessary.
@@ -95,13 +95,13 @@ From version 2.0 there are changes to the database structure which is prepared f
 But please note that the Add-on may have to be reinstalled on the players. (Current for all older versions before version 2.0)
 
 ### Monitoring
-```bash
+```sh
 bash <(curl -sL https://git.io/fjg7h)
 ```
 
 ### Extensions
 Link over Webfrontend or this:
-```bash
+```sh
 bash <(curl -sL https://git.io/fjg5e)
 ```
 
@@ -116,7 +116,7 @@ bash <(curl -sL https://git.io/fjg5e)
 ## Bash Controll
 Since version 2.0 there is a small possibility to update or check ose-monitoring via bash.
 For more info check:
-```bash
+```sh
 ose-monitoring --help
 ```
 
@@ -125,7 +125,7 @@ There's something else that wasn't answered here?
 Then just have a look at the [wiki-page]([https://github.com/didiatworkz/screenly-ose-monitor/wiki](https://github.com/didiatworkz/screenly-ose-monitor/wiki)). Maybe you will find an answer there.
 
 Thanks for using this project! <br />
--- didiatworkz
+\- didiatworkz
 
 <p align="center">
 <img width="128px" title="atworkz logo" alt="atworkz logo" src="https://assets.atworkz.de/img/atworkz_logo_512.png" />
