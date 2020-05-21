@@ -74,10 +74,13 @@ ________________________________________
     curl_close($ch);
     if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
       $name = $result['1']['0'];
-      $name = str_replace("Screenly OSE", "", $name);
-      $name = str_replace(" - ", "", $name);
+      if(!strpos($name, ' - ') === false){
+        $name = str_replace("Screenly OSE", "", $name);
+        $name = str_replace(" - ", "", $name);
+      }
     }
     else $name = '[AUTO] '.$ip;
+
     return $name;
   }
 
