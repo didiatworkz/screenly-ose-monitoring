@@ -27,6 +27,7 @@ Screenly OSE Monitoring is a web-based application that is simultaneously instal
 With this tool, you can manage multiple OSE players in one interface.
 
 In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them all from the player.
+&nbsp;
 
 By installing an add-on on each player, it is also possible to display a "live feed" of the player's HDMI output. This will then be displayed in the overview, as well.
 
