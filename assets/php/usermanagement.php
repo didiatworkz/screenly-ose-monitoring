@@ -62,7 +62,7 @@ if(getGroupID($loginUserID) == 1){
 
   if(isset($_GET['action']) && $_GET['action'] == 'delete'){
     $userID = $_GET['userID'];
-    if(isset($userID)){
+    if(isset($userID) AND $userID != $loginUserID){
       $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
       $db->exec("DELETE FROM `userGroupMapping` WHERE userID='".$userID."'");
     }
