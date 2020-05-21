@@ -62,8 +62,9 @@
 	include_once('assets/php/actions.php');
 
 	function firstStart($mode, $value=null){
+		global $db;
 		if($mode == 'set' AND $value != NULL){
-			$db->exec("UPDATE `settings` SET firstStart='".$value."' WHERE userID=1");
+			$db->exec("UPDATE `settings` SET firstStart='".$value."' WHERE settingsID=1");
 			return true;
 		}
 		else {
