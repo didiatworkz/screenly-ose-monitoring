@@ -29,10 +29,10 @@
 /* _______________________________ */
 
 	if($_DEBUG == 'YES'){
-		ini_set('display_errors',1);
+		ini_set('display_errors', 1);
 		error_reporting(E_ALL|E_STRICT);
 	}
-	else ini_set('display_errors',0);
+	else ini_set('display_errors', 0);
 
 	date_default_timezone_set($_TIMEZONE);
 
