@@ -39,6 +39,13 @@
 - set_fact: update_version="True"
   when: (old_monitor) and (version1_0 or version1_1)
 
+- name: check if old version code available
+  stat:
+    path: /var/www/html/monitor/assets/tools/version.txt
+  register: versionscode_s
+
+- set_fact: versionscode="{{versionscode_s.stat.exists}}"
+
 - name: Backup Database
   copy:
     src: /var/www/html/dbase.db
@@ -61,6 +68,7 @@
     dest: /home/pi/.monitor/version.txt
     owner: pi
     group: pi
+  when: versionscode
 
 # Update ose-monitoring
 - name: Install packages
@@ -166,6 +174,7 @@
     owner: www-data
     group: www-data
     mode: 0644
+  when: versionscode
 
 - name: Version update
   command: ose-monitoring --init
