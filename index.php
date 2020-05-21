@@ -635,7 +635,7 @@
 						</div>
 						';
 					}
-					else if(firstStart() == 2 && checkAddress($_SERVER['SERVER_ADDR'])){
+					else if(firstStart() == 2 && checkAddress($_SERVER['SERVER_ADDR'].'/api/v1.2/assets')){
 						echo '
 						<div class="row">
 							<div class="col-sm-8 offset-sm-2">
