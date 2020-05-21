@@ -3,6 +3,12 @@ $('[data-tooltip=tooltip]').hover(function(){
   $('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
 });
 
+$('.close_modal').on('click', function(){
+  var closeClass = $(this).data('close');
+  $(closeClass).modal('hide');
+  location.reload(0);
+});
+
 function getUrlParameterByName(name, url)
 {
   if (!url) url = window.location.href;
@@ -253,11 +259,6 @@ $("#assetNewForm").submit(function(e) {
   }
 });
 
-$('.close_upload').on('click', function(){
-  $('#newAsset').modal('hide');
-  location.reload();
-});
-
 $('button.options').on('click', function(){
   var eA = $('#editAsset');
   eA.find('#InputAssetName').val($(this).data('name'));
@@ -299,11 +300,6 @@ $("#newPlayerDiscover").submit(function(e) {
  });
 });
 
-$('.close_player').on('click', function(){
-  $('#newPlayer').modal('hide');
-  location.reload(0);
-});
-
 // Install Extensions
 $("#installExtension").submit(function(e) {
   e.preventDefault();
@@ -325,11 +321,6 @@ $("#installExtension").submit(function(e) {
      $('.install').prop('disabled', false);
    }
  });
-});
-
-$('.install_close').on('click', function(){
-  $('#installer').modal('hide');
-  location.reload(0);
 });
 
 $('.editPlayerOpen').on('click', function() {

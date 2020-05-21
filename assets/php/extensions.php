@@ -169,7 +169,7 @@ else{
 							<div class="form-group text-right">
 								<input name="install" type="hidden" value="yes" />
 								<button type="submit" name="updatePlayer" class="btn btn-sm btn-warning install">Install</button>
-								<button type="button" class="btn btn-secondary btn-sm install_close" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-secondary btn-sm close_modal" data-close="#installer" data-dismiss="modal">Close</button>
 							</div>
 						</form>
 					</div>
