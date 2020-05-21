@@ -3,7 +3,7 @@
 # Screenly OSE Monitor
 #
 # May 2020
-_ANSIBLE_VERSION=2.8.2
+_ANSIBLE_VERSION=2.9.9
 _BRANCH=v3.0
 #_BRANCH=master
 
