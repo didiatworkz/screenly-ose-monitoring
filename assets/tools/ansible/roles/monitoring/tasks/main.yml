@@ -98,7 +98,7 @@
 - file:
     path: /etc/nginx/sites-enabled/default
     state: absent
-  when: {{ SERVER_MODE }} == 'listen 80 default_server;'
+  when: "{{ SERVER_MODE }}" == "listen 80 default_server;"
 
 - name: Change permissons for monitoring.conf
   file:
