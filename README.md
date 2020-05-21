@@ -1,10 +1,12 @@
 
 
 # Screenly OSE Monitoring
-
-<img title="Manage Monitoring" alt="Manage Monitoring" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/manage2.png" />
+<p align="center">
+<img title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage5.png" style="width:800px" />
+</p>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v3.0) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
+
 - [Intro](#what-is-this)
 - [Features](#features)
 - [Bugs](#Bugs)
@@ -18,9 +20,8 @@
 
 
 ## What is this?
-<p align="center">
-<img align="right" width="400px" title="Monitoring Overview" alt="Monitoring Overview" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/manage.png" />
-</p>
+<img align="left" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/manage4.png" style="width: 400px; padding-right: 12px; padding-bottom: 12px" />
+
 Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone solution. With this tool, you can manage multiple OSE players in one interface.
 
 In addition to its current display status, you can also manage the assets of a player. It is possible to activate or deactivate assets, add new ones, edit or simply delete them all from the player.
@@ -32,7 +33,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 
 ## Features
 
-<img align="right" src="http://www.atworkz.de/_git/monitor/monitoring.png">
+<img align="right" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/monitoring2.png" width="300px">
 
 + Easy administration
 + User management
@@ -77,6 +78,10 @@ http://[screenly-ip-address]:9000
 Username: demo<br />
 Password: demo
 
+<p align="center">
+<img title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/livecase.png" />
+</p>
+
 ## Update
 For the update you only have to run the installer again.
 The installer checks if there is an old installation and saves it if necessary.
@@ -99,8 +104,9 @@ bash <(curl -sL https://git.io/fjg5e)
 [Open Changelog](https://github.com/didiatworkz/screenly-ose-monitor/blob/master/CHANGELOG.md)
 
 
-
-<img title="Monitoring Overview" alt="Monitoring Overview" src="https://github.com/didiatworkz/screenly-ose-monitor/raw/master/.github/IMAGES/screens.png" />
+<p align="center">
+<img title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v3.0/.github/IMAGES/screens2.png" />
+</p>
 
 ## Bash Controll
 Since version 2.0 there is a small possibility to update or check ose-monitoring via bash.
