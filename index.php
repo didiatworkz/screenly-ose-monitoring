@@ -181,6 +181,12 @@
 				} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 			}
 
+			// GET: action:startup - Skip firstStart screen
+			if((isset($_GET['action']) && $_GET['action'] == 'startup')){
+				firstStart('set', 3);
+				redirect($backLink, 0);
+			}
+
 			// INCLUDE: Top menubar
 			include('assets/php/menu.php');
 
@@ -630,7 +636,6 @@
 						';
 					}
 					else if(firstStart() == 2 && checkAddress($_SERVER['SERVER_ADDR'])){
-						firstStart('set', 3);
 						echo '
 						<div class="row">
 							<div class="col-sm-8 offset-sm-2">
@@ -659,7 +664,7 @@
 											<div class="form-group">
 												<input name="address" type="hidden" id="InputAdress" value="'.$_SERVER['SERVER_ADDR'].'" />
 												<button type="submit" name="saveIP" class="btn btn-primary btn-lg btn-block">Yes</button>
-												<button type="text" onClick="window.location.reload();" class="btn btn-danger btn-lg btn-block">No</button>
+												<a href="index.php?action=startup" class="btn btn-danger btn-lg btn-block">No</a>
 											</div>
 										</form>
 									</div>
