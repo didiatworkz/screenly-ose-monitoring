@@ -1,5 +1,6 @@
 # Check older versions
-- file:
+- name: Create .monitor directory
+  file:
     path: /home/pi/.monitor
     state: directory
     owner: pi
@@ -95,7 +96,8 @@
     src: monitoring.j2
     dest: /etc/nginx/sites-enabled/monitoring.conf
 
-- file:
+- name: Remove nginx default config by standalone installation
+  file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   when: SERVER_MODE == "listen 80 default_server;"
@@ -133,7 +135,8 @@
   command: /bin/true
   notify: restart-fpm
 
-- git:
+- name: Clone repository from github.com
+  git:
     repo: "https://github.com/didiatworkz/screenly-ose-monitor.git"
     dest: /var/www/html/monitor
     version: "{{ MONITOR_BRANCH }}"
@@ -147,7 +150,8 @@
     group: root
     mode: 0755
 
-- file:
+- name: Change monitor owner
+  file:
     path: /var/www/html/monitor
     state: directory
     owner: www-data
