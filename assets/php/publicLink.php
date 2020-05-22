@@ -16,7 +16,7 @@ ________________________________________
 ________________________________________
 */
 
-$_boxes = 12;
+$_boxes = 18;
 $_key   = $_GET['key'];
 $_site  = 'index.php?monitoring=1&key='.$_key;
 echo '
@@ -68,7 +68,7 @@ if($_key == $securityToken){
         $imageTag 	= $player['name'];
       }
       echo'
-      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+      <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4">
         <div class="card">
           <div class="card-header">
             <h4 class="d-inline">'.$name.'</h4>
