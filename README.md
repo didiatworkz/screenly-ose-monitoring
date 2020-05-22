@@ -94,6 +94,9 @@ From version 2.0 there are changes to the database structure which is prepared f
 
 But please note that the Add-on may have to be reinstalled on the players. (Current for all older versions before version 2.0)
 
+__IMPORTANT: If monitoring is installed on a Raspberry Pi that does not have a Screenly OSE Player (standalone installation) the port changes from 9000 to 80.
+So the monitoring is accessible via the normal IP address!__
+
 ### Monitoring
 ```sh
 bash <(curl -sL https://git.io/fjg7h)
