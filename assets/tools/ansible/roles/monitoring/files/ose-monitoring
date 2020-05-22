@@ -10,7 +10,18 @@ ERROR='\033[0;31m'
 while [[ $# -gt 0 ]] ; do
     case $1 in
         -h|-\?|--help)
-            echo "Screenly OSE Monitor"
+        cat << "EOF"
+                                    _
+           ____                    | |
+          / __ \__      _____  _ __| | __ ____
+         / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+        | | (_| |\ V  V / (_) | |  |   <  / /
+         \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+          \____/                www.atworkz.de
+
+                Screenly OSE Monitoring
+EOF
+      echo
 			echo "Screenly OSE-Monitoring is an overview page for all Screenly OSE players."
 			echo "You can open it via the IP address \"0.0.0.0:9000\" and manage all players in one place."
 			echo "In addition, the monitoring offers an extension that can be installed on other"
@@ -27,8 +38,10 @@ while [[ $# -gt 0 ]] ; do
 			shift
             ;;
         --restart)
-			echo "Restart nginx Server"
+			echo "Restart nginx service"
 			sudo systemctl restart nginx
+      echo "Restart php7.3-fpm service"
+			sudo sudo systemctl restart php7.3-fpm
             ;;
 		--init)
 			echo "Set version..."
@@ -57,13 +70,15 @@ while [[ $# -gt 0 ]] ; do
 			  echo -e ${FOUND}_config.php exists ${NOCOLOR}
 		    fi
 			echo
-			echo -e ${ACTION}Check if dbase.db exists
+			echo -e ${ACTION}Check if database exists
 		    echo -e =======================${NOCOLOR}
-		    if [ ! -e /var/www/html/monitor/dbase.db ]
+		    if [ ! -e /var/www/html/monitor/*.db ]
 		    then
-		      echo -e ${ERROR}dbase.db exists ${NOCOLOR}
+          cd /var/www/html/monitor/
+		      echo -e ${FOUND}dbase.db exists
+          ls *db ${NOCOLOR}
 		    else
-			  echo -e ${FOUND}dbase.db not exists ${NOCOLOR}
+			  echo -e ${ERROR}database not exists ${NOCOLOR}
 		    fi
             ;;
         --update)
