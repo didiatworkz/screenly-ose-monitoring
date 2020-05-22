@@ -24,7 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - screenshot image refresh
 - Fix name bug
 - Group Assets
-- Modal display
+- Modal Bug
+- File check in ose-monitoring
+- update to python3
+- update ansible
 
 
 ## [2.4] - 2019-10-31
