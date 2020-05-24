@@ -813,7 +813,7 @@
 						<div class="modal-body">
 								<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 									<div class="form-group">
-										<label for="InputSetRefresh">Refresh time for Screenshot add-on</label>
+										<label for="InputSetRefresh">Refresh time for Player LiveView</label>
 										<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
 									</div>
 									<div class="form-group">
