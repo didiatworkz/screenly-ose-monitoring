@@ -1,5 +1,6 @@
 # Check older versions
-- file:
+- name: Create .monitor directory
+  file:
     path: /home/pi/.monitor
     state: directory
     owner: pi
@@ -39,6 +40,13 @@
 - set_fact: update_version="True"
   when: (old_monitor) and (version1_0 or version1_1)
 
+- name: check if old version code available
+  stat:
+    path: /var/www/html/monitor/assets/tools/version.txt
+  register: versionscode_s
+
+- set_fact: versionscode="{{versionscode_s.stat.exists}}"
+
 - name: Backup Database
   copy:
     src: /var/www/html/dbase.db
@@ -55,6 +63,14 @@
     group: pi
   when: update_version and version1_1 and not version2_0
 
+- name: Backup Version Code
+  copy:
+    src: /var/www/html/monitor/assets/tools/version.txt
+    dest: /home/pi/.monitor/version.txt
+    owner: pi
+    group: pi
+  when: versionscode
+
 # Update ose-monitoring
 - name: Install packages
   apt:
@@ -67,7 +83,7 @@
     - php-fpm
     - php-sqlite3
     - php-curl
-    
+
 - name: Looking for the php version
   shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)'"
   register: php_output
@@ -80,22 +96,51 @@
     src: monitoring.j2
     dest: /etc/nginx/sites-enabled/monitoring.conf
 
+- name: Remove nginx default config by standalone installation
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  when: SERVER_MODE == "listen 80 default_server;"
+
 - name: Change permissons for monitoring.conf
   file:
     path: /etc/nginx/sites-enabled/monitoring.conf
     owner: root
     group: root
     mode: 0644
-  notify:
-    - restart-nginx
-    
-- name: Copy ose-monitoring
-  copy:
-    src: /tmp/monitor
-    dest: /var/www/html
-    owner: www-data
-    group: www-data
-    mode: 0644
+  notify: restart-nginx
+
+- name: Update php.ini memory_limit
+  replace:
+    dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
+    regexp: '^memory_limit.*$'
+    replace: 'memory_limit = 1024M'
+    backup: yes
+
+- name: Update php.ini post_max_size
+  replace:
+    dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
+    regexp: '^post_max_size.*$'
+    replace: 'post_max_size = 512M'
+    backup: yes
+
+- name: Update php.ini upload_max_filesize
+  replace:
+    dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
+    regexp: '^upload_max_filesize.*$'
+    replace: 'upload_max_filesize = 128M'
+    backup: yes
+
+- name: Restart PHP-FPM
+  command: /bin/true
+  notify: restart-fpm
+
+- name: Clone repository from github.com
+  git:
+    repo: "https://github.com/didiatworkz/screenly-ose-monitor.git"
+    dest: /var/www/html/monitor
+    version: "{{ MONITOR_BRANCH }}"
+    force: yes
 
 - name: Copy ose-monitoring Script
   copy:
@@ -105,7 +150,8 @@
     group: root
     mode: 0755
 
-- file:
+- name: Change monitor owner
+  file:
     path: /var/www/html/monitor
     state: directory
     owner: www-data
@@ -129,6 +175,15 @@
     group: www-data
     mode: 0644
   when: (old_monitor) and (version1_0 or version1_1)
+
+- name: Retore Version Code
+  copy:
+    src: /home/pi/.monitor/version.txt
+    dest: /var/www/html/monitor/assets/tools/version.txt
+    owner: www-data
+    group: www-data
+    mode: 0644
+  when: versionscode
 
 - name: Version update
   command: ose-monitoring --init

@@ -2,11 +2,19 @@
   hosts: all
   user: pi
   become: yes
+  vars:
+    MONITOR_BRANCH: "{{ lookup('env', 'MONITOR_BRANCH') }}"
+    SERVER_MODE: "{{ lookup('env', 'SERVER_MODE') }}"
 
   handlers:
     - name: restart-nginx
       service:
         name: nginx
+        state: restarted
+
+    - name: restart-fpm
+      service:
+        name: php7.3-fpm
         state: restarted
 
   roles:

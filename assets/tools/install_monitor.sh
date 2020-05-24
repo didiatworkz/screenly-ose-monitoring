@@ -2,14 +2,14 @@
 # Created by didiatworkz
 # Screenly OSE Monitor
 #
-# October 2019
-_ANSIBLE_VERSION=2.8.2
-#_BRANCH=v2.2
-_BRANCH=master
+# May 2020
+_ANSIBLE_VERSION=2.9.9
+_BRANCH=v3.0
+#_BRANCH=master
 
 
 header() {
-clear
+#clear
 cat << "EOF"
                             _
    ____                    | |
@@ -38,7 +38,6 @@ then
     exit
 fi
 
-header
 echo
 
 # Check if screenly exists
@@ -52,12 +51,16 @@ then
   echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
   sudo apt update
   sudo apt-get purge -y python-setuptools python-pip python-pyasn1 libffi-dev
-  sudo apt-get install -y python-dev git-core libffi-dev libssl-dev
-  curl -s https://bootstrap.pypa.io/get-pip.py | sudo python
-  sudo pip install ansible=="$_ANSIBLE_VERSION"
+  sudo apt-get install -y python3-dev git-core libffi-dev libssl-dev
+  curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3
+  sudo pip3 install ansible=="$_ANSIBLE_VERSION"
+  _SERVERMODE="listen 80 default_server;"
+  _PORT=""
 
 else
   echo -e "[ \e[93mYES\e[39m ] Screenly installed"
+  _SERVERMODE="listen 9000;"
+  _PORT=":9000"
 fi
 sleep 2
 echo
@@ -65,17 +68,26 @@ echo
 echo -e "\e[94mStart installation...\e[39m"
 sleep 5
 sudo rm -rf /tmp/monitor
-sudo -u pi ansible localhost -m git -a "repo=${1:-https://github.com/didiatworkz/screenly-ose-monitor.git} dest=/tmp/monitor version=$_BRANCH"
-cd  /tmp/monitor/assets/tools/ansible/
+sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
+cd /tmp/monitor/assets/tools/ansible/
+sudo mkdir -p /var/www/html
+export SERVER_MODE=$_SERVERMODE
+export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
+sudo systemctl restart nginx
 IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 sleep 2
+echo
+echo
+echo
+echo
+echo
 header
 echo -e "\e[94mInstallation finished!"
 echo
 echo
-echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP:9000\e[39m"
+echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP$_PORT\e[39m"
 echo
 echo -e "\e[94mUsername: \e[93mdemo\e[39m"
 echo -e "\e[94mPassword: \e[93mdemo\e[39m"

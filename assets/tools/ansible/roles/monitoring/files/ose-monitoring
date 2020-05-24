@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="2.4"
+VERSION="3.0"
 LOCAL=$(cat /home/pi/.monitor/latest_monitor)
 ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitor | head -1 | sed "s/\tHEAD//")
 ACTION='\033[1;90m'
@@ -10,7 +10,18 @@ ERROR='\033[0;31m'
 while [[ $# -gt 0 ]] ; do
     case $1 in
         -h|-\?|--help)
-            echo "Screenly OSE Monitor"
+        cat << "EOF"
+                                    _
+           ____                    | |
+          / __ \__      _____  _ __| | __ ____
+         / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+        | | (_| |\ V  V / (_) | |  |   <  / /
+         \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+          \____/                www.atworkz.de
+
+                Screenly OSE Monitoring
+EOF
+      echo
 			echo "Screenly OSE-Monitoring is an overview page for all Screenly OSE players."
 			echo "You can open it via the IP address \"0.0.0.0:9000\" and manage all players in one place."
 			echo "In addition, the monitoring offers an extension that can be installed on other"
@@ -27,8 +38,10 @@ while [[ $# -gt 0 ]] ; do
 			shift
             ;;
         --restart)
-			echo "Restart nginx Server"
+			echo "Restart nginx service"
 			sudo systemctl restart nginx
+      echo "Restart php7.3-fpm service"
+			sudo sudo systemctl restart php7.3-fpm
             ;;
 		--init)
 			echo "Set version..."
@@ -38,33 +51,22 @@ while [[ $# -gt 0 ]] ; do
         --check)
 			echo "Check Script..."
 			sleep 2
-			echo
-		    echo -e ${ACTION}Check if index.php exists
-		    echo -e =======================${NOCOLOR}
-		    if [ ! -e /var/www/html/monitor/index.php ]
-		    then
-		      echo -e ${ERROR}index.php not exists ${NOCOLOR}
-		    else
-			  echo -e ${FOUND}index.php exists ${NOCOLOR}
-		    fi
-			echo
-			echo -e ${ACTION}Check if _config.php exists
-		    echo -e =======================${NOCOLOR}
-		    if [ ! -e /var/www/html/monitor/_config.php ]
-		    then
-		      echo -e ${ERROR}_config.php not exists ${NOCOLOR}
-		    else
-			  echo -e ${FOUND}_config.php exists ${NOCOLOR}
-		    fi
-			echo
-			echo -e ${ACTION}Check if dbase.db exists
-		    echo -e =======================${NOCOLOR}
-		    if [ ! -e /var/www/html/monitor/dbase.db ]
-		    then
-		      echo -e ${ERROR}dbase.db exists ${NOCOLOR}
-		    else
-			  echo -e ${FOUND}dbase.db not exists ${NOCOLOR}
-		    fi
+
+      array=( index.php _functions.php assets/css/monitor.css assets/js/monitor.js assets/tools/key.php assets/tools/version.txt assets/php/actions.php assets/php/database.php assets/php/discover.php assets/php/image.php assets/php/menu.php assets/php/multiuploader.php assets/php/player.php assets/php/publicLink.php assets/php/update.php assets/php/user.php assets/php/usermanagement.php )
+      for i in "${array[@]}"
+      do
+        echo
+  		    echo -e ${ACTION}Check if "$i" exists
+  		    echo -e =======================${NOCOLOR}
+  		    if [ ! -e "/var/www/html/monitor/$i" ]
+  		    then
+  		      echo -e ${ERROR}"$i not exists "${NOCOLOR}
+  		    else
+  			  echo -e ${FOUND}"$i exists "${NOCOLOR}
+  		    fi
+  			echo
+      	echo
+      done
             ;;
         --update)
 			echo "Check for newer version..."
