@@ -105,7 +105,7 @@ bash <(curl -sL https://git.io/fjg7h)
 ### Extensions
 Link over Webfrontend or this:
 ```sh
-bash <(curl -sL https://git.io/fjg5e)
+bash <(curl -sL https://git.io/Jf900)
 ```
 
 ### Changelog
