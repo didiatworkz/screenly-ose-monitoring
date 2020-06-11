@@ -792,7 +792,7 @@
 						The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
 						You have the possibility to get a "live" image of the player\'s output.<br /><br />
 						To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-						<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL https://git.io/fjg5e)">
+						<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL https://git.io/Jf900)">
 						After that the player restarts and the addon has been installed.<br />
 						<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Close</button>
 					</div>
