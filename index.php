@@ -49,10 +49,13 @@
 				$duration			 = $_POST['duration'];
 		    $end_date 		 = $_POST['end_date'];
 
-				if($duration && $end_date){
-					$db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."', refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'");
-					sysinfo('success', 'Settings saved!', 0);
-				}	else sysinfo('danger', 'Error!');
+				if($duration AND $end_date AND $refreshscreen){
+					if($db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."' WHERE settingsID='1'")){
+						if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
+							sysinfo('success', 'Settings saved!', 0);
+						} else sysinfo('danger', 'Can\'t update user!');
+					} else sysinfo('danger', 'Can\'t update settings!');
+				}	else sysinfo('danger', 'No valid data!');
 				redirect($backLink, 2);
 			}
 
