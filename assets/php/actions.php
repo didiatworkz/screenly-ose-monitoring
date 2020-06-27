@@ -41,12 +41,13 @@ ________________________________________
 		}
 
 		for ($i=0; $i < count($id); $i++) {
-			$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
+			$id = $id[$i];
+			$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id."'");
 			$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
 			if(isset($_POST['multidrop'])){
 				print_r($images);
-				$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id[$i], false);
+				$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id, false);
 				if (strpos($url, '/home/pi/screenly_assets') === false) $cancel = TRUE;
 			}
 
@@ -63,6 +64,7 @@ ________________________________________
 			$data['skip_asset_check'] = 1;
 
 			//print_r($data);
+			//echo'<script>console.log("ID: '.$id.'")</script>';
 
 			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id, false)){
 				if(strpos($out, '201') === false OR $cancel){
@@ -84,9 +86,7 @@ ________________________________________
 
 			'.$output;
 		}
-	die();
-
-
+		die();
 	}
 
 	if(isset($_POST['changeAssetState'])){
