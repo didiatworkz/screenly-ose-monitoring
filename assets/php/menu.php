@@ -1,5 +1,22 @@
 <?php
 
+  $adminUserManagement  = '';
+  $adminSettings        = '';
+
+  if(getGroupID($loginUserID) == 1){
+    $adminUserManagement = '
+      <li class="nav-link">
+        <a href="index.php?site=usermanagement" class="nav-item dropdown-item">User Management</a>
+      </li>
+    ';
+
+    $adminSettings = '
+      <li class="nav-link">
+       <a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-item dropdown-item">Settings</a>
+     </li>
+    ';
+  }
+
   if($playerCount >= 2){
     $multiMenu = '
     <li class="nav-item">
