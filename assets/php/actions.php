@@ -29,7 +29,7 @@ ________________________________________
 		$end_time		= $start_time;
 		$duration 	= $set['duration'];
 		$cancel 		= FALSE;
-		$output			= '';
+		$output			= NULL;
 
 		if($name == '') $name = $url;
 
@@ -41,14 +41,16 @@ ________________________________________
 		}
 
 		for ($i=0; $i < count($id); $i++) {
-			$id = $id[$i];
-			$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id."'");
+			$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
 			$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
 			if(isset($_POST['multidrop'])){
-				print_r($images);
-				$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id, false);
-				if (strpos($url, '/home/pi/screenly_assets') === false) $cancel = TRUE;
+				//print_r($images);
+				$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id[$i], false);
+				if (strpos($url, '/home/pi/screenly_assets') === false) {
+					$output .= $player['name'];
+					continue;
+				}
 			}
 
 			$data 										= array();
@@ -64,25 +66,25 @@ ________________________________________
 			$data['skip_asset_check'] = 1;
 
 			//print_r($data);
-			//echo'<script>console.log("ID: '.$id.'")</script>';
+			//echo'<script>console.log("ID: '.$id[$i].'")</script>';
 
-			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id, false)){
-				if(strpos($out, '201') === false OR $cancel){
+			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id[$i], false)){
+				if(strpos($out, '201') === false){
 					$output .= $player['name'].'
 					';
-				} else echo 'Asset added successfully to Player: '.$player['name'];
+				} else if(!isset($_POST['multidrop'])) echo 'Asset added successfully to Player: '.$player['name'];
 			}
 			else {
 				header('HTTP/1.1 404 Not Found');
-				echo 'Error! - Can \'t add the Asset';
+				$output .= 'Error! - Can \'t add the Asset';
 			}
 		}
 
-		if(strpos($output, 'Error') === false){
+		if($output == NULL){
 			header('HTTP/1.1 200 OK');
 		} else {
 			header('HTTP/1.1 500 Internal Server Error');
-			echo 'Can\'t upload Asset '.$_FILES['file']['name'].' to:
+			echo 'Can\'t upload to:
 
 			'.$output;
 		}
