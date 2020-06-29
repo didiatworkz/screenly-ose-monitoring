@@ -1,3 +1,25 @@
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+    http://www.atworkz.de
+       info@atworkz.de
+________________________________________
+      Screenly OSE Monitor
+________________________________________
+*/
+
+function setNotification(style, message) {
+  localStorage.setItem("notification_style", style);
+  localStorage.setItem("notification_message", message);
+  localStorage.setItem("notification_counter", "0");
+}
+
 $('[data-tooltip="tooltip"]').tooltip();
 $('[data-tooltip=tooltip]').hover(function(){
   $('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
@@ -151,7 +173,7 @@ if ($('.drop').length) {
        data: { name: fname, url: response, mimetype: mimetype, id: playerID, newAsset: upload_asset  },
        timeout: 5000,
        success: function(data){
-         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+         setNotification('success', data);
          myDropzone.removeFile(file);
        },
        error: function(data){
@@ -213,6 +235,7 @@ if ($('.dropzoneMulti').length) {
 
       this.on("complete", function(file){
         $('#refresh').show();
+        $('.dz-message').text("Upload done! - Reload this page...");
       });
     }
   });
@@ -247,10 +270,10 @@ $("#assetNewForm").submit(function(e) {
      data: formData,
      success: function(data){
        $('#newAsset').modal('hide');
-       $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+       setNotification('success', data);
        setTimeout(function() {
          location.reload();
-       }, 2000);
+       }, 0);
      },
      error: function(data){
        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
