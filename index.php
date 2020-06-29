@@ -860,7 +860,7 @@
 						  </tr>
 						  <tr>
 						    <td>Server IP:</td>
-						    <td>'.$_SERVER['SERVER_ADDR'].':'.($_SERVER['SERVER_PORT'] != '80' ? $_SERVER['SERVER_PORT'] : '').'</td>
+						    <td>'.$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').'</td>
 						  </tr>
 							<tr>
 						    <td>PHP Version:</td>
