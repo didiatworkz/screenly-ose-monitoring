@@ -5,4 +5,5 @@ This information is only for developers who want to further develop the script a
 + /assets/version.txt
 + /assets/php/database.php
 + /CHANGELOG.md
++ /README.md
 + /assets/ansible/roles/monitoring/files/ose-monitoring
