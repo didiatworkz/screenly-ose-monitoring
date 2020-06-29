@@ -22,8 +22,6 @@ $loggedIn             = FALSE;
 $loginUsername 	      = '';
 $loginPassword 	      = '';
 $loginGroupID         = 0;
-$adminUserManagement  = '';
-$adminSettings        = '';
 
 function getGroupID($userID){
   global $db;
@@ -156,20 +154,6 @@ if(isset($_SESSION['user']) && isset($_SESSION['password'])) {
 
     $loginGroupID     = getGroupID($loginUserID);
     $loginGroupName   = getGroupName($loginUserID);
-
-    if(getGroupID($loginUserID) == 1){
-      $adminUserManagement = '
-        <li class="nav-link">
-          <a href="index.php?site=usermanagement" class="nav-item dropdown-item">User Management</a>
-        </li>
-      ';
-
-      $adminSettings = '
-        <li class="nav-link">
-         <a href="javascript:void(0)" data-toggle="modal" data-target="#settings" class="nav-item dropdown-item">Settings</a>
-       </li>
-      ';
-    }
 
     $loggedIn = TRUE;
   }
