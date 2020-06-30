@@ -35,7 +35,9 @@ if(getGroupID($loginUserID) == 1){
         $userSQL = $db->query("SELECT userID FROM `users` WHERE username='".$user."' AND password='".$pass2."'");
         $userSQL = $userSQL->fetchArray(SQLITE3_ASSOC);
         $db->exec("INSERT INTO `userGroupMapping` (userID, groupID) values('".$userSQL['userID']."', '".$group."')");
+        sysinfo('success', $user.' updated successfully!');
       }
+
       redirect($_moduleLink, 0);
   }
 
@@ -57,6 +59,7 @@ if(getGroupID($loginUserID) == 1){
         $db->exec("UPDATE `users` SET username='".$user."', firstname='".$firstname."', name='".$name."', active='".$status."' WHERE userID='".$userID."'");
       }
       $db->exec("UPDATE `userGroupMapping` SET groupID='".$group."' WHERE userID='".$userID."'");
+      sysinfo('success', $user.' updated successfully!');
     }
   }
 
@@ -65,6 +68,7 @@ if(getGroupID($loginUserID) == 1){
     if(isset($userID) AND $userID != $loginUserID){
       $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
       $db->exec("DELETE FROM `userGroupMapping` WHERE userID='".$userID."'");
+      sysinfo('success', 'User successfully deleted!');
     }
     redirect($backLink, 0);
   }
@@ -259,5 +263,5 @@ if(getGroupID($loginUserID) == 1){
 }
 else {
   sysinfo('danger', 'No Access to this module!');
-  redirect($backLink, 2);
+  redirect($backLink, 0);
 }

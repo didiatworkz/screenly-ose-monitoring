@@ -21,6 +21,16 @@ if(getGroupID($loginUserID)){
   $_moduleName = 'Multi Uploader';
   $_moduleLink = 'index.php?site=multiuploader';
 
+  if(isset($_GET['tab']) AND $_GET['tab'] == 'drop' ) {
+    $active_drop = 'active';
+    $active_url = '';
+  }
+  else {
+    $active_drop = '';
+    $active_url = 'active';
+  }
+
+
   if(isset($_POST['send'])){
       redirect($_moduleLink, 0);
   }
@@ -38,7 +48,7 @@ if(getGroupID($loginUserID)){
         </label>
       </div>
         ';
-      
+
     }
     echo '
     <div class="row justify-content-md-center">
@@ -54,15 +64,15 @@ if(getGroupID($loginUserID)){
           <div class="card-body">
           <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" href="#url" role="tab" data-toggle="tab">URL</a>
+              <a class="nav-link '.$active_url.'" href="#url" role="tab" data-toggle="tab">URL</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#upload" role="tab" data-toggle="tab">Upload</a>
+              <a class="nav-link '.$active_drop.'" href="#upload" role="tab" data-toggle="tab">Upload</a>
             </li>
           </ul>
 
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="url">
+            <div role="tabpanel" class="tab-pane '.$active_url.'" id="url">
               <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-multiloader="true">
                 <div class="row">
                   <div class="col-md-6">
@@ -85,7 +95,7 @@ if(getGroupID($loginUserID)){
                 </div>
               </form>
             </div>
-            <div role="tabpanel" class="tab-pane" id="upload">
+            <div role="tabpanel" class="tab-pane '.$active_drop.'" id="upload">
             <form id="dropzoneupload">
               <div class="row">
                 <div class="col-md-6">
@@ -102,7 +112,7 @@ if(getGroupID($loginUserID)){
                     <br />
                     <input type="hidden" name="multidrop" id="multidrop" value="1" />
                     <input type="hidden" name="test" id="test" value="1" />
-                    <button type="button" id="refresh" onclick="location.reload();" class="btn btn-info btn-sm" style="display:none;">Reload</button>
+                    <a id="refresh" href="'.$_moduleLink.'&tab=drop" class="btn btn-info btn-sm" style="display:none;">Reload</a>
                     <button type="button" id="uploadfiles" class="btn btn-success btn-sm">Upload</button>
                   </div>
                 </div>

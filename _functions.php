@@ -12,7 +12,7 @@
 			   info@atworkz.de
 	________________________________________
 			  Screenly OSE Monitor
-		   Version 3.2 - June 2020
+		   Version 3.3 - June 2020
 	________________________________________
 	*/
 
@@ -46,13 +46,17 @@
 		$site = $_GET['site'];
 	} else $site = NULL;
 
-	function redirect($url, $time = 1){
+	function redirect($url, $time = 0){
 		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
 	}
 
-	function sysinfo($status, $message, $refresh = false){
-		echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "'.$message.'"},{type: "'.$status.'",timer: 1000,placement: {from: "top",align: "center"}});</script>';
-		if($refresh) echo'<meta http-equiv="refresh" content="1;URL=index.php">';
+	function sysinfo($style, $message, $refresh = false){
+		echo '
+		<script>
+			localStorage.setItem("notification_style", "'.$style.'");
+			localStorage.setItem("notification_message", "'.$message.'");
+			localStorage.setItem("notification_counter", "1");
+		</script>';
 	}
 
 	include_once('assets/php/database.php');

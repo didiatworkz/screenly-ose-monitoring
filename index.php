@@ -39,10 +39,10 @@
 </head>
 
 <body>
-	<?php require_once('_functions.php'); ?>
-  <div class="wrapper">
+	  <div class="wrapper">
     <div class="main-panel">
 	<?php
+		require_once('_functions.php');
 		if($loggedIn){
 			if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
 				$refreshscreen = $_POST['refreshscreen'];
@@ -52,11 +52,11 @@
 				if($duration AND $end_date AND $refreshscreen){
 					if($db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."' WHERE settingsID='1'")){
 						if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
-							sysinfo('success', 'Settings saved!', 0);
+							sysinfo('success', 'Settings saved!');
 						} else sysinfo('danger', 'Can\'t update user!');
 					} else sysinfo('danger', 'Can\'t update settings!');
 				}	else sysinfo('danger', 'No valid data!');
-				redirect($backLink, 2);
+				redirect($backLink);
 			}
 
 			// Player authentication
@@ -79,7 +79,7 @@
 
 				if($token){
 	        $db->exec("UPDATE settings SET token='".$token."' WHERE userID='".$loginUserID."'");
-	        sysinfo('success', 'Token generated! - wait....', 0);
+	        sysinfo('success', 'New Token generated!');
 	        redirect('index.php?showToken=1');
 	      } else sysinfo('danger', 'Error!');
 	    }
@@ -96,7 +96,7 @@
 					$db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
 					sysinfo('success', $name.' added successfully');
 				}	else sysinfo('danger', 'Error! - Can \'t add the Player');
-				redirect($backLink, 2);
+				redirect($backLink);
 			}
 
 			// POST: updatePlayer - Update player data in database
@@ -112,7 +112,7 @@
 					$db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
 					sysinfo('success', 'Player successfully updated!');
 				}	else sysinfo('danger', 'Error! - Can \'t update the Player');
-				redirect($backLink, 2);
+				redirect($backLink);
 			}
 
 			// GET: action:delete - Delete player from database
@@ -123,7 +123,7 @@
 					$db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
 					sysinfo('success', 'Player successfully removed!');
 				} else sysinfo('danger', 'Error! - Can \'t remove the Player');
-				redirect($backLink, 2);
+				redirect($backLink);
 			}
 
 			// GET: action2:deleteAllAssets - Delete all assets from a player via API
@@ -137,7 +137,7 @@
 				foreach ($playerAPI as $value) {
 					if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
 						//sysinfo('success', 'Asset deleted successfully');
-						redirect($backLink, 0);
+						redirect($backLink);
 					}	else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 				}
 			}
@@ -167,7 +167,7 @@
 				if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					sysinfo('success', 'Asset updated successfully');
 				}	else sysinfo('danger', 'Error! - Can \'t update the Asset');
-			  redirect($backLink, 2);
+			  redirect($backLink);
 			}
 
 			// GET: action2:deleteAsset - Delete asset from a player via API
@@ -180,18 +180,18 @@
 
 				if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 					//sysinfo('success', 'Asset deleted successfully');
-					redirect($backLink, 0);
+					redirect($backLink);
 				} else sysinfo('danger', 'Error! - Can \'t delete the Asset');
 			}
 
 			// GET: action:startup - Skip firstStart screen
 			if((isset($_GET['action']) && $_GET['action'] == 'startup')){
 				firstStart('set', 3);
-				redirect($backLink, 0);
+				redirect($backLink);
 			}
 
 			// INCLUDE: Top menubar
-			include('assets/php/menu.php');
+			include_once('assets/php/menu.php');
 
 			// START CONTENT
 			echo'
@@ -537,7 +537,7 @@
 				}
 				else {
 					sysinfo('danger', 'No Player submitted!');
-					redirect('index.php', 3);
+					redirect('index.php');
 				}
 			}
 			else if(isset($_GET['site'])){
@@ -860,7 +860,7 @@
 						  </tr>
 						  <tr>
 						    <td>Server IP:</td>
-						    <td>'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'</td>
+						    <td>'.$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').'</td>
 						  </tr>
 							<tr>
 						    <td>PHP Version:</td>
@@ -982,6 +982,22 @@
 
 	var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
 	var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
+
+	if (!(localStorage.getItem("notification_style") === null && localStorage.getItem("notification_message") === null)) {
+		if(localStorage.getItem("notification_counter") == "0"){
+			$.notify({icon: "tim-icons icon-bell-55",message: localStorage.getItem("notification_message")},{type: localStorage.getItem("notification_style"),timer: 2000 ,placement: {from: "top",align: "center"}});
+		 	console.log("unload");
+		  localStorage.removeItem("notification_message");
+			localStorage.removeItem("notification_style");
+			localStorage.removeItem("notification_counter");
+		}
+		else {
+			var num = localStorage.getItem("notification_counter"),
+			num = parseInt(num, 10);
+			num--;
+			localStorage.setItem("notification_counter", num);
+		}
+	}
 
   </script>
 <script type="text/javascript" src="assets/js/monitor.js"></script>

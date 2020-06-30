@@ -106,7 +106,7 @@ ________________________________________
 		   return callURL($method, $ip, $params, $playerID, true);
 		}
 		elseif ($code == 401) {
-			sysinfo('warning', 'Can not logged in to the player! - Wrong Username or Password!');
+			echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "<strong>Can not logged in to the player! </strong><br /> Wrong Username or Password!"},{type: "warning",timer: 2000 ,placement: {from: "top",align: "center"}});</script>';
 			return 'authentication error '.$code;
 		}
 		else return 'error '.$code;
