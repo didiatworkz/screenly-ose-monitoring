@@ -48,6 +48,7 @@ if [ ! -e /home/pi/screenly/server.py ]
 then
   echo -e "[ \e[32mNO\e[39m ] Screenly installed"
   echo -e "[ \e[93mYES\e[39m ] Standalone Installation"
+  echo "----------------------------------------------"
   sudo mkdir -p /etc/ansible
   echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
   sudo apt update
