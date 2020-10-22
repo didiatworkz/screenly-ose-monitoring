@@ -149,9 +149,15 @@
 				$name 			= $_POST['name'];
 				$start 			= date("Y-m-d", strtotime($_POST['start_date']));
 				$start_time	= $_POST['start_time'];
-				$end 				= date("Y-m-d", strtotime($_POST['end_date']));
+				$end 				= $_POST['end_date'];
 				$end_time		= $_POST['end_time'];
 				$duration 	= $_POST['duration'];
+
+				if (strpos($end, '9999') === false) {
+					$end 				= date("Y-m-d", strtotime($end));
+				} else {
+					$end				= '9999-01-01';
+				}
 
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
@@ -341,9 +347,16 @@
 							$endAsset					= explode("T", $playerAPI[$i]['end_date']);
 							$endAssetTime			= explode("+", $endAsset['1']);
 							$endAssetTimeHM		= explode(":", $endAssetTime['0']);
-							$end							= date('d.m.Y', strtotime($endAsset['0']));
-							$end_date					= date('Y-m-d', strtotime($endAsset['0']));
 							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+
+							if (strpos($endAsset['0'], '9999') === false) {
+								$end				= date('d.m.Y', strtotime($endAsset['0']));
+								$end_date		= date('Y-m-d', strtotime($endAsset['0']));
+							} else {
+						    $end				= 'Forever';
+								$end_date		= $endAsset['0'];
+							}
+
 							$yes 							= '<span class="badge badge-success m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
 							$no 							= '<span class="badge badge-danger m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
 							$playerAPI[$i]['is_enabled'] == 1 ? $active = $yes : $active = $no;
