@@ -10,6 +10,7 @@ _BRANCH=v3.4
 
 header() {
 #clear
+tput setaf 172
 cat << "EOF"
                             _
    ____                    | |
@@ -21,7 +22,7 @@ cat << "EOF"
 
         Screenly OSE Monitoring
 EOF
-
+tput sgr 0
 echo
 echo
 echo
@@ -76,7 +77,13 @@ export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 sudo systemctl restart nginx
-IP=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
+ETH=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
+WLAN=$(/sbin/ip -o -4 addr list wlan0 | awk '{print $4}' | cut -d/ -f1)
+if [ -z "$ETH" ]; then
+ IP="$WLAN"
+else
+ IP="$ETH"
+fi
 sleep 2
 echo
 echo
