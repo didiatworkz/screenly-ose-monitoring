@@ -33,7 +33,7 @@
   <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
     <div class="container-fluid">
       <div class="navbar-wrapper">
-        <a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
+        <a class="navbar-brand" href="./index.php">'._SYSTEM_NAME.'</a>
       </div>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-bar bar1"></span>
@@ -46,6 +46,12 @@
             <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Add player">
               <i class="tim-icons icon-simple-add"></i>
               <p class="d-lg-none">Add player</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" id="search-button" data-toggle="modal" data-target="#searchModal" data-tooltip="tooltip" data-placement="bottom" title="Search Player">
+              <i class="tim-icons icon-zoom-split"></i>
+              <p class="d-lg-none">Search Player</p>
             </a>
           </li>
             '.$update.'

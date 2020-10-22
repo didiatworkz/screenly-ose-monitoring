@@ -63,7 +63,7 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("UPDATE `settings` SET updatecheck=0 WHERE userID=1");
     $db->exec("UPDATE `settings` SET refreshscreen=5 WHERE userID=1");
   }
-  if($oldVersion <= '3.3'){			// Update Database to Version 3.2
+  if($oldVersion <= '3.3'){			// Update Database to Version 3.3
     $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
     $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER)");
     $db->exec("INSERT INTO `settings`(duration,token,end_date,updatecheck) SELECT duration,token,end_date,updatecheck FROM `settings_tmp`");
@@ -80,6 +80,13 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `userGroups` (name) VALUES('User')");
     $db->exec("CREATE TABLE `userGroupMapping` (`mappingID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER, `groupID`	INTEGER)");
     $db->exec("INSERT INTO `userGroupMapping` (userID,groupID) VALUES(1,1)");
+  }
+  if($oldVersion <= '3.4'){			// Update Database to Version 3.4
+    $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER)");
+    $db->exec("INSERT INTO `settings`(duration,token,end_date,updatecheck) SELECT duration,token,end_date,updatecheck FROM `settings_tmp`");
+    $db->exec("UPDATE `settings` SET name='Screenly OSE Monitoring' WHERE settingsID=1");
+    $db->exec("DROP TABLE `settings_tmp`");
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');

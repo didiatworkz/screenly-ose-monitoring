@@ -82,11 +82,11 @@ $('.changeAsset').on('click', function() {
 
 var asset_table = $('#assets').DataTable({
   responsive: false,
-  orderFixed: [[ 2, 'desc' ], [ 4, 'desc' ]],
+  orderFixed: [[ 4, 'desc' ], [ 2, 'desc' ]],
   rowGroup: {
     dataSrc: 4,
   },
-  ordering: false,
+  ordering: true,
   responsive: {
     details: {
       type: 'column'
@@ -294,6 +294,23 @@ $('button.options').on('click', function(){
   eA.find('#InputAssetId').val($(this).data('asset'));
   eA.modal('show');
   return false;
+});
+
+// SEARCH
+ $("#inlineFormInputGroup").on("keyup", function() {
+  var input = $(this).val().toUpperCase();
+
+  $(".col-sm-6").each(function() {
+    if ($(this).data("string").toUpperCase().indexOf(input) < 0) {
+      $(this).hide();
+    } else {
+      $(this).show();
+    }
+  })
+});
+
+$('#inlineFormInputGroup').on("keypress", function (e) {
+    if (e.which == 13) $('#searchModal').modal('hide');
 });
 
 // New player

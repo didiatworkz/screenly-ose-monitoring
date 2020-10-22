@@ -120,7 +120,7 @@ ________________________________________
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		if(($httpcode>=200 && $httpcode<300) || $httpcode==401) return true;
+		if(($httpcode >= 200 && $httpcode < 300) || $httpcode == 301 || $httpcode == 401) return true;
 		else return false;
 	}
 

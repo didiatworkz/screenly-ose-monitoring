@@ -1,6 +1,7 @@
 <?php
 	session_set_cookie_params(36000, '/' );
 	session_start();
+	require_once('_functions.php');
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +12,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="Manage all Screenly players in one place." />
 	<meta name="author" content="didiatworkz" />
-	<title>Screenly OSE Monitoring</title>
+	<title><?php echo _SYSTEM_NAME ?></title>
 	<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png" />
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png" />
@@ -42,15 +43,15 @@
 	  <div class="wrapper">
     <div class="main-panel">
 	<?php
-		require_once('_functions.php');
 		if($loggedIn){
 			if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
 				$refreshscreen = $_POST['refreshscreen'];
 				$duration			 = $_POST['duration'];
 		    $end_date 		 = $_POST['end_date'];
+		    $name 		 		 = $_POST['name'];
 
 				if($duration AND $end_date AND $refreshscreen){
-					if($db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."' WHERE settingsID='1'")){
+					if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', duration='".$duration."' WHERE settingsID='1'")){
 						if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
 							sysinfo('success', 'Settings saved!');
 						} else sysinfo('danger', 'Can\'t update user!');
@@ -149,9 +150,15 @@
 				$name 			= $_POST['name'];
 				$start 			= date("Y-m-d", strtotime($_POST['start_date']));
 				$start_time	= $_POST['start_time'];
-				$end 				= date("Y-m-d", strtotime($_POST['end_date']));
+				$end 				= $_POST['end_date'];
 				$end_time		= $_POST['end_time'];
 				$duration 	= $_POST['duration'];
+
+				if (strpos($end, '9999') === false) {
+					$end 				= date("Y-m-d", strtotime($end));
+				} else {
+					$end				= '9999-01-01';
+				}
 
 				$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
 				$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
@@ -341,9 +348,16 @@
 							$endAsset					= explode("T", $playerAPI[$i]['end_date']);
 							$endAssetTime			= explode("+", $endAsset['1']);
 							$endAssetTimeHM		= explode(":", $endAssetTime['0']);
-							$end							= date('d.m.Y', strtotime($endAsset['0']));
-							$end_date					= date('Y-m-d', strtotime($endAsset['0']));
 							$end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+
+							if (strpos($endAsset['0'], '9999') === false) {
+								$end				= date('d.m.Y', strtotime($endAsset['0']));
+								$end_date		= date('Y-m-d', strtotime($endAsset['0']));
+							} else {
+						    $end				= 'Forever';
+								$end_date		= $endAsset['0'];
+							}
+
 							$yes 							= '<span class="badge badge-success m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  active  </span>';
 							$no 							= '<span class="badge badge-danger m-2" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  inactive  </span>';
 							$playerAPI[$i]['is_enabled'] == 1 ? $active = $yes : $active = $no;
@@ -566,7 +580,7 @@
 							$imageTag = $player['name'];
 						}
 						echo'
-					<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
 						<div class="card">
 							<div class="card-header">
 								<h4 class="d-inline">'.$name.'</h4>
@@ -816,6 +830,10 @@
 						<div class="modal-body">
 								<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
 									<div class="form-group">
+										<label for="InputSetName">Screenly OSE Monitoring Name</label>
+										<input name="name" type="text" class="form-control" id="InputSetName" placeholder="Screenly OSE Monitoring" value="'.$set['name'].'" required />
+									</div>
+									<div class="form-group">
 										<label for="InputSetRefresh">Refresh time for Player LiveView</label>
 										<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
 									</div>
@@ -895,6 +913,20 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- search -->
+		<div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH PLAYER" autofocus>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 		<!-- publicLink -->
 		<div class="modal fade" id="publicLink" tabindex="-1" role="dialog" aria-labelledby="publicLinkModalLabel" aria-hidden="true">

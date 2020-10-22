@@ -23,7 +23,7 @@ echo '
 <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
     <div class="container-fluid">
        <div class="navbar-wrapper">
-           <a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
+           <a class="navbar-brand" href="./index.php">'._SYSTEM_NAME.'</a>
        </div>
     </div>
 </nav>
