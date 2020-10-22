@@ -33,7 +33,7 @@
   <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
     <div class="container-fluid">
       <div class="navbar-wrapper">
-        <a class="navbar-brand" href="./index.php">Screenly OSE Monitoring</a>
+        <a class="navbar-brand" href="./index.php">'._SYSTEM_NAME.'</a>
       </div>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-bar bar1"></span>

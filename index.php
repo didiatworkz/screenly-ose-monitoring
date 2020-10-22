@@ -1,6 +1,7 @@
 <?php
 	session_set_cookie_params(36000, '/' );
 	session_start();
+	require_once('_functions.php');
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +12,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="Manage all Screenly players in one place." />
 	<meta name="author" content="didiatworkz" />
-	<title>Screenly OSE Monitoring</title>
+	<title><?php echo _SYSTEM_NAME ?></title>
 	<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png" />
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png" />
@@ -42,15 +43,15 @@
 	  <div class="wrapper">
     <div class="main-panel">
 	<?php
-		require_once('_functions.php');
 		if($loggedIn){
 			if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
 				$refreshscreen = $_POST['refreshscreen'];
 				$duration			 = $_POST['duration'];
 		    $end_date 		 = $_POST['end_date'];
+		    $name 		 		 = $_POST['name'];
 
 				if($duration AND $end_date AND $refreshscreen){
-					if($db->exec("UPDATE settings SET end_date='".$end_date."', duration='".$duration."' WHERE settingsID='1'")){
+					if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', duration='".$duration."' WHERE settingsID='1'")){
 						if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
 							sysinfo('success', 'Settings saved!');
 						} else sysinfo('danger', 'Can\'t update user!');
@@ -828,6 +829,10 @@
 			      </div>
 						<div class="modal-body">
 								<form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+									<div class="form-group">
+										<label for="InputSetName">Screenly OSE Monitoring Name</label>
+										<input name="name" type="text" class="form-control" id="InputSetName" placeholder="Screenly OSE Monitoring" value="'.$set['name'].'" required />
+									</div>
 									<div class="form-group">
 										<label for="InputSetRefresh">Refresh time for Player LiveView</label>
 										<input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />

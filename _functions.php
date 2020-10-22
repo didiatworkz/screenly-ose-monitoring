@@ -12,7 +12,7 @@
 			   info@atworkz.de
 	________________________________________
 			  Screenly OSE Monitor
-		   Version 3.4 - October 2020
+		   Version 3.3 - June 2020
 	________________________________________
 	*/
 
@@ -88,3 +88,8 @@
 	else if($playerCount >= 1 OR firstStart() == 3) {
 		setcookie('firstSetup',  null, -1, '/');
 	}
+
+if($set['name'] != 'Screenly OSE Monitoring'){
+	define('_SYSTEM_NAME', $set['name'].'- Screenly OSE Monitoring');
+}
+else define('_SYSTEM_NAME', $set['name']);
