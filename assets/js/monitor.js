@@ -82,11 +82,11 @@ $('.changeAsset').on('click', function() {
 
 var asset_table = $('#assets').DataTable({
   responsive: false,
-  orderFixed: [[ 2, 'desc' ], [ 4, 'desc' ]],
+  orderFixed: [[ 4, 'desc' ], [ 2, 'desc' ]],
   rowGroup: {
     dataSrc: 4,
   },
-  ordering: false,
+  ordering: true,
   responsive: {
     details: {
       type: 'column'
