@@ -48,6 +48,12 @@
               <p class="d-lg-none">Add player</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" id="search-button" data-toggle="modal" data-target="#searchModal" data-tooltip="tooltip" data-placement="bottom" title="Search Player">
+              <i class="tim-icons icon-zoom-split"></i>
+              <p class="d-lg-none">Search Player</p>
+            </a>
+          </li>
             '.$update.'
             '.$multiMenu.'
           <li class="nav-item">

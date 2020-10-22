@@ -296,6 +296,23 @@ $('button.options').on('click', function(){
   return false;
 });
 
+// SEARCH
+ $("#inlineFormInputGroup").on("keyup", function() {
+  var input = $(this).val().toUpperCase();
+
+  $(".col-sm-6").each(function() {
+    if ($(this).data("string").toUpperCase().indexOf(input) < 0) {
+      $(this).hide();
+    } else {
+      $(this).show();
+    }
+  })
+});
+
+$('#inlineFormInputGroup').on("keypress", function (e) {
+    if (e.which == 13) $('#searchModal').modal('hide');
+});
+
 // New player
 $("#newPlayerDiscover").submit(function(e) {
   e.preventDefault();

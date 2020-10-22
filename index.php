@@ -579,7 +579,7 @@
 							$imageTag = $player['name'];
 						}
 						echo'
-					<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
 						<div class="card">
 							<div class="card-header">
 								<h4 class="d-inline">'.$name.'</h4>
@@ -908,6 +908,20 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- search -->
+		<div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH PLAYER" autofocus>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 		<!-- publicLink -->
 		<div class="modal fade" id="publicLink" tabindex="-1" role="dialog" aria-labelledby="publicLinkModalLabel" aria-hidden="true">
