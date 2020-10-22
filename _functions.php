@@ -90,6 +90,6 @@
 	}
 
 if($set['name'] != 'Screenly OSE Monitoring'){
-	define('_SYSTEM_NAME', $set['name'].'- Screenly OSE Monitoring');
+	define('_SYSTEM_NAME', $set['name'].' - Screenly OSE Monitoring');
 }
 else define('_SYSTEM_NAME', $set['name']);
