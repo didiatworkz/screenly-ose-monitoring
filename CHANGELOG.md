@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update installer script (Problem solved with WLAN IP)
 - Fixed HTTPS connection problems with players
 - Fixed problem with displaying the end date of assets set to Forever
+- Fixed asset table order
 
 ## [3.3] - 2020-06-29
 
