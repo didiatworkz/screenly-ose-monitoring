@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4] - 2020-10-22
 
+### Added
+- Search function in the main view
+- Possibility to change the monitoring name
+
 ### Changed
 - Update installer script (Problem solved with WLAN IP)
 - Fixed HTTPS connection problems with players
