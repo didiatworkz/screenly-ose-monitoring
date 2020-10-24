@@ -1,22 +1,23 @@
 <?php
-  /*
-	                            _
-	   ____                    | |
-	  / __ \__      _____  _ __| | __ ____
-	 / / _` \ \ /\ / / _ \| '__| |/ /|_  /
-	| | (_| |\ V  V / (_) | |  |   <  / /
-	 \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
-	  \____/
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
 
-			http://www.atworkz.de
-			   info@atworkz.de
-	________________________________________
-			  Screenly OSE Monitor
-		   Version 3.3 - June 2020
-	________________________________________
-	*/
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
 
-	$_DEBUG 		= 'NO';
+       Screenly OSE Monitoring
+    Version 4.0  -  November 2020
+_______________________________________
+*/
+
+	$_DEBUG 		= 'YES';
 	$_TIMEZONE 	= 'Europe/Berlin';
 	$apiVersion	= 'v1.2';
 
@@ -46,6 +47,8 @@
 		$site = $_GET['site'];
 	} else $site = NULL;
 
+
+
 	function redirect($url, $time = 0){
 		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
 	}
@@ -58,6 +61,7 @@
 			localStorage.setItem("notification_counter", "1");
 		</script>';
 	}
+
 
 	include_once('assets/php/database.php');
 	include_once('assets/php/user.php');
