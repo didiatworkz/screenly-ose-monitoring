@@ -374,8 +374,8 @@ $('.editPlayerOpen').on('click', function() {
     success: function(response){
       var eP = $('#editPlayer');
       eP.find('#playerIDEdit').val(id);
+      eP.find('#playerNameTitle').text(response.player_name);
       eP.find('#InputPlayerNameEdit').val(response.player_name);
-      eP.find('#playerNameTitle').val(response.player_name);
       eP.find('#InputLocationEdit').val(response.player_location);
       eP.find('#InputAdressEdit').val(response.player_address);
       eP.find('#InputUserEdit').val(response.player_user);
