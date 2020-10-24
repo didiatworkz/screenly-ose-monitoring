@@ -8,13 +8,19 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-         Actions Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+           Actions Module
+_______________________________________
 */
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
 
 	if(isset($_POST['newAsset'])){
 		$id 				= array();
@@ -72,11 +78,11 @@ ________________________________________
 				if(strpos($out, '201') === false){
 					$output .= $player['name'].'
 					';
-				} else if(!isset($_POST['multidrop'])) echo 'Asset added successfully to Player: '.$player['name'];
+				} else if(!isset($_POST['multidrop'])) echo Translation::of('msg.asset_added_successfully_player', ['name' => $player['name']]);
 			}
 			else {
 				header('HTTP/1.1 404 Not Found');
-				$output .= 'Error! - Can \'t add the Asset';
+				$output .= Translation::of('msg.cant_delete_asset');
 			}
 		}
 
@@ -84,7 +90,7 @@ ________________________________________
 			header('HTTP/1.1 200 OK');
 		} else {
 			header('HTTP/1.1 500 Internal Server Error');
-			echo 'Can\'t upload to:
+			echo Translation::of('msg.cant_upload_to').'
 
 			'.$output;
 		}
@@ -138,7 +144,7 @@ ________________________________________
 		$playerAddress 	= $player['address'];
 		$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
 		header('HTTP/1.1 200 OK');
-		echo 'Reboot command send!';
+		echo Translation::of('msg.reboot_command_send');
 		$result = callURL('POST', $playerAddress.'/api/v1/reboot_screenly', false, $playerID, false);
 	}
 

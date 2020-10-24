@@ -8,12 +8,13 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-        Database Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+          Database Module
+_______________________________________
 */
 
 $dbase_key		= 'assets/tools/key.php';

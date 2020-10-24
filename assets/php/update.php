@@ -8,13 +8,19 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-         Update Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+            Update Module
+_______________________________________
 */
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
   shell_exec('ose-monitoring --scriptupdate');
@@ -24,10 +30,10 @@ if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
 if(@file_exists('update.txt')) {
   $update = '
         <li class="nav-item">
-          <a href="https://github.com/didiatworkz/screenly-ose-monitor#update" target="_blank" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="Update available!">
+          <a href="https://github.com/didiatworkz/screenly-ose-monitor#update" target="_blank" class="nav-link" data-tooltip="tooltip" data-placement="bottom" title="'.Translation::of('update_available').'!">
             <i class="tim-icons icon-cloud-download-93 blink"></i>
             <p class="d-lg-none">
-              Update available!
+              '.Translation::of('update_available').'!
             </p>
           </a>
         </li>

@@ -8,17 +8,17 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-         Image Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+           Image Module
+_______________________________________
 */
 
 function checkURL($url){
   $ch = curl_init($url);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 1);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1000);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );

@@ -1,4 +1,27 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+            First Start
+_______________________________________
+*/
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
+
 
 if(firstStart() == 1){
   echo '

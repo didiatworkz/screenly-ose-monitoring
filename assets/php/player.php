@@ -8,12 +8,13 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-          Player Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+            Player Module
+_______________________________________
 */
 
 	$playerCount = $db->query("SELECT COUNT(*) AS counter FROM player");

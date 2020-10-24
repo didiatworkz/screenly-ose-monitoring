@@ -8,13 +8,19 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-        PublicLink Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+        Public Access Module
+_______________________________________
 */
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
 
 $_boxes = 18;
 $_key   = $_GET['key'];

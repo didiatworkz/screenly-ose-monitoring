@@ -8,13 +8,20 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-          User Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+             User Module
+_______________________________________
 */
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
+
 
 global $loggedIn, $loginUserID, $loginUsername, $loginPassword, $loginGroupID;
 $loginUserID          = 0;
