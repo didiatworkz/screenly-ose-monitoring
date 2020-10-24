@@ -188,6 +188,9 @@ a:hover {
 .progress-bar {
   background-color: #ff9100;
 }
+.list-group-item {
+    background-color: transparent;
+}
 .list-group-item.active {
   background-color: #ff9100;
   border-color: #ff9100;
