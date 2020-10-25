@@ -22,6 +22,8 @@ _______________________________________
 	$apiVersion	= 'v1.2';
 
 	$_modules = array(
+					'players',
+					'settings',
 					'usermanagement',
 					'multiuploader',
 	);
