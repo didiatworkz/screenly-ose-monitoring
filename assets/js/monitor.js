@@ -20,10 +20,10 @@ function setNotification(style, message) {
   localStorage.setItem("notification_counter", "0");
 }
 
-$('[data-tooltip="tooltip"]').tooltip();
-$('[data-tooltip=tooltip]').hover(function(){
-  $('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
-});
+// $('[data-tooltip="tooltip"]').tooltip();
+// $('[data-tooltip=tooltip]').hover(function(){
+//   $('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
+// });
 
 $('.close_modal').on('click', function(){
   var closeClass = $(this).data('close');
