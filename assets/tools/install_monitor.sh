@@ -49,6 +49,10 @@ then
   echo -e "[ \e[32mNO\e[39m ] Screenly installed"
   echo -e "[ \e[93mYES\e[39m ] Standalone Installation"
   echo "----------------------------------------------"
+  echo
+  echo
+  echo -e "\e[94mPrepare the installation...\e[39m"
+  echo
   sudo mkdir -p /etc/ansible
   echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
   sudo apt update
