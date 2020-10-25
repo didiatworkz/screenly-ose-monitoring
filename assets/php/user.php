@@ -186,5 +186,5 @@ if(isset($_POST['saveAccount'])){
     sysinfo('success', 'Account data saved!', 0);
   }
   else sysinfo('danger', 'Error!');
-  redirect($backLink, 2);
+  redirect($backLink);
 }
