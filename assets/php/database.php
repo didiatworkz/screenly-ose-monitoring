@@ -89,6 +89,9 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("UPDATE `settings` SET name='Screenly OSE Monitoring' WHERE settingsID=1");
     $db->exec("DROP TABLE `settings_tmp`");
   }
+  if($oldVersion <= '4.0'){			// Update Database to Version 4.0
+    #placeholder
+  }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
   header("Refresh:0");

@@ -4,8 +4,8 @@
 #
 # October 2020
 _ANSIBLE_VERSION=2.9.9
-#_BRANCH=v3.4
-_BRANCH=master
+_BRANCH=v4.0
+#_BRANCH=master
 
 
 header() {
