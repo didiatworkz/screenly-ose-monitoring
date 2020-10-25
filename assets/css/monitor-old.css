@@ -1,0 +1,395 @@
+body {
+    background-color: #1e1e24 !important;
+}
+.main-panel > .content {
+	padding: 78px 30px 30px 30px;
+}
+.navbar .navbar-brand {
+	position: unset;
+}
+@media (min-width: 576px){
+  .modal-dialog {
+      max-width: 530px !important;
+  }
+}
+.modal.show .modal-dialog {
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+.modal-backdrop {
+    opacity: 0.9 !important;
+}
+.modal-content {
+	background-color: #212529;
+	border: 1px solid rgba(34, 42, 66, 0.2);
+	border-radius: 0.2857rem;
+	box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.3);
+	outline: 0;
+}
+.modal-content .modal-header .modal-title {
+	color: #eeeeee;
+}
+.modal-body {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.modal-search .modal-dialog .form-control {
+  color: #ffffff;
+}
+
+.modal-search .modal-dialog .form-control::placeholder {
+  color: #6C757C;
+}
+.tableTransparency>thead>tr>th, .tableTransparency>tbody>tr>th, .tableTransparency>tfoot>tr>th, .tableTransparency>thead>tr>td, .tableTransparency>tbody>tr>td, .tableTransparency>tfoot>tr>td {
+    border-color: rgba(255, 255, 255, 0);
+}
+table.dataTable tr.dtrg-group td {
+    background-color: transparent;
+}
+table.dataTable tr.dtrg-group.dtrg-level-0 td {
+    font-weight: unset;
+}
+select option{
+    color:grey !important;
+}
+.playerImageDiv {
+    position: relative;
+}
+.player {
+	position: relative;
+}
+.account-icon {
+  font-size: 100px;
+}
+.detailOptionMenu {
+	position: absolute;
+	bottom: 0px;
+	right: 5px;
+}
+.btn:not(.btn-icon) .tim-icons, .navbar .navbar-nav>a.btn:not(.btn-icon) .tim-icons {
+    top: -2px;
+}
+.card-user .author .block.block-monitor {
+  background: rgba(255, 255, 255, 0.6);
+  background: -webkit-linear-gradient(to bottom, rgba(225, 255, 255, 0.4) 0%, rgba(225, 255, 255, 0) 100%);
+  background: -o-linear-gradient(to bottom, rgba(225, 255, 255, 0.4) 0%, rgba(225, 255, 255, 0) 100%);
+  background: -moz-linear-gradient(to bottom, rgba(225, 255, 255, 0.4) 0%, rgba(225, 255, 255, 0) 100%);
+  background: linear-gradient(to bottom, rgba(225, 255, 255, 0.4) 0%, rgba(225, 255, 255, 0) 100%);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  margin-top: -80px;
+  margin-left: -15px;
+	width: 100%;
+}
+.card-monitor {
+    padding-top: 2px !important;
+}
+.h2_edit {
+	margin-bottom: 0px;
+}
+a {
+  color: #ff9100;
+}
+a:hover {
+  color: #c221a9;
+}
+.blink {
+  animation: blinker 4s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.footer {
+    padding: 0px 0 0px 0px;
+}
+.btn-primary {
+  background-color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-outline-primary {
+  color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-outline-primary:hover {
+  background-color: #c221a9;
+  border-color: #c221a9;
+}
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
+  color: #ff9100;
+}
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show>.btn-outline-primary.dropdown-toggle {
+  background-color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-link {
+  color: #ff9100;
+}
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: #ff9100;
+}
+.custom-control-input:checked~.custom-control-label::before {
+  background-color: #ff9100;
+}
+.custom-control-input:active~.custom-control-label::before {
+  background-color: #ff9100;
+}
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+  background-color: #ff9100;
+}
+.custom-checkbox .custom-control-input:indeterminate~.custom-control-label::before {
+  background-color: #ff9100;
+}
+.custom-radio .custom-control-input:checked~.custom-control-label::before {
+  background-color: #ff9100;
+}
+.custom-range::-webkit-slider-thumb {
+  background-color: #ff9100;
+}
+.custom-range::-moz-range-thumb {
+  background-color: #ff9100;
+}
+.custom-range::-ms-thumb {
+  background-color: #ff9100;
+}
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+  background-color: #ff9100;
+}
+.page-item.active .page-link {
+  background-color: #ff9100;
+  border-color: #e3e3e3;
+}
+.page-item.disabled .page-link {
+  color: #ff9100;
+}
+.badge-primary {
+  background-color: #ff9100;
+}
+.alert-primary {
+  color: #ff9100;
+  background-color: #e66ad2;
+  border-color: #e66ad2;
+}
+.progress-bar {
+  background-color: #ff9100;
+}
+.list-group-item {
+    background-color: transparent;
+}
+.list-group-item.active {
+  background-color: #ff9100;
+  border-color: #ff9100;
+}
+.bg-primary {
+  background-color: #ff9100 !important;
+}
+.border-primary {
+  border-color: #ff9100 !important;
+}
+.text-primary {
+  color: #ff9100 !important;
+}
+.btn-primary {
+  background: #ff9100;
+  background-image: -webkit-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100);
+  background-image: -o-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100);
+  background-image: -moz-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100);
+  background-image: linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100);
+  background-color: #ff9100;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:active:focus,
+.btn-primary:active:hover,
+.btn-primary.active:focus,
+.btn-primary.active:hover {
+  background-color: #e56d12 !important;
+  background-image: linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -webkit-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -o-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -moz-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+}
+.btn-primary.disabled,
+.btn-primary.disabled:hover,
+.btn-primary.disabled:focus,
+.btn-primary.disabled.focus,
+.btn-primary.disabled:active,
+.btn-primary.disabled.active,
+.btn-primary:disabled,
+.btn-primary:disabled:hover,
+.btn-primary:disabled:focus,
+.btn-primary:disabled.focus,
+.btn-primary:disabled:active,
+.btn-primary:disabled.active,
+.btn-primary[disabled],
+.btn-primary[disabled]:hover,
+.btn-primary[disabled]:focus,
+.btn-primary[disabled].focus,
+.btn-primary[disabled]:active,
+.btn-primary[disabled].active,
+fieldset[disabled] .btn-primary,
+fieldset[disabled] .btn-primary:hover,
+fieldset[disabled] .btn-primary:focus,
+fieldset[disabled] .btn-primary.focus,
+fieldset[disabled] .btn-primary:active,
+fieldset[disabled] .btn-primary.active {
+  background-color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-primary.btn-simple {
+  color: #ff9100;
+  border-color: #ff9100;
+}
+.btn-primary.btn-simple:hover,
+.btn-primary.btn-simple:focus,
+.btn-primary.btn-simple:active,
+.btn-primary.btn-simple:not(:disabled):not(.disabled):active {
+  color: #ff9100;
+  border-color: #ff9100;
+}
+
+.btn-primary.btn-simple.active {
+  border-color: #ff9100 !important;
+}
+
+.btn-primary.btn-simple.active:hover,
+.btn-primary.btn-simple.active:focus,
+.btn-primary.btn-simple.active:active,
+.btn-primary.btn-simple.active:not(:disabled):not(.disabled):active {
+  border-color: #ff9100;
+  background-image: linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -webkit-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -o-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-image: -moz-linear-gradient(to bottom left, #ff9100, #e56d12, #ff9100) !important;
+  background-color: #e56d12 !important;
+}
+.btn-primary.btn-link {
+  color: #ff9100;
+}
+.btn-neutral {
+  color: #ff9100;
+}
+.form-control:focus {
+  border-color: #ff9100;
+}
+.form-control:focus+.input-group-append .input-group-text,
+.form-control:focus~.input-group-append .input-group-text,
+.form-control:focus+.input-group-prepend .input-group-text,
+.form-control:focus~.input-group-prepend .input-group-text {
+  border: 1px solid #ff9100;
+}
+.modal.modal-primary .modal-content {
+  background-color: #ff9100;
+}
+.navbar.bg-primary {
+  background-color: #ff9100 !important;
+}
+a:hover,
+a:focus {
+  color: #ff9100;
+}
+.blockquote.blockquote-primary {
+  border-color: #ff9100;
+  color: #ff9100;
+}
+
+.blockquote.blockquote-primary small {
+  color: #ff9100;
+}
+.table>tbody>tr.table-primary>td {
+  background-color: #ff9100;
+}
+.form-check input[type="checkbox"]:checked+.form-check-sign::before,
+.form-check input[type="checkbox"]:checked+.form-check-sign::before {
+  background-color: #ff9100;
+}
+.form-check-radio input[type="radio"]:checked+.form-check-sign::after {
+  background-color: #ff9100;
+}
+
+.form-check-radio input[type="radio"]:checked+.form-check-sign::before {
+  border-color: #ff9100;
+}
+.sidebar,
+.off-canvas-sidebar {
+  background: #e56d12;
+  background: -webkit-linear-gradient(0deg, #e56d12 0%, #ff9100 100%);
+  background: -o-linear-gradient(0deg, #e56d12 0%, #ff9100 100%);
+  background: -moz-linear-gradient(0deg, #e56d12 0%, #ff9100 100%);
+  background: linear-gradient(0deg, #e56d12 0%, #ff9100 100%);
+}
+.main-panel {
+  border-top: 2px solid #ff9100;
+}
+.main-panel[data="primary"] {
+  border-top: 2px solid #ff9100;
+}
+.bd-docs .bd-example .datepicker thead th,
+.bd-docs .bd-example .datepicker table thead th,
+.bd-docs .bd-example .datepicker .tim-icons,
+.bd-docs table .datepicker thead th,
+.bd-docs table .datepicker table thead th,
+.bd-docs table .datepicker .tim-icons {
+  color: #ff9100;
+}
+.bd-docs .bd-example .picker-switch .tim-icons,
+.bd-docs table .picker-switch .tim-icons {
+  color: #ff9100;
+}
+.input-group-focus .input-group-prepend .input-group-text,
+.input-group-focus .input-group-append .input-group-text {
+  border-color: #ff9100;
+  border-color: #ff9100;
+}
+.modal .modal-header .close {
+    color: #ffa126;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #ff9100;
+    background-color: transparent;
+}
+.nav-tabs .nav-link:hover{
+    border-color: #acaeaf #acaeaf #e3e3e3;
+}
+.tab-content {
+  margin-top: 10px;
+  padding: 10px;
+}
+.dropzone {
+    min-height: 150px;
+    border: 2px dashed #ff9100;
+    background: none;
+    margin-top: 15px;
+    padding-top: 30px;
+}
+.dropzone .dz-preview.dz-image-preview {
+    background: none;
+}
+.dropzone .dz-preview .dz-image {
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+}
+@media screen and (max-width: 991px){
+	.navbar .container-fluid {
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+}
