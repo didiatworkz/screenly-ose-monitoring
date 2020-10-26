@@ -56,9 +56,26 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
       return $ips;
   }
 
+  function checkAddressData($site, $search, $return_data=false){
+    $ch = curl_init($site);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 100);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    if (strpos($data, $search) !== false) {
+      if($return_data == false) return true;
+      else return $data;
+    }
+    return false;
+  }
+
   function checkAddress($ip){
 		$ch = curl_init($ip);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 40);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
@@ -67,24 +84,32 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		if($httpcode>=200 && $httpcode<400) return true;
-		else return false;
+		if($httpcode>=200 && $httpcode<400) {
+      if ($httpcode == 301) {
+        $ip = str_replace("http://", "https://", $ip);
+      }
+      if(checkAddressData($ip, '<title>Screenly API</title>')){
+        return true;
+      }
+    }
+		return false;
 	}
 
   function getPlayerName($ip){
-    $ch = curl_init($ip);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
-      $name = $result['1']['0'];
-      if(!strpos($name, ' - ') === false){
-        $name = str_replace("Screenly OSE", "", $name);
-        $name = str_replace(" - ", "", $name);
+    $output = checkAddressData($ip, '<title>', true);
+
+    $nameIP = explode('.', $ip);
+    $name = '[AUTO] '.$nameIP['3'];
+
+    if(strpos($output, 'Screenly OSE') !== false){
+      if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
+        $name = $result['1']['0'];
+        if(!strpos($name, ' - ') === false){
+          $name = str_replace("Screenly OSE", "", $name);
+          $name = str_replace(" - ", "", $name);
+        }
       }
     }
-    else $name = '[AUTO] '.$ip;
 
     return $name;
   }
@@ -105,7 +130,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
   $ip = getEachIpInRange ($ipaddress);
   for ($i=0; $i < sizeof($ip); $i++) {
     $now = $ip[$i];
-    if(checkAddress($now.'/api/v1.2/assets')){
+    if(checkAddress('http://'.$now.'/api/docs/')){
       $logDetail .=  $now.' - '.strtoupper(Translation::of('found'));
       $j++;
       if(array_search($now, $players) == 0){
@@ -130,15 +155,15 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
     <ul class="list-group">
       <li class="list-group-item d-flex justify-content-between align-items-center">
         '.Translation::of('scanned_ips').'
-        <span class="badge badge-info badge-pill"> '.$i.' </span>
+        <span class="badge bg-info badge-pill"> '.$i.' </span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         '.Translation::of('player_found').'
-        <span class="badge badge-info badge-pill"> '.$j.' </span>
+        <span class="badge bg-info badge-pill"> '.$j.' </span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         '.Translation::of('player_added').'
-        <span class="badge badge-primary badge-pill"> '.$k.' </span>
+        <span class="badge bg-orange badge-pill"> '.$k.' </span>
       </li>
     </ul>
 
