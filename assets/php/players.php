@@ -153,13 +153,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       $playerAPICall = TRUE;
 
       if($monitor == true){
-        $monitorInfo = '<span class="badge badge-success">  '.strtolower(Translation::of('installed')).'  </span>';
-      } else $monitorInfo = '<a href="#" title="'.Translation::of('what_does_that_mean').'"><span class="badge badge-info">'.strtolower(Translation::of('not_installed')).'</span></a>';
+        $monitorInfo = '<span class="badge bg-success">  '.strtolower(Translation::of('installed')).'  </span>';
+      } else $monitorInfo = '<a href="#" title="'.Translation::of('what_does_that_mean').'"><span class="badge bg-info">'.strtolower(Translation::of('not_installed')).'</span></a>';
 
       $status		 		= strtolower(Translation::of('online'));
       $statusColor 	= 'success';
       $newAsset			= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-sm btn-block"><i class="tim-icons icon-simple-add"></i> '.Translation::of('new_asset').'</a>';
-      $bulkDelete		= '<a href="#" data-toggle="modal" data-target="#confirmDeleteAssets" data-href="index.php?action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-block btn-danger" title="delete"><i class="tim-icons icon-simple-remove"></i> '.Translation::of('clean_assets').'</a>';
+      $bulkDelete		= '<a href="#" data-toggle="modal" data-target="#confirmDeleteAssets" data-href="index.php?site=players&action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-block btn-danger" title="delete"><i class="tim-icons icon-simple-remove"></i> '.Translation::of('clean_assets').'</a>';
       $navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="'.Translation::of('previous_asset').'"><i class="tim-icons icon-double-left"></i> '.Translation::of('asset').'</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="'.Translation::of('next_asset').'">'.Translation::of('asset').' <i class="tim-icons icon-double-right"></i></button></div></div>';
       $management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-spaceship"></i> '.Translation::of('open_management').'</a>';
       $reboot				= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-info reboot" title="'.Translation::of('reboot_player').'"><i class="tim-icons icon-refresh-01"></i> '.Translation::of('reboot_player').'</button>';
@@ -203,7 +203,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                   </button>
                   <div class="dropdown-menu dropdown-black dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a href="#" data-playerid="'.$player['playerID'].'" class="dropdown-item editPlayerOpen" title="edit">'.Translation::of('edit').'</a>
-                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">'.Translation::of('delete').'</a>
+                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=delete&playerID='.$player['playerID'].'" class="dropdown-item" title="delete">'.Translation::of('delete').'</a>
                   </div>
                 </div>
               </div>
@@ -218,7 +218,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                   </tr>
                   <tr>
                     <td>'.Translation::of('status').':</td>
-                    <td><span class="badge badge-'.$statusColor.'">'.$status.'</span></td>
+                    <td><span class="badge bg-'.$statusColor.'">'.$status.'</span></td>
                   </tr>
                   <tr>
                     <td>'.Translation::of('ip_address').':</td>
@@ -320,7 +320,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                     <button class="changeState btn btn-info btn-sm mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><i class="tim-icons icon-button-power"></i></button>
                     <button class="options btn btn-warning btn-sm mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
                     data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><i class="tim-icons icon-pencil"></i></button>
-                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-sm mb-1" title="delete"><i class="tim-icons icon-simple-remove"></i></a>
                   </td>
                 </tr>
         ';
@@ -542,129 +542,182 @@ else {
     }
     echo '
   </div>
-
-  <!-- newPlayer -->
-  <div class="modal fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="newPlayerModalLabel">'.Translation::of('add_player').'</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" href="#manual" role="tab" data-toggle="tab">'.Translation::of('manual').'</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#auto" role="tab" data-toggle="tab">'.Translation::of('auto').'</a>
-            </li>
-          </ul>
-
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="manual">
-              <form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-                <div class="form-group">
-                  <label for="InputPlayerName">'.Translation::of('enter_player_name').'</label>
-                  <input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="'.Translation::of('player_name').'" autofocus />
-                </div>
-                <div class="form-group">
-                  <label for="InputLocation">'.Translation::of('enter_player_location').'</label>
-                  <input name="location" type="text" class="form-control" id="InputLocation" placeholder="'.Translation::of('player_location').'" />
-                </div>
-                <div class="form-group">
-                  <label for="InputAdress">'.Translation::of('enter_player_ip').'</label>
-                  <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
-                  <div class="help-block with-errors"></div>
-                </div>
-                <hr />
-                <div class="form-group">
-                  <label for="InputUser">'.Translation::of('player_authentication').' </label>
-                  <input name="user" type="text" class="form-control" id="InputUser" placeholder="'.Translation::of('username').'" />
-                </div>
-                <div class="form-group">
-                  <input name="pass" type="password" class="form-control" id="InputPassword" placeholder="'.Translation::of('password').'" />
-                </div>
-                <div class="form-group text-right">
-                  <button type="submit" name="saveIP" class="btn btn-success btn-sm">'.Translation::of('save').'</button>
-                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
-                </div>
-              </form>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="auto">
-              <form id="newPlayerDiscover" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-                <div class="form-group">
-                  <label for="InputCIDR">'.Translation::of('enter_ip_range').'</label>
-                  <input name="range" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$" data-error="No valid IPv4 address with CIDR" type="text" class="form-control" id="InputCIDR" placeholder="192.168.1.0/24" required />
-                  <div class="help-block with-errors"></div>
-                </div>
-                <div class="form-group">
-                  <label for="discoverStatus">'.Translation::of('status').'</label>
-                  <hr />
-                  <div id="discoverStatus"></div>
-                </div>
-                <div class="form-group text-right">
-                  <input name="userID" type="hidden" value="'.$loginUserID.'" />
-                  <button type="submit" name="startDiscover" class="btn btn-primary btn-sm start_discovery">'.Translation::of('discovery').'</button>
-                  <button type="button" class="btn btn-secondary btn-sm close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- editPlayer -->
-  <div class="modal fade" id="editPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editPlayerModalLabel">'.Translation::of('edit_name', ['name' => '<span id="playerNameTitle"></span>']).'</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="playerFormEdit" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-            <div class="form-group">
-              <label for="InputPlayerNameEdit">'.Translation::of('enter_player_name').'</label>
-              <input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="'.Translation::of('player_name').'" autofocus />
-            </div>
-            <div class="form-group">
-              <label for="InputLocationEdit">'.Translation::of('enter_player_location').'</label>
-              <input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="'.Translation::of('player_location').'" />
-            </div>
-            <div class="form-group">
-              <label for="InputAdressEdit">'.Translation::of('enter_player_ip').'</label>
-              <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
-              <div class="help-block with-errors"></div>
-            </div>
-            <hr />
-            <div class="form-group">
-              <label for="InputUserEdit">'.Translation::of('player_authentication').'</label>
-              <input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="'.Translation::of('username').'" />
-            </div>
-            <div class="form-group">
-              <input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="'.Translation::of('password').'" />
-            </div>
-            <div class="form-group text-right">
-              <input name="playerID" id="playerIDEdit" type="hidden" value="" />
-              <input name="mimetype" id="playerMimetype" type="hidden" value="" />
-              <button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">'.Translation::of('update').'</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
   ';
   }
   else {
     include('assets/php/firstStart.php');
   }
 }
+// TODO: validator not validate!
+echo '
+<!-- newPlayer -->
+<div class="modal fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">'.Translation::of('add_player').'</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Modus</label>
+        <div class="form-selectgroup-boxes row mb-3">
+          <div class="col-lg-6">
+            <label class="form-selectgroup-item">
+              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_manual" checked>
+              <span class="form-selectgroup-label d-flex align-items-center p-3">
+                <span class="mr-3">
+                  <span class="form-selectgroup-check"></span>
+                </span>
+                <span class="form-selectgroup-label-content">
+                  <span class="form-selectgroup-title strong mb-1">'.Translation::of('manual').'</span>
+                  <span class="d-block text-muted">Add a player manually</span>
+                </span>
+              </span>
+            </label>
+          </div>
+          <div class="col-lg-6">
+            <label class="form-selectgroup-item">
+              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_auto">
+              <span class="form-selectgroup-label d-flex align-items-center p-3">
+                <span class="mr-3">
+                  <span class="form-selectgroup-check"></span>
+                </span>
+                <span class="form-selectgroup-label-content">
+                  <span class="form-selectgroup-title strong mb-1">Automatically</span>
+                  <span class="d-block text-muted">Add players automatically</span>
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="view_manual tab">
+        <div class="modal-body">
+          <form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+            <div class="mb-3">
+              <label class="form-label">'.Translation::of('player_name').'</label>
+              <input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="'.Translation::of('enter_player_name').'" autofocus />
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label">'.Translation::of('ip_address').'</label>
+                  <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="mb-3">
+                  <label class="form-label">'.Translation::of('player_location').'</label>
+                  <input name="location" type="text" class="form-control" id="InputLocation" placeholder="'.Translation::of('enter_player_location').'" />
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="form-label">'.Translation::of('player_authentication').'</div>
+              <label class="form-check form-switch">
+                <input id="authentication" class="form-check-input" type="checkbox">
+                <span class="form-check-label">Player is protected by basic authentication</span>
+              </label>
+            </div>
+          </div>
+          <div class="modal-body authentication" style="display: none">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label">'.Translation::of('username').'</label>
+                  <input name="user" type="text" class="form-control" id="InputUser" placeholder="'.Translation::of('username').'" />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label">'.Translation::of('password').'</label>
+                  <input name="pass" type="password" class="form-control" id="InputPassword" placeholder="'.Translation::of('password').'" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
+              '.Translation::of('close').'
+            </a>
+            <button type="submit" name="saveIP" class="btn btn-primary ml-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path><circle cx="12" cy="14" r="2"></circle><polyline points="14 4 14 8 8 8 8 4"></polyline></svg>
+              '.Translation::of('save').'
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="view_auto tab" style="display:none">
+        <div class="modal-body">
+          <form id="newPlayerDiscover" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+            <div class="mb-3">
+              <label class="form-label">'.Translation::of('enter_ip_range').'</label>
+              <input name="range" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$" data-error="No valid IPv4 address with CIDR" type="text" class="form-control" id="InputCIDR" placeholder="192.168.1.0/24" required />
+              <div class="help-block with-errors"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">'.Translation::of('status').'</label>
+              <hr />
+              <div id="discoverStatus"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input name="userID" type="hidden" value="'.$loginUserID.'" />
+            <button type="button" class="btn btn-link link-secondary close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
+            <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- editPlayer -->
+<div class="modal fade" id="editPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editPlayerModalLabel">'.Translation::of('edit_name', ['name' => '<span id="playerNameTitle"></span>']).'</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="playerFormEdit" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+          <div class="form-group">
+            <label for="InputPlayerNameEdit">'.Translation::of('enter_player_name').'</label>
+            <input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="'.Translation::of('player_name').'" autofocus />
+          </div>
+          <div class="form-group">
+            <label for="InputLocationEdit">'.Translation::of('enter_player_location').'</label>
+            <input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="'.Translation::of('player_location').'" />
+          </div>
+          <div class="form-group">
+            <label for="InputAdressEdit">'.Translation::of('enter_player_ip').'</label>
+            <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
+            <div class="help-block with-errors"></div>
+          </div>
+          <hr />
+          <div class="form-group">
+            <label for="InputUserEdit">'.Translation::of('player_authentication').'</label>
+            <input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="'.Translation::of('username').'" />
+          </div>
+          <div class="form-group">
+            <input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="'.Translation::of('password').'" />
+          </div>
+          <div class="form-group text-right">
+            <input name="playerID" id="playerIDEdit" type="hidden" value="" />
+            <input name="mimetype" id="playerMimetype" type="hidden" value="" />
+            <button type="submit" name="updatePlayer" class="btn btn-sm btn-warning">'.Translation::of('update').'</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>';

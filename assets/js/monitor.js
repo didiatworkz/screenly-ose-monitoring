@@ -20,11 +20,6 @@ function setNotification(style, message) {
   localStorage.setItem("notification_counter", "0");
 }
 
-// $('[data-tooltip="tooltip"]').tooltip();
-// $('[data-tooltip=tooltip]').hover(function(){
-//   $('.tooltip').css('top',parseInt($('.tooltip').css('left')) + 10 + 'px')
-// });
-
 $('.close_modal').on('click', function(){
   var closeClass = $(this).data('close');
   $(closeClass).modal('hide');
@@ -314,6 +309,17 @@ $('#inlineFormInputGroup').on("keypress", function (e) {
 });
 
 // New player
+$('input:radio[name="add_player_mode"]').click(function(){
+  var inputValue = $(this).attr("value");
+  var targetBox = $("." + inputValue);
+  $(".tab").not(targetBox).hide();
+  $(targetBox).show();
+});
+
+$("#authentication").change(function(){
+ $(".authentication").toggle();
+});
+
 $("#newPlayerDiscover").submit(function(e) {
   e.preventDefault();
   $(".start_discovery").html('Loading...');
