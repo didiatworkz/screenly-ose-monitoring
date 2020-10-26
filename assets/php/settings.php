@@ -76,7 +76,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
           <div class="card-body text-center">
             <div class="mb-3">
               <span class="avatar avatar-xl">
-                '.$loginFirstname['0'].$loginName['0'].'
+                '.$loginFirstname[0].$loginName[0].'
               </span>
             </div>
             <div class="card-title mb-1">'.$loginFullname.'</div>
