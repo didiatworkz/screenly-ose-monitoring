@@ -48,6 +48,17 @@ echo'
     <link href="assets/css/tabler-buttons.min.css" rel="stylesheet"/>
     <!-- <link href="assets/css/demo.min.css" rel="stylesheet"/> -->
     <link href="assets/css/monitor.css" rel="stylesheet"/>
+
+		<!-- Libs JS -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="assets/js/jquery-ui.min.js"></script>
+		<script src="assets/tools/DataTables/datatables.min.js"></script>
+		<script src="assets/tools/dropzone/dropzone.min.js"></script>
+		<!-- Tabler Core -->
+		<script src="assets/js/tabler.min.js?1588343458"></script>
+		<script type="text/javascript" src="/assets/js/bootstrap-notify.js"></script>
+		<script type="text/javascript" src="assets/js/validator.js"></script>
     <style>
       body {
       	display: none;
@@ -237,29 +248,8 @@ echo'
 			if (isset($logedout)){
 				sysinfo('success', '<i class="fa fa-check"></i> '.Translation::of('msg.logged_out_successfully'));
 			}
-			echo '
-			<body class="antialiased border-top-wide border-primary d-flex flex-column">
-				<div class="flex-fill d-flex flex-column justify-content-center">
-		      <div class="container-tight py-6">
-						<form id="Login" action="'.$_SERVER['PHP_SELF'].'" class="card card-md" method="POST">
-		          <div class="card-body">
-		            <h2 class="mb-5 text-center">'._SYSTEM_NAME.'</h2>
-		            <div class="mb-3">
-		              <label class="form-label">Username</label>
-		              <input name="user" type="text" class="form-control" placeholder="'.Translation::of('username').'" autofocus autocomplete="off">
-		            </div>
-		            <div class="mb-2">
-		              <label class="form-label">Password</label>
-									<input name="password" type="password" class="form-control" placeholder="'.Translation::of('password').'">
-		            </div>
-		            <div class="form-footer">
-		              <button type="submit" name="Login" class="btn btn-primary btn-block" value="1">'.Translation::of('login').'</button>
-		            </div>
-		          </div>
-		        </form>
-		      </div>
-		    </div>
-			';
+			// TODO: Notification not visible (With wrong credentials)
+			include('assets/php/login.php');
 		}
 		$db->close();
 
@@ -283,16 +273,7 @@ echo'
 		</footer>
   </div>
 </div>
-<!-- Libs JS -->
-<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js?1588343458"></script>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/tools/DataTables/datatables.min.js"></script>
-<script src="assets/tools/dropzone/dropzone.min.js"></script>
-<script src="assets/js/jquery-ui.min.js"></script>
-<!-- Tabler Core -->
-<script src="assets/js/tabler.min.js?1588343458"></script>
-<script type="text/javascript" src="/assets/js/bootstrap-notify.js"></script>
-<script type="text/javascript" src="assets/js/validator.js"></script>
+
 <script type="text/javascript">
 
 var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
