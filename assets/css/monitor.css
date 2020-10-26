@@ -7,3 +7,10 @@
     opacity: 0.20;
   }
 }
+
+/* Player Module */
+.player-cover {
+    position: relative;
+    padding: 1.25rem 1.25rem;
+    background: transparent no-repeat center/cover;
+}
