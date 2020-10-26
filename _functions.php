@@ -24,6 +24,7 @@ _______________________________________
 	$_modules = array(
 					'players',
 					'settings',
+					'tester',
 					'usermanagement',
 					'multiuploader',
 	);
