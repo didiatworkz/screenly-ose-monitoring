@@ -55,6 +55,7 @@ echo'
 		<script src="assets/js/jquery-ui.min.js"></script>
 		<script src="assets/tools/DataTables/datatables.min.js"></script>
 		<script src="assets/tools/dropzone/dropzone.min.js"></script>
+		<script src="assets//libs/flatpickr/dist/flatpickr.min.js"></script>
 		<!-- Tabler Core -->
 		<script src="assets/js/tabler.min.js?1588343458"></script>
 		<script type="text/javascript" src="/assets/js/bootstrap-notify.js"></script>
