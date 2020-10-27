@@ -46,8 +46,8 @@ $('.changeState').on('click', function() {
     data: {asset: asset, id: id, changeAssetState: changeAssetState},
     success: function(data){
       $('span[data-asset_id="'+asset+'"').toggle(function() {
-        $(this).toggleClass('badge-success badge-danger').show();
-        if($(this).hasClass('badge-danger')) $(this).text('inactive');
+        $(this).toggleClass('bg-success bg-danger').show();
+        if($(this).hasClass('bg-danger')) $(this).text('inactive');
         else $(this).text('active');
       });
       $.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
@@ -76,6 +76,7 @@ $('.changeAsset').on('click', function() {
 });
 
 var asset_table = $('#assets').DataTable({
+  dom: 'tipr',
   responsive: false,
   orderFixed: [[ 4, 'desc' ], [ 2, 'desc' ]],
   rowGroup: {
@@ -92,9 +93,22 @@ var asset_table = $('#assets').DataTable({
     orderable: false,
     targets:   0
   }],
-  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
   stateSave: true,
-  autoWidth: false
+  autoWidth: false,
+  initComplete: (settings, json)=>{
+      $('.dataTables_paginate').appendTo('#dataTables_paginate');
+      $('.dataTables_info').appendTo('#dataTables_info');
+  },
+});
+
+$('#assetSearch').keyup(function(){
+    asset_table.search( $(this).val() ).draw() ;
+})
+
+$('#assetLength_change').val(asset_table.page.len());
+
+$('#assetLength_change').change( function() {
+    asset_table.page.len( $(this).val() ).draw();
 });
 
 $("#assets tbody").sortable({
@@ -277,19 +291,45 @@ $("#assetNewForm").submit(function(e) {
   }
 });
 
+
 $('button.options').on('click', function(){
   var eA = $('#editAsset');
   eA.find('#InputAssetName').val($(this).data('name'));
   eA.find('#InputAssetUrl').val($(this).data('uri'));
-  eA.find('#InputAssetStart').val($(this).data('start-date'));
-  eA.find('#InputAssetStartTime').val($(this).data('start-time'));
-  eA.find('#InputAssetEnd').val($(this).data('end-date'));
-  eA.find('#InputAssetEndTime').val($(this).data('end-time'));
   eA.find('#InputAssetDuration').val($(this).data('duration'));
   eA.find('#InputAssetId').val($(this).data('asset'));
+  flatpickr("#InputAssetStart", {
+    altInput: true,
+    altFormat: "d.m.Y",
+    dateFormat: "Y-m-d",
+    defaultDate: $(this).data('start-date')
+  });
+  flatpickr("#InputAssetStartTime", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true,
+    defaultDate: $(this).data('start-time')
+	});
+  flatpickr("#InputAssetEnd", {
+    altInput: true,
+    altFormat: "d.m.Y",
+    dateFormat: "Y-m-d",
+    defaultDate: $(this).data('end-date')
+  });
+  flatpickr("#InputAssetEndTime", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true,
+    defaultDate: $(this).data('end-time')
+	});
   eA.modal('show');
   return false;
 });
+
+
+
 
 // SEARCH
  $("#inlineFormInputGroup").on("keyup", function() {
@@ -449,11 +489,32 @@ function reloadPlayerImage(){
   })
 }
 
+function reloadPlayerBackgroundImage(){
+  $('div.player-cover').each(function(index, element){
+    var url = $(element).attr('data-src');
+    $.ajax({
+      url: 'assets/php/image.php',
+      data: {image: 1, ip: url},
+      dataType: 'json',
+      type: 'GET',
+      success: function(data){
+        $(element).css("background-image", "url(" + data + ")");
+      },
+      error: function(data){
+        $(element).css("background-image", "url(assets/img/offline.png)");
+        console.log('No connection - ' + url);
+      },
+    });
+  })
+}
+
 $(document).ready(function() {
     reloadPlayerImage();
+    reloadPlayerBackgroundImage();
 });
 
 setInterval('reloadPlayerImage();',settingsRefreshRate);
+setInterval('reloadPlayerBackgroundImage();',settingsRefreshRate);
 
 $('.modal').on('shown.bs.modal', function(){
   $(this).find('[autofocus]').focus();

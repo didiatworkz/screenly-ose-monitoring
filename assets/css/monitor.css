@@ -2,6 +2,7 @@
 .blink {
   animation: blinker 4s linear infinite;
 }
+
 @keyframes blinker {
   50% {
     opacity: 0.20;
@@ -9,8 +10,25 @@
 }
 
 /* Player Module */
-.player-cover {
-    position: relative;
-    padding: 1.25rem 1.25rem;
-    background: transparent no-repeat center/cover;
+.vertical-center > tbody > tr > td {
+     vertical-align: middle;
+}
+
+.control  {
+    display: none;
+}
+
+#dataTables_paginate ul {
+    margin-top: 0;
+    margin-bottom: 0rem;
+}
+
+.caltime-padding .form-control:not(:first-child) {
+    padding-left: 1rem;
+}
+.caltime-padding .form-control:not(:last-child) {
+    padding-right: 2.5rem;
+}
+.caltime-padding .form-control:disabled, .form-control[readonly] {
+    background-color: #fff;
 }
