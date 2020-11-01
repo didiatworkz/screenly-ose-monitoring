@@ -118,30 +118,6 @@ echo'
 		<!-- END CONTENT -->
 
 
-
-		<!-- addon -->
-		<div class="modal modal-blur fade" id="addon" tabindex="-1" role="dialog" aria-labelledby="newAddonModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="newAddonModalLabel">'.Translation::of('addon').'</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<img src="assets/img/addon.png" class="img-fluid mx-auto d-block" alt="addon" style="height: 180px" />
-						The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
-						You have the possibility to get a "live" image of the player\'s output.<br /><br />
-						To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-						<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL https://git.io/Jf900)">
-						After that the player restarts and the addon has been installed.<br />
-						<button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">'.Translation::of('close').'</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<!-- info -->
 		<div class="modal modal-blur fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -217,24 +193,6 @@ echo'
 						<div class="form-group text-right">
 							<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">'.Translation::of('generate_token').'</a>
 							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- confirmDelete -->
-		<div class="modal modal-blur fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">'.Translation::of('attention').'!</h5>
-					</div>
-					<div class="modal-body">
-						'.Translation::of('msg.delete_really_entry').'
-						<div class="form-group text-right">
-							<a class="btn btn-danger btn-ok btn-sm">'.Translation::of('delete').'</a>
-							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('cancel').'</button>
 						</div>
 					</div>
 				</div>
