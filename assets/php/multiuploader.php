@@ -45,91 +45,119 @@ if(getGroupID($loginUserID)){
     $playerSQL = $db->query("SELECT * FROM `player` ORDER BY name");
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
       $playerList .= '
-      <div class="form-check">
-        <label class="form-check-label">
-          <input class="form-check-input" name="id[]" type="checkbox" data-ip="'.$player['address'].'" value="'.$player["playerID"].'">
-          <span class="form-check-sign">
-            <span class="check">'.$player['name'].' (IP: '.$player['address'].')</span>
-          </span>
-        </label>
-      </div>
+      <label class="form-selectgroup-item flex-fill">
+        <input type="checkbox" name="id[]" data-ip="'.$player['address'].'" value="'.$player["playerID"].'" class="form-selectgroup-input">
+        <div class="form-selectgroup-label d-flex align-items-center p-3">
+          <div class="mr-3">
+            <span class="form-selectgroup-check"></span>
+          </div>
+          <div class="form-selectgroup-label-content d-flex align-items-center">
+            <div class="lh-sm">
+              <div class="strong">'.$player['name'].'</div>
+              <div class="text-muted">IP: '.$player['address'].'</div>
+            </div>
+          </div>
+        </div>
+      </label>
         ';
 
     }
     echo '
-    <div class="row justify-content-md-center">
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-header">
-            <div class="row">
-              <div class="col-md-10">
-                <h5 class="title">'.$_moduleName.'</h5>
-              </div>
+    <div class="container">
+      <div class="page-header">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <h2 class="page-title">
+              '.$_moduleName.'
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <label class="form-label">Upload Mode</label>
+          <div class="form-selectgroup-boxes row mb-3">
+            <div class="col-lg-6">
+              <label class="form-selectgroup-item">
+                <input type="radio" name="add_asset_mode" class="form-selectgroup-input" value="view_url" checked>
+                <span class="form-selectgroup-label d-flex align-items-center p-3">
+                  <span class="mr-3">
+                    <span class="form-selectgroup-check"></span>
+                  </span>
+                  <span class="form-selectgroup-label-content">
+                    <span class="form-selectgroup-title strong mb-1">'.Translation::of('url').'</span>
+                  </span>
+                </span>
+              </label>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-selectgroup-item">
+                <input type="radio" name="add_asset_mode" class="form-selectgroup-input" value="view_upload">
+                <span class="form-selectgroup-label d-flex align-items-center p-3">
+                  <span class="mr-3">
+                    <span class="form-selectgroup-check"></span>
+                  </span>
+                  <span class="form-selectgroup-label-content">
+                    <span class="form-selectgroup-title strong mb-1">'.Translation::of('upload').'</span>
+                  </span>
+                </span>
+              </label>
             </div>
           </div>
-          <div class="card-body">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link '.$active_url.'" href="#url" role="tab" data-toggle="tab">URL</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link '.$active_drop.'" href="#upload" role="tab" data-toggle="tab">Upload</a>
-            </li>
-          </ul>
 
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane '.$active_url.'" id="url">
-              <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-multiloader="true">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group" id="playerList">
-                      <label>Choose player</label>
-                      '.$playerList.'
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="InputNewAssetUrl">Asset URL</label>
-                      <input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
-                    </div>
-                    <div class="form-group text-right">
-                      <input name="mimetype" type="hidden" value="webpage" />
-                      <input name="newAsset" type="hidden" value="1" />
-                      <button type="submit" name="saveAsset" class="btn btn-success btn-sm">Upload</button>
-                    </div>
-                  </div>
+          <div class="view_url tab">
+            <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-multiloader="true">
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Asset URL</label>
+                  <input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
                 </div>
-              </form>
-            </div>
-            <div role="tabpanel" class="tab-pane '.$active_drop.'" id="upload">
-            <form id="dropzoneupload">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Choose player</label>
+              </div>
+              <div class="col-md-12 mt">
+                <div class="mb-3">
+                  <label class="form-label">Player List</label>
+                  <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
                     '.$playerList.'
                   </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                      <div id="imageUpload" class="dropzoneMulti dropzone"></div>
-                    </div>
-                  <div class="form-group text-right">
-                    <br />
-                    <input type="hidden" name="multidrop" id="multidrop" value="1" />
-                    <input type="hidden" name="test" id="test" value="1" />
-                    <a id="refresh" href="'.$_moduleLink.'&tab=drop" class="btn btn-info btn-sm" style="display:none;">Reload</a>
-                    <button type="button" id="uploadfiles" class="btn btn-success btn-sm">Upload</button>
+              </div>
+              <div class="col-md-12">
+                <input name="mimetype" type="hidden" value="webpage" />
+                <input name="newAsset" type="hidden" value="1" />
+                <button type="submit" name="saveAsset" class="btn btn-success btn-block">Upload</button>
+              </div>
+            </form>
+          </div>
+
+
+          <div class="view_upload tab" style="display: none;">
+            <form id="dropzoneupload">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div id="imageUpload" class="dropzoneMulti dropzone"></div>
+                </div>
+              </div>
+              <div class="col-md-12 mt-3">
+                <div class="mb-3">
+                  <label class="form-label">Player List</label>
+                  <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                    '.$playerList.'
                   </div>
                 </div>
               </div>
+              <div class="col-md-12">
+                <input type="hidden" name="multidrop" id="multidrop" value="1" />
+                <input type="hidden" name="test" id="test" value="1" />
+                <a id="refresh" href="'.$_moduleLink.'&tab=drop" class="btn btn-info btn-block" style="display:none;">Reload</a>
+                <button type="button" id="uploadfiles" class="btn btn-success btn-block">Upload</button>
+              </div>
             </form>
-            </div>
-          </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
     ';
   }
 }
