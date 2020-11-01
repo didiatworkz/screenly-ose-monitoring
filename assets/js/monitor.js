@@ -104,6 +104,9 @@ var asset_table = $('#assets').DataTable({
 $('#assetSearch').keyup(function(){
     asset_table.search( $(this).val() ).draw() ;
 })
+$(document).ready(function() {
+  $('#assetSearch').val(asset_table.search()).change;
+});
 
 $('#assetLength_change').val(asset_table.page.len());
 
@@ -138,13 +141,6 @@ $("#assets tbody").sortable({
   }
 });
 
-$('#extension').DataTable({
-  responsive: true,
-  order: [[ 1, 'asc' ]],
-  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  stateSave: false
-});
-
 $('#users').DataTable({
   responsive: true,
   order: [[ 0, 'asc' ]],
@@ -153,6 +149,13 @@ $('#users').DataTable({
 });
 
 // New Asset
+$('input:radio[name="add_asset_mode"]').click(function(){
+  var inputValue = $(this).attr("value");
+  var targetBox = $("." + inputValue);
+  $(".tab").not(targetBox).hide();
+  $(targetBox).show();
+});
+
 Dropzone.autoDiscover = false;
 
 if ($('.drop').length) {
@@ -329,6 +332,50 @@ $('button.options').on('click', function(){
 });
 
 
+// Device Information
+function loadDeviceInfo(){
+  $('div.device-info').each(function(index, element){
+    var url = $(element).attr('data-src');
+    $.ajax({
+      url: 'assets/php/deviceInfo.php',
+      data: {deviceInfo: 1, ip: url},
+      type: 'GET',
+      success: function(data){
+        if ($('.deviceCheckbox').is(':checked')) {
+          $(element).show();
+          console.log(data);
+          data = JSON.parse(data)
+          $('span.cpu').text(data.cpu.value);
+          $('span.cpu_frequency').text(data.cpu.frequency);
+          $('div.cpu-bar').css('width', data.cpu.progress+'%').attr('aria-valuenow', data.cpu.progress).css('background-color', data.cpu.color);
+
+          $('span.memory').text(data.memory.value);
+          $('span.memory_total').text(data.memory.total);
+          $('div.memory-bar').css('width', data.memory.progress+'%').attr('aria-valuenow', data.memory.progress).css('background-color', data.memory.color);
+
+          $('span.temp').text(data.temp.value);
+          $('div.temp-bar').css('width', data.temp.progress+'%').attr('aria-valuenow', data.temp.progress).css('background-color', data.temp.color);
+
+          $('span.disk').text(data.disk.value);
+          $('span.disk_total').text(data.disk.total);
+          $('div.disk-bar').css('width', data.disk.progress+'%').attr('aria-valuenow', data.disk.progress).css('background-color', data.disk.color);
+
+          $('span.hostname').text(data.hostname);
+          $('span.platformName').text(data.platform.name);
+          $('span.platformVersion').text(data.platform.version);
+          $('span.version').text(data.version);
+          $('span.uptime').text(data.uptime.stamp);
+          $('span.upnow').text(data.uptime.now);
+        }
+        else $(element).hide();
+      },
+      error: function(data){
+        $(element).html("");
+        console.log('No connection - ' + url);
+      },
+    });
+  })
+}
 
 
 // SEARCH
@@ -387,52 +434,56 @@ $("#newPlayerDiscover").submit(function(e) {
 });
 
 // Install Extensions
-$("#installExtension").submit(function(e) {
+$("#installAddonForm").submit(function(e) {
   e.preventDefault();
-  $(".install").html('Wait...');
+  $(".install").html('In progress...');
   $('.install').prop('disabled', true);
   var form = $(this);
   $.ajax({
-   url: 'assets/php/extensions.php',
+   url: 'index.php?site=addon',
    type: 'POST',
    data: form.serialize(),
    success: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan complete'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
-     $(".install").html('Discover');
-     $('.install').prop('disabled', false);
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Installation started!'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+     location.reload(2);
    },
    error: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan failed!'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-     $(".install").html('Discover');
-     $('.install').prop('disabled', false);
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Error'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+     location.reload(2);
    }
  });
 });
 
-$('.editPlayerOpen').on('click', function() {
-  var id = $(this).data('playerid');
-  var editInformation = 1;
-  $.ajax({
-    url: '_functions.php',
-    type: 'POST',
-    dataType: 'JSON',
-    data: { playerID: id, editInformation: editInformation },
-    success: function(response){
-      var eP = $('#editPlayer');
-      eP.find('#playerIDEdit').val(id);
-      eP.find('#playerNameTitle').text(response.player_name);
-      eP.find('#InputPlayerNameEdit').val(response.player_name);
-      eP.find('#InputLocationEdit').val(response.player_location);
-      eP.find('#InputAdressEdit').val(response.player_address);
-      eP.find('#InputUserEdit').val(response.player_user);
-      eP.find('#InputPasswordEdit').val(response.player_password);
-      eP.modal('show');
-      return false;
-    },
-    error: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
-    }
-  });
+var addon_table = $('#addon').DataTable({
+  dom: 'tipr',
+  stateSave: false,
+  autoWidth: false,
+  order: [[ 2, 'desc' ]],
+  initComplete: (settings, json)=>{
+      $('.dataTables_paginate').appendTo('#dataTables_paginate');
+      $('.dataTables_info').appendTo('#dataTables_info');
+  },
+});
+
+$('#addonSearch').keyup(function(){
+    addon_table.search( $(this).val() ).draw() ;
+})
+
+$('#addonLength_change').val(addon_table.page.len());
+
+$('#addonLength_change').change( function() {
+    addon_table.page.len( $(this).val() ).draw();
+});
+
+$('.installAddon').on('click', function() {
+  var host = $(this).data('src');
+  var header = $(this).data('header');
+  var eP = $('#installAddon');
+  eP.find('#InputAdressEdit').val(host);
+  eP.find('#headerText').text(header);
+  eP.find('#btnText').text(header);
+  eP.modal('show');
+
 });
 
 $('button.reboot').on('click', function(){
@@ -489,32 +540,13 @@ function reloadPlayerImage(){
   })
 }
 
-function reloadPlayerBackgroundImage(){
-  $('div.player-cover').each(function(index, element){
-    var url = $(element).attr('data-src');
-    $.ajax({
-      url: 'assets/php/image.php',
-      data: {image: 1, ip: url},
-      dataType: 'json',
-      type: 'GET',
-      success: function(data){
-        $(element).css("background-image", "url(" + data + ")");
-      },
-      error: function(data){
-        $(element).css("background-image", "url(assets/img/offline.png)");
-        console.log('No connection - ' + url);
-      },
-    });
-  })
-}
-
 $(document).ready(function() {
     reloadPlayerImage();
-    reloadPlayerBackgroundImage();
+    if( $('.device-info').length ) loadDeviceInfo();
 });
 
 setInterval('reloadPlayerImage();',settingsRefreshRate);
-setInterval('reloadPlayerBackgroundImage();',settingsRefreshRate);
+setInterval('loadDeviceInfo();', 1000);
 
 $('.modal').on('shown.bs.modal', function(){
   $(this).find('[autofocus]').focus();

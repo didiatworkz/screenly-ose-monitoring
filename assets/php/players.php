@@ -22,6 +22,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+// TODO: TRANSLATION!
 
 // POST: saveIP - Auto discovery function
 if(isset($_POST['saveIP'])){
@@ -62,7 +63,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'delete'){
     $db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
     sysinfo('success', Translation::of('msg.player_delete_successfully'));
   } else sysinfo('danger', Translation::of('msg.cant_delete_player'));
-  redirect($backLink);
+  redirect('index.php?site=players');
 }
 
 // GET: action2:deleteAllAssets - Delete all assets from a player via API
@@ -142,20 +143,29 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
     $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
     $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
     $monitor 		= 0;
+    $monitorAPI	= 0;
 
     $player['name'] != '' ? $playerName = $player['name'] : $playerName = Translation::of('unkown_name');
     $player['location'] != '' ? $playerLocation = $player['location'] : $playerLocation = '';
+
+    $displayAPI     = '';
+    $displayPower   = '';
+    $displayRes      = '';
 
     if(checkAddress($player['address'].'/api/'.$apiVersion.'/assets')){
       $playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $playerID, false);
       $db->exec("UPDATE player SET sync='".time()."' WHERE playerID='".$playerID."'");
       $monitor	 = checkAddress($player['address'].':9020/screen/screenshot.png');
+      $monitorAPI	 = checkAddress($player['address'].':9021/check');
       $playerAPICall = TRUE;
 
-      if($monitor == true){
+      if($monitor == TRUE){
         $monitorInfo = '<span class="badge bg-success">  '.strtolower(Translation::of('installed')).'  </span>';
       } else $monitorInfo = '<a href="#" title="'.Translation::of('what_does_that_mean').'"><span class="badge bg-info">'.strtolower(Translation::of('not_installed')).'</span></a>';
 
+      $showBox	 		= '';
+      $statusBanner = '';
+      $colSize	 		= 'col-sm-6 col-lg-3';
       $status		 		= strtolower(Translation::of('online'));
       $statusColor 	= 'success';
       $newAsset			= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> '.Translation::of('new_asset').'</a>';
@@ -169,8 +179,184 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         <td>'.$monitorInfo.'</td>
       </tr>
       ';
+
+      $displayAPI = callURL('GET', $player['address'].'/api/v1/info', false, $playerID, false);
+      if(is_array($displayAPI)){
+        $displayRes = explode(',', $displayAPI['display_info']);
+        $displayRes = $displayRes['1'];
+        $displayPower = $displayAPI['display_power'];
+      }
+
+      if(deviceInfoInstalled($player['address'])){
+        $deviceInfoHead = '
+        <label class="form-check form-switch d-sm-inline-block mr-3">
+          <input class="form-check-input deviceCheckbox" type="checkbox" checked>
+          <span class="form-check-label">Device Info API</span>
+        </label>
+        <!--
+        <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-none d-sm-inline-block">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <line x1="4" y1="6" x2="9.5" y2="6"></line>
+            <line x1="4" y1="10" x2="9.5" y2="10"></line>
+            <line x1="4" y1="14" x2="9.5" y2="14"></line>
+            <line x1="4" y1="18" x2="9.5" y2="18"></line>
+            <line x1="14.5" y1="6" x2="20" y2="6"></line>
+            <line x1="14.5" y1="10" x2="20" y2="10"></line>
+            <line x1="14.5" y1="14" x2="20" y2="14"></line>
+            <line x1="14.5" y1="18" x2="20" y2="18"></line>
+          </svg>
+          Process Overview
+        </a>
+        <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-sm-none btn-icon" aria-label="Create new report">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <line x1="4" y1="6" x2="9.5" y2="6"></line>
+            <line x1="4" y1="10" x2="9.5" y2="10"></line>
+            <line x1="4" y1="14" x2="9.5" y2="14"></line>
+            <line x1="4" y1="18" x2="9.5" y2="18"></line>
+            <line x1="14.5" y1="6" x2="20" y2="6"></line>
+            <line x1="14.5" y1="10" x2="20" y2="10"></line>
+            <line x1="14.5" y1="14" x2="20" y2="14"></line>
+            <line x1="14.5" y1="18" x2="20" y2="18"></line>
+          </svg>
+        </a>-->
+        ';
+        $deviceInfoBox = '
+        <div class="row row-deck row-cards device-info" data-src="'.$player['address'].'">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">CPU</div>
+                </div>
+                <div class="h1 mb-3"><span class="cpu"></span>%</div>
+                <div class="d-flex mb-2">
+                  <div>Frequency: <span class="cpu_frequency"></span> MHz</div>
+                </div>
+              </div>
+              <div class="progress card-progress">
+                <div class="progress-bar cpu-bar bg-red" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Memory</div>
+                </div>
+                <div class="h1 mb-3"><span class="memory"></span> MB</div>
+                <div class="d-flex mb-2">
+                  <div>Total: <span class="memory_total"></span> MB</div>
+                </div>
+              </div>
+              <div class="progress card-progress">
+                <div class="progress-bar memory-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Temperature</div>
+                </div>
+                <div class="h1 mb-3"><span class="temp"></span>°</div>
+                <div class="d-flex mb-2">
+                  <div>Sensor: CPU</div>
+                </div>
+              </div>
+              <div class="progress card-progress">
+                <div class="progress-bar temp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Storage</div>
+                </div>
+                <div class="h1 mb-3"><span class="disk"></span> GB</div>
+                <div class="d-flex mb-2">
+                  <div>Total: <span class="disk_total"></span> GB</div>
+                </div>
+              </div>
+              <div class="progress card-progress">
+                <div class="progress-bar disk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Uptime</div>
+                </div>
+                <div class="h1 mb-3"><span class="upnow"></span></div>
+                <div class="d-flex mb-2">
+                  <div><span class="uptime"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Hostname</div>
+                </div>
+                <div class="h1 mb-3"><span class="hostname"></span></div>
+                <div class="d-flex mb-2">
+                  <div>/etc/hostname</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Platform</div>
+                </div>
+                <div class="h1 mb-3"><span class="platformName"></span></div>
+                <div class="d-flex mb-2">
+                  <div>Version: <span class="platformVersion"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Version</div>
+                </div>
+                <div class="h1 mb-3"><span class="version"></span></div>
+                <div class="d-flex mb-2">
+                  <div>SOMA Device Info</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        ';
+      }
+      else {
+        $deviceInfoHead = '';
+        $deviceInfoBox = '';
+      }
+
+
+
     }
     else {
+      $showBox	 		  = 'style="display: none;"';
+      $colSize	 	   	= 'col-sm-12 col-lg-6';
       $playerAPICall 	= FALSE;
       $playerAPI 			= NULL;
       $status 				= strtolower(Translation::of('offline'));
@@ -181,13 +367,15 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       $bulkDelete			= '';
       $management			= '';
       $reboot 				= '';
+      $statusBanner   = '';
 
       if(checkAddress($player['address'])){
         $status		 		= strtolower(Translation::of('online'));
         $statusColor 	= 'success';
+        $statusBanner = '<div class="alert alert-danger alert-dismissible" role="alert">  <b>'.Translation::of('msg.no_screenly_api').' - </b> '.Translation::of('msg.no_data_collected').'</div>';
       }
     }
-
+    // TODO: Device Information and Process view need to build up
     echo '
     <div class="page-header">
       <div class="row align-items-center">
@@ -203,41 +391,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </ol>
         </div>
         <!-- Page title actions -->
-        <div class="col-auto ml-auto">
+        <div class="col-auto ml-auto" '.$showBox.'>
 
-          <label class="form-check form-switch d-sm-inline-block mr-3">
-            <input class="form-check-input" type="checkbox" checked>
-            <span class="form-check-label">Device Information</span>
-          </label>
-
-          <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <line x1="4" y1="6" x2="9.5" y2="6"></line>
-              <line x1="4" y1="10" x2="9.5" y2="10"></line>
-              <line x1="4" y1="14" x2="9.5" y2="14"></line>
-              <line x1="4" y1="18" x2="9.5" y2="18"></line>
-              <line x1="14.5" y1="6" x2="20" y2="6"></line>
-              <line x1="14.5" y1="10" x2="20" y2="10"></line>
-              <line x1="14.5" y1="14" x2="20" y2="14"></line>
-              <line x1="14.5" y1="18" x2="20" y2="18"></line>
-            </svg>
-            Process Overview
-          </a>
-          <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-info ml-3 d-sm-none btn-icon" aria-label="Create new report">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <line x1="4" y1="6" x2="9.5" y2="6"></line>
-              <line x1="4" y1="10" x2="9.5" y2="10"></line>
-              <line x1="4" y1="14" x2="9.5" y2="14"></line>
-              <line x1="4" y1="18" x2="9.5" y2="18"></line>
-              <line x1="14.5" y1="6" x2="20" y2="6"></line>
-              <line x1="14.5" y1="10" x2="20" y2="10"></line>
-              <line x1="14.5" y1="14" x2="20" y2="14"></line>
-              <line x1="14.5" y1="18" x2="20" y2="18"></line>
-            </svg>
-          </a>
-
+          '.$deviceInfoHead.'
           <a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-none d-sm-inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z"></path>
@@ -259,18 +415,21 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       </div>
     </div>
     <div class="row row-deck row-cards">
-      <div class="col-sm-6 col-lg-3">
+      <div class="'.$colSize.'">
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="subheader">Information</div>
               <div class="ml-auto lh-1 text-muted">
-                <a href="#">
+                <a href="#" data-playerid="'.$player['playerID'].'" class="editPlayerOpen">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z"></path>
                     <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path>
                     <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"></line>
                   </svg>
+                </a>
+                <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=delete&playerID='.$player['playerID'].'">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg>
                 </a>
               </div>
             </div>
@@ -281,7 +440,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-3">
+      <div class="'.$colSize.'">
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center">
@@ -294,20 +453,20 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-3">
+      <div class="col-sm-6 col-lg-3" '.$showBox.'>
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="subheader">Display</div>
             </div>
-            <div class="h1 mb-3">OFF</div>
+            <div class="h1 mb-3">'.strtoupper($displayPower).'</div>
             <div class="d-flex mb-2">
-              <div>state 0x40000 [NTSC 4:3], 720x480 @ 60.00Hz, interlaced</div>
+              <div>'.$displayRes.'</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-3">
+      <div class="col-sm-6 col-lg-3" '.$showBox.'>
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center">
@@ -336,78 +495,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       </div>
     </div>
 
-<!-- API Mode
-    <div class="row row-deck row-cards">
-      <div class="col-sm-6 col-lg-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="subheader">CPU</div>
-            </div>
-            <div class="h1 mb-3">80%</div>
-            <div class="d-flex mb-2">
-              <div>Frequency: 600 MHz</div>
-            </div>
-          </div>
-          <div class="progress card-progress">
-            <div class="progress-bar bg-red" style="width: 80%" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="subheader">Memory</div>
-            </div>
-            <div class="h1 mb-3">40%</div>
-            <div class="d-flex mb-2">
-              <div>Total: 926.1 MB</div>
-            </div>
-          </div>
-          <div class="progress card-progress">
-            <div class="progress-bar bg-yellow" style="width: 40%" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="subheader">Temperature</div>
-            </div>
-            <div class="h1 mb-3">60°</div>
-            <div class="d-flex mb-2">
-              <div>CPU</div>
-            </div>
-          </div>
-          <div class="progress card-progress">
-            <div class="progress-bar bg-red" style="width: 60%" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="subheader">Storage</div>
-            </div>
-            <div class="h1 mb-3">25%</div>
-            <div class="d-flex mb-2">
-              <div>Total: 16 GB</div>
-            </div>
-          </div>
-          <div class="progress card-progress">
-            <div class="progress-bar bg-green" style="width: 25%" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-      </div>
-    </div>
--->
+    '.$deviceInfoBox.'
 
     <div class="container-fluid p-0">
       <div class="row">
-        <div class="col-xs-12 col-sm-4 col-lg-3 order-sm-4 order-lg-4 order-xl-4">
+        <div class="col-xs-12 col-sm-4 col-lg-3 order-sm-4 order-lg-4 order-xl-4" '.$showBox.'>
           <div class="card">
             <img src="'.$loadingImage.'" class="card-img-top player" data-src="'.$player['address'].'" alt="...">
           </div>
@@ -438,7 +530,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             </div>
           </div>
         </div>
-        <div class="col-xs-12 col-sm-8 col-lg-9 order-sm-3 order-lg-3 order-xl-3">
+        <div class="col-xs-12 col-sm-8 col-lg-9 order-sm-3 order-lg-3 order-xl-3" '.$showBox.'>
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Assets</h3>
@@ -566,6 +658,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         </div>
       </div>
     </div>
+    '.$statusBanner.'
 
     <!-- newAsset -->
     <div class="modal modal-blur fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
@@ -578,43 +671,66 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             </button>
           </div>
           <div class="modal-body">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" href="#url" role="tab" data-toggle="tab">'.Translation::of('url').'</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#upload" role="tab" data-toggle="tab">'.Translation::of('upload').'</a>
-              </li>
-            </ul>
-
-            <div class="tab-content">
-              <div role="tabpanel" class="tab-pane active" id="url">
-                <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
-                  <div class="form-group">
-                    <label for="InputNewAssetUrl">'.Translation::of('asset_url').'</label>
-                    <input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
-                  </div>
-                  <div class="form-group text-right">
-                    <input name="id" type="hidden" value="'.$player['playerID'].'" />
-                    <input name="mimetype" type="hidden" value="webpage" />
-                    <input name="newAsset" type="hidden" value="1" />
-                    <button type="submit" name="saveAsset" class="btn btn-success ">'.Translation::of('save').'</button>
-                    <button type="button" class="btn btn-secondary " data-dismiss="modal">'.Translation::of('close').'</button>
-                  </div>
-                </form>
+            <label class="form-label">Upload Mode</label>
+            <div class="form-selectgroup-boxes row mb-3">
+              <div class="col-lg-6">
+                <label class="form-selectgroup-item">
+                  <input type="radio" name="add_asset_mode" class="form-selectgroup-input" value="view_url" checked>
+                  <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="mr-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">'.Translation::of('url').'</span>
+                    </span>
+                  </span>
+                </label>
               </div>
-              <div role="tabpanel" class="tab-pane" id="upload">
-                <form action="http://'.$player['address'].'/api/v1/file_asset" class="dropzone drop">
-                  <div class="form-group">
-                    <input type="file" multiple />
-                  </div>
-                </form>
-                <div class="form-group text-right">
-                  <br />
-                  <button type="button" class="btn btn-secondary  close_modal" data-close="#newAsset">'.Translation::of('close').'</button>
-                </div>
+              <div class="col-lg-6">
+                <label class="form-selectgroup-item">
+                  <input type="radio" name="add_asset_mode" class="form-selectgroup-input" value="view_upload">
+                  <span class="form-selectgroup-label d-flex align-items-center p-3">
+                    <span class="mr-3">
+                      <span class="form-selectgroup-check"></span>
+                    </span>
+                    <span class="form-selectgroup-label-content">
+                      <span class="form-selectgroup-title strong mb-1">'.Translation::of('upload').'</span>
+                    </span>
+                  </span>
+                </label>
               </div>
             </div>
+          </div>
+          <div class="view_url tab">
+            <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label">'.Translation::of('asset_url').'</label>
+                  <input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <input name="id" type="hidden" value="'.$player['playerID'].'" />
+                <input name="mimetype" type="hidden" value="webpage" />
+                <input name="newAsset" type="hidden" value="1" />
+                <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
+                <button type="submit" name="saveAsset" class="btn btn-success">'.Translation::of('save').'</button>
+              </div>
+            </form>
+          </div>
+          <div class="view_upload tab" style="display: none;">
+              <div class="modal-body">
+                <div class="mb-3">
+                  <form action="'.checkHTTP($player['address']).$player['address'].'/api/v1/file_asset" class="dropzone drop">
+                    <div class="fallback">
+                      <input name="file" type="file" multiple />
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-link  close_modal" data-close="#newAsset">'.Translation::of('close').'</button>
+              </div>
           </div>
         </div>
       </div>
@@ -693,7 +809,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <input name="updateAsset" type="hidden" value="1" />
               <input name="asset" id="InputAssetId"type="hidden" value="1" />
               <input name="id" id="InputSubmitId" type="hidden" value="'.$player['playerID'].'" />
-              <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
+              <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
               <button type="submit" class="btn btn-warning ">'.Translation::of('update').'</button>
             </div>
           </form>
@@ -730,7 +846,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             '.Translation::of('msg.clean_all_assets').'
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
+            <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
             <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
           </div>
         </div>
@@ -746,7 +862,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 else {
   $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 
-  if($playerCount > 0){
+  if(getPlayerCount() > 0){
     echo'
     <div class="page-header">
       <div class="row align-items-center">
@@ -898,7 +1014,7 @@ echo '
             </div>
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
+            <a href="#" class="btn btn-link link-link" data-dismiss="modal">
               '.Translation::of('close').'
             </a>
             <button type="submit" name="saveIP" class="btn btn-primary ml-auto">
@@ -924,7 +1040,7 @@ echo '
           </div>
           <div class="modal-footer">
             <input name="userID" type="hidden" value="'.$loginUserID.'" />
-            <button type="button" class="btn btn-link link-secondary close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
+            <button type="button" class="btn btn-link link-link close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
             <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
           </div>
         </form>
@@ -945,37 +1061,70 @@ echo '
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <form id="playerFormEdit" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">'.Translation::of('player_name').'</label>
+            <input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="'.Translation::of('enter_player_name').'" autofocus />
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">'.Translation::of('ip_address').'</label>
+                <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="mb-3">
+                <label class="form-label">'.Translation::of('player_location').'</label>
+                <input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="'.Translation::of('enter_player_location').'" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">'.Translation::of('username').'</label>
+                <input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="'.Translation::of('username').'" />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">'.Translation::of('password').'</label>
+                <input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="'.Translation::of('password').'" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <input name="playerID" id="playerIDEdit" type="hidden" value="" />
+          <input name="mimetype" id="playerMimetype" type="hidden" value="" />
+          <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
+          <button type="submit" name="updatePlayer" class="btn btn-warning">'.Translation::of('update').'</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- confirmDelete -->
+<div class="modal modal-blur fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">'.Translation::of('attention').'!</h5>
+      </div>
       <div class="modal-body">
-        <form id="playerFormEdit" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-          <div class="form-group">
-            <label for="InputPlayerNameEdit">'.Translation::of('enter_player_name').'</label>
-            <input name="name" type="text" class="form-control" id="InputPlayerNameEdit" placeholder="'.Translation::of('player_name').'" autofocus />
-          </div>
-          <div class="form-group">
-            <label for="InputLocationEdit">'.Translation::of('enter_player_location').'</label>
-            <input name="location" type="text" class="form-control" id="InputLocationEdit" placeholder="'.Translation::of('player_location').'" />
-          </div>
-          <div class="form-group">
-            <label for="InputAdressEdit">'.Translation::of('enter_player_ip').'</label>
-            <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
-            <div class="help-block with-errors"></div>
-          </div>
-          <hr />
-          <div class="form-group">
-            <label for="InputUserEdit">'.Translation::of('player_authentication').'</label>
-            <input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="'.Translation::of('username').'" />
-          </div>
-          <div class="form-group">
-            <input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="'.Translation::of('password').'" />
-          </div>
-          <div class="form-group text-right">
-            <input name="playerID" id="playerIDEdit" type="hidden" value="" />
-            <input name="mimetype" id="playerMimetype" type="hidden" value="" />
-            <button type="submit" name="updatePlayer" class="btn  btn-warning">'.Translation::of('update').'</button>
-            <button type="button" class="btn btn-secondary " data-dismiss="modal">'.Translation::of('close').'</button>
-          </div>
-        </form>
+        '.Translation::of('msg.delete_really_entry').'
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
+        <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
       </div>
     </div>
   </div>
-</div>';
+</div>
+';

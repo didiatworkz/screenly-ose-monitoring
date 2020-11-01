@@ -37,6 +37,23 @@ _______________________________________
 		return array('username' => $user, 'password' => $pass);
 	}
 
+	function checkHTTP($ip){
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 250);
+		curl_setopt($curl, CURLOPT_URL, $ip);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+		$response = curl_exec($curl);
+		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		curl_close($curl);
+		if($code == 200) return 'http://';
+		else if($code == 301) return 'https://';
+		else return false;
+	}
+
+
 	function callURL($method, $ip, $params = false, $playerID = null, $ssl = false){
 		$headers = array(
 			'Accept: application/json',
@@ -123,12 +140,4 @@ _______________________________________
 		curl_close($ch);
 		if(($httpcode >= 200 && $httpcode < 300) || $httpcode == 301 || $httpcode == 401) return true;
 		else return false;
-	}
-
-	function playerImage($url){
-		if(checkAddress($url)) {
-			if(checkAddress($url.':9020/screen/screenshot.png')) return 'http://'.$url.':9020/screen/screenshot.png';
-			else return 'assets/img/online.png';
-		}
-		else return 'assets/img/offline.png';
 	}
