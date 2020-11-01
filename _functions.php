@@ -17,11 +17,12 @@ _______________________________________
 _______________________________________
 */
 
-	$_DEBUG 		= 'YES';
+	$_DEBUG 		= 'NO';
 	$_TIMEZONE 	= 'Europe/Berlin';
 	$apiVersion	= 'v1.2';
 
 	$_modules = array(
+					'addon',
 					'players',
 					'settings',
 					'tester',
@@ -68,7 +69,8 @@ _______________________________________
 
 	include_once('assets/php/database.php');
 	include_once('assets/php/user.php');
-	include_once('assets/php/player.php');
+	include_once('assets/php/curl.php');
+	include_once('assets/php/deviceInfo.php');
 	include_once('assets/php/update.php');
 	include_once('assets/php/actions.php');
 
@@ -85,14 +87,22 @@ _______________________________________
 		}
 	}
 
+	function getPlayerCount(){
+	  global $db;
+	  $playerCount = $db->query("SELECT COUNT(*) AS counter FROM player");
+		$playerCount = $playerCount->fetchArray(SQLITE3_ASSOC);
+		$playerCount = $playerCount['counter'];
+	  return $playerCount;
+	}
+
 	if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
 		setcookie('firstSetup', true, time() + (86400 * 999), '/');
 		firstStart('set', 1);
 	}
-	else if (isset($_COOKIE['firstSetup']) && $playerCount == 0 && firstStart() <= 2) {
+	else if (isset($_COOKIE['firstSetup']) && getPlayerCount() == 0 && firstStart() <= 2) {
 		firstStart('set', 2);
 	}
-	else if($playerCount >= 1 OR firstStart() == 3) {
+	else if(getPlayerCount() >= 1 OR firstStart() == 3) {
 		setcookie('firstSetup',  null, -1, '/');
 	}
 
