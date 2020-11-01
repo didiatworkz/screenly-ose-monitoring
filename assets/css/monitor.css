@@ -32,3 +32,9 @@
 .caltime-padding .form-control:disabled, .form-control[readonly] {
     background-color: #fff;
 }
+
+table.dataTable tr.dtrg-group td {
+    background-color: rgba(0,0,0,0.03);
+    text-transform: uppercase;
+    color: #6e7582;
+}
