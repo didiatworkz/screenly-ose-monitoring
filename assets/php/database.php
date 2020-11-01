@@ -90,7 +90,11 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("DROP TABLE `settings_tmp`");
   }
   if($oldVersion <= '4.0'){			// Update Database to Version 4.0
-    #placeholder
+    $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
+    $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
+    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
+    $db->exec("INSERT INTO `player`(userID,name,location,player_user,player_password,sync,created) SELECT userID,name,location,player_user,player_password,sync,created FROM `player_tmp`");
+    $db->exec("DROP TABLE `player_tmp`");
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
