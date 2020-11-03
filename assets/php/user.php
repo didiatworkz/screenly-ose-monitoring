@@ -110,6 +110,13 @@ function lastLogin($userID){
   return date("Y-m-d H:i", $return['last_login']);
 }
 
+function lastLoginTimestamp($userID){
+  global $db;
+  $sql      = $db->query("SELECT last_login FROM `users` WHERE userID='".$userID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  return $return['last_login'];
+}
+
 function isActive($userID){
   global $db;
   $sql   = $db->query("SELECT active FROM `users` WHERE userID='".$userID."'");
@@ -172,6 +179,7 @@ if(isset($_POST['saveAccount'])){
   $firstname  = $_POST['firstname'];
   $name       = $_POST['name'];
   $user       = $_POST['username'];
+  $firstStart = $_POST['firstStartUser'];
   if($_POST['password1'] != '' && $_POST['password2'] != ''){
     $pass1 = md5($_POST['password1']);
     $pass2 = md5($_POST['password2']);
@@ -183,6 +191,9 @@ if(isset($_POST['saveAccount'])){
 
   if($user && ($pass1 == $pass2)){
     $db->exec("UPDATE `users` SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."' WHERE userID='".$loginUserID."'");
+    if($firstStart == 1){
+      $db->exec("UPDATE settings SET firstStart='2' WHERE settingsID='1'");
+    }
     sysinfo('success', 'Account data saved!', 0);
   }
   else sysinfo('danger', 'Error!');
