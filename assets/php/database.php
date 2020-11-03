@@ -17,14 +17,14 @@ _______________________________________
 _______________________________________
 */
 
-$dbase_key		= 'assets/tools/key.php';
+$dbase_key		= $_SERVER['DOCUMENT_ROOT'].'/assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
-  $dbase_file = 'dbase.db';
+  $dbase_file = $_SERVER['DOCUMENT_ROOT'].'/dbase.db';
 } else {
   include_once($dbase_key);
   $dbase_file = $db_cryproKey;
-  if(@file_exists('dbase.db')) {
-    unlink('dbase.db');
+  if(@file_exists($_SERVER['DOCUMENT_ROOT'].'/dbase.db')) {
+    unlink($_SERVER['DOCUMENT_ROOT'].'/dbase.db');
   }
 
 }
@@ -35,7 +35,7 @@ if(!@file_exists($dbase_key)){
   $db_cryproKey = "'.$token.'";';
   $current = file_get_contents($dbase_key);
   file_put_contents($dbase_key, $keyFile);
-  rename("dbase.db",$token);
+  rename($_SERVER['DOCUMENT_ROOT'].'/dbase.db',$token);
   header("Refresh:0");
   die("Reload this page");
 }
@@ -90,11 +90,16 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("DROP TABLE `settings_tmp`");
   }
   if($oldVersion <= '4.0'){			// Update Database to Version 4.0
-    $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
     $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
-    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
-    $db->exec("INSERT INTO `player`(userID,name,location,player_user,player_password,sync,created) SELECT userID,name,location,player_user,player_password,sync,created FROM `player_tmp`");
+    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `status` INTEGER DEFAULT 0, `assets` TEXT, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
+    $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,sync,created) SELECT userID,name,location,address,player_user,player_password,sync,created FROM `player_tmp`");
     $db->exec("DROP TABLE `player_tmp`");
+    $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `timezone` TEXT DEFAULT 'Europe/Berlin')");
+    $db->exec("INSERT INTO `settings`(name,duration,token,end_date,updatecheck) SELECT name,duration,token,end_date,updatecheck FROM `settings_tmp`");
+    $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
+    $db->exec("DROP TABLE `settings_tmp`");
+
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
