@@ -24,22 +24,33 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 $_boxes = 18;
 $_key   = $_GET['key'];
-$_site  = 'index.php?monitoring=1&key='.$_key;
+$_dark   = isset($_GET['dark']) ? $_GET['dark'] : '0';
+$_site  = 'index.php?public=1&key='.$_key.'&dark='.$_dark;
+
+if(isset($_GET['dark']) && $_GET['dark'] == 1) $body_theme = 'theme-dark';
+else $body_theme = '';
+
 echo '
-<nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+<body class="'.$body_theme.'">
+<div class="page">
+  <header class="navbar navbar-expand-md navbar-light">
     <div class="container-fluid">
-       <div class="navbar-wrapper">
-           <a class="navbar-brand" href="./index.php">'._SYSTEM_NAME.'</a>
-       </div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a href="#" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
+        SOMO
+      </a>
     </div>
-</nav>
-<div class="content">';
+  </header>
+  <div class="content">
+    <div class="container-fluid">';
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
 if($_key == $securityToken){
-  if($playerCount > 0){
+  if(getPlayerCount() > 0){
     if (isset($_GET['next'])) $next = (int) $_GET['next'];
 		else $next = 0;
 
@@ -55,15 +66,18 @@ if($_key == $securityToken){
     $current_site = $para / $_boxes;
     $total_site = ceil($n / $_boxes);
 
-    $pagination = 'Site '.$current_site.' of '.$total_site.' - ';
+    $pagination = 'Page '.$current_site.' of '.$total_site.' - ';
 
     redirect($site, 30);
 
+    echo '
+    <div class="row">
+
+    ';
+
 
     $playerSQL 		= $db->query("SELECT * FROM player ORDER BY name LIMIT ".$next.",".$_boxes);
-    echo'
-    <div class="row">
-    ';
+
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
       if($player['name'] == ''){
         $name	 			= 'No Player Name';
@@ -74,24 +88,31 @@ if($_key == $securityToken){
         $imageTag 	= $player['name'];
       }
       echo'
-      <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="d-inline">'.$name.'</h4>
-            <h5>'.$player['address'].'</h5>
-          </div>
-          <div class="card-body card-monitor">
-            <img class="player" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" />
+      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="card card-sm">
+          <a href="#" class="d-block"><img class="player card-img-top" src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" /></a>
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="lh-sm">
+                <div>'.$name.'</div>
+              </div>
+              <div class="ml-auto">
+                <a href="index.php?site=players&action=view&playerID=2" class="text-muted">
+                  '.$player['address'].'
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       ';
     }
-    echo '
-    </div>
-  </div>
-  ';
+    echo'</div>';
   }
   else sysinfo('warning', 'No Player available!');
 }
 else sysinfo('danger', 'Token incorrect - Access denied!');
+
+echo '
+</div>
+';
