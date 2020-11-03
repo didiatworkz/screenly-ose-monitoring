@@ -177,6 +177,12 @@
     mode: 0644
   when: (old_monitor) and (version1_0 or version1_1)
 
+- name: Crontab for SOMO Runner
+  cron:
+    name: "Crontab for SOMO Runner"
+    minute: 5
+    job: "curl http://localhost/assets/php/runner.php"
+
 - name: Retore Version Code
   copy:
     src: /home/pi/.monitor/version.txt
