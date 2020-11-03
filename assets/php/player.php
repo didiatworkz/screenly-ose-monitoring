@@ -17,127 +17,119 @@ _______________________________________
 _______________________________________
 */
 
-	$playerCount = $db->query("SELECT COUNT(*) AS counter FROM player");
-	$playerCount = $playerCount->fetchArray(SQLITE3_ASSOC);
-	$playerCount = $playerCount['counter'];
 
-	function playerAuthentication($value = null){
-		global $dbase_file;
-		$db = new SQLite3($dbase_file);
-		if(filter_var($value, FILTER_VALIDATE_IP)){
-			$playerSQL 	= $db->query("SELECT * FROM player WHERE address='".$value."'");
-		}
-		else if(is_numeric($value)){
-			$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$value."'");
-		}
-		else return FALSE;
-		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-		$player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-		$player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
-		return array('username' => $user, 'password' => $pass);
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
+	
+
+	// POST: saveIP - Auto discovery function
+	if(isset($_POST['saveIP'])){
+	  $name 			= isset($_POST['name']) ? $_POST['name'] : '';
+	  $address 		= isset($_POST['address']) ? $_POST['address'] : '';
+	  $location 	= isset($_POST['location']) ? $_POST['location'] : '';
+	  $user 			= isset($_POST['user']) ? $_POST['user'] : '';
+	  $pass 			= isset($_POST['pass']) ? $_POST['pass'] : '';
+	  $firstStart = isset($_POST['firstStartPlayer']) ? $_POST['firstStartPlayer'] : '';
+
+	  if($address){
+	    $db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
+			if($firstStart == 1){
+				$db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
+			}
+	    sysinfo('success', Translation::of('msg.player_added_successfully', ['name' => $name]));
+	  }	else sysinfo('danger', Translation::of('msg.cant_add_player'));
+	  redirect($backLink);
 	}
 
-	function checkHTTP($ip){
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 250);
-		curl_setopt($curl, CURLOPT_URL, $ip);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	// POST: updatePlayer - Update player data in database
+	if(isset($_POST['updatePlayer'])){
+	  $name 		= $_POST['name'];
+	  $address	= $_POST['address'];
+	  $location = $_POST['location'];
+	  $user 		= $_POST['user'];
+	  $pass 		= $_POST['pass'];
+	  $playerID = $_POST['playerID'];
 
-		$response = curl_exec($curl);
-		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
-		if($code == 200) return 'http://';
-		else if($code == 301) return 'https://';
-		else return false;
+
+	  if($address){
+	    $db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
+	    sysinfo('success', Translation::of('msg.player_update_successfully'));
+	  }	else sysinfo('danger', Translation::of('msg.cant_update_player'));
+	  redirect($backLink);
 	}
 
+	// GET: action:delete - Delete player from database
+	if(isset($_GET['action']) && $_GET['action'] == 'delete'){
+	  $playerID = $_GET['playerID'];
 
-	function callURL($method, $ip, $params = false, $playerID = null, $ssl = false){
-		$headers = array(
-			'Accept: application/json',
-			'Content-Type: application/json',
-		);
-		$curl = curl_init();
-		if($ssl) $prefix = 'https://';
-		else $prefix = 'http://';
-
-		$playerAuth = playerAuthentication($playerID);
-		if($playerAuth['username'] != '' AND $playerAuth['password'] !=''){
-			$user = $playerAuth['username'];
-			$pass = $playerAuth['password'];
-		}
-		else {
-			$user = false;
-			$pass = false;
-		}
-		if($user AND $pass) $url = $prefix.$user.':'.$pass.'@'.$ip;
-		else $url = $prefix.$ip;
-		switch($method){
-			case 'GET':
-				//$url .= '?' . http_build_query($params);
-				break;
-			case 'POST':
-				curl_setopt($curl, CURLOPT_POST, true);
-				curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
-				curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-				break;
-			case 'POST2':
-				curl_setopt($curl, CURLOPT_POST, 1);
-				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-				break;
-			case 'POST3':
-				$headers = array(
-					'Accept: */*',
-					'Content-Type: multipart/form-data',
-				);
-				curl_setopt($curl, CURLOPT_POST, true);
-				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-				curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-				break;
-			case 'PUT':
-				curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
-				curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
-				curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-				break;
-			case 'DELETE':
-				curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
-				//$url .= '?' . http_build_query($params);
-				break;
-		}
-
-		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 250);
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-		$response = curl_exec($curl);
-		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
-
-		if ($code == 200) {
-			return $response = json_decode($response, true);
-		}
-		elseif ($code == 301) {
-		   return callURL($method, $ip, $params, $playerID, true);
-		}
-		elseif ($code == 401) {
-			echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "<strong>Can not logged in to the player! </strong><br /> Wrong Username or Password!"},{type: "warning",timer: 2000 ,placement: {from: "top",align: "center"}});</script>';
-			return 'authentication error '.$code;
-		}
-		else return 'error '.$code;
+	  if(isset($playerID)){
+	    $db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
+	    sysinfo('success', Translation::of('msg.player_delete_successfully'));
+	  } else sysinfo('danger', Translation::of('msg.cant_delete_player'));
+	  redirect('index.php?site=players');
 	}
 
-	function checkAddress($ip){
-		$ch = curl_init($ip);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 200);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$data = curl_exec($ch);
-		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		if(($httpcode >= 200 && $httpcode < 300) || $httpcode == 301 || $httpcode == 401) return true;
-		else return false;
+	// GET: action2:deleteAllAssets - Delete all assets from a player via API
+	if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAllAssets')){
+	  $id 				= $_GET['playerID'];
+	  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+	  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+	  $data 			= NULL;
+	  $playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $id, false);
+
+	  foreach ($playerAPI as $value) {
+	    if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
+	      //sysinfo('success', 'Asset deleted successfully');
+	      redirect($backLink);
+	    }	else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
+	  }
+	}
+
+	// POST: updateAsset - Update Asset information from a player via API
+	if(isset($_POST['updateAsset'])){
+	  $id 				= $_POST['id'];
+	  $asset 			= $_POST['asset'];
+	  $name 			= $_POST['name'];
+	  $start 			= date("Y-m-d", strtotime($_POST['start_date']));
+	  $start_time	= $_POST['start_time'];
+	  $end 				= $_POST['end_date'];
+	  $end_time		= $_POST['end_time'];
+	  $duration 	= $_POST['duration'];
+
+	  if (strpos($end, '9999') === false) {
+	    $end 				= date("Y-m-d", strtotime($end));
+	  } else {
+	    $end				= '9999-01-01';
+	  }
+
+	  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+	  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+	  $data 			= callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
+
+	  if($data['name'] != $name) $data['name'] = $name;
+
+	  if($data['duration'] != $duration && $duration > 1) $data['duration'] = $duration;
+	  else $data['duration'] = 30;
+	  $data['start_date'] = $start.'T'.$start_time.':00.000Z';
+	  $data['end_date'] = $end.'T'.$end_time.':00.000Z';
+
+	  if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
+	    sysinfo('success', Translation::of('msg.asset_update_successfully'));
+	  }	else sysinfo('danger', Translation::of('msg.cant_update_asset'));
+	  redirect($backLink);
+	}
+
+	// GET: action2:deleteAsset - Delete asset from a player via API
+	if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
+	  $id 				= $_GET['id'];
+	  $asset 			= $_GET['asset'];
+	  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
+	  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+	  $data 			= NULL;
+
+	  if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
+	    //sysinfo('success', 'Asset deleted successfully');
+	    redirect($backLink);
+	  } else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
 	}
