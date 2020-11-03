@@ -25,15 +25,17 @@ echo'
     <meta name="HandheldFriendly" content="True"/>
     <meta name="MobileOptimized" content="320"/>
     <meta name="robots" content="noindex,nofollow,noarchive"/>
-		<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png" />
-		<link rel="manifest" href="assets/img/site.webmanifest" />
-		<link rel="mask-icon" href="assets/img/safari-pinned-tab.svg" color="#1e1e2f" />
-		<link rel="shortcut icon" href="assets/img/favicon.ico" />
-		<meta name="msapplication-TileColor" content="#1e1e2f" />
-		<meta name="msapplication-config" content="assets/img/browserconfig.xml" />
-		<meta name="theme-color" content="#1e1e2f" />
+		<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=693zEXKkY5">
+		<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png?v=693zEXKkY5">
+		<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png?v=693zEXKkY5">
+		<link rel="manifest" href="assets/img/site.webmanifest?v=693zEXKkY5">
+		<link rel="mask-icon" href="assets/img/safari-pinned-tab.svg?v=693zEXKkY5" color="#000000">
+		<link rel="shortcut icon" href="assets/img/favicon.ico?v=693zEXKkY5">
+		<meta name="apple-mobile-web-app-title" content="SOMO">
+		<meta name="application-name" content="SOMO">
+		<meta name="msapplication-TileColor" content="#00aba9">
+		<meta name="msapplication-config" content="assets/img/browserconfig.xml?v=693zEXKkY5">
+		<meta name="theme-color" content="#ffffff">
     <!-- Libs CSS -->
     <link href="assets/libs/selectize/dist/css/selectize.css" rel="stylesheet"/>
     <link href="assets/libs/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
@@ -58,8 +60,8 @@ echo'
 		<script src="assets//libs/flatpickr/dist/flatpickr.min.js"></script>
 		<!-- Tabler Core -->
 		<script src="assets/js/tabler.min.js?1588343458"></script>
-		<script type="text/javascript" src="/assets/js/bootstrap-notify.js"></script>
-		<script type="text/javascript" src="assets/js/validator.js"></script>
+		<script src="/assets/js/bootstrap-notify.js"></script>
+		<script src="assets/js/validator.js"></script>
     <style>
       body {
       	display: none;
@@ -85,37 +87,163 @@ echo'
 
 			$scriptPlayerAuth = base64_encode($scriptAuthUsername.':'.$scriptAuthPassword);
 
-			echo'
-	<body class="antialiased">
-		<div class="page">
-			';
-
-			// INCLUDE: Top menubar
-			include_once('assets/php/menu.php');
-
-			// START CONTENT
-			echo'
-			<div class="content">
-        <div class="container-fluid">
+			if($set['firstStart'] != 0) include('assets/php/firstStart.php');
+			else {
+				echo'
+		<body class="antialiased'.$body_theme.'">
+			<div class="page">
 				';
 
-			if(isset($_GET['site'])){
-				$moduleName = $_GET['site'];
+				// INCLUDE: Top menubar
+				include_once('assets/php/menu.php');
 
-				if (@file_get_contents('assets/php/'.$moduleName.'.php', 0, NULL, 0, 1)) {
-					if(in_array(basename($moduleName), $_modules)){
-						include('assets/php/'.basename($moduleName).'.php');
-					}	else sysinfo('danger', Translation::of('msg.module_not_allowed'));
-				}	else sysinfo('danger', Translation::of('msg.module_not_exists'));
-			}
-			else {
-				include('assets/php/players.php');
+				// START CONTENT
+				echo'
+				<div class="content">
+	        <div class="container-fluid">
+					';
+
+				if(isset($_GET['site'])){
+					$moduleName = $_GET['site'];
+
+					if (@file_get_contents('assets/php/'.$moduleName.'.php', 0, NULL, 0, 1)) {
+						if(in_array(basename($moduleName), $_modules)){
+							include('assets/php/'.basename($moduleName).'.php');
+						}	else sysinfo('danger', Translation::of('msg.module_not_allowed'));
+					}	else sysinfo('danger', Translation::of('msg.module_not_exists'));
+				}
+				else {
+					include('assets/php/players.php');
+				}
 			}
 			echo '
-
-
 		</div>
 		<!-- END CONTENT -->
+
+		<!-- newPlayer -->
+		<div class="modal modal-blur fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">'.Translation::of('add_player').'</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
+		          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <label class="form-label">Modus</label>
+		        <div class="form-selectgroup-boxes row mb-3">
+		          <div class="col-lg-6">
+		            <label class="form-selectgroup-item">
+		              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_manual" checked>
+		              <span class="form-selectgroup-label d-flex align-items-center p-3">
+		                <span class="mr-3">
+		                  <span class="form-selectgroup-check"></span>
+		                </span>
+		                <span class="form-selectgroup-label-content">
+		                  <span class="form-selectgroup-title strong mb-1">'.Translation::of('manual').'</span>
+		                  <span class="d-block text-muted">Add a player manually</span>
+		                </span>
+		              </span>
+		            </label>
+		          </div>
+		          <div class="col-lg-6">
+		            <label class="form-selectgroup-item">
+		              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_auto">
+		              <span class="form-selectgroup-label d-flex align-items-center p-3">
+		                <span class="mr-3">
+		                  <span class="form-selectgroup-check"></span>
+		                </span>
+		                <span class="form-selectgroup-label-content">
+		                  <span class="form-selectgroup-title strong mb-1">Automatically</span>
+		                  <span class="d-block text-muted">Add players automatically</span>
+		                </span>
+		              </span>
+		            </label>
+		          </div>
+		        </div>
+		      </div>
+
+		      <div class="view_manual tab">
+		        <div class="modal-body">
+		          <form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+		            <div class="mb-3">
+		              <label class="form-label">'.Translation::of('player_name').'</label>
+		              <input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="'.Translation::of('enter_player_name').'" autofocus />
+		            </div>
+		            <div class="row">
+		              <div class="col-lg-4">
+		                <div class="mb-3">
+		                  <label class="form-label">'.Translation::of('ip_address').'</label>
+		                  <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
+		                </div>
+		              </div>
+		              <div class="col-lg-8">
+		                <div class="mb-3">
+		                  <label class="form-label">'.Translation::of('player_location').'</label>
+		                  <input name="location" type="text" class="form-control" id="InputLocation" placeholder="'.Translation::of('enter_player_location').'" />
+		                </div>
+		              </div>
+		            </div>
+		            <div class="mb-3">
+		              <div class="form-label">'.Translation::of('player_authentication').'</div>
+		              <label class="form-check form-switch">
+		                <input id="authentication" class="form-check-input" type="checkbox">
+		                <span class="form-check-label">Player is protected by basic authentication</span>
+		              </label>
+		            </div>
+		          </div>
+		          <div class="modal-body authentication" style="display: none">
+		            <div class="row">
+		              <div class="col-lg-6">
+		                <div class="mb-3">
+		                  <label class="form-label">'.Translation::of('username').'</label>
+		                  <input name="user" type="text" class="form-control" id="InputUser" placeholder="'.Translation::of('username').'" />
+		                </div>
+		              </div>
+		              <div class="col-lg-6">
+		                <div class="mb-3">
+		                  <label class="form-label">'.Translation::of('password').'</label>
+		                  <input name="pass" type="password" class="form-control" id="InputPassword" placeholder="'.Translation::of('password').'" />
+		                </div>
+		              </div>
+		            </div>
+		          </div>
+		          <div class="modal-footer">
+		            <a href="#" class="btn btn-link link-link" data-dismiss="modal">
+		              '.Translation::of('close').'
+		            </a>
+		            <button type="submit" name="saveIP" class="btn btn-primary ml-auto">
+		              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path><circle cx="12" cy="14" r="2"></circle><polyline points="14 4 14 8 8 8 8 4"></polyline></svg>
+		              '.Translation::of('save').'
+		            </button>
+		          </div>
+		        </form>
+		      </div>
+		      <div class="view_auto tab" style="display:none">
+		        <div class="modal-body">
+		          <form id="newPlayerDiscover" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
+		            <div class="mb-3">
+		              <label class="form-label">'.Translation::of('enter_ip_range').'</label>
+		              <input name="range" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$" data-error="No valid IPv4 address with CIDR" type="text" class="form-control" id="InputCIDR" placeholder="192.168.1.0/24" required />
+		              <div class="help-block with-errors"></div>
+		            </div>
+		            <div class="mb-3">
+		              <label class="form-label">'.Translation::of('status').'</label>
+		              <hr />
+		              <div id="discoverStatus"></div>
+		            </div>
+		          </div>
+		          <div class="modal-footer">
+		            <input name="userID" type="hidden" value="'.$loginUserID.'" />
+		            <button type="button" class="btn btn-link link-link close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
+		            <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
+		          </div>
+		        </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 
 
 		<!-- info -->
@@ -126,7 +254,7 @@ echo'
 		        <h5 class="modal-title">'._SYSTEM_NAME.'</h5>
 		      </div>
 					<div class="modal-body">
-					  <a href="https://atworkz.de" target="_blank"><img src="assets/img/atworkz-logo.png" class="img-fluid mx-auto d-block" /></a>
+					  <a href="https://atworkz.de" target="_blank"><img src="assets/img/atworkz-logo.png" alt="atworkz" class="img-fluid mx-auto d-block" /></a>
 						<table class="table table-sm">
 						  <tr>
 						    <td>'.Translation::of('monitor_version').':</td>
@@ -178,29 +306,9 @@ echo'
 			</div>
 		</div>
 
-		<!-- publicLink -->
-		<div class="modal modal-blur fade" id="publicLink" tabindex="-1" role="dialog" aria-labelledby="publicLinkModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">'.Translation::of('public_access_link').'</h5>
-					</div>
-					<div class="modal-body">
-						<div class="form-group">
-							<label for="InputSetToken">'.Translation::of('public_access_link_info').'</label>
-							<input type="text" class="form-control" id="InputSetToken" onClick="this.select();" value="http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?monitoring=1&key='.$set['token'].'" />
-						</div>
-						<div class="form-group text-right">
-							<a href="index.php?generateToken=yes" class="btn btn-info btn-sm">'.Translation::of('generate_token').'</a>
-							<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 			';
 		}
-	  else if((isset($_GET['monitoring']) && $_GET['monitoring'] == '1') && isset($_GET['key'])){
+	  else if((isset($_GET['public']) && $_GET['public'] == '1') && isset($_GET['key'])){
 	    include('assets/php/publicLink.php');
 	  }
 		else {
@@ -215,17 +323,17 @@ echo'
 		echo '
 		<footer class="footer footer-transparent">
 			<div class="container">
-				<div class="row text-center align-items-center flex-row-reverse">
-					<div class="col-lg-auto ml-lg-auto">';
-						if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '
+				<div class="row text-center align-items-center flex-row-reverse">';
+				if(!(isset($_GET['monitoring']) OR !$loggedIn)) echo '
+					<div class="col-lg-auto ml-lg-auto">
 						<ul class="list-inline list-inline-dots mb-0">
 							<li class="list-inline-item"><a href="https://www.github.com/didiatworkz" target="_blank" class="link-secondary">Github</a></li>
 							<li class="list-inline-item"><a href="javascript:void(0)" data-toggle="modal" data-target="#info" class="link-secondary">'.Translation::of('information').'</a></li>
-							</ul>';
-					echo'</div>
-					<div class="col-12 col-lg-auto mt-3 mt-lg-0">';
+							</ul>
+					</div>';
+					echo'<div class="col-12 col-lg-auto mt-3 mt-lg-0">';
 						if(isset($pagination)) echo $pagination; echo '
-						&copy '.date('Y').' by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>
+						&copy; '.date('Y').' by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>
 					</div>
 				</div>
 			</div>
@@ -233,7 +341,7 @@ echo'
   </div>
 </div>
 
-<script type="text/javascript">
+<script>
 
 var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
 var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
@@ -255,16 +363,10 @@ if (!(localStorage.getItem("notification_style") === null && localStorage.getIte
 }
 
 </script>
-<script type="text/javascript" src="assets/js/monitor.js"></script>
+<script src="assets/js/monitor.js"></script>
 <script>
 	document.body.style.display = "block"
 </script>';
-if(isset($_GET['showToken']) && $_GET['showToken'] == '1'){
-	echo '
-		<script>
-			$(\'#publicLink\').modal(\'show\');
-		</script>';
-}
 $totalTime = array_sum(explode(' ',  microtime())) - $_loadMessureStart; echo '<script>console.log("Loaded in: '.$totalTime.'")</script>
 </body>
 </html>
