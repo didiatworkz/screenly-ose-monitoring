@@ -25,7 +25,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 
 if((isset($argv) && $argv['1'] != '')){
-  include("ssh.class.php");
+  include_once('ssh.class.php');
   $server_host = $argv['1'];
   $server_port = $argv['2'];
   $server_login = $argv['3'];
@@ -54,7 +54,7 @@ if((isset($argv) && $argv['1'] != '')){
 
   echo $output;
 
-  //$db->exec("UPDATE player SET logOutput='".$output."' WHERE address='".$server_host."'");
+  $db->exec("UPDATE player SET logOutput='".$output."' WHERE address='".$server_host."'");
 
   exit();
 
@@ -64,12 +64,17 @@ elseif(isset($_POST['addonInstall']) && $_POST['addonInstall'] == 'true' && $_PO
   $port = $_POST['port'];
   $user = $_POST['user'];
   $pass = $_POST['pass'];
-  shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass.' > /dev/null 2>/dev/null &');
-  //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry');
-  die('Installation started - This may take a while...');
+
+  $test =  shell_exec("apt policy php-ssh2");
+  if (strpos($test, 'Installed: (none)') === false) {
+      shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass.' > /dev/null 2>/dev/null &');
+      //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry');
+      die('Installation started - This may take a while...');
+  } else die('No php-ssh2 package found! - Installation aborted!');
+
 }
 else{
-  $playerSQL 		= $db->query("SELECT name, address FROM player ORDER BY address");
+  $playerSQL 		= $db->query("SELECT playerID, name, address, monitorOutput, deviceInfo, status, logOutput FROM player ORDER BY address");
 
   echo '
 
@@ -79,7 +84,7 @@ else{
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">
-            Screenly OSE Monitoring Add-ons
+            Screenly OSE Monitoring Add-ons [BETA]
           </h2>
         </div>
         <div class="col-auto ml-auto">
@@ -135,7 +140,9 @@ else{
                   ';
                   while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
                   $name = $player['name'];
+                  $id   = $player['playerID'];
                   $ip   = $player['address'];
+                  $log  = $player['logOutput'];
                   $monitorOutput   = $player['monitorOutput'];
                   $deviceInfo   = $player['deviceInfo'];
 
@@ -154,13 +161,42 @@ else{
                       $counter++;
                     } else $deviceS = $not;
 
+                    if($log != ''){
+                      $logModal= '
+                      <div class="modal modal-blur fade" id="log-modal-'.$id.'" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Full width modal</h5>
+                              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi beatae delectus deleniti dolorem eveniet facere fuga iste nemo nesciunt nihil odio perspiciatis, quia quis reprehenderit sit tempora totam unde.
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      ';
+                      $logBtn = '<button class="btn btn-info btn-sm">i</button>';
+                    }
+                    else {
+                      $logModal = '';
+                      $logBtn = '';
+                    }
+
                     if($counter == 0) $optionS = '<button class="btn btn-success btn-sm installAddon" data-src="'.$player['address'].'" data-header="Install">Install SOMA</button>';
-                    else $optionS = '<button class="btn btn-warning btn-sm installAddon" data-src="'.$player['address'].'" data-header="Reinstall">Reinstall</button>';
+                    else $optionS = '<button class="btn btn-warning btn-sm installAddon" data-src="'.$player['address'].'" data-header="Reinstall">Reinstall</button>'.$logBtn;
+                    $counter = 0;
                   }
                   else {
                     $onlineS = $offline;
                     $monitorS = '';
                     $deviceS = '';
+                    $optionS = '';
                   }
 
                   echo '
