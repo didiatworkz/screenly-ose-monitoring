@@ -433,6 +433,32 @@ $("#newPlayerDiscover").submit(function(e) {
  });
 });
 
+$('.editPlayerOpen').on('click', function() {
+  var id = $(this).data('playerid');
+  var editInformation = 1;
+  $.ajax({
+    url: '_functions.php',
+    type: 'POST',
+    dataType: 'JSON',
+    data: { playerID: id, editInformation: editInformation },
+    success: function(response){
+      var eP = $('#editPlayer');
+      eP.find('#playerIDEdit').val(id);
+      eP.find('#InputPlayerNameEdit').val(response.player_name);
+      eP.find('#playerNameTitle').text(response.player_name);
+      eP.find('#InputLocationEdit').val(response.player_location);
+      eP.find('#InputAdressEdit').val(response.player_address);
+      eP.find('#InputUserEdit').val(response.player_user);
+      eP.find('#InputPasswordEdit').val(response.player_password);
+      eP.modal('show');
+      return false;
+    },
+    error: function(data){
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+    }
+  });
+});
+
 // Install Extensions
 $("#installAddonForm").submit(function(e) {
   e.preventDefault();
