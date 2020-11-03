@@ -1,5 +1,6 @@
 <?php
 
+include_once('functions.php');
 include_once('curl.php');
 
 function deviceInfoInstalled($ip){
@@ -25,22 +26,6 @@ function colorProgrss($value){
   else return '#5eba00';
 }
 
-function timeago($timestamp) {
-
-   $strTime = array("second", "minute", "hour", "day", "month", "year");
-   $length = array("60","60","24","30","12","10");
-
-   $currentTime = time();
-   if($currentTime >= $timestamp) {
-		$diff     = time()- $timestamp;
-		for($i = 0; $diff >= $length[$i] && $i < count($length)-1; $i++) {
-		$diff = $diff / $length[$i];
-		}
-		$diff = round($diff);
-		return $diff . " " . $strTime[$i] . "(s) ago ";
-   }
-}
-
 if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $ip       = $_GET['ip'];
     header("HTTP/1.1 200 OK");
@@ -50,9 +35,10 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $memory_total     = round(getDeviceInfoData($ip, 'memory_total'), 0);
     $memory_progress  = round($memory/$memory_total*100, 0);
     $temp             = getDeviceInfoData($ip, 'temp');
-    $disk             = getDeviceInfoData($ip, 'disk');
+    $disk_free        = getDeviceInfoData($ip, 'disk');
     $disk_total       = getDeviceInfoData($ip, 'disk_total');
-    $disk_progress    = round($disk/$disk_total*100, 0);
+    $disk             = round($disk_total - $disk_free, 2);
+    $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
     $platform         = explode(',', $platform);
     $platformName     = $platform['0'];
