@@ -22,34 +22,40 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+// Settings
 if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
-  $refreshscreen = $_POST['refreshscreen'];
-  $duration			 = $_POST['duration'];
-  $end_date 		 = $_POST['end_date'];
-  $name 		 		 = $_POST['name'];
+  $refreshscreen	= $_POST['refreshscreen'];
+  $duration				= $_POST['duration'];
+  $end_date 			= $_POST['end_date'];
+  $name 		 			= $_POST['name'];
+  $design		 		 	= $_POST['design'];
+  $timezone	 		 	= $_POST['timezone'];
+  $firstStart 		= $_POST['firstStartSettings'];
 
   if($duration AND $end_date AND $refreshscreen){
-    if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', duration='".$duration."' WHERE settingsID='1'")){
+    if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', design='".$design."', timezone='".$timezone."', duration='".$duration."' WHERE settingsID='1'")){
       if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
         sysinfo('success', Translation::of('msg.settings_saved'));
       } else sysinfo('danger', Translation::of('msg.cant_update_user'));
+      if($firstStart == 1){
+        $db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
+      }
     } else sysinfo('danger', Translation::of('msg.cant_update_settings'));
   }	else sysinfo('danger', Translation::of('msg.no_valid_data'));
   redirect($backLink);
 }
 
-if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes'){
+// Public Access Link
+if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && getGroupID($loginUserID) == 1){
   $now 	 = time();
   $token = md5($loginUsername.$loginPassword.$now);
 
   if($token){
-    $db->exec("UPDATE settings SET token='".$token."' WHERE userID='".$loginUserID."'");
+    $db->exec("UPDATE settings SET token='".$token."' WHERE settingsID='1'");
     sysinfo('success', Translation::of('msg.new_token_generated'));
-    redirect('index.php?showToken=1');
+    redirect($backLink);
   } else sysinfo('danger', 'Error!');
 }
-
-
 
 if(isset($_GET['view']) && $_GET['view'] == 'profile'){
   echo '
@@ -140,6 +146,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
   ';
 }
 else if(isset($_GET['view']) && $_GET['view'] == 'system'){
+  //// TODO: Design and Timezone + Systeminformation
   echo '
   <div class="container-xl">
     <div class="page-header">
@@ -180,32 +187,77 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
       </div>
       <div class="col-lg-9">
         <div class="card card-lg">
-          <div class="card-body">
           <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-            <div class="form-group">
-              <label for="InputSetName">'.Translation::of('somo_name').'</label>
-              <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
+            <div class="card-body">
+              <div class="form-group">
+                <label for="InputSetName">'.Translation::of('somo_name').'</label>
+                <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
+              </div>
+              <div class="form-group">
+                <label for="InputSetRefresh">'.Translation::of('refresh_time_player').'</label>
+                <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+              </div>
+              <div class="form-group">
+                <label for="InputSetDuration">'.Translation::of('assets_duration').'</label>
+                <input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
+              </div>
+              <div class="form-group">
+                <label for="InputSetEndDate">'.Translation::of('delay_of_weeks').'</label>
+                <input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
+              </div>
+              <div class="form-group">
+                <label for="InputSetEndDate">'.Translation::of('timezone').'</label>
+                <input name="timezone" type="text" class="form-control" id="InputSetTimezone" placeholder="1" value="'.$set['timezone'].'" required />
+              </div>
             </div>
-            <div class="form-group">
-              <label for="InputSetRefresh">'.Translation::of('refresh_time_player').'</label>
-              <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+            <div class="modal-footer">
+              <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+              <button type="submit" name="saveSettings" class="btn btn-primary ">'.Translation::of('update').'</button>
             </div>
-            <div class="form-group">
-              <label for="InputSetDuration">'.Translation::of('assets_duration').'</label>
-              <input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
-            </div>
-            <div class="form-group">
-              <label for="InputSetEndDate">'.Translation::of('delay_of_weeks').'</label>
-              <input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
-            </div>
-            <div class="form-group text-right">
-              <button type="submit" name="saveSettings" class="btn btn-primary btn-sm">'.Translation::of('update').'</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">'.Translation::of('close').'</button>
-            </div>
-            </div>
-          </div>
+          </form>
+        </div>
     </div>
   </div>
+  ';
+}
+else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
+
+  $tokenLink = 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/index.php?public=1&key='.$set['token'];
+
+  echo '
+  <div class="container-xl">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <h2 class="page-title">
+            Public Access Settings
+          </h2>
+          <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+            <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=publicaccess">Public Access Settings</a></li>
+          </ol>
+        </div>
+        <div class="col-auto ml-auto d-print-none">
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-lg">
+      <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="InputSetName">'.Translation::of('public_access_link').'</label>
+            <input type="text" class="form-control" id="InputSetToken" onClick="this.select();" value="'.$tokenLink.'" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+          <a href="'.$tokenLink.'" target="_blank" class="btn btn-secondary">Open Link</a>
+          <a href="index.php?site=settings&view=publicaccess&generateToken=yes" class="btn btn-primary">'.Translation::of('generate_token').'</a>
+        </div>
+      </form>
+    </div>
+
   ';
 }
 else {
@@ -265,7 +317,7 @@ else {
             <div class="card-title mb-1">Public Access Settings</div>
             <div class="text-muted">Design, Link</div>
           </div>
-          <a href="#" class="card-btn">Show</a>
+          <a href="index.php?site=settings&view=publicaccess" class="card-btn">Show</a>
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
