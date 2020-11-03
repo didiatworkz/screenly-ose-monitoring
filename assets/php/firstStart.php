@@ -64,15 +64,15 @@ if($set['firstStart'] != 0){
                 <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required />
                 <div class="help-block with-errors"></div>
               </div>
-            </div>
-            <div class="hr-text hr-text-center hr-text-spaceless">Personal Information</div>
-            <div class="mb-3">
-              <label class="form-label">Firstname</label>
-              <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Firstname</label>
-              <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" required />
+              <div class="hr-text hr-text-center hr-text-spaceless mt-5 mb-2">Personal Information</div>
+              <div class="mb-3">
+                <label class="form-label">Firstname</label>
+                <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" required />
+              </div>
             </div>
           </div>
           <div class="row align-items-center">
