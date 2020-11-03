@@ -180,8 +180,8 @@
 - name: Crontab for SOMO Runner
   cron:
     name: "Crontab for SOMO Runner"
-    minute: 5
-    job: "curl http://localhost/assets/php/runner.php"
+    minute: "5"
+    job: "/usr/bin/curl --silent -L http://localhost/assets/php/runner.php"
 
 - name: Retore Version Code
   copy:
