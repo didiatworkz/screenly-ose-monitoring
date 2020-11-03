@@ -181,6 +181,29 @@ if(isset($_POST['changeOrder'])){
 	else header('HTTP/1.1 404 Not Found');
 }
 
+// Settings
+if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
+  $refreshscreen	= $_POST['refreshscreen'];
+  $duration				= $_POST['duration'];
+  $end_date 			= $_POST['end_date'];
+  $name 		 			= $_POST['name'];
+  $design		 		 	= $_POST['design'];
+  $timezone	 		 	= $_POST['timezone'];
+  $firstStart 		= $_POST['firstStartSettings'];
+
+  if($duration AND $end_date AND $refreshscreen){
+    if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', design='".$design."', timezone='".$timezone."', duration='".$duration."' WHERE settingsID='1'")){
+      if($db->exec("UPDATE users SET refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'")){
+        sysinfo('success', Translation::of('msg.settings_saved'));
+      } else sysinfo('danger', Translation::of('msg.cant_update_user'));
+      if($firstStart == 1){
+        $db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
+      }
+    } else sysinfo('danger', Translation::of('msg.cant_update_settings'));
+  }	else sysinfo('danger', Translation::of('msg.no_valid_data'));
+  redirect($backLink);
+}
+
 // GET: action:startup - Skip firstStart screen
 if((isset($_GET['action']) && $_GET['action'] == 'startup')){
   $db->exec("UPDATE settings SET firstStart='4' WHERE settingsID='1'");
