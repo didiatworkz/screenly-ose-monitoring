@@ -24,118 +24,6 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 // TODO: TRANSLATION!
 
-// POST: saveIP - Auto discovery function
-if(isset($_POST['saveIP'])){
-  $name 		= isset($_POST['name']) ? $_POST['name'] : '';
-  $address 	= isset($_POST['address']) ? $_POST['address'] : '';
-  $location = isset($_POST['location']) ? $_POST['location'] : '';
-  $user 		= isset($_POST['user']) ? $_POST['user'] : '';
-  $pass 		= isset($_POST['pass']) ? $_POST['pass'] : '';
-
-  if($address){
-    $db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
-    sysinfo('success', Translation::of('msg.player_added_successfully', ['name' => $name]));
-  }	else sysinfo('danger', Translation::of('msg.cant_add_player'));
-  redirect($backLink);
-}
-
-// POST: updatePlayer - Update player data in database
-if(isset($_POST['updatePlayer'])){
-  $name 		= $_POST['name'];
-  $address	= $_POST['address'];
-  $location = $_POST['location'];
-  $user 		= $_POST['user'];
-  $pass 		= $_POST['pass'];
-  $playerID = $_POST['playerID'];
-
-  if($address){
-    $db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
-    sysinfo('success', Translation::of('msg.player_update_successfully'));
-  }	else sysinfo('danger', Translation::of('msg.cant_update_player'));
-  redirect($backLink);
-}
-
-// GET: action:delete - Delete player from database
-if(isset($_GET['action']) && $_GET['action'] == 'delete'){
-  $playerID = $_GET['playerID'];
-
-  if(isset($playerID)){
-    $db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
-    sysinfo('success', Translation::of('msg.player_delete_successfully'));
-  } else sysinfo('danger', Translation::of('msg.cant_delete_player'));
-  redirect('index.php?site=players');
-}
-
-// GET: action2:deleteAllAssets - Delete all assets from a player via API
-if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAllAssets')){
-  $id 				= $_GET['playerID'];
-  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-  $data 			= NULL;
-  $playerAPI = callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets', false, $id, false);
-
-  foreach ($playerAPI as $value) {
-    if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
-      //sysinfo('success', 'Asset deleted successfully');
-      redirect($backLink);
-    }	else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
-  }
-}
-
-// POST: updateAsset - Update Asset information from a player via API
-if(isset($_POST['updateAsset'])){
-  $id 				= $_POST['id'];
-  $asset 			= $_POST['asset'];
-  $name 			= $_POST['name'];
-  $start 			= date("Y-m-d", strtotime($_POST['start_date']));
-  $start_time	= $_POST['start_time'];
-  $end 				= $_POST['end_date'];
-  $end_time		= $_POST['end_time'];
-  $duration 	= $_POST['duration'];
-
-  if (strpos($end, '9999') === false) {
-    $end 				= date("Y-m-d", strtotime($end));
-  } else {
-    $end				= '9999-01-01';
-  }
-
-  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-  $data 			= callURL('GET', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, false, $id, false);
-
-  if($data['name'] != $name) $data['name'] = $name;
-
-  if($data['duration'] != $duration && $duration > 1) $data['duration'] = $duration;
-  else $data['duration'] = 30;
-  $data['start_date'] = $start.'T'.$start_time.':00.000Z';
-  $data['end_date'] = $end.'T'.$end_time.':00.000Z';
-
-  if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
-    sysinfo('success', Translation::of('msg.asset_update_successfully'));
-  }	else sysinfo('danger', Translation::of('msg.cant_update_asset'));
-  redirect($backLink);
-}
-
-// GET: action2:deleteAsset - Delete asset from a player via API
-if((isset($_GET['action2']) && $_GET['action2'] == 'deleteAsset')){
-  $id 				= $_GET['id'];
-  $asset 			= $_GET['asset'];
-  $playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$id."'");
-  $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
-  $data 			= NULL;
-
-  if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
-    //sysinfo('success', 'Asset deleted successfully');
-    redirect($backLink);
-  } else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
-}
-
-// GET: action:startup - Skip firstStart screen
-if((isset($_GET['action']) && $_GET['action'] == 'startup')){
-  firstStart('set', 3);
-  redirect($backLink);
-}
-
 // GET: action:view - Player detail overview
 if(isset($_GET['action']) && $_GET['action'] == 'view'){
   if(isset($_GET['playerID'])){
@@ -919,135 +807,29 @@ else {
   ';
   }
   else {
-    include('assets/php/firstStart.php');
+    echo '
+    <div class="container-xl d-flex flex-column justify-content-center">
+      <div class="empty">
+        <div class="empty-icon">
+          <img src="./static/illustrations/undraw_printing_invoices_5r4r.svg" height="128" class="mb-4"  alt="">
+        </div>
+        <p class="empty-title h3">No player found</p>
+        <p class="empty-subtitle text-muted">
+          All players are listed here. But currently none has been set up yet!
+        </p>
+        <div class="empty-action">
+          <a href=".#" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            Add your first player
+          </a>
+        </div>
+      </div>
+    </div>
+    ';
   }
 }
 // TODO: validator not validate!
 echo '
-<!-- newPlayer -->
-<div class="modal modal-blur fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">'.Translation::of('add_player').'</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">Modus</label>
-        <div class="form-selectgroup-boxes row mb-3">
-          <div class="col-lg-6">
-            <label class="form-selectgroup-item">
-              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_manual" checked>
-              <span class="form-selectgroup-label d-flex align-items-center p-3">
-                <span class="mr-3">
-                  <span class="form-selectgroup-check"></span>
-                </span>
-                <span class="form-selectgroup-label-content">
-                  <span class="form-selectgroup-title strong mb-1">'.Translation::of('manual').'</span>
-                  <span class="d-block text-muted">Add a player manually</span>
-                </span>
-              </span>
-            </label>
-          </div>
-          <div class="col-lg-6">
-            <label class="form-selectgroup-item">
-              <input type="radio" name="add_player_mode" class="form-selectgroup-input" value="view_auto">
-              <span class="form-selectgroup-label d-flex align-items-center p-3">
-                <span class="mr-3">
-                  <span class="form-selectgroup-check"></span>
-                </span>
-                <span class="form-selectgroup-label-content">
-                  <span class="form-selectgroup-title strong mb-1">Automatically</span>
-                  <span class="d-block text-muted">Add players automatically</span>
-                </span>
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="view_manual tab">
-        <div class="modal-body">
-          <form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-            <div class="mb-3">
-              <label class="form-label">'.Translation::of('player_name').'</label>
-              <input name="name" type="text" class="form-control" id="InputPlayerName" placeholder="'.Translation::of('enter_player_name').'" autofocus />
-            </div>
-            <div class="row">
-              <div class="col-lg-4">
-                <div class="mb-3">
-                  <label class="form-label">'.Translation::of('ip_address').'</label>
-                  <input name="address" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdress" placeholder="192.168.1.100" required />
-                </div>
-              </div>
-              <div class="col-lg-8">
-                <div class="mb-3">
-                  <label class="form-label">'.Translation::of('player_location').'</label>
-                  <input name="location" type="text" class="form-control" id="InputLocation" placeholder="'.Translation::of('enter_player_location').'" />
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <div class="form-label">'.Translation::of('player_authentication').'</div>
-              <label class="form-check form-switch">
-                <input id="authentication" class="form-check-input" type="checkbox">
-                <span class="form-check-label">Player is protected by basic authentication</span>
-              </label>
-            </div>
-          </div>
-          <div class="modal-body authentication" style="display: none">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label class="form-label">'.Translation::of('username').'</label>
-                  <input name="user" type="text" class="form-control" id="InputUser" placeholder="'.Translation::of('username').'" />
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label class="form-label">'.Translation::of('password').'</label>
-                  <input name="pass" type="password" class="form-control" id="InputPassword" placeholder="'.Translation::of('password').'" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-link link-link" data-dismiss="modal">
-              '.Translation::of('close').'
-            </a>
-            <button type="submit" name="saveIP" class="btn btn-primary ml-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path><circle cx="12" cy="14" r="2"></circle><polyline points="14 4 14 8 8 8 8 4"></polyline></svg>
-              '.Translation::of('save').'
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="view_auto tab" style="display:none">
-        <div class="modal-body">
-          <form id="newPlayerDiscover" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
-            <div class="mb-3">
-              <label class="form-label">'.Translation::of('enter_ip_range').'</label>
-              <input name="range" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$" data-error="No valid IPv4 address with CIDR" type="text" class="form-control" id="InputCIDR" placeholder="192.168.1.0/24" required />
-              <div class="help-block with-errors"></div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">'.Translation::of('status').'</label>
-              <hr />
-              <div id="discoverStatus"></div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <input name="userID" type="hidden" value="'.$loginUserID.'" />
-            <button type="button" class="btn btn-link link-link close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
-            <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 
@@ -1101,9 +883,8 @@ echo '
 
         <div class="modal-footer">
           <input name="playerID" id="playerIDEdit" type="hidden" value="" />
-          <input name="mimetype" id="playerMimetype" type="hidden" value="" />
           <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
-          <button type="submit" name="updatePlayer" class="btn btn-warning">'.Translation::of('update').'</button>
+          <button type="submit" name="updatePlayer" class="btn btn-warning" value="1">'.Translation::of('update').'</button>
         </div>
       </form>
     </div>
