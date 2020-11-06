@@ -129,6 +129,8 @@ return [
     'start_discovery' => 'Start Discovery',
     'start_time' => 'Start-Time',
     'status' => 'Status',
+    'timezone' => 'Timezone',
+    'title' => 'Titel',
     'update' => 'Update',
     'update_available' => 'Update available',
     'upload' => 'Upload',
