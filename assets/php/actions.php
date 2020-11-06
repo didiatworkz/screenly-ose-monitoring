@@ -187,9 +187,10 @@ if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
   $duration				= $_POST['duration'];
   $end_date 			= $_POST['end_date'];
   $name 		 			= $_POST['name'];
-  $design		 		 	= $_POST['design'];
+  $design		 		 	= $_POST['color'] == '' ? '0' : $_POST['color'];
   $timezone	 		 	= $_POST['timezone'];
   $firstStart 		= $_POST['firstStartSettings'];
+
 
   if($duration AND $end_date AND $refreshscreen){
     if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', design='".$design."', timezone='".$timezone."', duration='".$duration."' WHERE settingsID='1'")){
