@@ -37,9 +37,9 @@ function getGroupID($userID){
   return $return['groupID'];
 }
 
-function getGroupName($userID){
+function getGroupName($groupID){
   global $db;
-  $id = getGroupID($userID);
+  $id = getGroupID($groupID);
   $sql   = $db->query("SELECT * FROM `userGroups` WHERE groupID='".$id."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   return $return['name'];
@@ -95,12 +95,28 @@ function getUserName($userID){
 
 function getFullname($userID){
   global $db;
-  $sql    = $db->query("SELECT * FROM `users` WHERE userID='".$userID."'");
+  $sql    = $db->query("SELECT userID, firstname, name FROM `users` WHERE userID='".$userID."'");
   $sql    = $sql->fetchArray(SQLITE3_ASSOC);
   isset($sql['firstname']) ? $f = $sql['firstname'].' ' : $f = '';
   isset($sql['name']) ? $n = $sql['name'] : $n = '';
   $return = $f.$n;
   return $return;
+}
+
+function getFirstname($userID){
+  global $db;
+  $sql    = $db->query("SELECT userID, firstname FROM `users` WHERE userID='".$userID."'");
+  $sql    = $sql->fetchArray(SQLITE3_ASSOC);
+  isset($sql['firstname']) ? $f = $sql['firstname'].' ' : $f = '';
+  return $f;
+}
+
+function getLastname($userID){
+  global $db;
+  $sql    = $db->query("SELECT userID, name FROM `users` WHERE userID='".$userID."'");
+  $sql    = $sql->fetchArray(SQLITE3_ASSOC);
+  isset($sql['name']) ? $l = $sql['name'].' ' : $l = '';
+  return $l;
 }
 
 function lastLogin($userID){

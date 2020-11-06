@@ -141,13 +141,6 @@ $("#assets tbody").sortable({
   }
 });
 
-$('#users').DataTable({
-  responsive: true,
-  order: [[ 0, 'asc' ]],
-  lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
-  stateSave: false
-});
-
 // New Asset
 $('input:radio[name="add_asset_mode"]').click(function(){
   var inputValue = $(this).attr("value");
@@ -539,12 +532,35 @@ $('#confirmDelete, #confirmDeleteAssets').on('show.bs.modal', function(e) {
   $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 });
 
-$(function(){
-  var navMain = $('.navbar-collapse');
-  navMain.on('click', '[data-toggle="modal"]', null, function () {
-    navMain.collapse('hide');
-  });
+// Users
+
+var users_table = $('#users').DataTable({
+  dom: 'tipr',
+  stateSave: false,
+  autoWidth: false,
+  order: [[ 3, 'asc' ], [ 0, 'asc' ]],
+  initComplete: (settings, json)=>{
+      $('.dataTables_paginate').appendTo('#dataTables_paginate');
+      $('.dataTables_info').appendTo('#dataTables_info');
+  },
 });
+
+$('#usersSearch').keyup(function(){
+    users_table.search( $(this).val() ).draw() ;
+})
+
+$('#usersLength_change').val(users_table.page.len());
+
+$('#usersLength_change').change( function() {
+    users_table.page.len( $(this).val() ).draw();
+});
+
+// $(function(){
+//   var navMain = $('.navbar-collapse');
+//   navMain.on('click', '[data-toggle="modal"]', null, function () {
+//     navMain.collapse('hide');
+//   });
+// });
 
 
 function reloadPlayerImage(){

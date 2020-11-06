@@ -55,17 +55,17 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
     <div class="row justify-content-center">
       <div class="d-none d-lg-block col-lg-3 order-lg-1 mb-4">
         <div class="sticky-top">
-        <div class="card">
-          <div class="card-body text-center">
-            <div class="mb-3">
-              <span class="avatar avatar-xl">
-                '.$loginFirstname[0].$loginName[0].'
-              </span>
+          <div class="card">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <span class="avatar avatar-xl">
+                  '.$loginFirstname[0].$loginName[0].'
+                </span>
+              </div>
+              <div class="card-title mb-1">'.$loginFullname.'</div>
+              <div class="text-muted">'.$loginGroupName.'</div>
             </div>
-            <div class="card-title mb-1">'.$loginFullname.'</div>
-            <div class="text-muted">'.$loginGroupName.'</div>
           </div>
-        </div>
           <h5 class="subheader">On this page</h5>
           <ul class="list-unstyled">
             <li class="toc-entry toc-h2"><a href="#personal">Personal Settings</a></li>
@@ -75,49 +75,51 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
       </div>
       <div class="col-lg-9">
         <div class="card card-lg">
-          <div class="card-body">
-                <h2 id="personal">Personal</h2>
-                <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">'.Translation::of('firstname').'</label>
-                    <div class="col">
-                      <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" value="'.$loginFirstname.'" />
-                    </div>
-                  </div>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">'.Translation::of('name').'</label>
-                    <div class="col">
-                      <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" value="'.$loginName.'" />
-                    </div>
-                  </div>
-                  <hr />
-                  <h2 id="account">Account</h2>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                    <div class="col">
-                      <input name="username" type="text" class="form-control" id="InputUsername" placeholder="'.Translation::of('new_username').'" value="'.$loginUsername.'" />
-                      <div class="help-block with-errors"></div>
-                    </div>
-                  </div>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                    <div class="col">
-                      <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="'.Translation::of('new_password').'" />
-                    </div>
-                  </div>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                    <div class="col">
-                    <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="'.Translation::of('confirm_password').'" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" />
-                    <div class="help-block with-errors"></div>
-                    </div>
-                  </div>
-                  <div class="form-footer">
-                    <button type="submit" name="saveAccount" class="btn btn-primary">'.Translation::of('update').'</button>
-                  </div>
-                </form>
+          <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+            <div class="card-body">
+            <h2 id="personal">Personal</h2>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('firstname').'</label>
+                <div class="col">
+                  <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" value="'.$loginFirstname.'" />
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('name').'</label>
+                <div class="col">
+                  <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" value="'.$loginName.'" />
+                </div>
+              </div>
+              <hr />
+              <h2 id="account">Account</h2>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <div class="col">
+                  <input name="username" type="text" class="form-control" id="InputUsername" placeholder="'.Translation::of('new_username').'" value="'.$loginUsername.'" />
+                  <div class="help-block with-errors"></div>
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <div class="col">
+                  <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="'.Translation::of('new_password').'" />
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <div class="col">
+                <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="'.Translation::of('confirm_password').'" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" />
+                <div class="help-block with-errors"></div>
+                </div>
+              </div>
             </div>
-          </div>
+            <div class="card-footer d-flex align-items-center">
+              <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+              <button type="submit" name="saveAccount" class="btn btn-primary">'.Translation::of('update').'</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
   ';
@@ -137,62 +139,98 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
             <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=system">System Settings</a></li>
           </ol>
         </div>
-        <div class="col-auto ml-auto d-print-none">
-        </div>
+        <div class="col-auto ml-auto d-print-none"></div>
       </div>
     </div>
     <div class="row justify-content-center">
       <div class="d-none d-lg-block col-lg-3 order-lg-1 mb-4">
         <div class="sticky-top">
-        <div class="card">
-          <div class="card-body text-center">
-            <div class="mb-3">
-              <span class="avatar avatar-xl">
-                '.$loginFirstname['0'].$loginName['0'].'
-              </span>
+          <div class="card">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <span class="avatar avatar-xl">
+                  '.$loginFirstname['0'].$loginName['0'].'
+                  </span>
+              </div>
+              <div class="card-title mb-1">'.$loginFullname.'</div>
+              <div class="text-muted">'.$loginGroupName.'</div>
             </div>
-            <div class="card-title mb-1">'.$loginFullname.'</div>
-            <div class="text-muted">'.$loginGroupName.'</div>
           </div>
-        </div>
           <h5 class="subheader">On this page</h5>
           <ul class="list-unstyled">
-            <li class="toc-entry toc-h2"><a href="#personal">Personal Settings</a></li>
-            <li class="toc-entry toc-h2"><a href="#account">Account Settings</a></li>
+            <li class="toc-entry toc-h2"><a href="#system">System Settings</a></li>
+            <li class="toc-entry toc-h2"><a href="#player">Player Control Settings</a></li>
           </ul>
         </div>
       </div>
       <div class="col-lg-9">
         <div class="card card-lg">
-          <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-            <div class="card-body">
-              <div class="form-group">
-                <label for="InputSetName">'.Translation::of('somo_name').'</label>
-                <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
+          <div class="card-body">
+            <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+              <h2 id="system">System</h2>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('title').'</label>
+                <div class="col">
+                  <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
+                </div>
               </div>
-              <div class="form-group">
-                <label for="InputSetRefresh">'.Translation::of('refresh_time_player').'</label>
-                <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('timezone').'</label>
+                <div class="col">
+                  <select class="form-select" name="timezone" placeholder="Type to search...">
+                    '.timezone($set['timezone']).'
+                  </select>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="InputSetDuration">'.Translation::of('assets_duration').'</label>
-                <input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('design').'</label>
+                <div class="col">
+                  <div class="row row-sm">
+                    <div class="col-auto">
+                      <label class="form-colorinput form-colorinput-light align-middle">
+                        <input name="color" type="radio" name="design" value="0" class="form-colorinput-input" '.($set['design'] == '0' ? 'checked' : '').'>
+                        <span class="form-colorinput-color bg-white"></span>
+                      </label>
+                      Light Mode
+                    </div>
+                    <div class="col-auto">
+                      <label class="form-colorinput align-middle ml-5">
+                        <input name="color" type="radio" name="design" value="1" class="form-colorinput-input" '.($set['design'] == '1' ? 'checked' : '').'>
+                        <span class="form-colorinput-color bg-dark"></span>
+                      </label>
+                      Dark Mode
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="InputSetEndDate">'.Translation::of('delay_of_weeks').'</label>
-                <input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
+              <hr />
+              <h2 id="player">Player Control</h2>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('refresh_time_player').'</label>
+                <div class="col">
+                  <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+                </div>
               </div>
-              <div class="form-group">
-                <label for="InputSetEndDate">'.Translation::of('timezone').'</label>
-                <input name="timezone" type="text" class="form-control" id="InputSetTimezone" placeholder="1" value="'.$set['timezone'].'" required />
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('delay_of_weeks').'</label>
+                <div class="col">
+                  <input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('assets_duration').'</label>
+                <div class="col">
+                  <input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
+                </div>
               </div>
             </div>
-            <div class="modal-footer">
+            <div class="card-footer d-flex align-items-center">
               <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
-              <button type="submit" name="saveSettings" class="btn btn-primary ">'.Translation::of('update').'</button>
+              <button type="submit" name="saveSettings" class="btn btn-primary">'.Translation::of('update').'</button>
             </div>
           </form>
         </div>
+      </div>
     </div>
   </div>
   ';
@@ -227,13 +265,14 @@ else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
             <input type="text" class="form-control" id="InputSetToken" onClick="this.select();" value="'.$tokenLink.'" />
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="card-footer d-flex align-items-center">
           <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
-          <a href="'.$tokenLink.'" target="_blank" class="btn btn-secondary">Open Link</a>
+          <a href="'.$tokenLink.'" target="_blank" class="btn btn-secondary mr-2">Open Link</a>
           <a href="index.php?site=settings&view=publicaccess&generateToken=yes" class="btn btn-primary">'.Translation::of('generate_token').'</a>
         </div>
       </form>
     </div>
+  </div>
 
   ';
 }
@@ -319,10 +358,10 @@ else {
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="9.5" y1="11" x2="9.51" y2="11"></line><line x1="14.5" y1="11" x2="14.51" y2="11"></line><path d="M9.5 15a3.5 3.5 0 0 0 5 0"></path><path d="M7 5h1v-2h8v2h1a3 3 0 0 1 3 3v9a3 3 0 0 1 -3 3v1h-10v-1a3 3 0 0 1 -3 -3v-9a3 3 0 0 1 3 -3"></path></svg>
               </span>
             </div>
-            <div class="card-title mb-1">User Management Settings</div>
+            <div class="card-title mb-1">User Settings</div>
             <div class="text-muted">Create, Edit, Remove</div>
           </div>
-          <a href="#" class="card-btn">Show</a>
+          <a href="index.php?site=usermanagement" class="card-btn">Show</a>
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
