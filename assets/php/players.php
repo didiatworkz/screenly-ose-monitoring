@@ -890,22 +890,4 @@ echo '
     </div>
   </div>
 </div>
-
-<!-- confirmDelete -->
-<div class="modal modal-blur fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">'.Translation::of('attention').'!</h5>
-      </div>
-      <div class="modal-body">
-        '.Translation::of('msg.delete_really_entry').'
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
-        <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
-      </div>
-    </div>
-  </div>
-</div>
 ';
