@@ -44,7 +44,7 @@ while($player	= $playerSQL->fetchArray(SQLITE3_ASSOC)){
 
     // GET Assets
     $playerAssets = getApiData($ip.'/api/'.$apiVersion.'/assets', $id);
-    if(array_key_exists('asset_id', $playerAssets)) {
+    if(strpos($playerAssets, 'error') === false) {
       $db->exec("UPDATE `player` SET assets='".$playerAssets."' WHERE playerID='".$id."'");
       if($_TEST) echo $playerAssets.'<br />';
     }
