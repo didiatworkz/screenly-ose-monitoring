@@ -42,7 +42,7 @@ if(@file_exists('update.txt')) {
           <div class="card-title mb-1">'.Translation::of('update').'</div>
           <div class="text-muted blink">'.Translation::of('update_available').'</div>
         </div>
-        <a href="https://github.com/didiatworkz/screenly-ose-monitor#update" target="_blank" class="card-btn">Show</a>
+        <a href="https://github.com/didiatworkz/screenly-ose-monitor/releases" target="_blank" class="card-btn">Show</a>
       </div>
     </div>
   ';
