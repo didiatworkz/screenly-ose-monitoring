@@ -141,55 +141,99 @@ function isActive($userID){
   else return FALSE;
 }
 
+// Group Rights
+function hasAddRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT addFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['addFunction'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasEditRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT editFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['editFunction'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasDeleteRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT deleteFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['deleteFunction'] == 1) return TRUE;
+  return FALSE;
+}
+
 if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password'])){
   $user           = $_POST['user'];
-  $pass           = md5($_POST['password']);
-  $userSQL			  = $db->query("SELECT * FROM `users` WHERE username='".$user."' AND password='".$pass."'");
+  $pass           = md5(stripslashes($_POST['password']));
+  $userSQL			  = $db->query("SELECT * FROM `users` WHERE username='".$user."'");
   $userSQL 			  = $userSQL->fetchArray(SQLITE3_ASSOC);
+  $loginID 	      = $userSQL['userID'];
   $loginUsername 	= $userSQL['username'];
   $loginPassword 	= $userSQL['password'];
   $loginActive   	= $userSQL['active'];
   if($user == $loginUsername && $pass == $loginPassword){
     if($loginActive == 1){
       $now = time();
-      $_SESSION['user'] 			= $user;
-      $_SESSION['password'] 	= $pass;
+      $_SESSION['somo_auth'] = $loginID.":".$loginPassword;
+			$_SESSION['somo_referer'] = $_SERVER['HTTP_REFERER'];
       $db->exec("UPDATE `users` SET last_login='".$now."' WHERE userID=".$userSQL['userID']);
-      redirect('index.php', 0);
-    } else sysinfo('warning', 'User not activated!');
-  }  else sysinfo('danger', 'The entered login data are not correct!');
+      systemLog('Login', $loginUsername.' logged in');
+      redirect($_SESSION['somo_referer'], 0);
+      die();
+    } else {
+        sysinfo('warning', 'User not activated!');
+        systemLog('Login', $loginUsername.' not activated!');
+    }
+  }  else {
+       sysinfo('danger', 'The entered login data are not correct!');
+       systemLog('Login', $loginUsername.' data are not correct!');
+  }
+}
+
+$loggedIn     = FALSE;
+$loginUserID  = 0;
+
+if(isset($_SESSION['somo_auth'])) {
+  if(stristr($_SESSION['somo_auth'], "userid") === false){
+		$authent = explode(":", $_SESSION['somo_auth']);
+
+		$somo_user = $authent['0'];
+		$somo_pass = $authent['1'];
+
+    if(isset($somo_user) and isset($somo_pass)) {
+      $userSQL = $db->query("SELECT * FROM `users` WHERE userID='".$somo_user."' AND password='".$somo_pass."'");
+
+      while($user = $userSQL->fetchArray(SQLITE3_ASSOC)) {
+        $loginUserID 	    = $user['userID'];
+        $loginUsername    = $user['username'];
+        $loginPassword    = $user['password'];
+        $loginFirstname   = $user['firstname'];
+        $loginName        = $user['name'];
+        $loginRefreshTime = $user['refreshscreen'];
+        $loginFullname    = getFullname($loginUserID);
+        $loginGroupID     = getGroupID($loginUserID);
+        $loginGroupName   = getGroupName($loginUserID);
+        $loggedIn = TRUE;
+      }
+    }
+  }
 }
 
 if(isset($_GET['action']) && $_GET['action'] == 'logout'){
+  systemLog('Login', $loginUsername.' logged out');
   if(session_destroy()){
     $logedout = true;
     $_SESSION['password'] = '';
   } else $logedout = FALSE;
   redirect('index.php', 0);
 }
-
-if(isset($_SESSION['user']) && isset($_SESSION['password'])) {
-  $userSQL			    = $db->query("SELECT * FROM `users` WHERE username='".$_SESSION['user']."' AND password='".$_SESSION['password']."'");
-  $userSQL 			    = $userSQL->fetchArray(SQLITE3_ASSOC);
-  if($_SESSION['user'] == $userSQL['username'] && $_SESSION['password'] == $userSQL['password']){
-    if($userSQL['active'] != 1) redirect('index.php?action=logout', 0);
-    $loginUserID 	    = $userSQL['userID'];
-    $loginUsername    = $userSQL['username'];
-    $loginPassword    = $userSQL['password'];
-
-    $loginFirstname   = $userSQL['firstname'];
-    $loginName        = $userSQL['name'];
-    $loginRefreshTime = $userSQL['refreshscreen'];
-    $loginFullname    = getFullname($loginUserID);
-
-    $loginGroupID     = getGroupID($loginUserID);
-    $loginGroupName   = getGroupName($loginUserID);
-
-    $loggedIn = TRUE;
-  }
-  else $loggedIn = FALSE;
-}
-else $loggedIn = FALSE;
 
 if(isset($_POST['saveAccount'])){
   $firstname  = $_POST['firstname'];
