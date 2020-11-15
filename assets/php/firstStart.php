@@ -22,26 +22,26 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Startup Wizard';
+$_moduleLink = 'index.php';
+
 if($set['firstStart'] != 0){
 
   // GET: action:startup - Skip firstStart screen
   if((isset($_GET['step']) && $_GET['step'] != '')){
     $db->exec("UPDATE settings SET firstStart='".$_GET['step']."' WHERE settingsID='1'");
-    redirect('index.php');
+    redirect($_moduleLink);
   }
 
   echo '
-  <body class="border-top-wide border-primary d-flex flex-column">
+  <body class="border-top-wide border-primary d-flex flex-column wizard">
      <div class="flex-fill d-flex flex-column justify-content-center">
-       <div class="container-tight py-6">
-         <div class="text-center mb-4">
-           SOMO '.$systemVersion.'
-         </div>
+       <div class="container-tight py-4">
          <div class="card">
            <div class="card-body text-center py-4 p-sm-5">
-             <img src="assets/img/screens.png" height="128" class="mb-n2" height="120"  alt="">
-             <h1 class="mt-5">Welcome to Screenly OSE Monitoring</h1>
-             <p class="text-muted">Tabler comes with tons of well-designed components and features. Start your adventure with Tabler and make your dashboard great again.</p>
+             <img src="assets/img/undraw_Setup_wizard_re_nday.svg" height="256" class="mb-n2"  alt="">
+             <h1 class="mt-5">Screenly OSE Monitoring<br />Version '.$systemVersion.'</h1>
+             <p class="text-muted">Welcome to the installation wizard.<br />Thank you for downloading and using SOMO! <br />- didiatworkz</p>
            </div>
            ';
 //// TODO: Name and Firstname integration
@@ -49,7 +49,7 @@ if($set['firstStart'] != 0){
     if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
       echo '
         <div class="hr-text hr-text-center hr-text-spaceless">User Account</div>
-          <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+          <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" >
             <div class="card-body">
               <div class="mb-3">
                 <label class="form-label">Username</label>
@@ -107,8 +107,8 @@ if($set['firstStart'] != 0){
             <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
           </div>
           <div class="mb-3">
-            <label class="form-label">Datalist example</label>
-            <select class="form-select" name="timezone" placeholder="Type to search...">
+            <label class="form-label">'.Translation::of('timezone').'</label>
+            <select class="form-select" name="timezone">
               '.timezone($set['timezone']).'
             </select>
           </div>
@@ -208,6 +208,7 @@ if($set['firstStart'] != 0){
     else redirect('index.php?step=4');
   }
   else if($set['firstStart'] == 4){
+    systemLog($_moduleName, 'Setup complete', $loginUserID, 1);
     echo '
     <div class="hr-text hr-text-center hr-text-spaceless">Finish</div>
       <form action="'.$_SERVER['PHP_SELF'].'" method="POST">
