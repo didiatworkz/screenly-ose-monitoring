@@ -180,3 +180,6 @@
 
 - name: Version update
   command: ose-monitoring --init
+
+- name: Update git Signature
+  command: 'cd /var/www/html/monitor/ && git rev-parse HEAD > /usr/share/somo/latest_monitor'

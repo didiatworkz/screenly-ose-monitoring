@@ -76,7 +76,6 @@ sudo mkdir -p /var/www/html
 export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
-cd /var/www/html/monitor/ && git rev-parse HEAD > /usr/share/somo/latest_monitor
 sudo systemctl restart nginx
 ETH=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 if [ -z "$ETH" ]; then
