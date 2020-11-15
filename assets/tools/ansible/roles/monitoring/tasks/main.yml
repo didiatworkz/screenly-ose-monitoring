@@ -5,6 +5,12 @@
     state: directory
     mode: 0755
 
+- name: Create somo latest_monitor file
+  file:
+    path: /usr/share/somo/latest_monitor
+    state: file
+    mode: 0777
+
 - set_fact: update_version="False"
 
 - name: check if older version installed
@@ -181,5 +187,13 @@
 - name: Version update
   command: ose-monitoring --init
 
-- name: Update git Signature
-  command: 'cd /var/www/html/monitor/ && git rev-parse HEAD > /usr/share/somo/latest_monitor'
+- name: Get current GIT Signature
+  command: git rev-parse HEAD
+  args:
+    chdir: /var/www/html/monitor
+  register: git_result
+
+- name: Refresh GIT Signature
+  copy:
+    content: "{{ git_result.stdout }}"
+    dest: /usr/share/somo/latest_monitor
