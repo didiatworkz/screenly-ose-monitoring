@@ -1,11 +1,15 @@
 # Check older versions
-- name: Create .monitor directory
+- name: Create somo directory
   file:
-    path: /home/pi/.monitor
+    path: /usr/share/somo
     state: directory
-    owner: pi
-    group: pi
     mode: 0755
+
+- name: Create somo latest_monitor file
+  file:
+    path: /usr/share/somo/latest_monitor
+    state: touch
+    mode: 0777
 
 - set_fact: update_version="False"
 
@@ -50,25 +54,19 @@
 - name: Backup Database
   copy:
     src: /var/www/html/dbase.db
-    dest: /home/pi/.monitor/dbase.db.bak
-    owner: pi
-    group: pi
+    dest: /usr/share/somo/dbase.db.bak
   when: update_version and version1_0
 
 - name: Backup Database
   copy:
     src: /var/www/html/monitor/dbase.db
-    dest: /home/pi/.monitor/dbase.db.bak
-    owner: pi
-    group: pi
+    dest: /usr/share/somo/dbase.db.bak
   when: update_version and version1_1 and not version2_0
 
 - name: Backup Version Code
   copy:
     src: /var/www/html/monitor/assets/tools/version.txt
-    dest: /home/pi/.monitor/version.txt
-    owner: pi
-    group: pi
+    dest: /usr/share/somo/version.txt
   when: versionscode
 
 # Update ose-monitoring
@@ -161,7 +159,7 @@
 
 - name: Retore Database Backup
   copy:
-    src: /home/pi/.monitor/dbase.db.bak
+    src: /usr/share/somo/dbase.db.bak
     dest: /var/www/html/monitor/dbase.db
     owner: www-data
     group: www-data
@@ -177,15 +175,9 @@
     mode: 0644
   when: (old_monitor) and (version1_0 or version1_1)
 
-- name: Crontab for SOMO Runner
-  cron:
-    name: "Crontab for SOMO Runner"
-    minute: "5"
-    job: "/usr/bin/curl --silent -L http://localhost/assets/php/runner.php"
-
 - name: Retore Version Code
   copy:
-    src: /home/pi/.monitor/version.txt
+    src: /usr/share/somo/version.txt
     dest: /var/www/html/monitor/assets/tools/version.txt
     owner: www-data
     group: www-data
@@ -194,3 +186,14 @@
 
 - name: Version update
   command: ose-monitoring --init
+
+- name: Get current GIT Signature
+  command: git rev-parse HEAD
+  args:
+    chdir: /var/www/html/monitor
+  register: git_result
+
+- name: Refresh GIT Signature
+  copy:
+    content: "{{ git_result.stdout }}"
+    dest: /usr/share/somo/latest_monitor

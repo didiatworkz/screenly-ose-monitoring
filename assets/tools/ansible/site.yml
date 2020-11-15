@@ -14,7 +14,7 @@
 
     - name: restart-fpm
       service:
-        name: php7.3-fpm
+        name: php{{ php_output.stdout }}-fpm
         state: restarted
 
   roles:
