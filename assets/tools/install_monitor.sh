@@ -77,7 +77,7 @@ export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 sudo systemctl restart nginx
-IP=$("ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}'")
+IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
 echo
 echo
