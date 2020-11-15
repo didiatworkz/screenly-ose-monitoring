@@ -77,13 +77,7 @@ export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
 sudo systemctl restart nginx
-ETH=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
-if [ -z "$ETH" ]; then
- WLAN=$(/sbin/ip -o -4 addr list wlan0 | awk '{print $4}' | cut -d/ -f1)
- IP="$WLAN"
-else
- IP="$ETH"
-fi
+IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
 echo
 echo
@@ -94,7 +88,7 @@ header
 echo -e "\e[94mInstallation finished!"
 echo
 echo
-echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP$_PORT\e[39m"
+echo -e "You can now start Screenly OSE Monitor with the address: \n\e[93mhttp://$IP$_PORT\e[39m"
 echo
 echo -e "\e[94mUsername: \e[93mdemo\e[39m"
 echo -e "\e[94mPassword: \e[93mdemo\e[39m"
