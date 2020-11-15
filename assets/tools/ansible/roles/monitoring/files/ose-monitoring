@@ -1,6 +1,6 @@
 #!/bin/bash
 VERSION="3.4"
-LOCAL=$(cat /home/pi/.monitor/latest_monitor)
+LOCAL=$(cat /usr/share/somo/latest_monitor)
 ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitor | head -1 | sed "s/\tHEAD//")
 ACTION='\033[1;90m'
 FOUND='\033[1;92m'

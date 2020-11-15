@@ -1,10 +1,8 @@
 # Check older versions
-- name: Create .monitor directory
+- name: Create somo directory
   file:
-    path: /home/pi/.monitor
+    path: /usr/share/somo
     state: directory
-    owner: pi
-    group: pi
     mode: 0755
 
 - set_fact: update_version="False"
@@ -50,7 +48,7 @@
 - name: Backup Database
   copy:
     src: /var/www/html/dbase.db
-    dest: /home/pi/.monitor/dbase.db.bak
+    dest: /usr/share/somo/dbase.db.bak
     owner: pi
     group: pi
   when: update_version and version1_0
@@ -58,7 +56,7 @@
 - name: Backup Database
   copy:
     src: /var/www/html/monitor/dbase.db
-    dest: /home/pi/.monitor/dbase.db.bak
+    dest: /usr/share/somo/dbase.db.bak
     owner: pi
     group: pi
   when: update_version and version1_1 and not version2_0
@@ -66,7 +64,7 @@
 - name: Backup Version Code
   copy:
     src: /var/www/html/monitor/assets/tools/version.txt
-    dest: /home/pi/.monitor/version.txt
+    dest: /usr/share/somo/version.txt
     owner: pi
     group: pi
   when: versionscode
@@ -83,6 +81,7 @@
     - php-fpm
     - php-sqlite3
     - php-curl
+    - php-ssh2
 
 - name: Looking for the php version
   shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)'"
@@ -160,7 +159,7 @@
 
 - name: Retore Database Backup
   copy:
-    src: /home/pi/.monitor/dbase.db.bak
+    src: /usr/share/somo/dbase.db.bak
     dest: /var/www/html/monitor/dbase.db
     owner: www-data
     group: www-data
@@ -178,7 +177,7 @@
 
 - name: Retore Version Code
   copy:
-    src: /home/pi/.monitor/version.txt
+    src: /usr/share/somo/version.txt
     dest: /var/www/html/monitor/assets/tools/version.txt
     owner: www-data
     group: www-data
