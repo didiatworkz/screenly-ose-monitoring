@@ -50,7 +50,6 @@ function checkHTTP($ip){
 }
 
 function getApiData($ip, $playerID = null){
-  $curl = curl_init();
   $prefix = checkHTTP($ip);
 
   $playerAuth = playerAuthentication($playerID);
@@ -64,7 +63,7 @@ function getApiData($ip, $playerID = null){
   }
   if($user AND $pass) $url = $prefix.$user.':'.$pass.'@'.$ip;
   else $url = $prefix.$ip;
-
+  $curl = curl_init();
   curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 250);
   curl_setopt($curl, CURLOPT_URL, $url);
   curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
@@ -84,13 +83,14 @@ function getApiData($ip, $playerID = null){
 
 
 function checkAddress($ip, $time='200'){
-	$ch = curl_init($ip);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $time);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$data = curl_exec($ch);
-	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	curl_close($ch);
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, $time);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_URL, $ip);
+	$data = curl_exec($curl);
+	$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	curl_close($curl);
 	if(($httpcode >= 200 && $httpcode < 300) || $httpcode == 301 || $httpcode == 401) return true;
 	else return false;
 }
