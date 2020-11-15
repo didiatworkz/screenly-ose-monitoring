@@ -49,10 +49,6 @@ then
   echo -e "[ \e[32mNO\e[39m ] Screenly installed"
   echo -e "[ \e[93mYES\e[39m ] Standalone Installation"
   echo "----------------------------------------------"
-  echo
-  echo
-  echo -e "\e[94mPrepare the installation...\e[39m"
-  echo
   sudo mkdir -p /etc/ansible
   echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
   sudo apt update
@@ -80,15 +76,8 @@ sudo mkdir -p /var/www/html
 export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 sudo -E ansible-playbook site.yml
-cd /var/www/html/monitor/ && git rev-parse HEAD > ~/.monitor/latest_monitor
 sudo systemctl restart nginx
-ETH=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
-WLAN=$(/sbin/ip -o -4 addr list wlan0 | awk '{print $4}' | cut -d/ -f1)
-if [ -z "$ETH" ]; then
- IP="$WLAN"
-else
- IP="$ETH"
-fi
+IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
 echo
 echo
@@ -99,7 +88,7 @@ header
 echo -e "\e[94mInstallation finished!"
 echo
 echo
-echo -e "You can now reach the Screenly OSE Monitor at the address: \n\e[93mhttp://$IP$_PORT\e[39m"
+echo -e "You can now start Screenly OSE Monitor with the address: \n\e[93mhttp://$IP$_PORT\e[39m"
 echo
 echo -e "\e[94mUsername: \e[93mdemo\e[39m"
 echo -e "\e[94mPassword: \e[93mdemo\e[39m"
