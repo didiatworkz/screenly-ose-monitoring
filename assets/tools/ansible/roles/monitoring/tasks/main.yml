@@ -8,7 +8,7 @@
 - name: Create somo latest_monitor file
   file:
     path: /usr/share/somo/latest_monitor
-    state: file
+    state: touch
     mode: 0777
 
 - set_fact: update_version="False"
