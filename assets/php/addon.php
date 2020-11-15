@@ -17,12 +17,12 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
-
-
 
 if((isset($argv) && $argv['1'] != '')){
   include_once('ssh.class.php');
@@ -69,8 +69,8 @@ elseif(isset($_POST['addonInstall']) && $_POST['addonInstall'] == 'true' && $_PO
   if (strpos($test, 'Installed: (none)') === false) {
       shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass.' > /dev/null 2>/dev/null &');
       //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry');
-      die('Installation started - This may take a while...');
-  } else die('No php-ssh2 package found! - Installation aborted!');
+      die(Translation::of('soma.start_installation'));
+  } else die(Translation::of('soma.no_package_found'));
 
 }
 else{
@@ -84,12 +84,12 @@ else{
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">
-            Screenly OSE Monitoring Add-ons [BETA]
+            '.Translation::of('soma').' [BETA]
           </h2>
         </div>
         <div class="col-auto ml-auto">
             <a href="#" data-toggle="modal" data-target="#manual_install" class="btn btn-info">
-              Manual Installation
+              '.Translation::of('manual_installation').'
             </a>
 
         </div>
@@ -99,12 +99,12 @@ else{
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Player</h3>
+            <h3 class="card-title">'.Translation::of('player').'</h3>
           </div>
           <div class="card-body border-bottom py-3">
             <div class="d-flex">
               <div class="text-muted">
-                Show
+                '.Translation::of('show').'
                 <div class="mx-2 d-inline-block">
                   <select class="form-select form-select-sm" id="addonLength_change">
                   <option value="10">10</option>
@@ -114,10 +114,10 @@ else{
                   <option value="-1">All</option>
                   </select>
                 </div>
-                entries
+                '.strtolower(Translation::of('entries')).'
               </div>
               <div class="ml-auto text-muted">
-                Search:
+                '.Translation::of('search').':
                 <div class="ml-2 d-inline-block">
                   <input type="text" class="form-control form-control-sm" id="addonSearch">
                 </div>
@@ -128,12 +128,12 @@ else{
             <table class="table vertical-center" id="addon">
               <thead class="text-primary">
                 <tr>
-                  <th>Name</th>
-                  <th>IP Address</th>
-                  <th>Online</th>
-                  <th>Monitor Output</th>
-                  <th>Device Info</th>
-                  <th><span class="d-none d-sm-block">Options</span></th>
+                  <th>'.Translation::of('name').'</th>
+                  <th>'.Translation::of('ip_address').'</th>
+                  <th>'.Translation::of('online').'</th>
+                  <th>'.Translation::of('monitor_output').'</th>
+                  <th>'.Translation::of('device_info').'</th>
+                  <th><span class="d-none d-sm-block">'.Translation::of('options').'</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -146,18 +146,18 @@ else{
                   $monitorOutput   = $player['monitorOutput'];
                   $deviceInfo   = $player['deviceInfo'];
 
-                  $offline = '<span class="badge bg-dark">offline</span>';
-                  $not = '<span class="badge bg-danger">Not installed</span>';
+                  $offline = '<span class="badge bg-dark p-1">'.strtolower(Translation::of('manual_installation')).'</span>';
+                  $not = '<span class="badge bg-danger p-1">'.Translation::of('not_installed').'</span>';
                   if(checkAddress($ip, '50')){
                     $counter = 0;
-                    $onlineS = '<span class="badge bg-green">Online</span>';
+                    $onlineS = '<span class="badge bg-green p-1">'.strtolower(Translation::of('online')).'</span>';
                     if($monitorOutput != '0'){
-                    $monitorS = '<span class="badge bg-success">Version '.$monitorOutput.'</span>';
+                    $monitorS = '<span class="badge bg-success p-1">'.Translation::of('version').' '.$monitorOutput.'</span>';
                     $counter++;
                     } else $monitorS = $not;
 
                     if($deviceInfo != '0'){
-                      $deviceS = '<span class="badge bg-success">Version '.$deviceInfo.'</span>';
+                      $deviceS = '<span class="badge bg-success p-1">Version '.$deviceInfo.'</span>';
                       $counter++;
                     } else $deviceS = $not;
 
@@ -188,8 +188,8 @@ else{
                       $logBtn = '';
                     }
 
-                    if($counter == 0) $optionS = '<button class="btn btn-success btn-sm installAddon" data-src="'.$player['address'].'" data-header="Install">Install SOMA</button>';
-                    else $optionS = '<button class="btn btn-warning btn-sm installAddon" data-src="'.$player['address'].'" data-header="Reinstall">Reinstall</button>'.$logBtn;
+                    if($counter == 0) $optionS = '<button class="btn btn-outline-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
+                    else $optionS = '<button class="btn btn-outline-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
                     $counter = 0;
                   }
                   else {
@@ -228,21 +228,19 @@ else{
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="newAddonModalLabel">Addon</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<h5 class="modal-title" id="newAddonModalLabel">'.Translation::of('addon').'</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
 						<img src="assets/img/addon.png" class="img-fluid mx-auto d-block" alt="addon" style="height: 180px" />
-						The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly Player and process it in the monitor. <br />
-						You have the possibility to get a "live" image of the player\'s output.<br /><br />
-						To install, you have to log in to the respective Screenly Player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />
-						<input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL https://git.io/Jf900)">
-						After that the player restarts and the addon has been installed.<br />
+            '.Translation::of('soma.manual_install_text1').'
+            <input type="text" class="form-control" id="InputBash" onClick="this.select();" value="bash <(curl -sL https://git.io/Jf900)">
+						'.Translation::of('soma.manual_install_text2').'
 					</div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">'.Translation::of('close').'</button>
           </div>
 				</div>
 			</div>
@@ -253,8 +251,8 @@ else{
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="editPlayerModalLabel"><span id="headerText"></span> Addon</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<h5 class="modal-title" id="editPlayerModalLabel"><span id="headerText"></span> '.Translation::of('addon').'</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -263,36 +261,36 @@ else{
               <div class="row">
                 <div class="col-lg-10">
                   <div class="mb-3">
-                  <label class="form-label">Enter the IP address</label>
-                  <input name="host" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="No valid IPv4 address" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
+                  <label class="form-label">'.Translation::of('enter_player_ip').'</label>
+                  <input name="host" pattern="\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b" data-error="'.Translation::of('no_valid_ip').'" type="text" class="form-control" id="InputAdressEdit" placeholder="192.168.1.100" required />
                   <div class="help-block with-errors"></div>
                   </div>
                 </div>
                 <div class="col-lg-2">
                   <div class="mb-3">
-                    <label class="form-label">Port</label>
+                    <label class="form-label">'.Translation::of('port').'</label>
                     <input name="port" type="text" class="form-control" placeholder="22" value="22" />
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-								<label class="form-label">Username *</label>
+								<label class="form-label">'.Translation::of('username').' *</label>
 								<input name="user" type="text" class="form-control" id="InputLoginname" placeholder="pi" autofocus/>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Password *</label>
+								<label class="form-label">'.Translation::of('password').' *</label>
 								<input name="pass" type="password" class="form-control" id="InputPassword" placeholder="raspberry" />
 							</div>
               <div class="mb-3">
                 <div class="alert alert-warning" role="alert">
-                  * This information will not be saved!
+                  * '.Translation::of('msg.this_information_will_not_be_saved').'
                 </div>
 							</div>
 					  </div>
             <div class="modal-footer">
               <input name="addonInstall" type="hidden" value="true" />
-              <button type="button" class="btn btn-secondary close_modal mr-auto" data-close="#installer" data-dismiss="modal">Close</button>
-              <button type="submit" name="updatePlayer" id="btnText" class="btn btn-warning install">Install</button>
+              <button type="button" class="btn btn-secondary close_modal mr-auto" data-close="#installer" data-dismiss="modal">'.Translation::of('close').'</button>
+              <button type="submit" name="updatePlayer" id="btnText" class="btn btn-warning install">'.Translation::of('install').'</button>
             </div>
           </form>
 				</div>
