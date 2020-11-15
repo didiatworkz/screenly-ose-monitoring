@@ -17,6 +17,8 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
