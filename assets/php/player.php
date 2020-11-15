@@ -21,7 +21,26 @@ _______________________________________
 require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
-	
+
+
+	function getPlayerName($playerID){
+		global $db;
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE playerID='".$playerID."'");
+		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$player['name'] != '' ? $playerName = $player['name'] : $playerName = Translation::of('unkown_name');
+		return $playerName;
+	}
+
+	function getRunnerTime(){
+		global $db;
+		$playerSQL 	= $db->query("SELECT * FROM player WHERE bg_sync IS NOT NULL ORDER BY bg_sync DESC");
+		if($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+			$output = ($player['bg_sync'] + 300);
+		}
+		else $output = '695260800';
+		return $output;
+	}
+
 
 	// POST: saveIP - Auto discovery function
 	if(isset($_POST['saveIP'])){
@@ -38,6 +57,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 				$db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
 			}
 	    sysinfo('success', Translation::of('msg.player_added_successfully', ['name' => $name]));
+			systemLog('Player Module', 'Player: '.$name.' - '.Translation::of('msg.player_added_successfully', ['name' => $name]), $loginUserID, 1);
 	  }	else sysinfo('danger', Translation::of('msg.cant_add_player'));
 	  redirect($backLink);
 	}
@@ -55,6 +75,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 	  if($address){
 	    $db->exec("UPDATE player SET name='".$name."', address='".$address."', location='".$location."', player_user='".$user."', player_password='".$pass."' WHERE playerID='".$playerID."'");
 	    sysinfo('success', Translation::of('msg.player_update_successfully'));
+			systemLog('Player Module', 'Player: '.$name.' - '.Translation::of('msg.player_update_successfully'), $loginUserID, 1);
 	  }	else sysinfo('danger', Translation::of('msg.cant_update_player'));
 	  redirect($backLink);
 	}
@@ -64,8 +85,9 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 	  $playerID = $_GET['playerID'];
 
 	  if(isset($playerID)){
-	    $db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
-	    sysinfo('success', Translation::of('msg.player_delete_successfully'));
+			systemLog('Player Module', 'Player: '.getPlayerName($playerID).' - '.Translation::of('msg.player_delete_successfully'), $loginUserID, 1);
+			$db->exec("DELETE FROM player WHERE playerID='".$playerID."'");
+			sysinfo('success', Translation::of('msg.player_delete_successfully'));
 	  } else sysinfo('danger', Translation::of('msg.cant_delete_player'));
 	  redirect('index.php?site=players');
 	}
@@ -81,6 +103,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 	  foreach ($playerAPI as $value) {
 	    if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
 	      //sysinfo('success', 'Asset deleted successfully');
+				systemLog('Player Module', 'Player: '.getPlayerName($id).' - '.Translation::of('msg.all_assets_cleaned'), $loginUserID, 1);
 	      redirect($backLink);
 	    }	else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
 	  }
@@ -116,6 +139,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 	  if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 	    sysinfo('success', Translation::of('msg.asset_update_successfully'));
+			systemLog('Player Module', 'PlayerID: '.$player['name'].' - '.Translation::of('msg.asset_update_successfully').' - AssetID: '.$asset, $loginUserID, 1);
 	  }	else sysinfo('danger', Translation::of('msg.cant_update_asset'));
 	  redirect($backLink);
 	}
@@ -130,6 +154,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 	  if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 	    //sysinfo('success', 'Asset deleted successfully');
+			systemLog('Player Module', 'PlayerID: '.$player['name'].' - '.Translation::of('msg.asset_deleted_successfully').' - AssetID: '.$asset, $loginUserID, 1);
 	    redirect($backLink);
 	  } else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
 	}
