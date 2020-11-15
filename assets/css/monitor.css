@@ -45,11 +45,52 @@ table.dataTable tr.dtrg-group td {
     border: 1px solid rgba(110,117,130,.2)
 }
 
+/* wizard */
+.wizard .container-tight {
+    max-width: 40rem;
+}
+
+.tt-hint {
+  left: 32px !important;
+}
+
+.tt-menu {
+    background-color: #fff;
+    right: 0;
+    margin-top: 2px;
+    border-radius: 2px;
+    border: 1px solid #f1f2f3;
+    -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.tt-suggestion {
+    display: block;
+    margin: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: rgba(53, 64, 82, 0.72);
+    -webkit-transition: 0.15s linear;
+    transition: 0.15s linear;
+}
+
 @media not print {
   .theme-dark a:not(.btn) {
-    color: #3E7BC1;
+    color: #59a6ff;
   }
   .theme-dark a:hover {
-      color: #59A6FF;
+      color: #eeeeee;
+  }
+  .theme-dark .btn-link {
+    color: #59a6ff;
+  }
+  .theme-dark .caltime-padding .form-control:disabled, .theme-dark .form-control[readonly] {
+      background-color: #2f3949;
+  }
+  .theme-dark .flatpickr-time input {
+    background: #2f3949;
+    color: #f5f7fb;
+  }
+  .theme-dark .flatpickr-time input:hover, .theme-dark .flatpickr-time .flatpickr-am-pm:hover, .theme-dark .flatpickr-time input:focus, .theme-dark .flatpickr-time .flatpickr-am-pm:focus {
+    background: rgba(110,117,130,.06);
   }
 }
