@@ -16,7 +16,6 @@
       service:
         name: php{{ php_output.stdout }}-fpm
         state: restarted
-      ignore_errors: yes
 
   roles:
     - monitoring
