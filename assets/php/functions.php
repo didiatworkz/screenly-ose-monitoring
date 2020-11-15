@@ -64,3 +64,9 @@ function getPlayerCount(){
   $playerCount = $playerCount['counter'];
   return $playerCount;
 }
+
+function systemLog($module, $info, $who = 0, $show = 0, $relevant = 0){
+  global $db;
+  $when = time();
+  $db->exec("INSERT INTO `log` (userID, logTime, moduleName, info, show, relevant) values('".$who."', '".$when."', '".$module."', '".$info."', '".$show."', '".$relevant."')");
+}
