@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-            Runnser Script
+            Runner Script
 _______________________________________
 */
 
@@ -32,24 +32,30 @@ while($player	= $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $name = $player['name'];
   $ip   = $player['address'];
 
+
+
   // SET Status offline
   $db->exec("UPDATE `player` SET status='0' WHERE playerID='".$id."'");
   $db->exec("UPDATE `player` SET bg_sync='".$now."' WHERE playerID='".$id."'");
 
-  if(checkAddress($ip)){
+  if(checkAddress($ip.'/api/'.$apiVersion.'/assets')){
     if($_TEST) echo $name.'<br />';
 
     // SET Status online
     $db->exec("UPDATE `player` SET status='1' WHERE playerID='".$id."'");
 
     // GET Assets
-    $playerAssets = getApiData($ip.'/api/'.$apiVersion.'/assets', $id);
+    $playerAssets = getApiData($player['address'].'/api/'.$apiVersion.'/assets', $id);
     if(strpos($playerAssets, 'error') === false) {
       $db->exec("UPDATE `player` SET assets='".$playerAssets."' WHERE playerID='".$id."'");
       if($_TEST) echo $playerAssets.'<br />';
     }
 
     // GET monitorOutput Version
+
+    $db->exec("UPDATE `player` SET monitorOutput='0' WHERE playerID='".$id."'");
+    $db->exec("UPDATE `player` SET deviceInfo='0' WHERE playerID='".$id."'");
+
     if(checkAddress($ip.':9020/screen/screenshot.png')){
       $db->exec("UPDATE `player` SET monitorOutput='1.0' WHERE playerID='".$id."'");
       if($_TEST) echo '1.0 <br />';
