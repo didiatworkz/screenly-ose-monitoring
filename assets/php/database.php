@@ -95,10 +95,23 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,sync,created) SELECT userID,name,location,address,player_user,player_password,sync,created FROM `player_tmp`");
     $db->exec("DROP TABLE `player_tmp`");
     $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
-    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `timezone` TEXT DEFAULT 'Europe/Berlin')");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `timezone` TEXT DEFAULT 'Europe/Berlin', `sessionTime` INTEGER DEFAULT 36000)");
     $db->exec("INSERT INTO `settings`(name,duration,token,end_date,updatecheck) SELECT name,duration,token,end_date,updatecheck FROM `settings_tmp`");
     $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
     $db->exec("DROP TABLE `settings_tmp`");
+
+    $db->exec("CREATE TABLE `log` (`logID` INTEGER PRIMARY KEY AUTOINCREMENT, `userID`	INTEGER DEFAULT 0, `logTime`	INTEGER, `moduleName`	TEXT, `info`	TEXT, `show`	INTEGER DEFAULT 0, `relevant`	INTEGER DEFAULT 0)");
+
+    $db->exec("ALTER TABLE `userGroups` RENAME TO `userGroups_tmp`");
+    $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`players`	TEXT,	`modules`	TEXT,	`addFunction`	INTEGER DEFAULT 0, `editFunction`	INTEGER DEFAULT 0, `deleteFunction`	INTEGER DEFAULT 0)");
+    $db->exec("INSERT INTO `userGroups`(groupID,name) SELECT groupID,name FROM `userGroups_tmp`");
+    $db->exec("UPDATE `userGroups` SET addFunction=1, editFunction=1, deleteFunction=1 WHERE name='Admin'");
+    $db->exec("DROP TABLE `userGroups_tmp`");
+
+    $db->exec("ALTER TABLE `users` RENAME TO `users_tmp`");
+    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,	`password`	TEXT NOT NULL,	`firstname`	TEXT,	`name`	TEXT,	`refreshscreen`	INTEGER DEFAULT 5,	`updateEntry`	INTEGER, `active`	INTEGER,	`last_login` INTEGER,	`news` INTEGER DEFAULT 0,	`design` INTEGER DEFAULT 0)");
+    $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
+    $db->exec("DROP TABLE `users_tmp`");
 
   }
   unlink('assets/tools/version_old.txt');
