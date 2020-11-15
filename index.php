@@ -1,7 +1,4 @@
 <?php
-	// SESSION OPTIONS
-	session_set_cookie_params(36000, '/' );
-	session_start();
 	// TRANSLATION CLASS
 	require_once(__DIR__.'/assets/php/translation.php');
 	use Translation\Translation;
@@ -17,32 +14,22 @@ echo'
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>'._SYSTEM_NAME.'</title>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <meta name="msapplication-TileColor" content="#206bc4"/>
-    <meta name="theme-color" content="#206bc4"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="mobile-web-app-capable" content="yes"/>
-    <meta name="HandheldFriendly" content="True"/>
-    <meta name="MobileOptimized" content="320"/>
-    <meta name="robots" content="noindex,nofollow,noarchive"/>
-		<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=693zEXKkY5">
-		<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png?v=693zEXKkY5">
-		<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png?v=693zEXKkY5">
-		<link rel="manifest" href="assets/img/site.webmanifest?v=693zEXKkY5">
-		<link rel="mask-icon" href="assets/img/safari-pinned-tab.svg?v=693zEXKkY5" color="#000000">
-		<link rel="shortcut icon" href="assets/img/favicon.ico?v=693zEXKkY5">
-		<meta name="apple-mobile-web-app-title" content="SOMO">
-		<meta name="application-name" content="SOMO">
-		<meta name="msapplication-TileColor" content="#00aba9">
-		<meta name="msapplication-config" content="assets/img/browserconfig.xml?v=693zEXKkY5">
-		<meta name="theme-color" content="#ffffff">
+		<link rel="apple-touch-icon" sizes="180x180" href="assets/img/fav/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="assets/img/fav/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="assets/img/fav/favicon-16x16.png">
+		<link rel="manifest" href="assets/img/fav/site.webmanifest">
+		<link rel="mask-icon" href="assets/img/fav/safari-pinned-tab.svg" color="#2f3949">
+		<link rel="shortcut icon" href="assets/img/fav/favicon.ico">
+		<meta name="msapplication-TileColor" content="#f5f7fb">
+		<meta name="msapplication-config" content="assets/img/fav/browserconfig.xml">
+		<meta name="theme-color" content="#f5f7fb">
     <!-- Libs CSS -->
     <link href="assets/libs/selectize/dist/css/selectize.css" rel="stylesheet"/>
     <link href="assets/libs/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
     <link href="assets/libs/nouislider/distribute/nouislider.min.css" rel="stylesheet"/>
 
-		<link rel="stylesheet" href="assets/tools/DataTables/datatables.min.css" />
-		<link rel="stylesheet" href="assets/tools/dropzone/dropzone.min.css">
+		<link rel="stylesheet" href="assets/libs/DataTables/datatables.min.css" />
+		<link rel="stylesheet" href="assets/libs/dropzone/dropzone.min.css">
 
     <!-- Tabler Core -->
     <link href="assets/css/tabler.min.css" rel="stylesheet"/>
@@ -55,12 +42,12 @@ echo'
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="assets/js/jquery-ui.min.js"></script>
-		<script src="assets/tools/DataTables/datatables.min.js"></script>
-		<script src="assets/tools/dropzone/dropzone.min.js"></script>
-		<script src="assets//libs/flatpickr/dist/flatpickr.min.js"></script>
+		<script src="assets/libs/DataTables/datatables.min.js"></script>
+		<script src="assets/libs/dropzone/dropzone.min.js"></script>
+		<script src="assets/libs/flatpickr/dist/flatpickr.min.js"></script>
 		<!-- Tabler Core -->
 		<script src="assets/js/tabler.min.js?1588343458"></script>
-		<script src="/assets/js/bootstrap-notify.js"></script>
+		<script src="assets/js/bootstrap-notify.js"></script>
 		<script src="assets/js/validator.js"></script>
     <style>
       body {
@@ -286,7 +273,10 @@ echo'
 						  </tr>
 						  <tr>
 						    <td>'.Translation::of('design').':</td>
-						    <td><a href="https://github.com/tabler/tabler/" target="_blank">tabler</a></td>
+						    <td>
+									<a href="https://github.com/tabler/tabler/" target="_blank">tabler</a><br />
+									<a href="https://undraw.co/" target="_blank">undraw illustrations</a>
+								</td>
 						  </tr>
 						  <tr>
 						    <td>'.Translation::of('scripts').':</td>
@@ -325,9 +315,6 @@ echo'
 		</div>
 			';
 		}
-	  else if((isset($_GET['public']) && $_GET['public'] == '1') && isset($_GET['key'])){
-	    include('assets/php/publicLink.php');
-	  }
 		else {
 			if (isset($logedout)){
 				sysinfo('success', '<i class="fa fa-check"></i> '.Translation::of('msg.logged_out_successfully'));
@@ -362,6 +349,8 @@ echo'
 
 var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
 var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
+var settingsRunerTime = "'.($loggedIn ? $runnerTime : 'FALSE').'";
+localStorage.removeItem("runnerExecute");
 
 if (!(localStorage.getItem("notification_style") === null && localStorage.getItem("notification_message") === null)) {
 	if(localStorage.getItem("notification_counter") == "0"){
@@ -381,6 +370,8 @@ if (!(localStorage.getItem("notification_style") === null && localStorage.getIte
 
 </script>
 <script src="assets/js/monitor.js"></script>
+<script src="assets/libs/typeaheadjs/dist/typeahead.bundle.min.js"></script>
+<script src="assets/js/monitor_search.js"></script>
 <script>
 	document.body.style.display = "block"
 </script>';
