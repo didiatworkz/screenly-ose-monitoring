@@ -99,6 +99,9 @@ var asset_table = $('#assets').DataTable({
       $('.dataTables_paginate').appendTo('#dataTables_paginate');
       $('.dataTables_info').appendTo('#dataTables_info');
   },
+  language: {
+      url: "assets/php/datatable_lang.json.php"
+  }
 });
 
 $('#assetSearch').keyup(function(){
@@ -370,24 +373,6 @@ function loadDeviceInfo(){
   })
 }
 
-
-// SEARCH
- $("#inlineFormInputGroup").on("keyup", function() {
-  var input = $(this).val().toUpperCase();
-
-  $(".col-sm-6").each(function() {
-    if ($(this).data("string").toUpperCase().indexOf(input) < 0) {
-      $(this).hide();
-    } else {
-      $(this).show();
-    }
-  })
-});
-
-$('#inlineFormInputGroup').on("keypress", function (e) {
-    if (e.which == 13) $('#searchModal').modal('hide');
-});
-
 // New player
 $('input:radio[name="add_player_mode"]').click(function(){
   var inputValue = $(this).attr("value");
@@ -482,6 +467,9 @@ var addon_table = $('#addon').DataTable({
       $('.dataTables_paginate').appendTo('#dataTables_paginate');
       $('.dataTables_info').appendTo('#dataTables_info');
   },
+  language: {
+      url: "assets/php/datatable_lang.json.php"
+  }
 });
 
 $('#addonSearch').keyup(function(){
@@ -528,7 +516,7 @@ $('button.reboot').on('click', function(){
   });
 });
 
-$('#confirmDelete, #confirmDeleteAssets').on('show.bs.modal', function(e) {
+$('#confirmDelete, #confirmDeleteAssets, #confirmDeleteLog').on('show.bs.modal', function(e) {
   $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 });
 
@@ -543,6 +531,9 @@ var users_table = $('#users').DataTable({
       $('.dataTables_paginate').appendTo('#dataTables_paginate');
       $('.dataTables_info').appendTo('#dataTables_info');
   },
+  language: {
+      url: "assets/php/datatable_lang.json.php"
+  }
 });
 
 $('#usersSearch').keyup(function(){
@@ -562,6 +553,63 @@ $('#usersLength_change').change( function() {
 //   });
 // });
 
+
+// Admin Log
+
+var log_table = $('#log').DataTable({
+  dom: 'tipr',
+  stateSave: false,
+  autoWidth: false,
+  order: [[ 0, 'desc' ]],
+  initComplete: (settings, json)=>{
+      $('.dataTables_paginate').appendTo('#dataTables_paginate');
+      $('.dataTables_info').appendTo('#dataTables_info');
+  },
+  language: {
+      url: "assets/php/datatable_lang.json.php"
+  }
+});
+
+$('#logSearch').keyup(function(){
+    log_table.search( $(this).val() ).draw() ;
+})
+
+$('#logLength_change').val(log_table.page.len());
+
+$('#logLength_change').change( function() {
+    log_table.page.len( $(this).val() ).draw();
+});
+
+
+// Public Access Settings
+$('#add_dark').on('click', function () {
+    var text = $('#InputSetToken');
+    text.val(text.val() + '&dark=1');
+});
+
+$('#open_token').on('click', function () {
+    var text = $('#InputSetToken');
+    window.open(text.val(), '_blank');
+});
+
+// Background Runner
+function loadRunner(){
+  var now = Math.round(new Date() / 1000);
+  if(settingsRunerTime && (settingsRunerTime <= now) && localStorage['runnerExecute'] === undefined)
+    $.ajax({
+      url: 'assets/php/runner.php',
+      type: 'GET',
+      success: function(data){
+        localStorage['runnerExecute'] = true;
+        console.log('Runner executed');
+      },
+      error: function(data){
+        console.log('Runner error');
+      },
+    });
+}
+
+// ---------------------------------------------------
 
 function reloadPlayerImage(){
   $('img.player').each(function(index, element){
@@ -589,6 +637,7 @@ $(document).ready(function() {
 
 setInterval('reloadPlayerImage();',settingsRefreshRate);
 setInterval('loadDeviceInfo();', 1000);
+setInterval('loadRunner();', 2000);
 
 $('.modal').on('shown.bs.modal', function(){
   $(this).find('[autofocus]').focus();
