@@ -33,6 +33,8 @@ _______________________________________
 
 /* _______________________________ */
 
+
+
 	if($_DEBUG == 'YES'){
 		ini_set('display_errors', 1);
 		error_reporting(E_ALL|E_STRICT);
@@ -50,6 +52,11 @@ _______________________________________
 	} else $site = NULL;
 
 	include_once('assets/php/database.php');
+
+	session_set_cookie_params($set['sessionTime'], '/' );
+	session_name('somo_session');
+	session_start();
+
 	include_once('assets/php/functions.php');
 	include_once('assets/php/user.php');
 	include_once('assets/php/curl.php');
@@ -57,6 +64,8 @@ _______________________________________
 	include_once('assets/php/player.php');
 	include_once('assets/php/update.php');
 	include_once('assets/php/actions.php');
+
+	$runnerTime = getRunnerTime();
 
 	date_default_timezone_set($set['timezone']);
 
