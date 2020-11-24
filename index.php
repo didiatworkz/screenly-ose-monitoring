@@ -44,6 +44,7 @@ echo'
 		<script src="assets/js/jquery-ui.min.js"></script>
 		<script src="assets/libs/DataTables/datatables.min.js"></script>
 		<script src="assets/libs/dropzone/dropzone.min.js"></script>
+		<script src="assets/php/dropzone_lang.js.php"></script>
 		<script src="assets/libs/flatpickr/dist/flatpickr.min.js"></script>
 		<!-- Tabler Core -->
 		<script src="assets/js/tabler.min.js?1588343458"></script>
@@ -185,13 +186,13 @@ echo'
 		              <div class="col-lg-6">
 		                <div class="mb-3">
 		                  <label class="form-label">'.Translation::of('username').'</label>
-		                  <input name="user" type="text" class="form-control" id="InputUser" placeholder="'.Translation::of('username').'" />
+		                  <input name="user" type="text" class="form-control" id="InputUser" autocomplete="section-newplayer username" placeholder="'.Translation::of('username').'" />
 		                </div>
 		              </div>
 		              <div class="col-lg-6">
 		                <div class="mb-3">
 		                  <label class="form-label">'.Translation::of('password').'</label>
-		                  <input name="pass" type="password" class="form-control" id="InputPassword" placeholder="'.Translation::of('password').'" />
+		                  <input name="pass" type="password" class="form-control" id="InputPassword" autocomplete="section-newplayer current-password" placeholder="'.Translation::of('password').'" />
 		                </div>
 		              </div>
 		            </div>
@@ -353,8 +354,8 @@ var settingsRunerTime = "'.($loggedIn ? $runnerTime : 'FALSE').'";
 localStorage.removeItem("runnerExecute");
 
 if (!(localStorage.getItem("notification_style") === null && localStorage.getItem("notification_message") === null)) {
-	if(localStorage.getItem("notification_counter") == "0"){
-		$.notify({icon: "tim-icons icon-bell-55",message: localStorage.getItem("notification_message")},{type: localStorage.getItem("notification_style"),timer: 2000 ,placement: {from: "top",align: "center"}});
+	if(localStorage.getItem("notification_counter") == "1"){
+		$.notify({icon: "tim-icons icon-bell-55",message: localStorage.getItem("notification_message")},{type: localStorage.getItem("notification_style"),timer: 2000 ,placement: {from: "bottom",align: "center"}, animate: {enter: "animated fadeInDown", exit: "animated fadeOutUp"}});
 		console.log("unload");
 		localStorage.removeItem("notification_message");
 		localStorage.removeItem("notification_style");
