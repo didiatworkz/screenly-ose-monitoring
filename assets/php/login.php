@@ -31,11 +31,11 @@ echo'
           <h2 class="mb-5 text-center">'._SYSTEM_NAME.'</h2>
           <div class="mb-3">
             <label class="form-label">Username</label>
-            <input name="user" type="text" class="form-control" placeholder="'.Translation::of('username').'" autofocus autocomplete="off">
+            <input name="user" type="text" class="form-control" placeholder="'.Translation::of('username').'" autofocus autocomplete="section-login username">
           </div>
           <div class="mb-2">
             <label class="form-label">Password</label>
-            <input name="password" type="password" class="form-control" placeholder="'.Translation::of('password').'">
+            <input name="password" type="password" class="form-control" placeholder="'.Translation::of('password').'" autocomplete="section-login current-password">
           </div>
           <div class="form-footer">
             <input type="hidden"  name="Login" value="1" />
@@ -43,6 +43,9 @@ echo'
           </div>
         </div>
       </form>
+      <div class="progress login-progress" style="display: none;">
+        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+      </div>
     </div>
   </div>
 ';

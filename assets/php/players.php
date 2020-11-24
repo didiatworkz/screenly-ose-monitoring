@@ -908,13 +908,13 @@ echo '
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">'.Translation::of('username').'</label>
-                <input name="user" type="text" class="form-control" id="InputUserEdit" placeholder="'.Translation::of('username').'" />
+                <input name="user" type="text" class="form-control" id="InputUserEdit" autocomplete="section-player username" placeholder="'.Translation::of('username').'" />
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">'.Translation::of('password').'</label>
-                <input name="pass" type="password" class="form-control" id="InputPasswordEdit" placeholder="'.Translation::of('password').'" />
+                <input name="pass" type="password" class="form-control" id="InputPasswordEdit" autocomplete="section-player current-password" placeholder="'.Translation::of('password').'" />
               </div>
             </div>
           </div>

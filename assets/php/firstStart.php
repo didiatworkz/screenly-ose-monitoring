@@ -53,25 +53,25 @@ if($set['firstStart'] != 0){
             <div class="card-body">
               <div class="mb-3">
                 <label class="form-label">Username</label>
-                <input name="username" type="text" class="form-control" id="InputUsername" placeholder="Enter Username" autofocus required />
+                <input name="username" type="text" class="form-control" id="InputUsername" placeholder="Enter Username" autocomplete="section-wizard username" autofocus required />
                 <div class="help-block with-errors"></div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Change Password</label>
-                <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" required />
+                <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="New Password" autocomplete="section-wizard new-password" required />
               </div>
               <div class="mb-3">
-                <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required />
+                <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" autocomplete="section-wizard new-password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" required />
                 <div class="help-block with-errors"></div>
               </div>
               <div class="hr-text hr-text-center hr-text-spaceless mt-5 mb-2">Personal Information</div>
               <div class="mb-3">
                 <label class="form-label">Firstname</label>
-                <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" required />
+                <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" autocomplete="section-wizard given-name" required />
               </div>
               <div class="mb-3">
                 <label class="form-label">Name</label>
-                <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" required />
+                <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" autocomplete="section-wizard family-name" required />
               </div>
             </div>
           </div>
