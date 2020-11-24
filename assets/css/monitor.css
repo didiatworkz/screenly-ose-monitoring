@@ -42,7 +42,8 @@ table.dataTable tr.dtrg-group td {
 /* Multi Uploader */
 .dropzone {
     background: transparent;
-    border: 1px solid rgba(110,117,130,.2)
+    border: 1px solid rgba(110,117,130,.2);
+    min-height: 120px;
 }
 
 /* wizard */
