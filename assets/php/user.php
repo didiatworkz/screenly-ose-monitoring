@@ -103,6 +103,17 @@ function getFullname($userID){
   return $return;
 }
 
+function getNameInitials($userID){
+  global $db;
+  $sql    = $db->query("SELECT userID, firstname, name FROM `users` WHERE userID='".$userID."'");
+  $sql    = $sql->fetchArray(SQLITE3_ASSOC);
+  isset($sql['firstname']) ? $f = $sql['firstname'].' ' : $f = '';
+  isset($sql['name']) ? $n = $sql['name'] : $n = '';
+  $return = substr($f, 0, 1).substr($n, 0, 1);
+  $return = strtoupper($return);
+  return $return;
+}
+
 function getFirstname($userID){
   global $db;
   $sql    = $db->query("SELECT userID, firstname FROM `users` WHERE userID='".$userID."'");
@@ -139,6 +150,20 @@ function isActive($userID){
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   if($return['active'] == 1) return TRUE;
   else return FALSE;
+}
+
+function getUserAvatar($userID, $extraClass = ''){
+  global $db;
+  if($extraClass != '') $extraClass = ' '.$extraClass;
+  $sql     = $db->query("SELECT username FROM `users` WHERE userID='".$userID."'");
+  $return  = $sql->fetchArray(SQLITE3_ASSOC);
+  $imagePath = 'assets/img/avatars/'.md5($return['username']).'.txt';
+  if (file_exists($imagePath)) {
+    $data = file_get_contents($imagePath);
+    $output = '<span class="avatar'.$extraClass.'" style="background-image: url('.$data.')"></span>';
+  }
+  else $output = '<span class="avatar '.$extraClass.'">'.getNameInitials($userID).'</span>';
+  return $output;
 }
 
 // Group Rights

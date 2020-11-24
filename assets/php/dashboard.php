@@ -123,12 +123,12 @@ echo '
     </div>
     <div class="col-sm-6 col-lg-3">
       <div class="card">
-        <div class="card-body  text-center">
-          <span class="avatar avatar-md mb-4">'.$loginFirstname[0].$loginName[0].'</span>
-          <h3 class="mb-0">'.$loginFullname.'</h3>
-          <p class="mb-3">
-          <span class="badge bg-blue-lt">'.$loginGroupName.'</span>
-          </p>
+        <div class="card-body text-center">
+          <div class="mb-3">
+            '.getUserAvatar($loginUserID, 'avatar-xl avatar-rounded').'
+          </div>
+          <div class="card-title mb-1">'.$loginFullname.'</div>
+          <div class="text-muted">'.$loginGroupName.'</div>
         </div>
       </div>
     </div>

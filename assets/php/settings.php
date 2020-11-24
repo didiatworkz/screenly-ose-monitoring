@@ -35,6 +35,25 @@ if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && getGroupI
 }
 
 if(isset($_GET['view']) && $_GET['view'] == 'profile'){
+
+  if (!empty($_FILES)) {
+    $check = getimagesize($_FILES["file"]["tmp_name"]);
+    $data = base64_encode(file_get_contents( $_FILES["file"]["tmp_name"]));
+    $file = 'data:'.$check['mime'].';base64,'.$data;
+    $newfilename = md5($loginUsername).'.txt';
+    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetFile =  $targetPath.$newfilename;
+    file_put_contents($targetFile, $file);
+  }
+
+  if (isset($_GET['removeavatar']) && $_GET['removeavatar'] == '1') {
+    $newfilename = md5($loginUsername).'.txt';
+    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetFile =  $targetPath.$newfilename;
+    unlink($targetFile);
+    redirect($backLink, 0);
+  }
+
   echo '
   <div class="container-xl">
     <div class="page-header">
@@ -58,19 +77,25 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
           <div class="card">
             <div class="card-body text-center">
               <div class="mb-3">
-                <span class="avatar avatar-xl">
-                  '.$loginFirstname[0].$loginName[0].'
-                </span>
+                '.getUserAvatar($loginUserID, 'avatar-xl').'
               </div>
               <div class="card-title mb-1">'.$loginFullname.'</div>
               <div class="text-muted">'.$loginGroupName.'</div>
             </div>
           </div>
-          <h5 class="subheader">On this page</h5>
-          <ul class="list-unstyled">
-            <li class="toc-entry toc-h2"><a href="#personal">Personal Settings</a></li>
-            <li class="toc-entry toc-h2"><a href="#account">Account Settings</a></li>
-          </ul>
+          <div class="card">
+            <div class="card-body text-center">
+              <div class="text-muted">Change Avatar</div>
+              <div class="mb-3">
+                <form action="index.php?site=settings&view=profile" class="avatar_upload dropzone">
+                  <div class="fallback">
+                    <input name="file" type="file" />
+                  </div>
+                </form>
+                <a href="index.php?site=settings&view=profile&removeavatar=1" class="btn btn-outline-danger btn-sm btn-block">Remove Avatar</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-lg-9">
