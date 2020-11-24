@@ -339,7 +339,7 @@ function loadDeviceInfo(){
       success: function(data){
         if ($('.deviceCheckbox').is(':checked')) {
           $(element).show();
-          console.log(data);
+          //console.log(data);
           data = JSON.parse(data)
           $('span.cpu').text(data.cpu.value);
           $('span.cpu_frequency').text(data.cpu.frequency);
@@ -580,6 +580,18 @@ $('#logLength_change').change( function() {
     log_table.page.len( $(this).val() ).draw();
 });
 
+// Profile settings
+if ($('.avatar_upload').length) {
+  var myAvatarDropzone = new Dropzone(".avatar_upload", {
+    maxFilesize: 2,
+    parallelUploads: 1,
+    acceptedFiles: "image/*",
+    resizeWidth: 256,
+    resizeHeight: 256,
+    resizeMethod: 'contain',
+    success: function(file){ location.reload(); },
+  });
+}
 
 // Public Access Settings
 $('#add_dark').on('click', function () {
@@ -608,6 +620,16 @@ function loadRunner(){
       },
     });
 }
+
+// login
+$("form#Login").submit(function(e){
+  var form = this;
+  e.preventDefault();
+  setTimeout(function () {
+      form.submit();
+  }, 1000);
+  $('.login-progress').show();
+});
 
 // ---------------------------------------------------
 
