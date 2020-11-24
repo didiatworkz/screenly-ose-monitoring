@@ -146,7 +146,7 @@ else{
                   $monitorOutput   = $player['monitorOutput'];
                   $deviceInfo   = $player['deviceInfo'];
 
-                  $offline = '<span class="badge bg-dark p-1">'.strtolower(Translation::of('manual_installation')).'</span>';
+                  $offline = '<span class="badge bg-danger p-1">'.strtolower(Translation::of('offline')).'</span>';
                   $not = '<span class="badge bg-danger p-1">'.Translation::of('not_installed').'</span>';
                   if(checkAddress($ip, '50')){
                     $counter = 0;
