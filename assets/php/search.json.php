@@ -26,7 +26,7 @@ while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $assetString = NULL;
   $assets = json_decode($player['assets'], true);
   for ($i=0; $i < sizeof($assets); $i++) {
-    $assetString .= ' '.$assets[$i]['asset_id'].' '.$assets[$i]['name'];
+    $assetString .= ' '.$assets[$i]['asset_id'].' '.str_replace('/', ' ', $assets[$i]['name']);
   }
 
   $addon = NULL;
@@ -37,7 +37,7 @@ while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
 	$gen['title'] 		   = $player['name'];
 	$gen['url'] 		     = 'index.php?site=players&action=view&playerID='.$player['playerID'];
 	$gen['description']  = 'Location: '.$player['location'];
-	$gen['tokens'] 		   = 'player monitor reboot clean assets user password ip'.$player['name'].' '.$player['location'].' '.$player['address'].' '.$player['player_user'].' '.$player['created'].' '.$assetString.' '.$addon.' OSE';
+	$gen['tokens'] 		   = 'player monitor reboot clean assets user password ip '.$player['address'].' '.$player['name'].' '.$player['location'].' '.$player['player_user'].' '.$player['created'].' '.$assetString.' '.$addon.' OSE';
 	array_push($output, $gen);
 }
 
