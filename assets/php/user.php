@@ -167,33 +167,155 @@ function getUserAvatar($userID, $extraClass = ''){
 }
 
 // Group Rights
-function hasAddRight($userID){
+// Assets
+function hasAssetAddRight($userID){
   global $db;
   $groupID = getGroupID($userID);
-  $sql      = $db->query("SELECT addFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $sql      = $db->query("SELECT ass_add FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
-  if ($return['addFunction'] == 1) return TRUE;
+  if ($return['ass_add'] == 1) return TRUE;
   return FALSE;
 }
 
-function hasEditRight($userID){
+function hasAssetEditRight($userID){
   global $db;
   $groupID = getGroupID($userID);
-  $sql      = $db->query("SELECT editFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $sql      = $db->query("SELECT ass_edit FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
-  if ($return['editFunction'] == 1) return TRUE;
+  if ($return['ass_edit'] == 1) return TRUE;
   return FALSE;
 }
 
-function hasDeleteRight($userID){
+function hasAssetDeleteRight($userID){
   global $db;
   $groupID = getGroupID($userID);
-  $sql      = $db->query("SELECT deleteFunction FROM `userGroups` WHERE groupID='".$groupID."'");
+  $sql      = $db->query("SELECT ass_delete FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
-  if ($return['deleteFunction'] == 1) return TRUE;
+  if ($return['ass_delete'] == 1) return TRUE;
   return FALSE;
 }
 
+function hasAssetCleanRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT ass_clean FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['ass_clean'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasAssetStateRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT ass_state FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['ass_state'] == 1) return TRUE;
+  return FALSE;
+}
+
+// Players
+function hasPlayerAddRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT pla_add FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['pla_add'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasPlayerEditRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT pla_edit FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['pla_edit'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasPlayerDeleteRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT pla_delete FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['pla_delete'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasPlayerRebootRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT pla_reboot FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['pla_reboot'] == 1) return TRUE;
+  return FALSE;
+}
+
+// Module
+function hasModuleMultiRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT mod_multi FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['mod_multi'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasModuleAddonRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT mod_addon FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['mod_addon'] == 1) return TRUE;
+  return FALSE;
+}
+
+// System
+function hasSettingsSystemRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT set_system FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['set_system'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasSettingsPublicRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT set_public FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['set_public'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasSettingsUserAddRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT set_user_add FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['set_user_add'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasSettingsUserEditRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT set_user_edit FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['set_user_edit'] == 1) return TRUE;
+  return FALSE;
+}
+
+function hasSettingsUserDeleteRight($userID){
+  global $db;
+  $groupID = getGroupID($userID);
+  $sql      = $db->query("SELECT set_user_delete FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if ($return['set_user_delete'] == 1) return TRUE;
+  return FALSE;
+}
+
+// Login
 if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password'])){
   $user           = $_POST['user'];
   $pass           = md5(stripslashes($_POST['password']));
@@ -261,10 +383,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'logout'){
 }
 
 if(isset($_POST['saveAccount'])){
-  $firstname  = $_POST['firstname'];
-  $name       = $_POST['name'];
-  $user       = $_POST['username'];
-  $firstStart = $_POST['firstStartUser'];
+  $firstname       = $_POST['firstname'];
+  $name            = $_POST['name'];
+  $user            = $_POST['username'];
+  $refreshscreen	 = $_POST['refreshscreen'];
+  $firstStart      = $_POST['firstStartUser'];
   if($_POST['password1'] != '' && $_POST['password2'] != ''){
     $pass1 = md5($_POST['password1']);
     $pass2 = md5($_POST['password2']);
@@ -275,12 +398,12 @@ if(isset($_POST['saveAccount'])){
   }
 
   if($user && ($pass1 == $pass2)){
-    $db->exec("UPDATE `users` SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."' WHERE userID='".$loginUserID."'");
+    $db->exec("UPDATE `users` SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."', refreshscreen='".$refreshscreen."' WHERE userID='".$loginUserID."'");
     if($firstStart == 1){
       $db->exec("UPDATE settings SET firstStart='2' WHERE settingsID='1'");
     }
     sysinfo('success', 'Account data saved!', 0);
   }
   else sysinfo('danger', 'Error!');
-  redirect($backLink);
+  //redirect($backLink);
 }
