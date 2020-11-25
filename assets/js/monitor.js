@@ -14,6 +14,7 @@ ________________________________________
 ________________________________________
 */
 
+// Functions
 function setNotification(style, message) {
   localStorage.setItem("notification_style", style);
   localStorage.setItem("notification_message", message);
@@ -24,6 +25,14 @@ $('.close_modal').on('click', function(){
   var closeClass = $(this).data('close');
   $(closeClass).modal('hide');
   location.reload(0);
+});
+
+$(".toggle_div").change(function(){
+ $($(this).data('src')).toggle();
+});
+
+$('.modal').on('shown.bs.modal', function(){
+  $(this).find('[autofocus]').focus();
 });
 
 function getUrlParameterByName(name, url)
@@ -381,10 +390,6 @@ $('input:radio[name="add_player_mode"]').click(function(){
   $(targetBox).show();
 });
 
-$("#authentication").change(function(){
- $(".authentication").toggle();
-});
-
 $("#newPlayerDiscover").submit(function(e) {
   e.preventDefault();
   $(".start_discovery").html('Loading...');
@@ -553,6 +558,34 @@ $('#usersLength_change').change( function() {
 //   });
 // });
 
+// Groups
+
+var groups_table = $('#groups').DataTable({
+  dom: 'tipr',
+  stateSave: false,
+  autoWidth: false,
+  order: [[ 0, 'asc' ]],
+  initComplete: (settings, json)=>{
+      $('.dataTables_paginate').appendTo('#dataTables_paginate');
+      $('.dataTables_info').appendTo('#dataTables_info');
+  },
+  language: {
+      url: "assets/php/datatable_lang.json.php"
+  }
+});
+
+$('#groupsSearch').keyup(function(){
+    groups_table.search( $(this).val() ).draw() ;
+})
+
+$('#groupsLength_change').val(groups_table.page.len());
+
+$('#groupsLength_change').change( function() {
+    groups_table.page.len( $(this).val() ).draw();
+});
+
+
+
 
 // Admin Log
 
@@ -660,7 +693,3 @@ $(document).ready(function() {
 setInterval('reloadPlayerImage();',settingsRefreshRate);
 setInterval('loadDeviceInfo();', 1000);
 setInterval('loadRunner();', 2000);
-
-$('.modal').on('shown.bs.modal', function(){
-  $(this).find('[autofocus]').focus();
-});
