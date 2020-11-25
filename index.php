@@ -41,6 +41,7 @@ echo'
 		<!-- Libs JS -->
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 		<script src="assets/js/jquery-ui.min.js"></script>
 		<script src="assets/libs/DataTables/datatables.min.js"></script>
 		<script src="assets/libs/dropzone/dropzone.min.js"></script>
@@ -176,7 +177,7 @@ echo'
 		            <div class="mb-3">
 		              <div class="form-label">'.Translation::of('player_authentication').'</div>
 		              <label class="form-check form-switch">
-		                <input id="authentication" class="form-check-input" type="checkbox">
+		                <input class="form-check-input toggle_div" data-src=".authentication" type="checkbox">
 		                <span class="form-check-label">Player is protected by basic authentication</span>
 		              </label>
 		            </div>
