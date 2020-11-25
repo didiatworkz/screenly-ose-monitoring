@@ -25,7 +25,7 @@ $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $assetString = NULL;
   $assets = json_decode($player['assets'], true);
-  for ($i=0; $i < sizeof($assets); $i++) {
+  for ($i=0; $i < count($assets); $i++) {
     $assetString .= ' '.$assets[$i]['asset_id'].' '.str_replace('/', ' ', $assets[$i]['name']);
   }
 
