@@ -40,11 +40,10 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $disk             = round($disk_total - $disk_free, 2);
     $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
-    $platform         = explode(',', $platform);
-    $platformName     = $platform['0'];
+    
+    list($platformName, $platformVersion) = explode(',', $platform);
     $platformName     = str_replace("'", "", $platformName);
     $platformName     = str_replace("(", "", $platformName);
-    $platformVersion  = $platform['1'];
     $platformVersion  = str_replace("'", "", $platformVersion);
     $uptime           = getDeviceInfoData($ip, 'uptime');
     $uptimeDifferent  = timeago($uptime);
