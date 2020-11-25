@@ -137,6 +137,14 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
                 <div class="help-block with-errors"></div>
                 </div>
               </div>
+              <hr />
+              <h2 id="account">Player Control</h2>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('refresh_time_player').'</label>
+                <div class="col">
+                  <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+                </div>
+              </div>
             </div>
             <div class="card-footer d-flex align-items-center">
               <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
@@ -230,12 +238,6 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
               </div>
               <hr />
               <h2 id="player">Player Control</h2>
-              <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('refresh_time_player').'</label>
-                <div class="col">
-                  <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
-                </div>
-              </div>
               <div class="form-group mb-3 row">
                 <label class="form-label col-3 col-form-label">'.Translation::of('delay_of_weeks').'</label>
                 <div class="col">
@@ -526,7 +528,7 @@ else {
       </div>
       <div class="col-md-6 col-xl-3">
         <div class="card">
-          <a href="#">
+          <a href="index.php?site=groupmanagement">
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
