@@ -35,6 +35,7 @@ while($player	= $playerSQL->fetchArray(SQLITE3_ASSOC)){
 
 
   // SET Status offline
+  $db->exec("UPDATE `player` SET assets='' WHERE playerID='".$id."'");
   $db->exec("UPDATE `player` SET status='0' WHERE playerID='".$id."'");
   $db->exec("UPDATE `player` SET bg_sync='".$now."' WHERE playerID='".$id."'");
 
