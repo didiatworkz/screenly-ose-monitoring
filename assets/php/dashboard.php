@@ -17,9 +17,12 @@ _______________________________________
 _______________________________________
 */
 
+$_moduleName = 'Dashboard';
+$_moduleLink = 'index.php?site=dashboard';
+
 if((isset($_GET['action']) && $_GET['action'] == 'refresh')){
   shell_exec('curl http://localhost/assets/php/runner.php');
-  redirect('index.php?site=dashboard');
+  redirect($_moduleLink);
 }
 
 $playerSQL = $db->query("SELECT * FROM player");
@@ -127,7 +130,7 @@ echo '
           Overview
         </div>
         <h2 class="page-title">
-          Dashboard
+          '.$_moduleName.'
         </h2>
       </div>
       <div class="col-auto ml-auto text-muted">
@@ -172,19 +175,19 @@ echo '
         <div class="card-body">
           <p class="mb">Online Status</p>
           <div class="progress progress-separated mb-4">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: '.$statOfflinePro.'%"></div>
             <div class="progress-bar bg-success" role="progressbar" style="width: '.$statOnlinePro.'%"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: '.$statOfflinePro.'%"></div>
           </div>
           <div class="row">
-            <div class="col-auto d-flex align-items-center pr-2">
-              <span class="legend mr-2 bg-danger"></span>
-              <span>Offline</span>
-              <span class="ml-2 text-muted">'.$statOffline.' Devices</span>
-            </div>
             <div class="col-auto d-flex align-items-center px-2">
               <span class="legend mr-2 bg-success"></span>
               <span>Online</span>
               <span class="ml-2 text-muted">'.$statOnline.' Devices</span>
+            </div>
+            <div class="col-auto d-flex align-items-center pr-2">
+              <span class="legend mr-2 bg-danger"></span>
+              <span>Offline</span>
+              <span class="ml-2 text-muted">'.$statOffline.' Devices</span>
             </div>
           </div>
         </div>
@@ -234,4 +237,4 @@ echo '
 
   </div>
 </div>
-            ';
+';
