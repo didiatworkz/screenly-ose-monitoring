@@ -12,7 +12,7 @@
        info@atworkz.de
 ________________________________________
       Screenly OSE Monitor
-        Discover Module
+       Discover Function
 ________________________________________
 */
 //  discover.php?range=192.168.178.0/24
