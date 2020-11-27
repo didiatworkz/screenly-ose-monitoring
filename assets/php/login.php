@@ -22,6 +22,10 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Login';
+$_moduleLink = '';
+
+
 echo'
 <body class="antialiased border-top-wide border-primary d-flex flex-column">
   <div class="flex-fill d-flex flex-column justify-content-center">
