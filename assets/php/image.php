@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-           Image Module
+           Image Function
 _______________________________________
 */
 
