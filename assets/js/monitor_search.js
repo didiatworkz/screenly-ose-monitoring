@@ -26,16 +26,17 @@ if ( window["Bloodhound"] ) {
 
   $('#somo_search input').typeahead(null, {
     name: 'somo-components',
-    display: '',
     source: somoComponents,
     templates: {
       suggestion: function(data) {
         return '<a href="'+ location.origin +'/'+ data.url +'"><h4 class="mb-1">'+ data.title +'</h4><small>'+ data.description +'</small></a>';
       }
-    }
+    },
+    displayKey: 'title',
   });
 
   $('#somo_search input').bind('typeahead:select', function(ev, data) {
-    window.location.href = location.origin +'/'+ data.url;
+    //window.location.href = location.origin +'/'+ data.url;
+    console.log( location.origin +'/'+ data.url);
   });
 }
