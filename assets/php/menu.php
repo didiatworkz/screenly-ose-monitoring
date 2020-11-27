@@ -22,10 +22,11 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Menu';
+$_moduleLink = '';
 
 
 $nav_active = ' active';
-
 
 if(getPlayerCount() >= 2 && hasModuleRight($loginUserID, 'multi')){
   $multiMenu = '
