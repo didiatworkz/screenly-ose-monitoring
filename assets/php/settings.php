@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-             Settings Site
+           Settings Module
 _______________________________________
 */
 
@@ -22,8 +22,11 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Settings';
+$_moduleLink = 'index.php?site=settings';
+
 // Public Access Link
-if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && getGroupID($loginUserID) == 1){
+if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && (getGroupID($loginUserID) == 1 || hasSettingsPublicRight($loginUserID))){
   $now 	 = time();
   $token = md5($loginUsername.$loginPassword.$now);
 
@@ -63,8 +66,8 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
             Profile Settings
           </h2>
           <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-            <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=profile">Profile Settings</a></li>
+            <li class="breadcrumb-item"><a href="'.$_moduleLink.'">'.$_moduleName.'</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&view=profile">Profile Settings</a></li>
           </ol>
         </div>
         <div class="col-auto ml-auto d-print-none">
@@ -72,7 +75,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="d-none d-lg-block col-lg-3 order-lg-1 mb-4">
+      <div class="col-lg-3 order-lg-1 mb-4">
         <div class="sticky-top">
           <div class="card">
             <div class="card-body text-center">
@@ -87,12 +90,12 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
             <div class="card-body text-center">
               <div class="text-muted">Change Avatar</div>
               <div class="mb-3">
-                <form action="index.php?site=settings&view=profile" class="avatar_upload dropzone">
+                <form action="'.$_moduleLink.'&view=profile" class="avatar_upload dropzone">
                   <div class="fallback">
                     <input name="file" type="file" />
                   </div>
                 </form>
-                <a href="index.php?site=settings&view=profile&removeavatar=1" class="btn btn-outline-danger btn-sm btn-block">Remove Avatar</a>
+                <a href="'.$_moduleLink.'&view=profile&removeavatar=1" class="btn btn-outline-danger btn-sm btn-block">Remove Avatar</a>
               </div>
             </div>
           </div>
@@ -120,7 +123,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
               <div class="form-group mb-3 row">
                 <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
                 <div class="col">
-                  <input name="username" type="text" class="form-control" id="InputUsername" placeholder="'.Translation::of('new_username').'" value="'.$loginUsername.'" />
+                  <input name="username" type="text" class="form-control" id="InputUsername" placeholder="'.Translation::of('new_username').'" value="'.$loginUsername.'" require />
                   <div class="help-block with-errors"></div>
                 </div>
               </div>
@@ -147,7 +150,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
               </div>
             </div>
             <div class="card-footer d-flex align-items-center">
-              <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+              <a href="'.$_moduleLink.'" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
               <button type="submit" name="saveAccount" class="btn btn-primary">'.Translation::of('update').'</button>
             </div>
           </form>
@@ -157,7 +160,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
   </div>
   ';
 }
-else if(isset($_GET['view']) && $_GET['view'] == 'system'){
+else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRight($loginUserID)){
   //// TODO: Design and Timezone + Systeminformation
   echo '
   <div class="container-xl">
@@ -168,15 +171,15 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
             System Settings
           </h2>
           <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-            <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=system">System Settings</a></li>
+            <li class="breadcrumb-item"><a href="'.$_moduleLink.'">'.$_moduleName.'</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&view=system">System Settings</a></li>
           </ol>
         </div>
         <div class="col-auto ml-auto d-print-none"></div>
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="d-none d-lg-block col-lg-3 order-lg-1 mb-4">
+      <div class="col-lg-3 order-lg-1 mb-4">
         <div class="sticky-top">
           <div class="card">
             <div class="card-body text-center">
@@ -260,7 +263,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
               </div>
             </div>
             <div class="card-footer d-flex align-items-center">
-              <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+              <a href="'.$_moduleLink.'" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
               <button type="submit" name="saveSettings" class="btn btn-primary">'.Translation::of('update').'</button>
             </div>
           </form>
@@ -270,7 +273,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
   </div>
   ';
 }
-else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
+else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess' && hasSettingsPublicRight($loginUserID)){
 
   $tokenLink = 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/_public.php?key='.$set['token'];
 
@@ -283,8 +286,8 @@ else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
             Public Access Settings
           </h2>
           <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-            <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=publicaccess">Public Access Settings</a></li>
+            <li class="breadcrumb-item"><a href="'.$_moduleLink.'">'.$_moduleName.'</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&view=publicaccess">Public Access Settings</a></li>
           </ol>
         </div>
         <div class="col-auto ml-auto d-print-none">
@@ -313,8 +316,8 @@ else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
               </div>
             </div>
             <div class="card-footer d-flex align-items-center">
-              <a href="index.php?site=settings" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
-              <a href="index.php?site=settings&view=publicaccess&generateToken=yes" class="btn btn-primary">'.Translation::of('generate_token').'</a>
+              <a href="'.$_moduleLink.'" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+              <a href="'.$_moduleLink.'&view=publicaccess&generateToken=yes" class="btn btn-primary">'.Translation::of('generate_token').'</a>
             </div>
           </form>
         </div>
@@ -324,9 +327,9 @@ else if(isset($_GET['view']) && $_GET['view'] == 'publicaccess'){
 
   ';
 }
-else if(isset($_GET['view']) && $_GET['view'] == 'log'){
+else if(isset($_GET['view']) && $_GET['view'] == 'log' && isAdmin($loginUserID)){
   if(isset($_GET['action']) && $_GET['action'] == 'reset'){
-    systemLog('Settings', 'Admin Log: Start Log reset', $loginUserID, 0);
+    systemLog($_moduleName, 'Admin Log: Start Log reset', $loginUserID, 0);
     $db->exec("DELETE FROM log");
     //sysinfo('success', Translation::of('msg.player_delete_successfully'));
     redirect($backLink, 0);
@@ -342,12 +345,12 @@ else if(isset($_GET['view']) && $_GET['view'] == 'log'){
               Admin Log
             </h2>
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-              <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=settings&view=log">Admin Log</a></li>
+              <li class="breadcrumb-item"><a href="'.$_moduleLink.'">'.$_moduleName.'</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&view=log">Admin Log</a></li>
             </ol>
           </div>
           <div class="col-auto ml-auto">
-            <a href="#" data-toggle="modal" data-target="#confirmDeleteLog" data-href="index.php?site=settings&view=log&action=reset" class="btn btn-danger"  title="delete">
+            <a href="#" data-toggle="modal" data-target="#confirmMessage" data-text="Do you really want to reset the log files?" data-status="danger" data-href="'.$_moduleLink.'&view=log&action=reset" class="btn btn-danger"  title="delete">
               Reset Log
             </a>
           </div>
@@ -419,23 +422,6 @@ else if(isset($_GET['view']) && $_GET['view'] == 'log'){
 
   </div>
 </div>
-<!-- confirmDeleteLog -->
-<div class="modal modal-blur fade" id="confirmDeleteLog" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">'.Translation::of('attention').'!</h5>
-      </div>
-      <div class="modal-body">
-        Do you really want to reset the log files?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
-        <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
-      </div>
-    </div>
-  </div>
-</div>
     ';
   }
 }
@@ -446,7 +432,7 @@ else {
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">
-            Settings
+            '.$_moduleName.'
           </h2>
         </div>
         <div class="col-auto ml-auto d-print-none">
@@ -459,7 +445,7 @@ else {
     <div class="row row-deck">
       <div class="col">
         <div class="card">
-          <a href="index.php?site=settings&view=profile">
+          <a href="'.$_moduleLink.'&view=profile">
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21v-2a4 4 0 0 1 4 -4h5a4 4 0 0 1 4 4v2"></path></svg></span>
@@ -470,11 +456,10 @@ else {
           </a>
         </div>
       </div>';
-      if($loginGroupID == 1){
-      echo'
+      if($loginGroupID == 1 || hasSettingsSystemRight($loginUserID)) echo'
       <div class="col-md-6">
         <div class="card">
-          <a href="index.php?site=settings&view=system">
+          <a href="'.$_moduleLink.'&view=system">
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
@@ -486,12 +471,14 @@ else {
             </div>
           </div>
         </a>
-      </div>
+      </div>';
+      echo '
     </div>
-    <div class="row row-deck">
-      <div class="col-md-6 col-xl-3">
+    <div class="row row-deck">';
+    if($loginGroupID == 1 || hasSettingsPublicRight($loginUserID)) echo'
+      <div class="col">
         <div class="card">
-          <a href="index.php?site=settings&view=publicaccess">
+          <a href="'.$_moduleLink.'&view=publicaccess">
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
@@ -503,10 +490,12 @@ else {
             </div>
           </div>
         </a>
-      </div>
+      </div>';
+    if($loginGroupID == 1)
+      echo'
       <div class="col-md-6 col-xl-3">
         <div class="card">
-          <a href="index.php?site=settings&view=log">
+          <a href="'.$_moduleLink.'&view=log">
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
@@ -518,8 +507,9 @@ else {
             </div>
           </div>
         </a>
-      </div>
-      <div class="col-md-6 col-xl-3">
+      </div>';
+      if($loginGroupID == 1 || hasSettingsUserRight($loginUserID)) echo'
+      <div class="col">
         <div class="card">
           <a href="index.php?site=usermanagement">
             <div class="card-body text-center">
@@ -533,7 +523,8 @@ else {
             </div>
           </div>
         </a>
-      </div>
+      </div>';
+      if($loginGroupID == 1) echo'
       <div class="col-md-6 col-xl-3">
         <div class="card">
           <a href="index.php?site=groupmanagement">
@@ -544,14 +535,13 @@ else {
                 </span>
               </div>
               <div class="card-title mb-1">Group Settings</div>
-              <div class="text-muted">Create Groups, Add Members</div>
+              <div class="text-muted">Create Groups, Manage Rights</div>
             </div>
           </div>
         </a>
-      </div>
-    </div>';
-  }
-  echo'
+      </div>';
+      echo'
+    </div>
   </div>
   ';
 }
