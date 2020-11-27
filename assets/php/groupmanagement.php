@@ -29,56 +29,79 @@ if(getGroupID($loginUserID) == 1){
   $_moduleLink = 'index.php?site=groupmanagement';
 
   if(isset($_POST['saveGroup'])){
-      $firstname  = $_POST['firstname'];
       $name       = $_POST['name'];
-      $user       = $_POST['username'];
-      $pass1      = md5($_POST['password1']);
-      $pass2      = md5($_POST['password2']);
-      $status     = $_POST['status'];
-      $group      = $_POST['group'];
-
-      if($user && ($pass1 == $pass2)){
-        $db->exec("INSERT INTO `users` (username, password, firstname, name, refreshscreen, active) values('".$user."', '".$pass2."', '".$firstname."', '".$name."', 5, '".$status."')");
-        $userSQL = $db->query("SELECT userID FROM `users` WHERE username='".$user."' AND password='".$pass2."'");
-        $userSQL = $userSQL->fetchArray(SQLITE3_ASSOC);
-        $db->exec("INSERT INTO `userGroupMapping` (userID, groupID) values('".$userSQL['userID']."', '".$group."')");
-        sysinfo('success', $user.' updated successfully!');
+      if($name){
+        $db->exec("INSERT INTO `userGroups` (name) values('".$name."')");
+        sysinfo('success', 'Create Group successfully!');
       }
-
       redirect($_moduleLink, 0);
   }
 
   if(isset($_POST['editGroup'])){
-    $firstname  = $_POST['firstname'];
-    $name       = $_POST['name'];
-    $user       = $_POST['username'];
-    $status     = $_POST['status'];
-    $group      = $_POST['group'];
-    $userID     = $_POST['userID'];
 
-    if($user && $userID){
-      if($_POST['password1'] != '' && $_POST['password2'] != ''){
-        $pass1 = md5($_POST['password1']);
-        $pass2 = md5($_POST['password2']);
-        if($pass1 == $pass2) $db->exec("UPDATE `users` SET username='".$user."', password='".$pass2."', firstname='".$firstname."', name='".$name."', active='".$status."' WHERE userID='".$userID."'");
-      }
-      else {
-        $db->exec("UPDATE `users` SET username='".$user."', firstname='".$firstname."', name='".$name."', active='".$status."' WHERE userID='".$userID."'");
-      }
-      $db->exec("UPDATE `userGroupMapping` SET groupID='".$group."' WHERE userID='".$userID."'");
-      sysinfo('success', $user.' updated successfully!');
+    $groupID          = $_POST['groupID'];
+    $name             = $_POST['name'];
+    $ass_add          = isset($_POST['ass_add']) ? 1 : 0;
+    $ass_edit         = isset($_POST['ass_edit']) ? 1 : 0;
+    $ass_delete       = isset($_POST['ass_delete']) ? 1 : 0;
+    $ass_clean        = isset($_POST['ass_clean']) ? 1 : 0;
+    $ass_state        = isset($_POST['ass_state']) ? 1 : 0;
+
+    $pla_add          = isset($_POST['pla_add']) ? 1 : 0;
+    $pla_edit         = isset($_POST['pla_edit']) ? 1 : 0;
+    $pla_delete       = isset($_POST['pla_delete']) ? 1 : 0;
+    $pla_reboot       = isset($_POST['pla_reboot']) ? 1 : 0;
+
+    $set_system       = isset($_POST['set_system']) ? 1 : 0;
+    $set_public       = isset($_POST['set_public']) ? 1 : 0;
+    $set_user_add     = isset($_POST['set_user_add']) ? 1 : 0;
+    $set_user_edit    = isset($_POST['set_user_edit']) ? 1 : 0;
+    $set_user_delete  = isset($_POST['set_user_delete']) ? 1 : 0;
+
+    $players          = isset($_POST['player_restriction']) ? serialize($_POST['player_restriction']) : '';
+    $players_enable   = isset($_POST['players_enable']) ? 1 : 0;
+
+    $modules          = isset($_POST['module_restriction']) ? serialize($_POST['module_restriction']) : '';
+    $modules_enable   = isset($_POST['modules_enable']) ? 1 : 0;
+
+    if($players_enable == 0) $players = '';
+    if($modules_enable == 0) $modules = '';
+
+
+    if($groupID && $name){
+      $db->exec("UPDATE `userGroups` SET
+        name='".$name."',
+        ass_add='".$ass_add."',
+        ass_edit='".$ass_edit."',
+        ass_delete='".$ass_delete."',
+        ass_clean='".$ass_clean."',
+        ass_state='".$ass_state."',
+        pla_add='".$pla_add."',
+        pla_edit='".$pla_edit."',
+        pla_delete='".$pla_delete."',
+        pla_reboot='".$pla_reboot."',
+        set_system='".$set_system."',
+        set_public='".$set_public."',
+        set_user_add='".$set_user_add."',
+        set_user_edit='".$set_user_edit."',
+        set_user_delete='".$set_user_delete."',
+        players='".$players."',
+        players_enable='".$players_enable."',
+        modules='".$modules."',
+        modules_enable='".$modules_enable."' WHERE groupID='".$groupID."'");
+      sysinfo('success', 'Group updated successfully!');
     }
-    redirect($backLink, 0);
+    redirect($_moduleLink, 0);
   }
 
   if(isset($_GET['action']) && $_GET['action'] == 'deleteGroup'){
-    $userID = $_GET['userID'];
-    if(isset($userID) AND $userID != $loginUserID){
-      $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
-      $db->exec("DELETE FROM `userGroupMapping` WHERE userID='".$userID."'");
-      sysinfo('success', 'User successfully deleted!');
+    $groupID = $_GET['groupID'];
+    if(isset($groupID) AND isAdmin($loginUserID)){
+      $db->exec("UPDATE `userGroupMapping` SET groupID='0' WHERE groupID='".$groupID."'");
+      $db->exec("DELETE FROM `userGroups` WHERE groupID='".$groupID."'");
+      sysinfo('success', 'Group successfully deleted!');
     }
-    redirect($backLink, 0);
+    redirect($_moduleLink, 0);
   }
 
   if(isset($_GET['action']) && $_GET['action'] == 'newGroup'){
@@ -88,12 +111,12 @@ if(getGroupID($loginUserID) == 1){
         <div class="row align-items-center">
           <div class="col-auto">
             <h2 class="page-title">
-              New User
+              New Group
             </h2>
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
               <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-              <li class="breadcrumb-item"><a href="index.php?site=usermanagement">User Settings</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=usermanagement&action=newUser">New User</a></li>
+              <li class="breadcrumb-item"><a href="index.php?site=groupmanagement">Group Settings</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=groupmanagement&action=newGroup">New Group</a></li>
             </ol>
           </div>
           <div class="col-auto ml-auto d-print-none">
@@ -103,65 +126,19 @@ if(getGroupID($loginUserID) == 1){
       <div class="row justify-content-center">
         <div class="col-lg-12">
           <div class="card card-lg">
-            <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
+            <form id="groupForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
               <div class="card-body">
-              <h2 id="personal">Personal</h2>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">'.Translation::of('firstname').'</label>
-                  <div class="col">
-                    <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" required />
-                  </div>
-                </div>
+              <h2 id="personal">Group</h2>
                 <div class="form-group mb-3 row">
                   <label class="form-label col-3 col-form-label">'.Translation::of('name').'</label>
                   <div class="col">
-                    <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" required />
-                  </div>
-                </div>
-                <hr />
-                <h2 id="rights">User Rights</h2>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">Role</label>
-                  <div class="col">
-                    <select class="form-control" id="InputGroup" name="group">
-                      '.createGroupsSelect(0).'
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">Status</label>
-                  <div class="col">
-                  <select class="form-control" id="InputStatus" name="status">
-                    '.createStatusSelect(0).'
-                  </select>
-                  </div>
-                </div>
-                <hr />
-                <h2 id="account">Account</h2>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                  <div class="col">
-                    <input name="username" type="text" class="form-control" id="InputUsername" placeholder="Username" required />
-                    <div class="help-block with-errors"></div>
-                  </div>
-                </div>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                  <div class="col">
-                    <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="Enter Password" />
-                  </div>
-                </div>
-                <div class="form-group mb-3 row">
-                  <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
-                  <div class="col">
-                  <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="Confirm Password" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" />
-                  <div class="help-block with-errors"></div>
+                    <input name="name" type="text" class="form-control" id="InputName" autofocus required />
                   </div>
                 </div>
               </div>
               <div class="card-footer d-flex align-items-center">
-                <a href="index.php?site=usermanagement" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
-                <button type="submit" name="saveUser" class="btn btn-primary">'.Translation::of('save').'</button>
+                <a href="index.php?site=groupmanagement" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+                <button type="submit" name="saveGroup" value="1" class="btn btn-primary">'.Translation::of('save').'</button>
               </div>
             </form>
           </div>
@@ -171,11 +148,6 @@ if(getGroupID($loginUserID) == 1){
   }
 
   elseif(isset($_GET['action']) && $_GET['action'] == 'editGroup'){
-    function checkboxState($value){
-      if($value == 1) $output = ' checked="1"';
-      else $output = '';
-      return $output;
-    }
 
     $groupID   = $_GET['groupID'];
     if(TRUE) {
@@ -213,6 +185,7 @@ if(getGroupID($loginUserID) == 1){
 
       $playerRestrictionList = NULL;
       $playerRestriction = unserialize($group['players']);
+      if(empty($playerRestriction)) $playerRestriction = array('0');
 
       $playerSQL  = $db->query("SELECT playerID, name, address FROM `player`");
 
@@ -240,6 +213,7 @@ if(getGroupID($loginUserID) == 1){
 
       $moduleRestrictionList = NULL;
       $moduleRestriction = unserialize($group['modules']);
+      if(empty($moduleRestriction)) $moduleRestriction = array ('0');
 
       $moduleArray = array(
         array('addon', 'Add-On'),
@@ -291,7 +265,7 @@ if(getGroupID($loginUserID) == 1){
           </div>
         </div>
         <div class="row justify-content-center">
-          <div class="d-none d-lg-block col-lg-4 order-lg-1 mb-4">
+          <div class="col-lg-4 order-lg-1 mb-4">
             <div class="sticky-top">
               <div class="card">
                 <div class="card-body">
@@ -301,13 +275,26 @@ if(getGroupID($loginUserID) == 1){
                   </div>
                 </div>
               </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <label class="form-label">Quick Rights</label>
+                  <div class="row mb-3">
+                    <button class="btn btn-outline-success quick_rights mb-2" data-src="add">Select all rights to add</button>
+                    <button class="btn btn-outline-warning quick_rights mb-2" data-src="edit">Select all rights to edit</button>
+                    <button class="btn btn-outline-danger quick_rights mb-2" data-src="delete">Select all rights to delete</button>
+                    <button class="btn btn-outline-primary quick_rights mb-2" data-src="special">Select all rights for special functions</button>
+                    <button class="btn btn-outline-secondary quick_rights mb-2" data-src="reset">Reset all rights</button>
+                  </div>
+                </div>
+              </div>
               <h5 class="subheader">On this page</h5>
               <ul class="list-unstyled">
                 <li class="toc-entry toc-h2"><a href="#gSettings">Group Settings</a></li>
                 <li class="toc-entry toc-h2"><a href="#asset">Asset Restrictions</a></li>
                 <li class="toc-entry toc-h2"><a href="#player">Player Restrictions</a></li>
                 <li class="toc-entry toc-h2"><a href="#setting">Setting Restrictions</a></li>
-                <li class="toc-entry toc-h2"><a href="#module">Module Restrictions</a></li>
+                <li class="toc-entry toc-h2"><a href="#moduleR">Module Restrictions</a></li>
               </ul>
             </div>
           </div>
@@ -388,7 +375,7 @@ if(getGroupID($loginUserID) == 1){
                           <span class="col">Add player</span>
                           <span class="col-auto">
                             <label class="form-check form-check-single form-switch">
-                              <input class="form-check-input" name ="pla_add" type="checkbox"'.checkboxState($group['pla_add']).'>
+                              <input class="form-check-input" name="pla_add" type="checkbox"'.checkboxState($group['pla_add']).'>
                             </label>
                           </span>
                         </label>
@@ -500,7 +487,7 @@ if(getGroupID($loginUserID) == 1){
                   </div>
                   <hr />
                   <div class="mb-3">
-                    <label id="module" class="form-label">Module Restrictions</label>
+                    <label id="moduleR" class="form-label">Module Restrictions</label>
                     <div class="divide-y">
                       <div>
                         <label class="row">
@@ -531,7 +518,7 @@ if(getGroupID($loginUserID) == 1){
                 <div class="card-footer d-flex align-items-center">
                   <input type="hidden" name="groupID" value="'.$group['groupID'].'" />
                   <a href="index.php?site=groupmanagement" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
-                  <button type="submit" name="editGroup" class="btn btn-primary">'.Translation::of('update').'</button>
+                  <button type="submit" name="editGroup" value="1" class="btn btn-primary">'.Translation::of('update').'</button>
                 </div>
               </form>
             </div>

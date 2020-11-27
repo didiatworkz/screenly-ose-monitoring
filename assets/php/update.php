@@ -29,7 +29,7 @@ if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
   $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");
 }
 
-if(@file_exists('update.txt')) {
+if(@file_exists('update.txt') && isAdmin($loginUserID)) {
   $update_badge = '<span class="badge bg-red blink"></span>';
   $update_info = '
   <div class="alert alert-info text-center" role="alert">

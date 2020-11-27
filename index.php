@@ -41,7 +41,6 @@ echo'
 		<!-- Libs JS -->
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 		<script src="assets/js/jquery-ui.min.js"></script>
 		<script src="assets/libs/DataTables/datatables.min.js"></script>
 		<script src="assets/libs/dropzone/dropzone.min.js"></script>
@@ -107,8 +106,9 @@ echo'
 			}
 			echo '
 		</div>
-		<!-- END CONTENT -->
+		<!-- END CONTENT -->';
 
+		if(hasPlayerAddRight($loginUserID)) echo'
 		<!-- newPlayer -->
 		<div class="modal modal-blur fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -232,9 +232,9 @@ echo'
 		      </div>
 		    </div>
 		  </div>
-		</div>
+		</div>';
 
-
+		echo '
 		<!-- info -->
 		<div class="modal modal-blur fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -296,8 +296,9 @@ echo'
           </div>
 				</div>
 			</div>
-		</div>
+		</div>';
 
+		if(hasPlayerDeleteRight($loginUserID)) echo'
 		<!-- confirmDelete -->
 		<div class="modal modal-blur fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">

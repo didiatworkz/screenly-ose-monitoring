@@ -26,7 +26,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 // GET: action:view - Player detail overview
 if(isset($_GET['action']) && $_GET['action'] == 'view'){
-  if(isset($_GET['playerID'])){
+  if(isset($_GET['playerID']) && hasPlayerRight($loginUserID, $_GET['playerID'])){
     $playerID 	= $_GET['playerID'];
     $sqlCount 	= $db->query("SELECT COUNT(*) FROM player WHERE playerID='".$playerID."'");
     $count 		  = $sqlCount->fetchArray(SQLITE3_ASSOC);
@@ -49,6 +49,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       $newAsset				= '';
       $asset_edit_btn = '';
       $asset_delete_btn = '';
+      $asset_state_btn = '';
       $bulkDelete = '';
       $player_edit_btn = '';
       $player_delete_btn = '';
@@ -78,12 +79,37 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
         $showBox	 		= '';
         $statusBanner = '';
+        $reboot       = '';
         $colSize	 		= 'col-sm-6 col-lg-3';
         $status		 		= strtolower(Translation::of('online'));
         $statusColor 	= 'success';
         $navigation 	= '<div class="row"><div class="col-xs-12 col-md-6 mb-2"><button data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-sm btn-block btn-info" title="'.Translation::of('previous_asset').'"><i class="tim-icons icon-double-left"></i> '.Translation::of('asset').'</button></div> <div class="col-xs-12 col-md-6 mb-2"> <button data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-sm btn-block btn-info" title="'.Translation::of('next_asset').'">'.Translation::of('asset').' <i class="tim-icons icon-double-right"></i></button></div></div>';
-        $management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-primary btn-block"><i class="tim-icons icon-spaceship"></i> '.Translation::of('open_management').'</a>';
-        $reboot				= '<button data-playerid="'.$player['playerID'].'" class="btn btn-block btn-info reboot" title="'.Translation::of('reboot_player').'"><i class="tim-icons icon-refresh-01"></i> '.Translation::of('reboot_player').'</button>';
+        $management		= '<a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-none d-sm-inline-block">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <polyline points="15 15 15 9 9 9"></polyline>
+          </svg>
+          Webinterface
+        </a>
+        <a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-sm-none btn-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <polyline points="15 15 15 9 9 9"></polyline>
+          </svg>
+        </a>';
+        if(hasPlayerRebootRight($loginUserID)) $reboot = '<button data-playerid="'.$player['playerID'].'" class="btn btn-danger btn-block mt-2 reboot">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
+            <line x1="12" y1="4" x2="12" y2="12"></line>
+          </svg>
+          Reboot
+        </button>';
+
         $script 			= '
         <tr>
           <td>'.Translation::of('monitor_addon').':</td>
@@ -321,23 +347,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <!-- Page title actions -->
           <div class="col-auto ml-auto" '.$showBox.'>
             '.$deviceInfoHead.'
-            <a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-none d-sm-inline-block">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z"></path>
-                <circle cx="12" cy="12" r="9"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <polyline points="15 15 15 9 9 9"></polyline>
-              </svg>
-              Webinterface
-            </a>
-            <a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-sm-none btn-icon" aria-label="Create new report">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z"></path>
-                <circle cx="12" cy="12" r="9"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <polyline points="15 15 15 9 9 9"></polyline>
-              </svg>
-            </a>
+            '.$management.'
           </div>
         </div>
       </div>
@@ -421,25 +431,21 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="col-xs-12 col-sm-4 col-lg-3 order-sm-4 order-lg-4 order-xl-4" '.$showBox.'>
             <div class="card">
               <img src="'.$loadingImage.'" class="card-img-top player" data-src="'.$player['address'].'" alt="...">
-            </div>
+            </div>';
 
+            if($bulkDelete != '' || $reboot != '') echo '
             <div class="card">
               <div class="card-body">
                 <div class="d-flex align-items-center">
                   <div class="subheader">Player Control</div>
                 </div>
                 '.$bulkDelete.'
-                <button data-playerid="'.$player['playerID'].'" class="btn btn-danger btn-block mt-2 reboot">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z"></path>
-                    <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
-                    <line x1="12" y1="4" x2="12" y2="12"></line>
-                  </svg>
-                  Reboot
-                </button>
+                '.$reboot.'
 
               </div>
-            </div>
+            </div>';
+
+            echo '
           </div>
           <div class="col-xs-12 col-sm-8 col-lg-9 order-sm-3 order-lg-3 order-xl-3" '.$showBox.'>
             <div class="card">
@@ -535,6 +541,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
         if(hasAssetDeleteRight($loginUserID)) $asset_delete_btn = '<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
 
+        if(hasAssetStateRight($loginUserID)) $asset_state_btn = '<button class="changeState btn btn-info btn-icon mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M7 6a7.75 7.75 0 1 0 10 0"></path><line x1="12" y1="4" x2="12" y2="12"></line></svg></button>';
+
         // TODO: add title to buttons
         echo '
                 <tr id="'.$playerAPI[$i]['asset_id'].'" data-playerID="'.$player['playerID'].'"'.$shown_class.'>
@@ -544,7 +552,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                   <td><span class="d-block d-sm-none"><br /></span>'.Translation::of('start').': '.$start.'<br />'.Translation::of('end').':&nbsp;&nbsp;&nbsp;'.$end.'</td>
                   <td class="d-none">'.$shown.'</td>
                   <td>
-                    <button class="changeState btn btn-info btn-icon mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M7 6a7.75 7.75 0 1 0 10 0"></path><line x1="12" y1="4" x2="12" y2="12"></line></svg></button>
+
+                    '.$asset_state_btn.'
                     '.$asset_edit_btn.'
                     '.$asset_delete_btn.'
                   </td>
@@ -558,8 +567,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card-footer d-flex align-items-center">
             <p class="m-0 text-muted" id="dataTables_info"></p>
             <span class="pagination m-0 ml-auto" id="dataTables_paginate"></span>
-          </div>
+          </div>';
 
+          if(hasAssetAddRight($loginUserID)) echo'
           <!-- newAsset -->
           <div class="modal modal-blur fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -634,8 +644,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 </div>
               </div>
             </div>
-          </div>
+          </div>';
 
+          if(hasAssetEditRight($loginUserID)) echo'
           <!-- editAsset -->
           <div class="modal modal-blur fade" id="editAsset" tabindex="-1" role="dialog" aria-labelledby="editAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -715,8 +726,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 </form>
               </div>
             </div>
-          </div>
+          </div>';
 
+          if(hasPlayerRebootRight($loginUserID)) echo'
           <!-- confirmReboot -->
           <div class="modal modal-blur fade" id="confirmReboot" tabindex="-1" role="dialog" aria-labelledby="confirmRebootModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -733,8 +745,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 </div>
               </div>
             </div>
-          </div>
+          </div>';
 
+          if(hasAssetDeleteRight($loginUserID)) echo'
           <!-- confirmDeleteAssets -->
           <div class="modal modal-blur fade" id="confirmDeleteAssets" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAssets" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -782,9 +795,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
     }
     else {
       sysinfo('danger', Translation::of('msg.no_player_submitted'));
-      redirect('index.php');
+      redirect($backLink, 0);
     }
-  } else redirect('index.php');
+  } else redirect($backLink, 0);
 }
 else {
   $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
@@ -797,8 +810,9 @@ else {
           <h2 class="page-title">
             Player Overview
           </h2>
-        </div>
-        <!-- Page title actions -->
+        </div>';
+
+        if(hasPlayerAddRight($loginUserID)) echo'
         <div class="col-auto ml-auto d-print-none">
           <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-none d-sm-inline-block" data-toggle="modal" data-target="#modal-report">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -807,39 +821,42 @@ else {
           <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-sm-none btn-icon" data-toggle="modal" data-target="#modal-report" aria-label="Create new report">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
           </a>
-        </div>
+        </div>';
+        echo '
       </div>
     </div>
   <div class="row">
     ';
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
-      if($player['name'] == ''){
-        $name	 		= Translation::of('no_player_name');
-        $imageTag = Translation::of('no_player_name').' '.$player['playerID'];
-      }
-      else {
-        $name 		= $player['name'];
-        $imageTag = $player['name'];
-      }
-      echo'
-      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
-        <div class="card card-sm">
-          <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="lh-sm">
-                <div>'.$name.'</div>
-              </div>
-              <div class="ml-auto">
-                <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-muted">
-                  '.$player['address'].'
-                </a>
+      if(hasPlayerRight($loginUserID, $player['playerID'])){
+        if($player['name'] == ''){
+          $name	 		= Translation::of('no_player_name');
+          $imageTag = Translation::of('no_player_name').' '.$player['playerID'];
+        }
+        else {
+          $name 		= $player['name'];
+          $imageTag = $player['name'];
+        }
+        echo'
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
+          <div class="card card-sm">
+            <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="lh-sm">
+                  <div>'.$name.'</div>
+                </div>
+                <div class="ml-auto">
+                  <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-muted">
+                    '.$player['address'].'
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      ';
+        ';
+      }
     }
     echo '
   </div>
@@ -867,11 +884,8 @@ else {
     ';
   }
 }
-// TODO: validator not validate!
-echo '
 
-
-
+if(hasPlayerEditRight($loginUserID)) echo'
 <!-- editPlayer -->
 <div class="modal modal-blur fade" id="editPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

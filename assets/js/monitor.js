@@ -584,7 +584,31 @@ $('#groupsLength_change').change( function() {
     groups_table.page.len( $(this).val() ).draw();
 });
 
+$('input[name="modules_enable"]').each(function(){
+    if ($(this).is(':checked')) {
+      $($(this).data('src')).show();
+    }
+});
 
+$('input[name="players_enable"]').each(function(){
+    if ($(this).is(':checked')) {
+      $($(this).data('src')).show();
+    }
+});
+
+$(".quick_rights").click(function(){
+  if($(this).data('src') == 'reset') $('input[type="checkbox"]').prop('checked', false);
+  if($(this).data('src') == 'add') $("input[type='checkbox'][name*='add']").trigger('click');
+  if($(this).data('src') == 'edit') $("input[type='checkbox'][name*='edit']").trigger('click');
+  if($(this).data('src') == 'delete') $("input[type='checkbox'][name*='delete']").trigger('click');
+  if($(this).data('src') == 'special') {
+    $("input[name='ass_clean']").trigger('click');
+    $("input[name='ass_state']").trigger('click');
+    $("input[name='pla_reboot']").trigger('click');
+    $("input[name='set_system']").trigger('click');
+    $("input[name='set_public']").trigger('click');
+  }
+});
 
 
 // Admin Log

@@ -22,7 +22,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-if(getGroupID($loginUserID)){
+if(hasModuleRight($loginUserID, 'multi')){
 
   $_moduleName = 'Multi Uploader';
   $_moduleLink = 'index.php?site=multiuploader';

@@ -45,6 +45,14 @@ function getGroupName($groupID){
   return $return['name'];
 }
 
+function isAdmin($userID){
+  global $db;
+  $sql    = $db->query("SELECT groupID, userID FROM `userGroupMapping` WHERE userID='".$userID."'");
+  $return = $sql->fetchArray(SQLITE3_ASSOC);
+  if($return['groupID'] == 1) return TRUE;
+  return FALSE;
+}
+
 function createGroupsSelect($pre = null){
   global $db;
   $groupsSQL  = $db->query("SELECT groupID, name FROM `userGroups`");
@@ -299,7 +307,7 @@ function hasSettingsUserAddRight($userID){
 
 function hasSettingsUserEditRight($userID){
   global $db;
-  $groupID = getGroupID($userID);
+  $groupID  = getGroupID($userID);
   $sql      = $db->query("SELECT set_user_edit FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   if ($return['set_user_edit'] == 1) return TRUE;
@@ -308,12 +316,39 @@ function hasSettingsUserEditRight($userID){
 
 function hasSettingsUserDeleteRight($userID){
   global $db;
-  $groupID = getGroupID($userID);
+  $groupID  = getGroupID($userID);
   $sql      = $db->query("SELECT set_user_delete FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   if ($return['set_user_delete'] == 1) return TRUE;
   return FALSE;
 }
+
+function hasPlayerRight($userID, $player){
+  global $db;
+  $groupID  = getGroupID($userID);
+  $sql      = $db->query("SELECT players, players_enable FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  $value    = $return['players'];
+  if(empty($value) && $return['players_enable'] == 0) return TRUE;
+  if(empty($value) && $return['players_enable'] == 1) return FALSE;
+  $playerList = unserialize($value);
+  if($return['players_enable'] == 1 && in_array($player, $playerList)) return TRUE;
+  return FALSE;
+}
+
+function hasModuleRight($userID, $moduleName){
+  global $db;
+  $groupID  = getGroupID($userID);
+  $sql      = $db->query("SELECT modules, modules_enable FROM `userGroups` WHERE groupID='".$groupID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  $value    = $return['modules'];
+  if(empty($value) && $return['modules_enable'] == 0) return TRUE;
+  if(empty($value) && $return['modules_enable'] == 1) return FALSE;
+  $moduleList = unserialize($value);
+  if($return['modules_enable'] == 1 && in_array($moduleName, $moduleList)) return TRUE;
+  return FALSE;
+}
+
 
 // Login
 if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password'])){
