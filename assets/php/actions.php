@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-           Actions Module
+          Actions Functions
 _______________________________________
 */
 
@@ -42,8 +42,8 @@ if(isset($_POST['newAsset'])){
 	if($name == '') $name = $url;
 
 	if(isset($_POST['multidrop'])){
-		$images			= curl_file_create($_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['name']);
-		$images			= array('file_upload' => $images);
+		$images		= curl_file_create($_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['name']);
+		$images		= array('file_upload' => $images);
 		$ids 			= $_POST['playerID'];
 		$id				= explode(',', $ids);
 	}
@@ -184,7 +184,7 @@ if(isset($_POST['changeOrder'])){
 }
 
 // Settings
-if(isset($_POST['saveSettings']) && getGroupID($loginUserID) == 1){
+if(isset($_POST['saveSettings']) && (getGroupID($loginUserID) == 1 || hasSettingsSystemRight($loginUserID))){
   $duration				= $_POST['duration'];
   $end_date 			= $_POST['end_date'];
   $name 		 			= $_POST['name'];

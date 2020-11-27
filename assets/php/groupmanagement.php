@@ -33,6 +33,7 @@ if(getGroupID($loginUserID) == 1){
       if($name){
         $db->exec("INSERT INTO `userGroups` (name) values('".$name."')");
         sysinfo('success', 'Create Group successfully!');
+        systemLog($_moduleName, 'Create Group: '.$name, $loginUserID, 1);
       }
       redirect($_moduleLink, 0);
   }
@@ -54,6 +55,7 @@ if(getGroupID($loginUserID) == 1){
 
     $set_system       = isset($_POST['set_system']) ? 1 : 0;
     $set_public       = isset($_POST['set_public']) ? 1 : 0;
+    $set_user         = isset($_POST['set_user']) ? 1 : 0;
     $set_user_add     = isset($_POST['set_user_add']) ? 1 : 0;
     $set_user_edit    = isset($_POST['set_user_edit']) ? 1 : 0;
     $set_user_delete  = isset($_POST['set_user_delete']) ? 1 : 0;
@@ -66,6 +68,11 @@ if(getGroupID($loginUserID) == 1){
 
     if($players_enable == 0) $players = '';
     if($modules_enable == 0) $modules = '';
+    if($set_user == 0) {
+      $set_user_add = 0;
+      $set_user_edit = 0;
+      $set_user_delete = 0;
+    }
 
 
     if($groupID && $name){
@@ -80,6 +87,7 @@ if(getGroupID($loginUserID) == 1){
         pla_edit='".$pla_edit."',
         pla_delete='".$pla_delete."',
         pla_reboot='".$pla_reboot."',
+        set_user='".$set_user."',
         set_system='".$set_system."',
         set_public='".$set_public."',
         set_user_add='".$set_user_add."',
@@ -90,13 +98,15 @@ if(getGroupID($loginUserID) == 1){
         modules='".$modules."',
         modules_enable='".$modules_enable."' WHERE groupID='".$groupID."'");
       sysinfo('success', 'Group updated successfully!');
+      systemLog($_moduleName, 'Change Rights of Group: '.$name, $loginUserID, 1);
     }
-    redirect($_moduleLink, 0);
+    redirect($backLink, 0);
   }
 
   if(isset($_GET['action']) && $_GET['action'] == 'deleteGroup'){
     $groupID = $_GET['groupID'];
     if(isset($groupID) AND isAdmin($loginUserID)){
+      systemLog($_moduleName, 'Delete Group: '.getGroupName($groupID), $loginUserID, 1);
       $db->exec("UPDATE `userGroupMapping` SET groupID='0' WHERE groupID='".$groupID."'");
       $db->exec("DELETE FROM `userGroups` WHERE groupID='".$groupID."'");
       sysinfo('success', 'Group successfully deleted!');
@@ -115,8 +125,8 @@ if(getGroupID($loginUserID) == 1){
             </h2>
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
               <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-              <li class="breadcrumb-item"><a href="index.php?site=groupmanagement">Group Settings</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=groupmanagement&action=newGroup">New Group</a></li>
+              <li class="breadcrumb-item"><a href="'.$_moduleLink.'">Group Settings</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&action=newGroup">New Group</a></li>
             </ol>
           </div>
           <div class="col-auto ml-auto d-print-none">
@@ -137,7 +147,7 @@ if(getGroupID($loginUserID) == 1){
                 </div>
               </div>
               <div class="card-footer d-flex align-items-center">
-                <a href="index.php?site=groupmanagement" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+                <a href="'.$_moduleLink.'" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
                 <button type="submit" name="saveGroup" value="1" class="btn btn-primary">'.Translation::of('save').'</button>
               </div>
             </form>
@@ -150,8 +160,8 @@ if(getGroupID($loginUserID) == 1){
   elseif(isset($_GET['action']) && $_GET['action'] == 'editGroup'){
 
     $groupID   = $_GET['groupID'];
-    if(TRUE) {
-    //if($groupID != 1) {
+
+    if($groupID != 1) {
       $groupSQL  = $db->query("SELECT * FROM `userGroups` WHERE groupID='".$groupID."'");
       $group     = $groupSQL->fetchArray(SQLITE3_ASSOC);
 
@@ -256,8 +266,8 @@ if(getGroupID($loginUserID) == 1){
               </h2>
               <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
                 <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-                <li class="breadcrumb-item"><a href="index.php?site=groupmanagement">Group Settings</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=groupmanagement&action=editGroup&groupID='.$groupID.'">Edit: '.$group['name'].'</a></li>
+                <li class="breadcrumb-item"><a href="'.$_moduleLink.'">Group Settings</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&action=editGroup&groupID='.$groupID.'">Edit: '.$group['name'].'</a></li>
               </ol>
             </div>
             <div class="col-auto ml-auto d-print-none">
@@ -435,37 +445,49 @@ if(getGroupID($loginUserID) == 1){
                     <div class="divide-y">
                       <div>
                         <label class="row">
-                          <span class="col">Add User</span>
+                          <span class="col">Allow to change user settings</span>
                           <span class="col-auto">
                             <label class="form-check form-check-single form-switch">
-                              <input class="form-check-input" name="set_user_add" type="checkbox"'.checkboxState($group['set_user_add']).'>
+                              <input class="form-check-input toggle_div" data-src=".setting_options" name="set_user" type="checkbox"'.checkboxState($group['set_user']).'>
                             </label>
                           </span>
                         </label>
                       </div>
-                      <div>
-                        <label class="row">
-                          <span class="col">Edit User</span>
-                          <span class="col-auto">
-                            <label class="form-check form-check-single form-switch">
-                              <input class="form-check-input" name="set_user_edit" type="checkbox"'.checkboxState($group['set_user_edit']).'>
-                            </label>
-                          </span>
-                        </label>
+                      <div class="setting_options" style="display: none;">
+                        <div>
+                          <label class="row">
+                            <span class="col ml-3">Add User</span>
+                            <span class="col-auto">
+                              <label class="form-check form-check-single form-switch">
+                                <input class="form-check-input" name="set_user_add" type="checkbox"'.checkboxState($group['set_user_add']).'>
+                              </label>
+                            </span>
+                          </label>
+                        </div>
+                        <div>
+                          <label class="row">
+                            <span class="col ml-3">Edit User</span>
+                            <span class="col-auto">
+                              <label class="form-check form-check-single form-switch">
+                                <input class="form-check-input" name="set_user_edit" type="checkbox"'.checkboxState($group['set_user_edit']).'>
+                              </label>
+                            </span>
+                          </label>
+                        </div>
+                        <div>
+                          <label class="row">
+                            <span class="col ml-3">Delete User</span>
+                            <span class="col-auto">
+                              <label class="form-check form-check-single form-switch">
+                                <input class="form-check-input" name="set_user_delete" type="checkbox"'.checkboxState($group['set_user_delete']).'>
+                              </label>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                       <div>
                         <label class="row">
-                          <span class="col">Delete User</span>
-                          <span class="col-auto">
-                            <label class="form-check form-check-single form-switch">
-                              <input class="form-check-input" name="set_user_delete" type="checkbox"'.checkboxState($group['set_user_delete']).'>
-                            </label>
-                          </span>
-                        </label>
-                      </div>
-                      <div>
-                        <label class="row">
-                          <span class="col">Change System parameter</span>
+                          <span class="col">Allow to change system settings</span>
                           <span class="col-auto">
                             <label class="form-check form-check-single form-switch">
                               <input class="form-check-input" name="set_system" type="checkbox"'.checkboxState($group['set_system']).'>
@@ -475,7 +497,7 @@ if(getGroupID($loginUserID) == 1){
                       </div>
                       <div>
                         <label class="row">
-                          <span class="col">Change Public access</span>
+                          <span class="col">Allow to change public access</span>
                           <span class="col-auto">
                             <label class="form-check form-check-single form-switch">
                               <input class="form-check-input" name="set_public" type="checkbox"'.checkboxState($group['set_public']).'>
@@ -517,7 +539,7 @@ if(getGroupID($loginUserID) == 1){
 
                 <div class="card-footer d-flex align-items-center">
                   <input type="hidden" name="groupID" value="'.$group['groupID'].'" />
-                  <a href="index.php?site=groupmanagement" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
+                  <a href="'.$_moduleLink.'" class="btn btn-link mr-auto">'.Translation::of('cancel').'</a>
                   <button type="submit" name="editGroup" value="1" class="btn btn-primary">'.Translation::of('update').'</button>
                 </div>
               </form>
@@ -554,7 +576,7 @@ if(getGroupID($loginUserID) == 1){
             </h2>
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
               <li class="breadcrumb-item"><a href="index.php?site=settings">Settings</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=groupmanagement">Group Settings</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'">Group Settings</a></li>
             </ol>
           </div>
           <div class="col-auto ml-auto">
@@ -562,7 +584,7 @@ if(getGroupID($loginUserID) == 1){
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             New Group
           </a>
-          <a href="'.$_moduleLink.'&action=newGroup" class="btn btn-info">
+          <a href="index.php?site=usermanagement" class="btn btn-info">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="5" y1="12" x2="19" y2="12" /><line x1="15" y1="16" x2="19" y2="12" /><line x1="15" y1="8" x2="19" y2="12" /></svg>
             Goto User Settings
           </a>
