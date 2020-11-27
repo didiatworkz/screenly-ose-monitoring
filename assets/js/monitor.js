@@ -521,8 +521,10 @@ $('button.reboot').on('click', function(){
   });
 });
 
-$('#confirmDelete, #confirmDeleteAssets, #confirmDeleteLog').on('show.bs.modal', function(e) {
+$('#confirmMessage').on('show.bs.modal', function(e) {
   $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+  $(this).find('.delete-text').text($(e.relatedTarget).data('text'));
+  $(this).find('.btn-ok').addClass('btn-' + $(e.relatedTarget).data('status'));
 });
 
 // Users
@@ -596,6 +598,12 @@ $('input[name="players_enable"]').each(function(){
     }
 });
 
+$('input[name="set_user"]').each(function(){
+    if ($(this).is(':checked')) {
+      $($(this).data('src')).show();
+    }
+});
+
 $(".quick_rights").click(function(){
   if($(this).data('src') == 'reset') $('input[type="checkbox"]').prop('checked', false);
   if($(this).data('src') == 'add') $("input[type='checkbox'][name*='add']").trigger('click');
@@ -605,6 +613,7 @@ $(".quick_rights").click(function(){
     $("input[name='ass_clean']").trigger('click');
     $("input[name='ass_state']").trigger('click');
     $("input[name='pla_reboot']").trigger('click');
+    $("input[name='set_user']").trigger('click');
     $("input[name='set_system']").trigger('click');
     $("input[name='set_public']").trigger('click');
   }
@@ -678,7 +687,7 @@ function loadRunner(){
     });
 }
 
-// login
+// Login
 $("form#Login").submit(function(e){
   var form = this;
   e.preventDefault();
