@@ -24,6 +24,9 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Add-on';
+$_moduleLink = 'index.php?site=addon';
+
 if((isset($argv) && $argv['1'] != '')){
   include_once('ssh.class.php');
   $server_host = $argv['1'];
