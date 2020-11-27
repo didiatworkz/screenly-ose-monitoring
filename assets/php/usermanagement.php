@@ -23,7 +23,7 @@ use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
 
-if(getGroupID($loginUserID) == 1){
+if(getGroupID($loginUserID) == 1 || hasSettingsUserRight($loginUserID)){
 
   $_moduleName = 'User Management';
   $_moduleLink = 'index.php?site=usermanagement';
@@ -43,6 +43,7 @@ if(getGroupID($loginUserID) == 1){
         $userSQL = $userSQL->fetchArray(SQLITE3_ASSOC);
         $db->exec("INSERT INTO `userGroupMapping` (userID, groupID) values('".$userSQL['userID']."', '".$group."')");
         sysinfo('success', $user.' updated successfully!');
+        systemLog($_moduleName, 'Create User: '.$user, $loginUserID, 1);
       }
 
       redirect($_moduleLink, 0);
@@ -67,13 +68,15 @@ if(getGroupID($loginUserID) == 1){
       }
       $db->exec("UPDATE `userGroupMapping` SET groupID='".$group."' WHERE userID='".$userID."'");
       sysinfo('success', $user.' updated successfully!');
+      systemLog($_moduleName, 'Edit User: '.$user, $loginUserID, 1);
     }
     redirect($backLink, 0);
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'deleteUser'){
+  if(isset($_GET['action']) && $_GET['action'] == 'deleteUser' && hasSettingsUserDeleteRight($loginUserID)){
     $userID = $_GET['userID'];
     if(isset($userID) AND $userID != $loginUserID){
+      systemLog($_moduleName, 'Delete User: '.getUserName($userID), $loginUserID, 1);
       $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
       $db->exec("DELETE FROM `userGroupMapping` WHERE userID='".$userID."'");
       sysinfo('success', 'User successfully deleted!');
@@ -81,7 +84,7 @@ if(getGroupID($loginUserID) == 1){
     redirect($backLink, 0);
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'newUser'){
+  if(isset($_GET['action']) && $_GET['action'] == 'newUser' && hasSettingsUserAddRight($loginUserID)){
     echo '
     <div class="container-xl">
       <div class="page-header">
@@ -170,7 +173,7 @@ if(getGroupID($loginUserID) == 1){
     </div>';
   }
 
-  elseif(isset($_GET['action']) && $_GET['action'] == 'editUser'){
+  elseif(isset($_GET['action']) && $_GET['action'] == 'editUser' && hasSettingsUserEditRight($loginUserID)){
     $userID   = $_GET['userID'];
     $userSQL  = $db->query("SELECT * FROM `users` WHERE userID='".$userID."'");
     $user     = $userSQL->fetchArray(SQLITE3_ASSOC);
@@ -299,6 +302,12 @@ if(getGroupID($loginUserID) == 1){
 
   else {
     $userSQL = $db->query("SELECT * FROM `users` ORDER BY userID");
+    $userAddBtn = '';
+    if(hasSettingsUserAddRight($loginUserID))  $userAddBtn = '<a href="'.$_moduleLink.'&action=newUser" class="btn btn-success">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      New User
+    </a>';
+
     echo '
     <div class="container-xl">
       <div class="page-header">
@@ -313,10 +322,7 @@ if(getGroupID($loginUserID) == 1){
             </ol>
           </div>
           <div class="col-auto ml-auto">
-          <a href="'.$_moduleLink.'&action=newUser" class="btn btn-success">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            New User
-          </a>
+          '.$userAddBtn.'
           </div>
         </div>
       </div>
@@ -367,6 +373,12 @@ while($user = $userSQL->fetchArray(SQLITE3_ASSOC)){
   if(isActive($user['userID']) == 1) $active = '<span class="badge bg-success">  activated  </span>';
   else $active = '<span class="badge bg-dark">  deactivated  </span>';
 
+  $userEditBtn = '';
+  $userDeleteBtn = '';
+
+  if(hasSettingsUserEditRight($loginUserID)) $userEditBtn = '<a href="'.$_moduleLink.'&action=editUser&userID='.$user['userID'].'" class="options btn btn-warning btn-icon mb-1" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></a>';
+  if(hasSettingsUserDeleteRight($loginUserID)) $userDeleteBtn = '<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="'.$_moduleLink.'&action=deleteUser&userID='.$user['userID'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
+
   echo '
             <tr>
               <td>'.$user['username'].'</td>
@@ -375,8 +387,8 @@ while($user = $userSQL->fetchArray(SQLITE3_ASSOC)){
               <td>'.$active.'</td>
               <td>'.lastLogin($user['userID']).'</td>
               <td>
-                <a href="'.$_moduleLink.'&action=editUser&userID='.$user['userID'].'" class="options btn btn-warning btn-icon mb-1" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></a>
-                <a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="'.$_moduleLink.'&action=deleteUser&userID='.$user['userID'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>
+                '.$userEditBtn.'
+                '.$userDeleteBtn.'
               </td>
             </tr>
             ';
