@@ -101,7 +101,7 @@ echo'
 					}	else sysinfo('danger', Translation::of('msg.module_not_exists'));
 				}
 				else {
-					include('assets/php/players.php');
+					include('assets/php/dashboard.php');
 				}
 			}
 			echo '
@@ -112,7 +112,7 @@ echo'
 		<!-- newPlayer -->
 		<div class="modal modal-blur fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-		    <div class="modal-content">
+		    <div class="modal-content shadow">
 		      <div class="modal-header">
 		        <h5 class="modal-title">'.Translation::of('add_player').'</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
@@ -238,7 +238,7 @@ echo'
 		<!-- info -->
 		<div class="modal modal-blur fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-				<div class="modal-content">
+				<div class="modal-content shadow">
 					<div class="modal-header">
 		        <h5 class="modal-title">'._SYSTEM_NAME.'</h5>
 		      </div>
@@ -298,20 +298,20 @@ echo'
 			</div>
 		</div>';
 
-		if(hasPlayerDeleteRight($loginUserID)) echo'
-		<!-- confirmDelete -->
-		<div class="modal modal-blur fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+		if(hasPlayerDeleteRight($loginUserID) || hasAssetDeleteRight($loginUserID) || getGroupID($loginUserID) == 1) echo'
+		<!-- confirmMessage -->
+		<div class="modal modal-blur fade" id="confirmMessage" tabindex="-1" role="dialog" aria-labelledby="confirmMessageModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">
-		    <div class="modal-content">
+		    <div class="modal-content shadow">
 		      <div class="modal-header">
 		        <h5 class="modal-title">'.Translation::of('attention').'!</h5>
 		      </div>
 		      <div class="modal-body">
-		        '.Translation::of('msg.delete_really_entry').'
+		        <span class="delete-text"></span>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
-		        <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
+		        <a class="btn btn-ok">'.Translation::of('delete').'</a>
 		      </div>
 		    </div>
 		  </div>
