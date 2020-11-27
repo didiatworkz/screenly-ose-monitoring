@@ -236,6 +236,14 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system'){
                   </div>
                 </div>
               </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">'.Translation::of('debug_mode').'</label>
+                <div class="col">
+                <label class="form-check form-check-single form-switch">
+                  <input class="form-check-input" name="debug" type="checkbox"'.checkboxState($set['debug']).'>
+                </label>
+                </div>
+              </div>
               <hr />
               <h2 id="player">Player Control</h2>
               <div class="form-group mb-3 row">

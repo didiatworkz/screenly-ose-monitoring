@@ -96,7 +96,7 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,sync,created) SELECT userID,name,location,address,player_user,player_password,sync,created FROM `player_tmp`");
     $db->exec("DROP TABLE `player_tmp`");
     $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
-    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `timezone` TEXT DEFAULT 'Europe/Berlin', `sessionTime` INTEGER DEFAULT 36000)");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `timezone` TEXT DEFAULT 'Europe/Berlin', `sessionTime` INTEGER DEFAULT 36000, `debug` INTEGER DEFAULT 0)");
     $db->exec("INSERT INTO `settings`(name,duration,token,end_date,updatecheck) SELECT name,duration,token,end_date,updatecheck FROM `settings_tmp`");
     $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
     $db->exec("DROP TABLE `settings_tmp`");
@@ -106,7 +106,7 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("ALTER TABLE `userGroups` RENAME TO `userGroups_tmp`");
     $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`players`	INTEGER DEFAULT 0,	`players_enable`	TEXT,	`modules`	INTEGER DEFAULT 0,	`modules_enable`	TEXT,	`ass_add`	INTEGER DEFAULT 0,	`ass_edit`	INTEGER DEFAULT 0,	`ass_delete`	INTEGER DEFAULT 0,	`ass_clean`	INTEGER DEFAULT 0,	`ass_state`	INTEGER DEFAULT 0,	`ass_reboot`	INTEGER DEFAULT 0,	`pla_add`	INTEGER DEFAULT 0, `pla_edit`	INTEGER DEFAULT 0,	`pla_delete`	INTEGER DEFAULT 0,	`mod_multi`	INTEGER DEFAULT 0,	`mod_addon`	INTEGER DEFAULT 0,	`set_system`	INTEGER DEFAULT 0,	`set_user_add`	INTEGER DEFAULT 0,	`set_user_edit`	INTEGER DEFAULT 0,	`set_user_delete`	INTEGER DEFAULT 0,	`set_public`	INTEGER DEFAULT 0)");
     $db->exec("INSERT INTO `userGroups`(groupID,name) SELECT groupID,name FROM `userGroups_tmp`");
-    $db->exec("UPDATE `userGroups` SET players=0, modules=0, ass_add=1, ass_edit=1, ass_delete=1, ass_clean=1, ass_state=1, pla_add=1, pla_edit=1,	pla_delete=1, pla_reboot=1,	mod_multi=1, mod_addon=1,	set_system=1,	set_user_add=1,	set_user_edit=1, set_user_delete=1, set_public=1 WHERE name='Admin'");
+    $db->exec("UPDATE `userGroups` SET players=0, modules=0, ass_add=1, ass_edit=1, ass_delete=1, ass_clean=1, ass_state=1, pla_add=1, pla_edit=1,	pla_delete=1, pla_reboot=1,	set_system=1,	set_user_add=1,	set_user_edit=1, set_user_delete=1, set_public=1 WHERE name='Admin'");
     $db->exec("DROP TABLE `userGroups_tmp`");
 
     $db->exec("ALTER TABLE `users` RENAME TO `users_tmp`");
