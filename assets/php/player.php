@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-            Player Module
+          Player Functions
 _______________________________________
 */
 
