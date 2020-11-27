@@ -24,9 +24,13 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Update';
+$_moduleLink = '';
+
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
   shell_exec('ose-monitoring --scriptupdate');
   $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");
+  systemLog($_moduleName, 'Update available!', '', 1);
 }
 
 if(@file_exists('update.txt') && isAdmin($loginUserID)) {
