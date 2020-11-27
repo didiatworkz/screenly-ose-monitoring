@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-             cURL Module
+           cURL Functions
 _______________________________________
 */
 
