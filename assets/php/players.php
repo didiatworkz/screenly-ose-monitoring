@@ -22,6 +22,9 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
+$_moduleName = 'Players';
+$_moduleLink = 'index.php?site=players';
+
 // TODO: TRANSLATION!
 
 // GET: action:view - Player detail overview
@@ -62,7 +65,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         </svg>
       </a>';
 
-      if(hasPlayerDeleteRight($loginUserID)) $player_delete_btn = '<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=delete&playerID='.$player['playerID'].'">
+      if(hasPlayerDeleteRight($loginUserID)) $player_delete_btn = '<a href="#" data-toggle="modal" data-target="#confirmMessage" data-status="danger" data-href="'.$_moduleLink.'&action=delete&playerID='.$player['playerID'].'">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg>
       </a>';
 
@@ -119,7 +122,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
         if(hasAssetAddRight($loginUserID)) $newAsset	= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> '.Translation::of('new_asset').'</a>';
 
-        if(hasAssetDeleteRight($loginUserID)) $bulkDelete = '<a href="#" data-toggle="modal" data-target="#confirmDeleteAssets" data-href="index.php?site=players&action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-warning btn-block mt-4">
+        if(hasAssetDeleteRight($loginUserID)) $bulkDelete = '<a href="#" data-toggle="modal" data-text="'.Translation::of('msg.clean_all_assets').'" data-target="#confirmMessage" data-status="danger" data-href="'.$_moduleLink.'&action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-warning btn-block mt-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"></path>
             <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2"></path>
@@ -138,12 +141,14 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
         if(deviceInfoInstalled($player['address'])){
           $deviceInfoHead = '
+          <div class="d-inline-block">
+
           <label class="form-check form-switch d-sm-inline-block mr-3">
             <input class="form-check-input deviceCheckbox" type="checkbox" checked>
-            <span class="form-check-label">Device Info API</span>
+            <span class="form-check-label">Device Info</span>
           </label>
           <!--
-          <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-none d-sm-inline-block">
+          <a href="'.$_moduleLink.'&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-none d-sm-inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z"></path>
               <line x1="4" y1="6" x2="9.5" y2="6"></line>
@@ -157,7 +162,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             </svg>
             Process Overview
           </a>
-          <a href="index.php?site=players&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-sm-none btn-icon" aria-label="Create new report">
+          <a href="'.$_moduleLink.'&action=ps&playerID='.$playerID.'" class="btn btn-secondary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z"></path>
               <line x1="4" y1="6" x2="9.5" y2="6"></line>
@@ -170,6 +175,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <line x1="14.5" y1="18" x2="20" y2="18"></line>
             </svg>
           </a>-->
+          </div>
           ';
           $deviceInfoBox = '
           <div class="row row-deck row-cards device-info" data-src="'.$player['address'].'">
@@ -340,8 +346,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             </h2>
             -->
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-              <li class="breadcrumb-item"><a href="index.php?site=players">Player</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a href="index.php?site=players&action=view&playerID='.$playerID.'">'.$playerName.'</a></li>
+              <li class="breadcrumb-item"><a href="'.$_moduleLink.'">Player</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&action=view&playerID='.$playerID.'">'.$playerName.'</a></li>
             </ol>
           </div>
           <!-- Page title actions -->
@@ -539,7 +545,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         if(hasAssetEditRight($loginUserID)) $asset_edit_btn = '<button class="options btn btn-warning btn-icon mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
         data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></button>';
 
-        if(hasAssetDeleteRight($loginUserID)) $asset_delete_btn = '<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="index.php?site=players&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
+        if(hasAssetDeleteRight($loginUserID)) $asset_delete_btn = '<a href="#" data-toggle="modal" data-target="#confirmMessage" data-status="danger" data-text="'.Translation::of('msg.delete_really_entry').'" data-href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
 
         if(hasAssetStateRight($loginUserID)) $asset_state_btn = '<button class="changeState btn btn-info btn-icon mb-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M7 6a7.75 7.75 0 1 0 10 0"></path><line x1="12" y1="4" x2="12" y2="12"></line></svg></button>';
 
@@ -573,7 +579,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <!-- newAsset -->
           <div class="modal modal-blur fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
+              <div class="modal-content shadow">
                 <div class="modal-header">
                   <h5 class="modal-title" id="newAssetModalLabel">New Asset</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
@@ -650,7 +656,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <!-- editAsset -->
           <div class="modal modal-blur fade" id="editAsset" tabindex="-1" role="dialog" aria-labelledby="editAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
+              <div class="modal-content shadow">
                 <div class="modal-header">
                   <h5 class="modal-title" id="editAssetModalLabel">'.Translation::of('edit_asset').'</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
@@ -732,7 +738,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <!-- confirmReboot -->
           <div class="modal modal-blur fade" id="confirmReboot" tabindex="-1" role="dialog" aria-labelledby="confirmRebootModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
+              <div class="modal-content shadow">
                 <div class="modal-header">
                   <h5 class="modal-title">'.Translation::of('attention').'!</h5>
                 </div>
@@ -746,26 +752,6 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               </div>
             </div>
           </div>';
-
-          if(hasAssetDeleteRight($loginUserID)) echo'
-          <!-- confirmDeleteAssets -->
-          <div class="modal modal-blur fade" id="confirmDeleteAssets" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAssets" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">'.Translation::of('attention').'!</h5>
-                </div>
-                <div class="modal-body">
-                  '.Translation::of('msg.clean_all_assets').'
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
-                  <a class="btn btn-danger btn-ok">'.Translation::of('delete').'</a>
-                </div>
-              </div>
-            </div>
-          </div>
-      ';
     }
     else {
       echo  '
@@ -840,14 +826,14 @@ else {
         echo'
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
           <div class="card card-sm">
-            <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
+            <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
             <div class="card-body">
               <div class="d-flex align-items-center">
                 <div class="lh-sm">
                   <div>'.$name.'</div>
                 </div>
                 <div class="ml-auto">
-                  <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-muted">
+                  <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="text-muted">
                     '.$player['address'].'
                   </a>
                 </div>
@@ -889,7 +875,7 @@ if(hasPlayerEditRight($loginUserID)) echo'
 <!-- editPlayer -->
 <div class="modal modal-blur fade" id="editPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <div class="modal-content shadow">
       <div class="modal-header">
         <h5 class="modal-title" id="editPlayerModalLabel">'.Translation::of('edit_name', ['name' => '<span id="playerNameTitle"></span>']).'</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
