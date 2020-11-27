@@ -1,5 +1,21 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
 
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+             Search JSON
+_______________________________________
+*/
 
 // [
 //   {
@@ -25,10 +41,11 @@ $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $assetString = NULL;
   $assets = json_decode($player['assets'], true);
-  for ($i=0; $i < count($assets); $i++) {
-    $assetString .= ' '.$assets[$i]['asset_id'].' '.str_replace('/', ' ', $assets[$i]['name']);
+  if(is_iterable($assets)){
+    for ($i=0; $i < count($assets); $i++) {
+      $assetString .= ' '.$assets[$i]['asset_id'].' '.str_replace('/', ' ', $assets[$i]['name']);
+    }
   }
-
   $addon = NULL;
   if($player['monitorOutput'] != 0) $addon .= ' Monitor Output SOMA Add-on';
   if($player['deviceInfo'] != 0) $addon .= ' Device Info';
@@ -92,3 +109,6 @@ array_push($output, $gen);
 
 header('Content-Type: application/json');
 echo json_encode($output);
+// echo '<pre>';
+// print_r($output);
+// echo '</pre>';

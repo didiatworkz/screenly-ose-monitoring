@@ -34,12 +34,14 @@ while($player	= $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $playerCount++;
   $assets = $player['assets'];
   $assets = json_decode($assets, true);
-
-  for ($i=0; $i < count(array($assets)); $i++) {
-    $assetCount++;
-    if($assets[$i]['is_enabled'] == 1) $assetShowCount++;
-    else $assetHideCount++;
+  if(is_iterable($assets)){
+    for ($i=0; $i < count($assets); $i++) {
+      $assetCount++;
+      if($assets[$i]['is_enabled'] == 1) $assetShowCount++;
+      else $assetHideCount++;
+    }
   }
+
   $lastSync = $player['bg_sync'];
 
   if($player['status'] == 1) $statOnline++;
@@ -76,37 +78,38 @@ for ($i=0; $i < $maxEntries; $i++) {
   $player	= $playerSQL->fetchArray(SQLITE3_ASSOC);
   $assets = $player['assets'];
   $assets = json_decode($assets, true);
-  $assetCount = count($assets);
   $maxAssets = 0;
-  for ($i=0; $i < $assetCount; $i++) {
-    // 2020-10-28T00:00:00+00:00
-    $date_now = date("Y-m-d");
-    $time_now = date("H:i:s");
-    $now = $date_now.'T'.$time_now.'+00:00';
-    $end_date = str_replace(':00+00:00', '', $assets[$i]['end_date']);
-    $end_date = str_replace('T', ' ', $end_date);
-    if(($assets[$i]['is_enabled'] == 0 || $assets[$i]['is_active'] == 0 || $assets[$i]['end_date'] < $now) && $maxAssets < 5){
-      if($assets[$i]['mimetype'] == 'webpage'){
-        $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><line x1="3.6" y1="9" x2="20.4" y2="9"></line><line x1="3.6" y1="15" x2="20.4" y2="15"></line><path d="M11.5 3a17 17 0 0 0 0 18"></path><path d="M12.5 3a17 17 0 0 1 0 18"></path></svg>';
-      }
-      else if($assets[$i]['mimetype'] == 'video'){
-        $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="8" y1="4" x2="8" y2="20"></line><line x1="16" y1="4" x2="16" y2="20"></line><line x1="4" y1="8" x2="8" y2="8"></line><line x1="4" y1="16" x2="8" y2="16"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="16" y1="8" x2="20" y2="8"></line><line x1="16" y1="16" x2="20" y2="16"></line></svg>';
-      }
-      else {
-        $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="15" y1="8" x2="15.01" y2="8"></line><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M4 15l4 -4a3 5 0 0 1 3 0l 5 5"></path><path d="M14 14l1 -1a3 5 0 0 1 3 0l 2 2"></path></svg>';
-      }
+  if(is_iterable($assets)){
+    for ($i=0; $i < count($assets); $i++) {
+      // 2020-10-28T00:00:00+00:00
+      $date_now = date("Y-m-d");
+      $time_now = date("H:i:s");
+      $now = $date_now.'T'.$time_now.'+00:00';
+      $end_date = str_replace(':00+00:00', '', $assets[$i]['end_date']);
+      $end_date = str_replace('T', ' ', $end_date);
+      if(($assets[$i]['is_enabled'] == 0 || $assets[$i]['is_active'] == 0 || $assets[$i]['end_date'] < $now) && $maxAssets < 5){
+        if($assets[$i]['mimetype'] == 'webpage'){
+          $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><line x1="3.6" y1="9" x2="20.4" y2="9"></line><line x1="3.6" y1="15" x2="20.4" y2="15"></line><path d="M11.5 3a17 17 0 0 0 0 18"></path><path d="M12.5 3a17 17 0 0 1 0 18"></path></svg>';
+        }
+        else if($assets[$i]['mimetype'] == 'video'){
+          $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="8" y1="4" x2="8" y2="20"></line><line x1="16" y1="4" x2="16" y2="20"></line><line x1="4" y1="8" x2="8" y2="8"></line><line x1="4" y1="16" x2="8" y2="16"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="16" y1="8" x2="20" y2="8"></line><line x1="16" y1="16" x2="20" y2="16"></line></svg>';
+        }
+        else {
+          $mimetypeIcon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="15" y1="8" x2="15.01" y2="8"></line><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M4 15l4 -4a3 5 0 0 1 3 0l 5 5"></path><path d="M14 14l1 -1a3 5 0 0 1 3 0l 2 2"></path></svg>';
+        }
 
-      $lastFiveAssets .= '
-      <div class="list-item">
-        <div>'.$mimetypeIcon.'</div>
-        <div class="text-truncate">
-          <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-body d-block">'.$assets[$i]['name'].'</a>
-          <small class="d-block text-muted text-truncate mt-n1">'.$player['name'].'</small>
+        $lastFiveAssets .= '
+        <div class="list-item">
+          <div>'.$mimetypeIcon.'</div>
+          <div class="text-truncate">
+            <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-body d-block">'.$assets[$i]['name'].'</a>
+            <small class="d-block text-muted text-truncate mt-n1">'.$player['name'].'</small>
+          </div>
+          <div class="list-item-actions">'.$end_date.'</div>
         </div>
-        <div class="list-item-actions">'.$end_date.'</div>
-      </div>
-      ';
-      $maxAssets++;
+        ';
+        $maxAssets++;
+      }
     }
   }
 }
