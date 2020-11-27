@@ -44,7 +44,7 @@ echo'
         </div>
       </form>
       <div class="progress login-progress" style="display: none;">
-        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+        <div class="progress-bar progress-bar-indeterminate bg-blue"></div>
       </div>
     </div>
   </div>
