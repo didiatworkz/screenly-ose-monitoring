@@ -1,4 +1,21 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
+
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+        Device Info Functions
+_______________________________________
+*/
 
 include_once('functions.php');
 include_once('curl.php');
@@ -27,8 +44,8 @@ function colorProgrss($value){
 }
 
 if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
-    $ip       = $_GET['ip'];
     header("HTTP/1.1 200 OK");
+    $ip               = $_GET['ip'];
     $cpu              = round(getDeviceInfoData($ip, 'cpu'), 0);
     $cpu_frequency    = getDeviceInfoData($ip, 'cpu_frequency');
     $memory           = round(getDeviceInfoData($ip, 'memory'), 0);
@@ -40,7 +57,7 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $disk             = round($disk_total - $disk_free, 2);
     $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
-    
+
     list($platformName, $platformVersion) = explode(',', $platform);
     $platformName     = str_replace("'", "", $platformName);
     $platformName     = str_replace("(", "", $platformName);
@@ -52,27 +69,27 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $hostname         = str_replace('"', "", $hostname);
 
     $output = array();
-    $output['cpu']['value']       = $cpu;
-    $output['cpu']['color']       = colorProgrss($cpu);
-    $output['cpu']['progress']    = $cpu;
-    $output['cpu']['frequency']   = $cpu_frequency;
-    $output['memory']['value']    = $memory;
-    $output['memory']['color']    = colorProgrss($memory_progress);
-    $output['memory']['progress'] = $memory_progress;
-    $output['memory']['total']    = $memory_total;
-    $output['temp']['value']      = $temp;
-    $output['temp']['color']      = colorProgrss($temp);
-    $output['temp']['progress']   = $temp;
-    $output['disk']['value']      = $disk;
-    $output['disk']['color']      = colorProgrss($disk_progress);
-    $output['disk']['progress']   = $disk_progress;
-    $output['disk']['total']      = $disk_total;
-    $output['version']            = $version;
-    $output['platform']['name']   = $platformName;
-    $output['platform']['version']   = $platformVersion;
-    $output['hostname']           = $hostname;
-    $output['uptime']['stamp']    = date('d.m.Y H:i:s', $uptime);
-    $output['uptime']['now']      = $uptimeDifferent;
+    $output['cpu']['value']        = $cpu;
+    $output['cpu']['color']        = colorProgrss($cpu);
+    $output['cpu']['progress']     = $cpu;
+    $output['cpu']['frequency']    = $cpu_frequency;
+    $output['memory']['value']     = $memory;
+    $output['memory']['color']     = colorProgrss($memory_progress);
+    $output['memory']['progress']  = $memory_progress;
+    $output['memory']['total']     = $memory_total;
+    $output['temp']['value']       = $temp;
+    $output['temp']['color']       = colorProgrss($temp);
+    $output['temp']['progress']    = $temp;
+    $output['disk']['value']       = $disk;
+    $output['disk']['color']       = colorProgrss($disk_progress);
+    $output['disk']['progress']    = $disk_progress;
+    $output['disk']['total']       = $disk_total;
+    $output['version']             = $version;
+    $output['platform']['name']    = $platformName;
+    $output['platform']['version'] = $platformVersion;
+    $output['hostname']            = $hostname;
+    $output['uptime']['stamp']     = date('d.m.Y H:i:s', $uptime);
+    $output['uptime']['now']       = $uptimeDifferent;
 
     echo json_encode($output);
 }
