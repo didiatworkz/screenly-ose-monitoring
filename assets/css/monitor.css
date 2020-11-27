@@ -51,9 +51,9 @@ table.dataTable tr.dtrg-group td {
     max-width: 40rem;
 }
 
-.tt-hint {
+/* .tt-hint {
   left: 32px !important;
-}
+} */
 
 .tt-menu {
     background-color: #fff;
@@ -63,6 +63,7 @@ table.dataTable tr.dtrg-group td {
     border: 1px solid #f1f2f3;
     -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    z-index: 1080 !important;
 }
 .tt-suggestion {
     display: block;
@@ -74,6 +75,54 @@ table.dataTable tr.dtrg-group td {
     transition: 0.15s linear;
 }
 
+/* Alert Handler */
+.alert_handler {
+  position: relative;
+  padding: 0;
+  min-width: 250px;
+}
+.alert_handler button.close {
+  margin: 0.45rem 1rem;
+  opacity: 0.75;
+}
+.alert_handler button.close:hover {
+  opacity: 1;
+}
+.alert_handler-icon,
+.alert_handler-text {
+  display: table-cell;
+  vertical-align: middle;
+}
+.alert_handler-icon {
+  min-width: 40px;
+  text-align: center;
+  font-size: 1.6rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.alert_handler-text {
+  color: #2d3a51;
+  padding: 1rem;
+  width: 100%;
+  font-size: 12px;
+}
+.alert_handler-text > h5 {
+  margin-top: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+.alert_handler-danger {
+  background-color: #fdf5f5;
+  border-color: #f6d3d3;
+}
+.alert_handler-danger .alert_handler-text h5 {
+  color: #d33534;
+}
+.alert_handler-danger .alert_handler-icon {
+  background-color: #d33534;
+}
+
+
 @media not print {
   .theme-dark a:not(.btn) {
     color: #59a6ff;
@@ -83,6 +132,17 @@ table.dataTable tr.dtrg-group td {
   }
   .theme-dark .btn-link {
     color: #59a6ff;
+  }
+  .text-body {
+    color: unset !important;
+  }
+  .tt-menu {
+      background-color: #354052;
+      color: #354052;
+      border: 1px solid #2f3949;
+  }
+  .tt-menu a {
+      color: #f5f7fb !important;
   }
   .theme-dark .caltime-padding .form-control:disabled, .theme-dark .form-control[readonly] {
       background-color: #2f3949;
