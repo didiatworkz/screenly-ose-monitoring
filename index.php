@@ -24,32 +24,31 @@ echo'
 		<meta name="msapplication-config" content="assets/img/fav/browserconfig.xml">
 		<meta name="theme-color" content="#f5f7fb">
     <!-- Libs CSS -->
-    <link href="assets/libs/selectize/dist/css/selectize.css" rel="stylesheet"/>
-    <link href="assets/libs/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
-    <link href="assets/libs/nouislider/distribute/nouislider.min.css" rel="stylesheet"/>
+    <link href="assets/libs/selectize/dist/css/selectize.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
+    <link href="assets/libs/flatpickr/dist/flatpickr.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
+    <link href="assets/libs/nouislider/distribute/nouislider.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
 
-		<link rel="stylesheet" href="assets/libs/DataTables/datatables.min.css" />
-		<link rel="stylesheet" href="assets/libs/dropzone/dropzone.min.css">
+		<link rel="stylesheet" href="assets/libs/DataTables/datatables.min.css?t='.$set['updatecheck'].'" />
+		<link rel="stylesheet" href="assets/libs/dropzone/dropzone.min.css?t='.$set['updatecheck'].'">
 
     <!-- Tabler Core -->
-    <link href="assets/css/tabler.min.css" rel="stylesheet"/>
+    <link href="assets/css/tabler.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
     <!-- Tabler Plugins -->
-    <link href="assets/css/tabler-buttons.min.css" rel="stylesheet"/>
-    <!-- <link href="assets/css/demo.min.css" rel="stylesheet"/> -->
-    <link href="assets/css/monitor.css" rel="stylesheet"/>
+    <link href="assets/css/tabler-buttons.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
+    <link href="assets/css/monitor.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
 
 		<!-- Libs JS -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="assets/js/jquery-ui.min.js"></script>
-		<script src="assets/libs/DataTables/datatables.min.js"></script>
-		<script src="assets/libs/dropzone/dropzone.min.js"></script>
-		<script src="assets/php/dropzone_lang.js.php"></script>
-		<script src="assets/libs/flatpickr/dist/flatpickr.min.js"></script>
+		<script src="assets/js/jquery.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/js/jquery-ui.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/DataTables/datatables.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/dropzone/dropzone.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/php/dropzone_lang.js.php?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/flatpickr/dist/flatpickr.min.js?t='.$set['updatecheck'].'"></script>
 		<!-- Tabler Core -->
-		<script src="assets/js/tabler.min.js?1588343458"></script>
-		<script src="assets/js/bootstrap-notify.js"></script>
-		<script src="assets/js/validator.js"></script>
+		<script src="assets/js/tabler.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/js/bootstrap-notify.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/js/validator.js?t='.$set['updatecheck'].'"></script>
     <style>
       body {
       	display: none;
@@ -57,10 +56,8 @@ echo'
     </style>
   </head>';
 
-
-
 		if($loggedIn){
-			// Player authentication
+			// Player Authentication
 			$scriptAuthUsername = 'dummy';
 			$scriptAuthPassword = 'dummy';
 
@@ -298,7 +295,7 @@ echo'
 			</div>
 		</div>';
 
-		if(hasPlayerDeleteRight($loginUserID) || hasAssetDeleteRight($loginUserID) || getGroupID($loginUserID) == 1) echo'
+		if(hasPlayerDeleteRight($loginUserID) || hasAssetDeleteRight($loginUserID) || hasSettingsUserDeleteRight($loginUserID) || getGroupID($loginUserID) == 1) echo'
 		<!-- confirmMessage -->
 		<div class="modal modal-blur fade" id="confirmMessage" tabindex="-1" role="dialog" aria-labelledby="confirmMessageModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">
