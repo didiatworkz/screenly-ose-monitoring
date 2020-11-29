@@ -29,8 +29,10 @@ if(!@file_exists($dbase_key)) {
 
 }
 
+$systemVersion  = file_get_contents('assets/tools/version.txt');
+
 if(!@file_exists($dbase_key)){
-  $token = md5($systemVersion.time().$loginPassword).'.db';
+  $token = md5($systemVersion.time().rand()).'.db';
   $keyFile = '<?php
   $db_cryproKey = "'.$token.'";';
   $current = file_get_contents($dbase_key);
@@ -46,7 +48,7 @@ $set 			      = $db->query("SELECT * FROM settings");
 $set 			      = $set->fetchArray(SQLITE3_ASSOC);
 $securityToken	= $set['token'];
 $updatecheck	  = $set['updatecheck'];
-$systemVersion  = file_get_contents('assets/tools/version.txt');
+
 
 
 if(@file_exists('assets/tools/version_old.txt')){
@@ -104,9 +106,9 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("CREATE TABLE IF NOT EXISTS `log` (`logID` INTEGER PRIMARY KEY AUTOINCREMENT, `userID`	INTEGER DEFAULT 0, `logTime`	INTEGER, `moduleName`	TEXT, `info`	TEXT, `show`	INTEGER DEFAULT 0, `relevant`	INTEGER DEFAULT 0)");
 
     $db->exec("ALTER TABLE `userGroups` RENAME TO `userGroups_tmp`");
-    $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`players`	INTEGER DEFAULT 0,	`players_enable`	TEXT,	`modules`	INTEGER DEFAULT 0,	`modules_enable`	TEXT,	`ass_add`	INTEGER DEFAULT 0,	`ass_edit`	INTEGER DEFAULT 0,	`ass_delete`	INTEGER DEFAULT 0,	`ass_clean`	INTEGER DEFAULT 0,	`ass_state`	INTEGER DEFAULT 0, `pla_add`	INTEGER DEFAULT 0, `pla_edit`	INTEGER DEFAULT 0,	`pla_delete`	INTEGER DEFAULT 0, 	`pla_reboot`	INTEGER DEFAULT 0,	`mod_multi`	INTEGER DEFAULT 0,	`mod_addon`	INTEGER DEFAULT 0,	`set_system`	INTEGER DEFAULT 0, `set_user`	INTEGER DEFAULT 0,	`set_user_add`	INTEGER DEFAULT 0,	`set_user_edit`	INTEGER DEFAULT 0,	`set_user_delete`	INTEGER DEFAULT 0,	`set_public`	INTEGER DEFAULT 0)");
+    $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`players`	TEXT,	`players_enable` INTEGER DEFAULT 0,	`modules`	TEXT,	`modules_enable` INTEGER DEFAULT 0,	`ass_add`	INTEGER DEFAULT 0,	`ass_edit`	INTEGER DEFAULT 0,	`ass_delete`	INTEGER DEFAULT 0,	`ass_clean`	INTEGER DEFAULT 0,	`ass_state`	INTEGER DEFAULT 0, `pla_add`	INTEGER DEFAULT 0, `pla_edit`	INTEGER DEFAULT 0,	`pla_delete`	INTEGER DEFAULT 0, 	`pla_reboot`	INTEGER DEFAULT 0,	`mod_multi`	INTEGER DEFAULT 0,	`mod_addon`	INTEGER DEFAULT 0,	`set_system`	INTEGER DEFAULT 0, `set_user`	INTEGER DEFAULT 0,	`set_user_add`	INTEGER DEFAULT 0,	`set_user_edit`	INTEGER DEFAULT 0,	`set_user_delete`	INTEGER DEFAULT 0,	`set_public`	INTEGER DEFAULT 0)");
     $db->exec("INSERT INTO `userGroups`(groupID,name) SELECT groupID,name FROM `userGroups_tmp`");
-    $db->exec("UPDATE `userGroups` SET players=0, modules=0, ass_add=1, ass_edit=1, ass_delete=1, ass_clean=1, ass_state=1, pla_add=1, pla_edit=1,	pla_delete=1, pla_reboot=1,	set_system=1,	set_user_add=1,	set_user_edit=1, set_user_delete=1, set_public=1 WHERE name='Admin'");
+    $db->exec("UPDATE `userGroups` SET players='".serialize()."', modules='".serialize()."', ass_add=1, ass_edit=1, ass_delete=1, ass_clean=1, ass_state=1, pla_add=1, pla_edit=1,	pla_delete=1, pla_reboot=1,	set_system=1,	set_user_add=1,	set_user_edit=1, set_user_delete=1, set_public=1 WHERE name='Admin'");
     $db->exec("DROP TABLE `userGroups_tmp`");
 
     $db->exec("ALTER TABLE `users` RENAME TO `users_tmp`");
