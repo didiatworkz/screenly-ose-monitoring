@@ -75,7 +75,7 @@ echo'
         </a>
       </div>';
 
-      if($set['debug'] == 1) echo '
+      if($set['debug'] == 1 && getGroupID($loginUserID) == 1) echo '
       <div class="nav-item d-none d-md-flex mr-3">
         <a href="#" class="nav-link px-0" tabindex="-1" title="Debug Mode is activated">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 9v-1a3 3 0 0 1 6 0v1" /><path d="M8 9h8a6 6 0 0 1 1 3v3a5 5 0 0 1 -10 0v-3a6 6 0 0 1 1 -3" /><line x1="3" y1="13" x2="7" y2="13" /><line x1="17" y1="13" x2="21" y2="13" /><line x1="12" y1="20" x2="12" y2="14" /><line x1="4" y1="19" x2="7.35" y2="17" /><line x1="20" y1="19" x2="16.65" y2="17" /><line x1="4" y1="7" x2="7.75" y2="9.4" /><line x1="20" y1="7" x2="16.25" y2="9.4" /></svg>
@@ -159,17 +159,8 @@ echo'
         </ul>
 
 
-        <div class="ml-md-auto pl-md-4 py-2 py-md-0 mr-md-4 order-first order-md-last flex-grow-1 flex-md-grow-0" id="somo_search">
-            <div class="input-icon">
-              <span class="input-icon-addon ">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z"/>
-                  <circle cx="10" cy="10" r="7" />
-                  <line x1="21" y1="21" x2="15" y2="15" />
-                </svg>
-              </span>
-              <input type="text" id="inlineFormInputGroup" class="form-control" placeholder="'.Translation::of('search').'">
-            </div>
+        <div class="ml-md-auto pl-md-4 py-2 py-md-0 mr-md-4 flex-grow-1 flex-md-grow-0 order-first order-md-last" id="somo_search">
+            <input type="text" id="inlineFormInputGroup" class="form-control" placeholder="'.Translation::of('search').'" autocomplete="off">
         </div>
       </div>
     </div>

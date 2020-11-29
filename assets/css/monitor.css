@@ -51,9 +51,9 @@ table.dataTable tr.dtrg-group td {
     max-width: 40rem;
 }
 
-/* .tt-hint {
-  left: 32px !important;
-} */
+.twitter-typeahead {
+  width: 100%;
+}
 
 .tt-menu {
     background-color: #fff;
@@ -123,6 +123,7 @@ table.dataTable tr.dtrg-group td {
 }
 
 
+/* DARK MODE */
 @media not print {
   .theme-dark a:not(.btn) {
     color: #59a6ff;
@@ -136,12 +137,12 @@ table.dataTable tr.dtrg-group td {
   .text-body {
     color: unset !important;
   }
-  .tt-menu {
+  .theme-dark .tt-menu {
       background-color: #354052;
       color: #354052;
       border: 1px solid #2f3949;
   }
-  .tt-menu a {
+  .theme-dark .tt-menu a {
       color: #f5f7fb !important;
   }
   .theme-dark .caltime-padding .form-control:disabled, .theme-dark .form-control[readonly] {
