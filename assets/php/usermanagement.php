@@ -73,14 +73,14 @@ if(getGroupID($loginUserID) == 1 || hasSettingsUserRight($loginUserID)){
     redirect($backLink, 0);
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'deleteUser' && hasSettingsUserDeleteRight($loginUserID)){
+  if(isset($_GET['action']) && $_GET['action'] == 'deleteUser' && ((hasSettingsUserDeleteRight($loginUserID) && getGroupID($_GET['userID']) != 1) || getGroupID($loginUserID) == 1)){
     $userID = $_GET['userID'];
     if(isset($userID) AND $userID != $loginUserID){
       systemLog($_moduleName, 'Delete User: '.getUserName($userID), $loginUserID, 1);
       $db->exec("DELETE FROM `users` WHERE userID='".$userID."'");
       $db->exec("DELETE FROM `userGroupMapping` WHERE userID='".$userID."'");
       sysinfo('success', 'User successfully deleted!');
-    }
+    } else systemLog($_moduleName, 'User has tried to delete himself!', $loginUserID, 1);
     redirect($backLink, 0);
   }
 
@@ -173,7 +173,7 @@ if(getGroupID($loginUserID) == 1 || hasSettingsUserRight($loginUserID)){
     </div>';
   }
 
-  elseif(isset($_GET['action']) && $_GET['action'] == 'editUser' && hasSettingsUserEditRight($loginUserID)){
+  elseif(isset($_GET['action']) && $_GET['action'] == 'editUser' && ((hasSettingsUserEditRight($loginUserID) && getGroupID($_GET['userID']) != 1) || getGroupID($loginUserID) == 1)){
     $userID   = $_GET['userID'];
     $userSQL  = $db->query("SELECT * FROM `users` WHERE userID='".$userID."'");
     $user     = $userSQL->fetchArray(SQLITE3_ASSOC);
@@ -376,8 +376,8 @@ while($user = $userSQL->fetchArray(SQLITE3_ASSOC)){
   $userEditBtn = '';
   $userDeleteBtn = '';
 
-  if(hasSettingsUserEditRight($loginUserID)) $userEditBtn = '<a href="'.$_moduleLink.'&action=editUser&userID='.$user['userID'].'" class="options btn btn-warning btn-icon mb-1" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></a>';
-  if(hasSettingsUserDeleteRight($loginUserID)) $userDeleteBtn = '<a href="#" data-toggle="modal" data-target="#confirmDelete" data-href="'.$_moduleLink.'&action=deleteUser&userID='.$user['userID'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
+  if((hasSettingsUserEditRight($loginUserID) && getGroupID($user['userID']) != 1) || getGroupID($loginUserID) == 1) $userEditBtn = '<a href="'.$_moduleLink.'&action=editUser&userID='.$user['userID'].'" class="options btn btn-warning btn-icon mb-1" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></a>';
+  if((hasSettingsUserDeleteRight($loginUserID) && getGroupID($user['userID']) != 1) || getGroupID($loginUserID) == 1) $userDeleteBtn = '<a href="#" data-toggle="modal" data-target="#confirmMessage" data-status="danger" data-text="Do you really want to remove '.$user['username'].'?" data-href="'.$_moduleLink.'&action=deleteUser&userID='.$user['userID'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
 
   echo '
             <tr>

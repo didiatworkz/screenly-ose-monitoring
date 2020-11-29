@@ -338,8 +338,8 @@ function hasPlayerRight($userID, $player){
   $sql      = $db->query("SELECT players, players_enable FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   $value    = $return['players'];
-  if(empty($value) && $return['players_enable'] == 0) return TRUE;
-  if(empty($value) && $return['players_enable'] == 1) return FALSE;
+  if((empty($value) || unserialize($value) == '') && $return['players_enable'] == 0) return TRUE;
+  if((empty($value) || unserialize($value) == '') && $return['players_enable'] == 1) return FALSE;
   $playerList = unserialize($value);
   if($return['players_enable'] == 1 && in_array($player, $playerList)) return TRUE;
   return FALSE;
@@ -351,8 +351,8 @@ function hasModuleRight($userID, $moduleName){
   $sql      = $db->query("SELECT modules, modules_enable FROM `userGroups` WHERE groupID='".$groupID."'");
   $return   = $sql->fetchArray(SQLITE3_ASSOC);
   $value    = $return['modules'];
-  if(empty($value) && $return['modules_enable'] == 0) return TRUE;
-  if(empty($value) && $return['modules_enable'] == 1) return FALSE;
+  if((empty($value) || unserialize($value) == '') && $return['modules_enable'] == 0) return TRUE;
+  if((empty($value) || unserialize($value) == '') && $return['modules_enable'] == 1) return FALSE;
   $moduleList = unserialize($value);
   if($return['modules_enable'] == 1 && in_array($moduleName, $moduleList)) return TRUE;
   return FALSE;
@@ -430,7 +430,7 @@ if(isset($_POST['saveAccount'])){
   $firstname       = $_POST['firstname'];
   $name            = $_POST['name'];
   $user            = $_POST['username'];
-  $refreshscreen	 = $_POST['refreshscreen'];
+  $refreshscreen   = isset($_POST['refreshscreen']) ? $_POST['refreshscreen'] : 5;
   if(isset($_POST['firstStartUser'])) $firstStart = $_POST['firstStartUser'];
   if($_POST['password1'] != '' && $_POST['password2'] != ''){
     $pass1 = md5($_POST['password1']);
@@ -449,5 +449,5 @@ if(isset($_POST['saveAccount'])){
     sysinfo('success', 'Account data saved!', 0);
   }
   else sysinfo('danger', 'Error!');
-  //redirect($backLink);
+  redirect($backLink);
 }

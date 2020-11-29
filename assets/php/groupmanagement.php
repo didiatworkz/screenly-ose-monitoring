@@ -66,8 +66,8 @@ if(getGroupID($loginUserID) == 1){
     $modules          = isset($_POST['module_restriction']) ? serialize($_POST['module_restriction']) : '';
     $modules_enable   = isset($_POST['modules_enable']) ? 1 : 0;
 
-    if($players_enable == 0) $players = '';
-    if($modules_enable == 0) $modules = '';
+    if($players_enable == 0) $players = serialize('');
+    if($modules_enable == 0) $modules = serialize('');
     if($set_user == 0) {
       $set_user_add = 0;
       $set_user_edit = 0;
