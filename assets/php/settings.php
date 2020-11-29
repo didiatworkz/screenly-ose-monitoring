@@ -184,9 +184,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
           <div class="card">
             <div class="card-body text-center">
               <div class="mb-3">
-                <span class="avatar avatar-xl">
-                  '.$loginFirstname['0'].$loginName['0'].'
-                  </span>
+                '.getUserAvatar($loginUserID, 'avatar-xl').'
               </div>
               <div class="card-title mb-1">'.$loginFullname.'</div>
               <div class="text-muted">'.$loginGroupName.'</div>
