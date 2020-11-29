@@ -44,6 +44,7 @@ if(hasModuleRight($loginUserID, 'multi')){
     $playerList = '';
     $playerSQL = $db->query("SELECT * FROM `player` ORDER BY name");
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+      if(hasPlayerRight($loginUserID, $player["playerID"])){
       $playerList .= '
       <label class="form-selectgroup-item flex-fill">
         <input type="checkbox" name="id[]" data-ip="'.$player['address'].'" value="'.$player["playerID"].'" class="form-selectgroup-input">
@@ -60,6 +61,7 @@ if(hasModuleRight($loginUserID, 'multi')){
         </div>
       </label>
         ';
+      }
 
     }
     echo '
