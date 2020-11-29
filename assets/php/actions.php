@@ -191,7 +191,7 @@ if(isset($_POST['saveSettings']) && (getGroupID($loginUserID) == 1 || hasSetting
   $design		 		 	= $_POST['color'] == '' ? '0' : $_POST['color'];
   $timezone	 		 	= $_POST['timezone'];
   $debug	 		 		= isset($_POST['debug']) ? 1 : 0;
-  if(isset($_POST['firstStartSettings'])) $firstStart = $_POST['firstStartSettings'];
+  $firstStart 		= isset($_POST['firstStartSettings']) ? $_POST['firstStartSettings'] : 0;
 
 
   if($duration AND $end_date){
@@ -211,7 +211,6 @@ function checkboxState($value){
 	return $output;
 }
 
-// GET: action:startup - Skip firstStart screen
 if((isset($_GET['action']) && $_GET['action'] == 'startup')){
   $db->exec("UPDATE settings SET firstStart='4' WHERE settingsID='1'");
   redirect($backLink);
