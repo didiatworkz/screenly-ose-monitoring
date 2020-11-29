@@ -34,11 +34,11 @@ _______________________________________
 /* _______________________________ */
 
 
+	$_loadMessureStart = array_sum(explode(' ',  microtime()));
 	$backLink			= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
 	$firstSetup 	= 0;
 	$loadingImage = 'assets/img/spinner.gif';
 
-	$_loadMessureStart = array_sum(explode(' ',  microtime()));
 
 	if(isset($_GET['site'])){
 		$site = $_GET['site'];
@@ -47,7 +47,7 @@ _______________________________________
 	include_once('assets/php/database.php');
 
 	if($set['debug'] == 1){
-		include_once('assets/php/error_handler.php'); 
+		include_once('assets/php/error_handler.php');
 		ini_set('display_errors', 1);
 		set_error_handler('somo_error_handler');
 		error_reporting(E_ALL|E_STRICT);
