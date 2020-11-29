@@ -17,6 +17,8 @@ ________________________________________
 */
 //  discover.php?range=192.168.178.0/24
 
+// Translation: DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
