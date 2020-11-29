@@ -143,75 +143,77 @@ else {
                 <tbody>
                     ';
                     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
-                    $name = $player['name'];
-                    $id   = $player['playerID'];
-                    $ip   = $player['address'];
-                    $log  = $player['logOutput'];
-                    $monitorOutput   = $player['monitorOutput'];
-                    $deviceInfo   = $player['deviceInfo'];
+                      if(hasPlayerRight($loginUserID, $player["playerID"])){
+                        $name = $player['name'];
+                        $id   = $player['playerID'];
+                        $ip   = $player['address'];
+                        $log  = $player['logOutput'];
+                        $monitorOutput   = $player['monitorOutput'];
+                        $deviceInfo   = $player['deviceInfo'];
 
-                    $offline = '<span class="badge bg-danger p-1">'.strtolower(Translation::of('offline')).'</span>';
-                    $not = '<span class="badge bg-danger p-1">'.Translation::of('not_installed').'</span>';
-                    if(checkAddress($ip, '50')){
-                      $counter = 0;
-                      $onlineS = '<span class="badge bg-green p-1">'.strtolower(Translation::of('online')).'</span>';
-                      if($monitorOutput != '0'){
-                      $monitorS = '<span class="badge bg-success p-1">'.Translation::of('version').' '.$monitorOutput.'</span>';
-                      $counter++;
-                      } else $monitorS = $not;
+                        $offline = '<span class="badge bg-danger p-1">'.strtolower(Translation::of('offline')).'</span>';
+                        $not = '<span class="badge bg-danger p-1">'.Translation::of('not_installed').'</span>';
+                        if(checkAddress($ip, '50')){
+                          $counter = 0;
+                          $onlineS = '<span class="badge bg-green p-1">'.strtolower(Translation::of('online')).'</span>';
+                          if($monitorOutput != '0'){
+                          $monitorS = '<span class="badge bg-success p-1">'.Translation::of('version').' '.$monitorOutput.'</span>';
+                          $counter++;
+                          } else $monitorS = $not;
 
-                      if($deviceInfo != '0'){
-                        $deviceS = '<span class="badge bg-success p-1">Version '.$deviceInfo.'</span>';
-                        $counter++;
-                      } else $deviceS = $not;
+                          if($deviceInfo != '0'){
+                            $deviceS = '<span class="badge bg-success p-1">Version '.$deviceInfo.'</span>';
+                            $counter++;
+                          } else $deviceS = $not;
 
-                      if($log != ''){
-                        $logModal= '
-                        <div class="modal modal-blur fade" id="log-modal-'.$id.'" tabindex="-1" role="dialog" aria-hidden="true">
-                          <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title">Full width modal</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi beatae delectus deleniti dolorem eveniet facere fuga iste nemo nesciunt nihil odio perspiciatis, quia quis reprehenderit sit tempora totam unde.
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                          if($log != ''){
+                            $logModal= '
+                            <div class="modal modal-blur fade" id="log-modal-'.$id.'" tabindex="-1" role="dialog" aria-hidden="true">
+                              <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title">Full width modal</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi beatae delectus deleniti dolorem eveniet facere fuga iste nemo nesciunt nihil odio perspiciatis, quia quis reprehenderit sit tempora totam unde.
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                        ';
-                        $logBtn = '<button class="btn btn-info btn-sm">i</button>';
-                      }
-                      else {
-                        $logModal = '';
-                        $logBtn = '';
-                      }
+                            ';
+                            $logBtn = '<button class="btn btn-info btn-sm">i</button>';
+                          }
+                          else {
+                            $logModal = '';
+                            $logBtn = '';
+                          }
 
-                      if($counter == 0) $optionS = '<button class="btn btn-outline-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
-                      else $optionS = '<button class="btn btn-outline-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
-                      $counter = 0;
-                    }
-                    else {
-                      $onlineS = $offline;
-                      $monitorS = '';
-                      $deviceS = '';
-                      $optionS = '';
-                    }
+                          if($counter == 0) $optionS = '<button class="btn btn-outline-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
+                          else $optionS = '<button class="btn btn-outline-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
+                          $counter = 0;
+                        }
+                        else {
+                          $onlineS = $offline;
+                          $monitorS = '';
+                          $deviceS = '';
+                          $optionS = '';
+                        }
 
-                    echo '
-                    <tr>
-                    <td>'.$player['name'].'</td>
-                    <td>'.$player['address'].'</td>
-                    <td>'.$onlineS.'</td>
-                    <td>'.$monitorS.'</td>
-                    <td>'.$deviceS.'</td>
-                    <td>'.$optionS.'</td>
-                    </tr>';
+                        echo '
+                        <tr>
+                        <td>'.$player['name'].'</td>
+                        <td>'.$player['address'].'</td>
+                        <td>'.$onlineS.'</td>
+                        <td>'.$monitorS.'</td>
+                        <td>'.$deviceS.'</td>
+                        <td>'.$optionS.'</td>
+                        </tr>';
+                      }
                     }
         echo '
                 </tbody>
