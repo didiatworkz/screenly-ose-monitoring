@@ -33,6 +33,7 @@ if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && (getGroup
   if($token){
     $db->exec("UPDATE settings SET token='".$token."' WHERE settingsID='1'");
     sysinfo('success', Translation::of('msg.new_token_generated'));
+    systemLog($_moduleName, 'New token for public access generated', $loginUserID, 1);
     redirect($backLink);
   } else sysinfo('danger', 'Error!');
 }
@@ -161,7 +162,6 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
   ';
 }
 else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRight($loginUserID)){
-  //// TODO: Design and Timezone + Systeminformation
   echo '
   <div class="container-xl">
     <div class="page-header">
