@@ -495,7 +495,31 @@ $('.installAddon').on('click', function() {
   eP.find('#headerText').text(header);
   eP.find('#btnText').text(header);
   eP.modal('show');
+});
 
+function loadLog(id){
+  $.ajax({
+    url: 'assets/php/addon.php?load=log&playerID='+id,
+    type: 'GET',
+    success: function(data) {
+      $('.logOutput').html(data);
+    },
+  });
+}
+
+$('.openlog').on('click', function() {
+  var id = $(this).data('id');
+  var header = $(this).data('header');
+  var eP = $('#log-modal');
+  eP.find('#headerText').text(header);
+  eP.find('.logrefresh').data('id', id);
+  loadLog(id)
+  eP.modal('show');
+});
+
+$('.logrefresh').on('click', function() {
+  var id = $(this).data('id');
+  loadLog(id)
 });
 
 $('button.reboot').on('click', function(){

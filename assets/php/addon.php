@@ -33,6 +33,16 @@ if((isset($argv) && $argv['1'] != '')){
   $server_port = $argv['2'];
   $server_login = $argv['3'];
   $server_password = $argv['4'];
+  $userID = $argv['5'];
+  $localServer = $argv['6'];
+
+  $output = array();
+  $output['time'] = time();
+  $output['player'] = $server_host;
+  $output['userID'] = $userID;
+  $output['localServer'] = $localServer;
+
+  shell_exec('curl -X GET "'.$localServer.'/assets/php/runner.php?mode=addon&state=start&uid='.$userID.'&player='.$server_host.'"');
 
   //TODO Change branch!
   $cmd = "rm -rf install.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/v3.0/install.sh && chmod +x install.sh && ./install.sh";
@@ -42,23 +52,22 @@ if((isset($argv) && $argv['1'] != '')){
   $ssh = new ssh($server_host, $server_login, $server_password, $server_port);
   $test = $ssh('whoami');
   $test = preg_replace( "/\r|\n/", "", $test);
-  $output = "\n[START] Installation of SOMA Add-ons\n";
-  $output .= date("Y-m-d hh:mm:ss")."\n";
+  $output['output'] = "\n[START] Installation of SOMA Add-on\n";
+  $output['output'] .= date("Y-m-d H:i:s")."\n";
   if($test == $server_login){
-    $output .= $ssh($cmd);
+    $output['output'] .= $ssh($cmd);
   }
-  else $output .= "Wrong credentials\n";
+  else $output['output'] .= "Wrong credentials\n";
 
-  $output .= date("Y-m-d hh:mm:ss")."\n";
-  $output .= "[END] Installation of SOMA Add-ons\n";
-  $output .= "\n";
-  $output .= "=========================================================\n";
-  $output .= "\n";
+  $output['output'] .= date("Y-m-d H:i:s")."\n";
+  $output['output'] .= "[END] Installation of SOMA Add-on\n";
 
-  echo $output;
+  $file = fopen('/var/www/html/monitor/assets/tmp/'.$server_host.'.txt', "w") or die("Unable to open file!");
+  $contents = serialize($output);
+  fwrite($file, $contents);
+  fclose($file);
 
-  $db->exec("UPDATE player SET logOutput='".$output."' WHERE address='".$server_host."'");
-
+  shell_exec('curl -X GET "'.$localServer.'/assets/php/runner.php?mode=addon&state=end&player='.$server_host.'"');
   exit();
 
 }
@@ -70,16 +79,30 @@ elseif(isset($_POST['addonInstall']) && $_POST['addonInstall'] == 'true' && $_PO
 
   $test =  shell_exec("apt policy php-ssh2");
   if (strpos($test, 'Installed: (none)') === false) {
-      shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass.' > /dev/null 2>/dev/null &');
-      //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry');
+      shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass." ".$loginUserID. " ".$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').' > /dev/null 2>/dev/null &');
+      //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry 1 192.168.178.100');
       die(Translation::of('soma.start_installation'));
   } else die(Translation::of('soma.no_package_found'));
 
 }
+elseif(isset($_GET['action']) && $_GET['action'] == 'reset'){
+  if($_GET['playerID'] != '' && hasModuleRight($loginUserID, 'addon')){
+    $db->exec("UPDATE `player` SET logOutput='' WHERE playerID='".$_GET['playerID']."'");
+  }
+  redirect($backLink, 0);
+
+}
+elseif(isset($_GET['load']) && $_GET['load'] == 'log'){
+  chdir('../../');
+  include_once('_functions.php');
+  $id = $_GET['playerID'];
+  $playerSQL 	= $db->query("SELECT logOutput FROM player WHERE playerID='".$id."'");
+  $player     = $playerSQL->fetchArray(SQLITE3_ASSOC);
+  echo nl2br($player['logOutput']);
+}
 else {
   if(hasModuleRight($loginUserID, 'addon')){
     $playerSQL 		= $db->query("SELECT playerID, name, address, monitorOutput, deviceInfo, status, logOutput FROM player ORDER BY address");
-
     echo '
 
     <div class="container-xl">
@@ -167,29 +190,10 @@ else {
                           } else $deviceS = $not;
 
                           if($log != ''){
-                            $logModal= '
-                            <div class="modal modal-blur fade" id="log-modal-'.$id.'" tabindex="-1" role="dialog" aria-hidden="true">
-                              <div class="modal-dialog modal-full-width modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title">Full width modal</h5>
-                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi beatae delectus deleniti dolorem eveniet facere fuga iste nemo nesciunt nihil odio perspiciatis, quia quis reprehenderit sit tempora totam unde.
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            ';
-                            $logBtn = '<button class="btn btn-info btn-sm">i</button>';
+                            $logBtn = '<button class="btn btn-outline-info ml-2 openlog" data-id="'.$id.'">Log-File</button>';
                           }
                           else {
-                            $logModal = '';
+
                             $logBtn = '';
                           }
 
@@ -252,6 +256,26 @@ else {
   			</div>
   		</div>
 
+      <div class="modal modal-blur fade" id="log-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Log Information of Player <span id="headerText"></span></h5>
+              <button class="close logrefresh">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path></svg>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="logOutput"></div>
+            </div>
+            <div class="modal-footer">
+              <a href="index.php?site=addon&action=reset&playerID='.$id.'" class="btn btn-danger">Reset Log</a>
+              <button type="button" class="btn btn-white ml-auto" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- installAddon -->
   		<div class="modal fade" id="installAddon" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
   			<div class="modal-dialog" role="document">
@@ -281,11 +305,11 @@ else {
                 </div>
                 <div class="mb-3">
   								<label class="form-label">'.Translation::of('username').' *</label>
-  								<input name="user" type="text" class="form-control" id="InputLoginname" placeholder="pi" autofocus/>
+  								<input name="user" type="text" class="form-control" id="InputLoginnameS" placeholder="pi" autofocus/>
   							</div>
   							<div class="mb-3">
   								<label class="form-label">'.Translation::of('password').' *</label>
-  								<input name="pass" type="password" class="form-control" id="InputPassword" placeholder="raspberry" />
+  								<input name="pass" type="password" class="form-control" id="InputPasswordS" placeholder="raspberry" />
   							</div>
                 <div class="mb-3">
                   <div class="alert alert-warning" role="alert">
