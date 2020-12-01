@@ -380,11 +380,11 @@ if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password']))
       die();
     } else {
         sysinfo('warning', 'User not activated!');
-        systemLog('Login', $loginUsername.' not activated!');
+        systemLog('Login', $_POST['user'].' not activated!');
     }
   }  else {
        sysinfo('danger', 'The entered login data are not correct!');
-       systemLog('Login', $loginUsername.' data are not correct!');
+       systemLog('Login', $_POST['user'].' data are not correct!');
   }
 }
 
@@ -431,7 +431,7 @@ if(isset($_POST['saveAccount'])){
   $name            = $_POST['name'];
   $user            = $_POST['username'];
   $refreshscreen   = isset($_POST['refreshscreen']) ? $_POST['refreshscreen'] : 5;
-  if(isset($_POST['firstStartUser'])) $firstStart = $_POST['firstStartUser'];
+  $firstStart 	   = isset($_POST['firstStartSettings']) ? $_POST['firstStartSettings'] : 0;
   if($_POST['password1'] != '' && $_POST['password2'] != ''){
     $pass1 = md5($_POST['password1']);
     $pass2 = md5($_POST['password2']);
