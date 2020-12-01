@@ -44,6 +44,7 @@ _______________________________________
 		$site = $_GET['site'];
 	} else $site = NULL;
 
+	define('ROOT_DIR', realpath(__DIR__));
 	include_once('assets/php/database.php');
 
 	if($set['debug'] == 1){
@@ -65,6 +66,7 @@ _______________________________________
 	include_once('assets/php/player.php');
 	include_once('assets/php/update.php');
 	include_once('assets/php/actions.php');
+
 
 	$runnerTime = getRunnerTime();
 

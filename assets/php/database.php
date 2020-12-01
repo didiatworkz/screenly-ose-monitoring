@@ -17,19 +17,18 @@ _______________________________________
 _______________________________________
 */
 
-$dbase_key		= $_SERVER['DOCUMENT_ROOT'].'/assets/tools/key.php';
+$dbase_key		= ROOT_DIR.'/assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
-  $dbase_file = $_SERVER['DOCUMENT_ROOT'].'/dbase.db';
+  $dbase_file = ROOT_DIR.'/dbase.db';
 } else {
   include_once($dbase_key);
   $dbase_file = $db_cryproKey;
-  if(@file_exists($_SERVER['DOCUMENT_ROOT'].'/dbase.db')) {
-    unlink($_SERVER['DOCUMENT_ROOT'].'/dbase.db');
+  if(@file_exists(ROOT_DIR.'/dbase.db')) {
+    unlink(ROOT_DIR.'/dbase.db');
   }
-
 }
 
-$systemVersion  = file_get_contents('assets/tools/version.txt');
+$systemVersion  = file_get_contents(ROOT_DIR.'/assets/tools/version.txt');
 
 if(!@file_exists($dbase_key)){
   $token = md5($systemVersion.time().rand()).'.db';
@@ -37,7 +36,7 @@ if(!@file_exists($dbase_key)){
   $db_cryproKey = "'.$token.'";';
   $current = file_get_contents($dbase_key);
   file_put_contents($dbase_key, $keyFile);
-  rename($_SERVER['DOCUMENT_ROOT'].'/dbase.db',$token);
+  rename(ROOT_DIR.'/dbase.db',$token);
   header("Refresh:0");
   die("Reload this page");
 }
