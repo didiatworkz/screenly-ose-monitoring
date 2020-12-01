@@ -85,6 +85,7 @@ return [
     'familyname' => 'Family Name',
     'finish' => 'Finish',
     'firstname' => 'First Name',
+    'flatpickr.lang' => 'default', // Available languages: https://github.com/flatpickr/flatpickr/tree/master/src/l10n
     'forever' => 'Forever',
     'found' => 'Found',
     'generate_token' => 'Generate new token',

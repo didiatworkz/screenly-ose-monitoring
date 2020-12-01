@@ -284,6 +284,7 @@ echo'
 							  <a href="https://www.dropzonejs.com/" target="_blank">dropzoneJS</a><br />
 							  <a href="http://bootstrap-notify.remabledesigns.com/" target="_blank">Bootstrap notify</a><br />
 							  <a href="https://github.com/InterativaDigital/php-translation-class" target="_blank">PHP Translation Class</a><br />
+							  <a href="https://github.com/members/ssh" target="_blank">SSH Client Class</a><br />
 							</td>
 						  </tr>
 						</table>
@@ -319,7 +320,6 @@ echo'
 			if (isset($logedout)){
 				sysinfo('success', '<i class="fa fa-check"></i> '.Translation::of('msg.logged_out_successfully'));
 			}
-			// TODO: Notification not visible (With wrong credentials)
 			include('assets/php/login.php');
 		}
 		$db->close();
@@ -369,11 +369,13 @@ if (!(localStorage.getItem("notification_style") === null && localStorage.getIte
 }
 
 </script>
-<script src="assets/js/monitor.js"></script>
-<script src="assets/libs/typeaheadjs/dist/typeahead.bundle.min.js"></script>
-<script src="assets/js/monitor_search.js"></script>
+<script src="assets/js/monitor.js?t='.$set['updatecheck'].'"></script>
+<script src="assets/libs/typeaheadjs/dist/typeahead.bundle.min.js?t='.$set['updatecheck'].'"></script>
+<script src="assets/js/monitor_search.js?t='.$set['updatecheck'].'"></script>
+<script src="assets/js/flatpickr.lang.js?t='.$set['updatecheck'].'"></script>
 <script>
 	document.body.style.display = "block"
+	flatpickr.localize(flatpickr.l10ns.'.Translation::of('flatpickr.lang').');
 </script>';
 $totalTime = array_sum(explode(' ',  microtime())) - $_loadMessureStart; echo '<script>console.log("Loaded in: '.$totalTime.'")</script>
 </body>
