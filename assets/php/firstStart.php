@@ -210,7 +210,7 @@ if($set['firstStart'] != 0){
     else redirect('index.php?step=4');
   }
   else if($set['firstStart'] == 4){
-    systemLog($_moduleName, 'Setup complete', $loginUserID, 1);
+    systemLog($_moduleName, 'Setup wizard complete', $loginUserID, 1);
     echo '
     <div class="hr-text hr-text-center hr-text-spaceless">'.Translation::of('finish').'</div>
       <form action="'.$_SERVER['PHP_SELF'].'" method="POST">
