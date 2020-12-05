@@ -34,7 +34,9 @@ function playerAuthentication($value = null){
 }
 
 function checkHTTP($ip){
-  $curl = curl_init();
+  $http   = 'http://';
+  $https  = 'https://';
+  $curl   = curl_init();
   curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 250);
   curl_setopt($curl, CURLOPT_URL, $ip);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -44,9 +46,8 @@ function checkHTTP($ip){
   $response = curl_exec($curl);
   $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
   curl_close($curl);
-  if($code == 200) return 'http://';
-  else if($code == 301) return 'https://';
-  else return false;
+  if(strpos($code, '301') !== false) return $https;
+  else return $http;
 }
 
 function getApiData($ip, $playerID = null){
