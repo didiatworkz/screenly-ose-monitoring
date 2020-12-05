@@ -59,10 +59,10 @@ $('.changeState').on('click', function() {
         if($(this).hasClass('bg-danger')) $(this).text('inactive');
         else $(this).text('active');
       });
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     },
     error: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     }
   });
 });
@@ -76,10 +76,10 @@ $('.changeAsset').on('click', function() {
     type: 'POST',
     data: { order: order, playerID: id, changeAsset: changeAsset },
     success: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     },
     error: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     }
   });
 });
@@ -181,6 +181,7 @@ if ($('.drop').length) {
       var fname = file.name;
       var ftype = file.type;
       var playerID = getUrlParameterByName('playerID');
+      console.log(playerID)
       if(ftype.includes("image")) mimetype = "image";
       else if (ftype.includes("video")) mimetype = "video";
       else mimetype = "unknown";
@@ -194,7 +195,7 @@ if ($('.drop').length) {
          myDropzone.removeFile(file);
        },
        error: function(data){
-         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
        }
      });
     }
@@ -293,7 +294,7 @@ $("#assetNewForm").submit(function(e) {
        }, 0);
      },
      error: function(data){
-       $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+       $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
      }
    });
   }
@@ -402,13 +403,13 @@ $("#newPlayerDiscover").submit(function(e) {
    type: 'GET',
    data: form.serialize(),
    success: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan complete'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan complete'},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
      $("#discoverStatus").html(data);
      $(".start_discovery").html('Discover');
      $('.start_discovery').prop('disabled', false);
    },
    error: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan failed!'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Scan failed!'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
      $("#discoverStatus").html(data);
      $(".start_discovery").html('Discover');
      $('.start_discovery').prop('disabled', false);
@@ -437,7 +438,7 @@ $('.editPlayerOpen').on('click', function() {
       return false;
     },
     error: function(data){
-      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Player information'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     }
   });
 });
@@ -453,11 +454,11 @@ $("#installAddonForm").submit(function(e) {
    type: 'POST',
    data: form.serialize(),
    success: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Installation started!'},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Installation started!'},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
      location.reload(2);
    },
    error: function(data){
-     $.notify({icon: 'tim-icons icon-bell-55',message: 'Error'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+     $.notify({icon: 'tim-icons icon-bell-55',message: 'Error'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
      location.reload(2);
    }
  });
@@ -534,11 +535,11 @@ $('button.reboot').on('click', function(){
       type: 'POST',
       data: { playerID: id, exec_reboot: exec_reboot },
       success: function(data){
-        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'top',align: 'center'}});
+        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
         eR.modal('hide');
       },
       error: function(data){
-        $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'top',align: 'center'}});
+        $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change the Asset'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
         eR.modal('hide');
       }
     });
