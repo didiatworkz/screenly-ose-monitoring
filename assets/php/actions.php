@@ -52,8 +52,13 @@ if(isset($_POST['newAsset'])){
 		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
 		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
+		$assetLogName = strlen($name) > 35 ? substr($name,0,32)."..." : $name;
+		systemLog('Player', 'Upload asset: '.$assetLogName.' to player '.$player['name'], $loginUserID, 1);
+
+
 		if(isset($_POST['multidrop'])){
 			//print_r($images);
+			print_r($player['address'].'/api/v1/file_asset');
 			$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id[$i], false);
 			if (strpos($url, '/home/pi/screenly_assets') === false) {
 				$output .= $player['name'];
@@ -105,6 +110,7 @@ if(isset($_POST['changeAssetState'])){
 	$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$playerID."'");
   $player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 	$playerAddress 	= $player['address'];
+	systemLog('Player', 'Change asset state: '.$asset.' on player '.$player['name'], $loginUserID, 1);
 	$data = callURL('GET', $playerAddress.'/api/'.$apiVersion.'/assets/'.$asset, false, $playerID, false);
 	if($data['is_enabled'] == 1){
 		$data['is_enabled'] = '0';
@@ -145,6 +151,7 @@ if(isset($_POST['exec_reboot'])){
 	$player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
 	$playerAddress 	= $player['address'];
 	$db->exec("UPDATE `player` SET sync='".time()."' WHERE playerID='".$playerID."'");
+	systemLog('Player', 'Execute Reboot on player: '.$player['name'], $loginUserID, 1);
 	header('HTTP/1.1 200 OK');
 	echo Translation::of('msg.reboot_command_send');
 	$result = callURL('POST', $playerAddress.'/api/v1/reboot_screenly', false, $playerID, false);
