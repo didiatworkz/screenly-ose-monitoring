@@ -17,7 +17,9 @@ _______________________________________
 _______________________________________
 */
 
-include_once("_functions.php");
+require_once("_functions.php");
+require_once(__DIR__.'/assets/php/translation.php');
+use Translation\Translation;
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -33,7 +35,7 @@ else $body_theme = '';
 echo '
 
 <!doctype html>
-<html lang="en">
+<html lang="'.Translation::of('lang_tag').'">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
@@ -104,7 +106,7 @@ if($_key == $securityToken){
     $current_site = $para / $_boxes;
     $total_site = ceil($n / $_boxes);
 
-    $pagination = 'Page '.$current_site.' of '.$total_site.' - ';
+    $pagination = Translation::of('page').' '.$current_site.' '.Translation::of('of').' '.$total_site.' - ';
 
     redirect($site, 30);
 
@@ -115,8 +117,8 @@ if($_key == $securityToken){
 
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
       if($player['name'] == ''){
-        $name	 			= 'No Player Name';
-        $imageTag 	= 'No Player Name '.$player['playerID'];
+        $name	 			= Translation::of('no_player_name');
+        $imageTag 	= Translation::of('no_player_name').' '.$player['playerID'];
       }
       else {
         $name 			= $player['name'];
@@ -151,9 +153,9 @@ if($_key == $securityToken){
         <div class="empty-icon">
           <img src="assets/img/undraw_empty_xct9.svg" height="256" class="mb-4"  alt="">
         </div>
-        <p class="empty-title h3">No players</p>
+        <p class="empty-title h3">'.Translation::of('no_player_found').'</p>
         <p class="empty-subtitle text-muted">
-          Can \'t find any player in Database
+          '.Translation::of('msg.cant_find_player_in_database').'
         </p>
       </div>
     </div>
@@ -167,9 +169,9 @@ else {
       <div class="empty-icon">
         <img src="assets/img/undraw_server_down_s4lk.svg" height="256" class="mb-4"  alt="">
       </div>
-      <p class="empty-title h3">Invalid Token!</p>
+      <p class="empty-title h3">'.Translation::of('invalid_token').'!</p>
       <p class="empty-subtitle text-muted">
-        Check the URL or regenerate a new Link!
+        '.Translation::of('msg.check_link').'
       </p>
     </div>
   </div>

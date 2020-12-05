@@ -17,6 +17,8 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
@@ -24,8 +26,6 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 $_moduleName = 'Players';
 $_moduleLink = 'index.php?site=players';
-
-// TODO: TRANSLATION!
 
 // GET: action:view - Player detail overview
 if(isset($_GET['action']) && $_GET['action'] == 'view'){
@@ -44,6 +44,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       $player['location'] != '' ? $playerLocation = $player['location'] : $playerLocation = '';
 
       $displayAPI     = '';
+      $displayLog   = '';
       $displayPower   = '';
       $displayRes      = '';
       $deviceInfoHead = '';
@@ -94,7 +95,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             <line x1="15" y1="9" x2="9" y2="15"></line>
             <polyline points="15 15 15 9 9 9"></polyline>
           </svg>
-          Webinterface
+          '.Translation::of('web_interface').'
         </a>
         <a href="http://'.$player['address'].'" target="_blank" class="btn btn-info ml-3 d-sm-none btn-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -110,7 +111,12 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
             <line x1="12" y1="4" x2="12" y2="12"></line>
           </svg>
-          Reboot
+          '.Translation::of('reboot').'
+        </button>';
+
+        $serviceLog = '<button  data-toggle="modal" data-target="#serviceView" class="btn btn-secondary btn-block mt-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="9" y1="6" x2="20" y2="6" /><line x1="9" y1="12" x2="20" y2="12" /><line x1="9" y1="18" x2="20" y2="18" /><line x1="5" y1="6" x2="5" y2="6.01" /><line x1="5" y1="12" x2="5" y2="12.01" /><line x1="5" y1="18" x2="5" y2="18.01" /></svg>
+          '.Translation::of('service_log').'
         </button>';
 
         $script 			= '
@@ -122,7 +128,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
         if(hasAssetAddRight($loginUserID)) $newAsset	= '<a href="#" data-toggle="modal" data-target="#newAsset" class="btn btn-success btn-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> '.Translation::of('new_asset').'</a>';
 
-        if(hasAssetDeleteRight($loginUserID)) $bulkDelete = '<a href="#" data-toggle="modal" data-text="'.Translation::of('msg.clean_all_assets').'" data-target="#confirmMessage" data-status="danger" data-href="'.$_moduleLink.'&action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-warning btn-block mt-4">
+        if(hasAssetDeleteRight($loginUserID)) $bulkDelete = '<a href="#" data-toggle="modal" data-text="'.Translation::of('msg.clean_all_assets').'" data-target="#confirmMessage" data-status="danger" data-href="'.$_moduleLink.'&action=view&playerID=21&action2=deleteAllAssets&playerID='.$player['playerID'].'" class="btn btn-warning btn-block mt-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"></path>
             <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2"></path>
@@ -137,44 +143,28 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           $displayRes = explode(',', $displayAPI['display_info']);
           $displayRes = $displayRes['1'];
           $displayPower = $displayAPI['display_power'];
+          $displayAPILog = $displayAPI['viewlog'];
+          for ($i=0; $i < count($displayAPILog); $i++) {
+            if(preg_match_all('/\[|\]/', $displayAPILog[$i], $matches)) {
+              if(count($matches[0]) <= 3){
+                $displayLog .= '<small class="text-muted mt-n4">';
+                $displayLog .= $displayAPILog[$i];
+                $displayLog .= '</small>';
+                $matches[0] = 0;
+              }
+            } else $displayLog .= $displayAPILog[$i];
+
+            $displayLog .= '<br />';
+          }
         }
 
         if(deviceInfoInstalled($player['address'])){
           $deviceInfoHead = '
           <div class="d-inline-block">
-
-          <label class="form-check form-switch d-sm-inline-block mr-3">
-            <input class="form-check-input deviceCheckbox" type="checkbox" checked>
-            <span class="form-check-label">Device Info</span>
-          </label>
-          <!--
-          <a href="'.$_moduleLink.'&action=ps&playerID='.$playerID.'" class="btn btn-secondary ml-3 d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <line x1="4" y1="6" x2="9.5" y2="6"></line>
-              <line x1="4" y1="10" x2="9.5" y2="10"></line>
-              <line x1="4" y1="14" x2="9.5" y2="14"></line>
-              <line x1="4" y1="18" x2="9.5" y2="18"></line>
-              <line x1="14.5" y1="6" x2="20" y2="6"></line>
-              <line x1="14.5" y1="10" x2="20" y2="10"></line>
-              <line x1="14.5" y1="14" x2="20" y2="14"></line>
-              <line x1="14.5" y1="18" x2="20" y2="18"></line>
-            </svg>
-            Process Overview
-          </a>
-          <a href="'.$_moduleLink.'&action=ps&playerID='.$playerID.'" class="btn btn-secondary d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <line x1="4" y1="6" x2="9.5" y2="6"></line>
-              <line x1="4" y1="10" x2="9.5" y2="10"></line>
-              <line x1="4" y1="14" x2="9.5" y2="14"></line>
-              <line x1="4" y1="18" x2="9.5" y2="18"></line>
-              <line x1="14.5" y1="6" x2="20" y2="6"></line>
-              <line x1="14.5" y1="10" x2="20" y2="10"></line>
-              <line x1="14.5" y1="14" x2="20" y2="14"></line>
-              <line x1="14.5" y1="18" x2="20" y2="18"></line>
-            </svg>
-          </a>-->
+            <label class="form-check form-switch d-sm-inline-block mr-3">
+              <input class="form-check-input deviceCheckbox" type="checkbox" checked>
+              <span class="form-check-label">'.Translation::of('device_info').'</span>
+            </label>
           </div>
           ';
           $deviceInfoBox = '
@@ -183,72 +173,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">CPU</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="cpu"></span>%</div>
-                  <div class="d-flex mb-2">
-                    <div>Frequency: <span class="cpu_frequency"></span> MHz</div>
-                  </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar cpu-bar bg-red" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">Memory</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="memory"></span> MB</div>
-                  <div class="d-flex mb-2">
-                    <div>Total: <span class="memory_total"></span> MB</div>
-                  </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar memory-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">Temperature</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="temp"></span>°</div>
-                  <div class="d-flex mb-2">
-                    <div>Sensor: CPU</div>
-                  </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar temp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">Storage</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="disk"></span> GB</div>
-                  <div class="d-flex mb-2">
-                    <div>Total: <span class="disk_total"></span> GB</div>
-                  </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar disk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">Uptime</div>
+                    <div class="subheader">'.Translation::of('uptime').'</div>
                   </div>
                   <div class="h1 mb-3"><span class="upnow"></span></div>
                   <div class="d-flex mb-2">
@@ -261,7 +186,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">Hostname</div>
+                    <div class="subheader">'.Translation::of('hostname').'</div>
                   </div>
                   <div class="h1 mb-3"><span class="hostname"></span></div>
                   <div class="d-flex mb-2">
@@ -274,11 +199,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">Platform</div>
+                    <div class="subheader">'.Translation::of('platform').'</div>
                   </div>
                   <div class="h1 mb-3"><span class="platformName"></span></div>
                   <div class="d-flex mb-2">
-                    <div>Version: <span class="platformVersion"></span></div>
+                    <div>'.Translation::of('version').': <span class="platformVersion"></span></div>
                   </div>
                 </div>
               </div>
@@ -287,15 +212,81 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">Version</div>
+                    <div class="subheader">'.Translation::of('version').'</div>
                   </div>
                   <div class="h1 mb-3"><span class="version"></span></div>
                   <div class="d-flex mb-2">
-                    <div>SOMA Device Info</div>
+                    <div>'.Translation::of('soma_device_info').'</div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div class="col-sm-6 col-lg-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="subheader">'.Translation::of('cpu').'</div>
+                  </div>
+                  <div class="h1 mb-3"><span class="cpu"></span>%</div>
+                  <div class="d-flex mb-2">
+                    <div>'.Translation::of('frequency').': <span class="cpu_frequency"></span> MHz</div>
+                  </div>
+                </div>
+                <div class="progress card-progress">
+                  <div class="progress-bar cpu-bar bg-red" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="subheader">'.Translation::of('memory').'</div>
+                  </div>
+                  <div class="h1 mb-3"><span class="memory"></span> MB</div>
+                  <div class="d-flex mb-2">
+                    <div>'.Translation::of('total').': <span class="memory_total"></span> MB</div>
+                  </div>
+                </div>
+                <div class="progress card-progress">
+                  <div class="progress-bar memory-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="subheader">'.Translation::of('temperature').'</div>
+                  </div>
+                  <div class="h1 mb-3"><span class="temp"></span>°</div>
+                  <div class="d-flex mb-2">
+                    <div>'.Translation::of('sensor_cpu').'</div>
+                  </div>
+                </div>
+                <div class="progress card-progress">
+                  <div class="progress-bar temp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="subheader">'.Translation::of('storage').'</div>
+                  </div>
+                  <div class="h1 mb-3"><span class="disk"></span> GB</div>
+                  <div class="d-flex mb-2">
+                    <div>'.Translation::of('total').': <span class="disk_total"></span> GB</div>
+                  </div>
+                </div>
+                <div class="progress card-progress">
+                  <div class="progress-bar disk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
 
@@ -316,6 +307,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         $script 				= '';
         $management			= '';
         $reboot 				= '';
+        $serviceLog			= '';
         $statusBanner   = '';
 
         if(checkAddress($player['address'])){
@@ -335,22 +327,21 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </div>';
         }
       }
-      // TODO: Device Information and Process view need to build up
+
       echo '
       <div class="page-header">
         <div class="row align-items-center">
           <div class="col-auto">
           <!--
             <h2 class="page-title">
-              Playerinformation
+              '.Translation::of('player_information').'
             </h2>
             -->
             <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-              <li class="breadcrumb-item"><a href="'.$_moduleLink.'">Player</a></li>
+              <li class="breadcrumb-item"><a href="'.$_moduleLink.'">'.$_moduleName.'</a></li>
               <li class="breadcrumb-item active" aria-current="page"><a href="'.$_moduleLink.'&action=view&playerID='.$playerID.'">'.$playerName.'</a></li>
             </ol>
           </div>
-          <!-- Page title actions -->
           <div class="col-auto ml-auto" '.$showBox.'>
             '.$deviceInfoHead.'
             '.$management.'
@@ -362,7 +353,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center">
-                <div class="subheader">Information</div>
+                <div class="subheader">'.Translation::of('information').'</div>
                 <div class="ml-auto lh-1 text-muted">
                   '.$player_edit_btn.'
                   '.$player_delete_btn.'
@@ -379,7 +370,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center">
-                <div class="subheader">Status</div>
+                <div class="subheader">'.Translation::of('status').'</div>
               </div>
               <div class="h1 mb-3">'.$status.'</div>
               <div class="d-flex mb-2">
@@ -392,7 +383,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center">
-                <div class="subheader">Display</div>
+                <div class="subheader">'.Translation::of('display').'</div>
               </div>
               <div class="h1 mb-3">'.strtoupper($displayPower).'</div>
               <div class="d-flex mb-2">
@@ -405,24 +396,24 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center">
-                <div class="subheader">Asset Control</div>
+                <div class="subheader">'.Translation::of('asset_control').'</div>
               </div>
               <div class="btn-group d-flex mt-4" role="group" aria-label="Basic example">
-                <button type="button" data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-secondary">
+                <button type="button" title="'.Translation::of('previous_asset').'" data-playerID="'.$player['playerID'].'" data-order="previous" class="changeAsset btn btn-secondary">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z"></path>
                     <polyline points="11 7 6 12 11 17"></polyline>
                     <polyline points="17 7 12 12 17 17"></polyline>
                   </svg>
-                  Asset
+                  '.Translation::of('asset').'
                 </button>
-                <button type="button" data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-secondary">
+                <button type="button" title="'.Translation::of('next_asset').'" data-playerID="'.$player['playerID'].'" data-order="next" class="changeAsset btn btn-secondary">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z"></path>
                     <polyline points="7 7 12 12 7 17"></polyline>
                     <polyline points="13 7 18 12 13 17"></polyline>
                   </svg>
-                  Asset
+                  '.Translation::of('asset').'
                 </button>
               </div>
             </div>
@@ -437,26 +428,24 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="col-xs-12 col-sm-4 col-lg-3 order-sm-4 order-lg-4 order-xl-4" '.$showBox.'>
             <div class="card">
               <img src="'.$loadingImage.'" class="card-img-top player" data-src="'.$player['address'].'" alt="...">
-            </div>';
+            </div>
 
-            if($bulkDelete != '' || $reboot != '') echo '
             <div class="card">
               <div class="card-body">
                 <div class="d-flex align-items-center">
-                  <div class="subheader">Player Control</div>
+                  <div class="subheader">'.Translation::of('player_control').'</div>
                 </div>
+                '.$serviceLog.'
                 '.$bulkDelete.'
                 '.$reboot.'
 
               </div>
-            </div>';
-
-            echo '
+            </div>
           </div>
           <div class="col-xs-12 col-sm-8 col-lg-9 order-sm-3 order-lg-3 order-xl-3" '.$showBox.'>
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Assets</h3>
+                <h3 class="card-title">'.Translation::of('assets').'</h3>
                 <div class="col-auto ml-auto">
                   '.$newAsset.'
                 </div>
@@ -464,20 +453,20 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <div class="card-body border-bottom py-3">
                 <div class="d-flex">
                   <div class="text-muted">
-                    Show
+                    '.Translation::of('show').'
                     <div class="mx-2 d-inline-block">
                       <select class="form-select form-select-sm" id="assetLength_change">
                       <option value="10">10</option>
                       <option value="25">25</option>
                       <option value="50">50</option>
                       <option value="100">100</option>
-                      <option value="-1">All</option>
+                      <option value="-1">'.Translation::of('all').'</option>
                       </select>
                     </div>
-                    entries
+                    '.strtolower(Translation::of('entries')).'
                   </div>
                   <div class="ml-auto text-muted">
-                    Search:
+                    '.Translation::of('search').':
                     <div class="ml-2 d-inline-block">
                       <input type="text" class="form-control form-control-sm" id="assetSearch">
                     </div>
@@ -494,7 +483,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                   <th></th>
                   <th data-priority="1">'.Translation::of('name').'</th>
                   <th data-priority="3">'.Translation::of('status').'</th>
-                  <th>Date</th>
+                  <th>'.Translation::of('date').'</th>
                   <th class="d-none">'.Translation::of('show').'</th>
                   <th data-priority="2"> </th>
                 </tr>
@@ -542,12 +531,12 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           $shown_class = 'class="asset-hidden"';
         }
 
-        if(hasAssetEditRight($loginUserID)) $asset_edit_btn = '<button title="Edit Asset" class="options btn btn-warning btn-icon mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
+        if(hasAssetEditRight($loginUserID)) $asset_edit_btn = '<button title="'.Translation::of('edit_asset').'" class="options btn btn-warning btn-icon mb-1" data-asset="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" data-name="'.$playerAPI[$i]['name'].'" data-start-date="'.$start_date.'" data-start-time="'.$start_time.'" data-end-date="'.$end_date.'" data-end-time="'.$end_time.'" data-duration="'.$playerAPI[$i]['duration'].'"
         data-uri="'.$playerAPI[$i]['uri'].'" title="edit"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></button>';
 
-        if(hasAssetDeleteRight($loginUserID)) $asset_delete_btn = '<a href="#" title="Delete Asset" data-toggle="modal" data-target="#confirmMessage" data-status="danger" data-text="'.Translation::of('msg.delete_really_entry').'" data-href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
+        if(hasAssetDeleteRight($loginUserID)) $asset_delete_btn = '<a href="#" title="'.Translation::of('delete_asset').'" data-toggle="modal" data-target="#confirmMessage" data-status="danger" data-text="'.Translation::of('msg.delete_really_entry').'" data-href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'&action2=deleteAsset&id='.$player['playerID'].'&asset='.$playerAPI[$i]['asset_id'].'" class="btn btn-danger btn-icon mb-1" title="delete"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="4" y1="7" x2="20" y2="7"></line><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg></a>';
 
-        if(hasAssetStateRight($loginUserID)) $asset_state_btn = '<button class="changeState btn btn-info btn-icon mb-1" title="Switch On/Off" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M7 6a7.75 7.75 0 1 0 10 0"></path><line x1="12" y1="4" x2="12" y2="12"></line></svg></button>';
+        if(hasAssetStateRight($loginUserID)) $asset_state_btn = '<button class="changeState btn btn-info btn-icon mb-1" title="'.Translation::of('switch_asset').'" data-asset_id="'.$playerAPI[$i]['asset_id'].'" data-player_id="'.$player['playerID'].'" title="switch on/off"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M7 6a7.75 7.75 0 1 0 10 0"></path><line x1="12" y1="4" x2="12" y2="12"></line></svg></button>';
 
         echo '
                 <tr id="'.$playerAPI[$i]['asset_id'].'" data-playerID="'.$player['playerID'].'"'.$shown_class.'>
@@ -572,7 +561,10 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           <div class="card-footer d-flex align-items-center">
             <p class="m-0 text-muted" id="dataTables_info"></p>
             <span class="pagination m-0 ml-auto" id="dataTables_paginate"></span>
-          </div>';
+          </div>
+        </div>
+          ';
+
 
           if(hasAssetAddRight($loginUserID)) echo'
           <!-- newAsset -->
@@ -580,13 +572,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content shadow">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="newAssetModalLabel">New Asset</h5>
+                  <h5 class="modal-title" id="newAssetModalLabel">'.Translation::of('new_asset').'</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <label class="form-label">Upload Mode</label>
+                  <label class="form-label">'.Translation::of('upload_mode').'</label>
                   <div class="form-selectgroup-boxes row mb-3">
                     <div class="col-lg-6">
                       <label class="form-selectgroup-item">
@@ -751,6 +743,27 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               </div>
             </div>
           </div>';
+
+          echo'
+          <!-- Service View -->
+          <div class="modal modal-blur fade" id="serviceView" tabindex="-1" role="dialog" aria-labelledby="serviceViewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content shadow">
+                <div class="modal-header">
+                  <h5 class="modal-title">'.Translation::of('service_log').'</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  '.$displayLog.'
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary ml-auto" data-dismiss="modal">'.Translation::of('close').'</button>
+                </div>
+              </div>
+            </div>
+          </div>';
     }
     else {
       echo  '
@@ -854,14 +867,14 @@ else {
         <div class="empty-icon">
           <img src="assets/img/undraw_empty_xct9.svg" height="256" class="mb-4"  alt="">
         </div>
-        <p class="empty-title h3">No player found</p>
+        <p class="empty-title h3">'.Translation::of('no_player_found').'</p>
         <p class="empty-subtitle text-muted">
-          All players are listed here. But currently none has been set up yet!
+          '.Translation::of('all_player_listed_here').'
         </p>
         <div class="empty-action">
           <a href=".#" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            Add your first player
+            '.Translation::of('add_first_player').'
           </a>
         </div>
       </div>

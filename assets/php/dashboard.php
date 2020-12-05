@@ -222,7 +222,7 @@ if(getPlayerCount() > 0){
       <div class="col-sm-12 col-lg-6">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">5 '.Translation::of('last_players').'</h3>
+            <h3 class="card-title">'.Translation::of('last_players').'</h3>
           </div>
           <div class="card-body">
             <div class="list list-row list-hoverable">
@@ -235,7 +235,7 @@ if(getPlayerCount() > 0){
       <div class="col-sm-12 col-lg-6">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">5 '.Translation::of('hidden_assets').'</h3>
+            <h3 class="card-title">'.Translation::of('hidden_assets').'</h3>
           </div>
           <div class="card-body">
             <div class="list list-row list-hoverable">

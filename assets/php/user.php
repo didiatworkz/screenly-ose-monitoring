@@ -17,6 +17,8 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
@@ -87,8 +89,8 @@ function createStatusSelect($pre = 0){
         $op1 = $select;
       }
     }
-    $options = '<option value="0"'.$op0.'>deactivated</option>
-                <option value="1"'.$op1.'>activated</option>
+    $options = '<option value="0"'.$op0.'>'.Translation::of('deactivated').'</option>
+                <option value="1"'.$op1.'>'.Translation::of('activated').'</option>
                  ';
   return $options;
 }
@@ -379,12 +381,12 @@ if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password']))
       redirect($_SESSION['somo_referer'], 0);
       die();
     } else {
-        sysinfo('warning', 'User not activated!');
-        systemLog('Login', $_POST['user'].' not activated!');
+        sysinfo('warning', Translation::of('user_not_activated', ['username' => $user]));
+        systemLog('Login', Translation::of('user_not_activated', ['username' => $user]));
     }
   }  else {
-       sysinfo('danger', 'The entered login data are not correct!');
-       systemLog('Login', $_POST['user'].' data are not correct!');
+       sysinfo('danger', Translation::of('user_data_not_correct', ['username' => $user]));
+       systemLog('Login', Translation::of('user_data_not_correct', ['username' => $user]));
   }
 }
 
@@ -418,7 +420,7 @@ if(isset($_SESSION['somo_auth'])) {
 }
 
 if(isset($_GET['action']) && $_GET['action'] == 'logout'){
-  systemLog('Login', $loginUsername.' logged out');
+  systemLog('Login', Translation::of('user_logged_out', ['username' => $loginUsername]));
   if(session_destroy()){
     $logedout = true;
     $_SESSION['password'] = '';
@@ -446,7 +448,7 @@ if(isset($_POST['saveAccount'])){
     if($firstStart == 1){
       $db->exec("UPDATE settings SET firstStart='2' WHERE settingsID='1'");
     }
-    sysinfo('success', 'Account data saved!', 0);
+    sysinfo('success', Translation::of('account_data_saved'), 0);
   }
   else sysinfo('danger', 'Error!');
   redirect($backLink);

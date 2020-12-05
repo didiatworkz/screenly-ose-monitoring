@@ -17,6 +17,8 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
@@ -78,7 +80,7 @@ if(hasModuleRight($loginUserID, 'multi')){
 
       <div class="card">
         <div class="card-body">
-          <label class="form-label">Upload Mode</label>
+          <label class="form-label">'.Translation::of('upload_mode').'</label>
           <div class="form-selectgroup-boxes row mb-3">
             <div class="col-lg-6">
               <label class="form-selectgroup-item">
@@ -112,13 +114,13 @@ if(hasModuleRight($loginUserID, 'multi')){
             <form id="assetNewForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-multiloader="true">
               <div class="col-md-12">
                 <div class="mb-3">
-                  <label>Asset URL</label>
+                  <label>'.Translation::of('asset_url').'</label>
                   <input name="url" type="text" pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&\'\(\)\*\+,;=.]+$" class="form-control" id="InputNewAssetUrl" placeholder="http://www.example.com" autofocus>
                 </div>
               </div>
               <div class="col-md-12 mt">
                 <div class="mb-3">
-                  <label class="form-label">Player List</label>
+                  <label class="form-label">'.Translation::of('players').'</label>
                   <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
                     '.$playerList.'
                   </div>
@@ -127,7 +129,7 @@ if(hasModuleRight($loginUserID, 'multi')){
               <div class="col-md-12">
                 <input name="mimetype" type="hidden" value="webpage" />
                 <input name="newAsset" type="hidden" value="1" />
-                <button type="submit" name="saveAsset" class="btn btn-success btn-block">Upload</button>
+                <button type="submit" name="saveAsset" class="btn btn-success btn-block">'.Translation::of('upload').'</button>
               </div>
             </form>
           </div>
@@ -142,7 +144,7 @@ if(hasModuleRight($loginUserID, 'multi')){
               </div>
               <div class="col-md-12 mt-3">
                 <div class="mb-3">
-                  <label class="form-label">Player List</label>
+                  <label class="form-label">'.Translation::of('players').'</label>
                   <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
                     '.$playerList.'
                   </div>
@@ -151,8 +153,8 @@ if(hasModuleRight($loginUserID, 'multi')){
               <div class="col-md-12">
                 <input type="hidden" name="multidrop" id="multidrop" value="1" />
                 <input type="hidden" name="test" id="test" value="1" />
-                <a id="refresh" href="'.$_moduleLink.'&tab=drop" class="btn btn-info btn-block" style="display:none;">Reload</a>
-                <button type="button" id="uploadfiles" class="btn btn-success btn-block">Upload</button>
+                <a id="refresh" href="'.$_moduleLink.'&tab=drop" class="btn btn-info btn-block" style="display:none;">'.Translation::of('reload').'</a>
+                <button type="button" id="uploadfiles" class="btn btn-success btn-block">'.Translation::of('upload').'</button>
               </div>
             </form>
           </div>
@@ -164,6 +166,6 @@ if(hasModuleRight($loginUserID, 'multi')){
   }
 }
 else {
-  sysinfo('danger', 'No Access to this module!');
+  sysinfo('danger', Translation::of('no_access'));
   redirect($backLink, 2);
 }
