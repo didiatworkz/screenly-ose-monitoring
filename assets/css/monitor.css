@@ -122,6 +122,16 @@ table.dataTable tr.dtrg-group td {
   background-color: #d33534;
 }
 
+/* Dropzone */
+.dropzone .dz-preview.dz-image-preview {
+    background: none;
+}
+.dropzone .dz-preview .dz-image {
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+}
+
 
 /* DARK MODE */
 @media not print {
