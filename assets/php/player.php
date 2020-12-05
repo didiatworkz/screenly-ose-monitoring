@@ -105,10 +105,10 @@ $_moduleLink = 'index.php?site=players';
 	  foreach ($playerAPI as $value) {
 	    if(callURL('DELETE', $player['address'].'/api/'.$apiVersion.'/assets/'.$value['asset_id'], $data, $id, false)){
 	      //sysinfo('success', 'Asset deleted successfully');
-				systemLog($_moduleName, 'Player: '.getPlayerName($id).' - '.Translation::of('msg.all_assets_cleaned'), $loginUserID, 1);
-	      redirect($backLink);
 	    }	else sysinfo('danger', Translation::of('msg.cant_delete_asset'));
 	  }
+		systemLog($_moduleName, 'Player: '.getPlayerName($id).' - '.Translation::of('msg.all_assets_cleaned'), $loginUserID, 1);
+		redirect($backLink);
 	}
 
 	// POST: updateAsset - Update Asset information from a player via API
