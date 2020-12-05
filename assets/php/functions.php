@@ -24,7 +24,7 @@ function timeago($timestamp) {
 
    $currentTime = time();
    if($currentTime >= $timestamp) {
-		$diff     = time()- $timestamp;
+		$diff     = time() - intval($timestamp);
 		for($i = 0; $diff >= $length[$i] && $i < count($length)-1; $i++) {
 		$diff = $diff / $length[$i];
 		}
