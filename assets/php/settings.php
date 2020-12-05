@@ -162,6 +162,29 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
   ';
 }
 else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRight($loginUserID)){
+  $sqlite = SQLite3::version();
+  $server_output = NULL;
+  $server = shell_exec('hostnamectl');
+  $serverOut = array();
+  $server = preg_split('/\r\n|\r|\n/', $server);
+  $n = 0;
+  for ($i=0; $i < count($server); $i++) {
+    if($server[$i] != '') {
+      $serverOut[$n] = explode(':', $server[$i]);
+      for ($j=0; $j < count($serverOut[$n]); $j++) {
+        $serverOut[$n][$j] = trim($serverOut[$n][$j]);
+      }
+      if($serverOut[$n]['0'] == 'Machine ID' || $serverOut[$n]['0'] == 'Boot ID' || $serverOut[$n]['0'] == 'Icon name') continue;
+      else $server_output .= '
+      <tr>
+        <td>'.$serverOut[$n]['0'].':</td>
+        <td>'.$serverOut[$n]['1'].'</td>
+      </tr>
+      ';
+      $n++;
+    }
+  }
+
   echo '
   <div class="container-xl">
     <div class="page-header">
@@ -179,15 +202,42 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col-lg-3 order-lg-1 mb-4">
+      <div class="col-lg-4 order-lg-1 mb-4">
         <div class="sticky-top">
           <div class="card">
-            <div class="card-body text-center">
-              <div class="mb-3">
-                '.getUserAvatar($loginUserID, 'avatar-xl').'
-              </div>
-              <div class="card-title mb-1">'.$loginFullname.'</div>
-              <div class="text-muted">'.$loginGroupName.'</div>
+            <div class="card-body">
+            <table class="table table-sm">
+              <tr>
+                <td>'.Translation::of('monitor_version').':</td>
+                <td>'.$systemVersion.'</td>
+              </tr>
+              <tr>
+                <td>'.Translation::of('screenly_api').':</td>
+                <td>'.$apiVersion.'</td>
+              </tr>
+              <tr>
+                <td>'.Translation::of('server_ip').':</td>
+                <td>'.$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').'</td>
+              </tr>
+              '.$server_output.'
+              <tr>
+                <td>'.Translation::of('php_version').':</td>
+                <td>'.phpversion().'</td>
+              </tr>
+              <tr>
+                <td>'.Translation::of('sqlite_version').':</td>
+                <td>'.$sqlite['versionString'].'</td>
+              </tr>
+              <tr>
+                <td>'.Translation::of('json_version').':</td>
+                <td>'.phpversion('json').'</td>
+              </tr>
+              <tr>
+                <td>'.Translation::of('ssh2_version').':</td>
+                <td>'.phpversion('ssh2').'</td>
+              </tr>
+              </table>
+              <a href="https://github.com/didiatworkz/screenly-ose-monitor/issues/new/choose" class="btn btn-block btn-secondary" target="_blank">You need help?</a>
             </div>
           </div>
           <h5 class="subheader">On this page</h5>
@@ -197,7 +247,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
           </ul>
         </div>
       </div>
-      <div class="col-lg-9">
+      <div class="col-lg-8">
         <div class="card card-lg">
           <div class="card-body">
             <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
