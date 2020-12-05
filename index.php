@@ -1,13 +1,13 @@
 <?php
+	// FUNCTIONS
+	require_once('_functions.php');
 	// TRANSLATION CLASS
 	require_once(__DIR__.'/assets/php/translation.php');
 	use Translation\Translation;
-	// FUNCTIONS
-	require_once('_functions.php');
-echo'
 
+echo'
 <!doctype html>
-<html lang="en">
+<html lang="'.Translation::of('lang_tag').'">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
@@ -79,19 +79,20 @@ echo'
 			<div class="page">
 				';
 
-				// INCLUDE: Top menubar
+				// TOP MENU
 				include_once('assets/php/menu.php');
 
 				// START CONTENT
 				echo'
+				<!-- START CONTENT -->
 				<div class="content">
 	        <div class="container-fluid">
 					';
 
 				if(isset($_GET['site'])){
 					$moduleName = $_GET['site'];
-
-					if (@file_get_contents('assets/php/'.$moduleName.'.php', 0, NULL, 0, 1)) {
+					$siteName = ROOT_DIR.'/assets/php/'.$moduleName.'.php';
+					if (@file_exists($siteName) && @file_get_contents($siteName, 0, NULL, 0, 1)) {
 						if(in_array(basename($moduleName), $_modules)){
 							include('assets/php/'.basename($moduleName).'.php');
 						}	else sysinfo('danger', Translation::of('msg.module_not_allowed'));
@@ -117,7 +118,7 @@ echo'
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <label class="form-label">Modus</label>
+		        <label class="form-label">'.Translation::of('mode').'</label>
 		        <div class="form-selectgroup-boxes row mb-3">
 		          <div class="col-lg-6">
 		            <label class="form-selectgroup-item">
@@ -128,7 +129,7 @@ echo'
 		                </span>
 		                <span class="form-selectgroup-label-content">
 		                  <span class="form-selectgroup-title strong mb-1">'.Translation::of('manual').'</span>
-		                  <span class="d-block text-muted">Add a player manually</span>
+		                  <span class="d-block text-muted">'.Translation::of('add_player_manually').'</span>
 		                </span>
 		              </span>
 		            </label>
@@ -141,8 +142,8 @@ echo'
 		                  <span class="form-selectgroup-check"></span>
 		                </span>
 		                <span class="form-selectgroup-label-content">
-		                  <span class="form-selectgroup-title strong mb-1">Automatically</span>
-		                  <span class="d-block text-muted">Add players automatically</span>
+		                  <span class="form-selectgroup-title strong mb-1">'.Translation::of('automatically').'</span>
+		                  <span class="d-block text-muted">'.Translation::of('add_player_automatically').'</span>
 		                </span>
 		              </span>
 		            </label>
@@ -175,7 +176,7 @@ echo'
 		              <div class="form-label">'.Translation::of('player_authentication').'</div>
 		              <label class="form-check form-switch">
 		                <input class="form-check-input toggle_div" data-src=".authentication" type="checkbox">
-		                <span class="form-check-label">Player is protected by basic authentication</span>
+		                <span class="form-check-label">'.Translation::of('player_is_protected').'</span>
 		              </label>
 		            </div>
 		          </div>
@@ -250,17 +251,9 @@ echo'
 						    <td>'.Translation::of('screenly_api').':</td>
 						    <td>'.$apiVersion.'</td>
 						  </tr>
-						  <tr>
-						    <td>'.Translation::of('server_ip').':</td>
-						    <td>'.$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').'</td>
-						  </tr>
-							<tr>
-						    <td>'.Translation::of('php_version').':</td>
-						    <td>'.phpversion().'</td>
-						  </tr>
 							<tr>
 						    <td>&nbsp;</td>
-						    <td>&nbsp;</td>
+						    <td>'.(isAdmin($loginUserID) ? '<a href="index.php?site=settings&view=system">'.strtolower(Translation::of('more_information')).'</a>' : '&nbsp;').'</td>
 						  </tr>
 						  <tr>
 						    <td>'.Translation::of('project').':</td>
@@ -309,7 +302,7 @@ echo'
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('cancel').'</button>
-		        <a class="btn btn-ok">'.Translation::of('delete').'</a>
+		        <a class="btn btn-ok">'.Translation::of('confirm').'</a>
 		      </div>
 		    </div>
 		  </div>
