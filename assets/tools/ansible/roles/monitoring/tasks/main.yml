@@ -156,6 +156,14 @@
     owner: www-data
     group: www-data
     recurse: yes
+    
+- name: Change temp folder permissions
+  file:
+    path: /var/www/html/monitor/assets/tmp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0777
 
 - name: Retore Database Backup
   copy:
