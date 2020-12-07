@@ -26,7 +26,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if(hasModuleRight($loginUserID, 'multi')){
 
-  $_moduleName = 'Multi Uploader';
+  $_moduleName = Translation::of('multi_uploader');
   $_moduleLink = 'index.php?site=multiuploader';
 
   if(isset($_GET['tab']) AND $_GET['tab'] == 'drop' ) {

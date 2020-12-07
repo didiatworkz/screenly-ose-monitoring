@@ -17,6 +17,8 @@ _______________________________________
 _______________________________________
 */
 
+// Translation DONE
+
 // [
 //   {
 //   "title": "Accordions",
@@ -55,77 +57,77 @@ while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
     }
   }
   $addon = NULL;
-  if($player['monitorOutput'] != 0) $addon .= ' Monitor Output SOMA Add-on';
-  if($player['deviceInfo'] != 0) $addon .= ' Device Info';
+  if($player['monitorOutput'] != 0) $addon .= ' '.Translation::of('monitorOutput').' SOMA '.Translation::of('addon');
+  if($player['deviceInfo'] != 0) $addon .= ' '.Translation::of('device_info');
 
 	$gen = array();
 	$gen['title'] 		   = $player['name'];
 	$gen['url'] 		     = 'index.php?site=players&action=view&playerID='.$player['playerID'];
-	$gen['description']  = 'Location: '.$player['location'];
-	$gen['tokens'] 		   = 'player monitor reboot clean assets user password ip '.$player['address'].' '.$player['name'].' '.$player['location'].' '.$player['player_user'].' '.$player['created'].' '.$assetString.' '.$addon.' OSE';
+	$gen['description']  = Translation::of('location').': '.$player['location'];
+	$gen['tokens'] 		   = strtolower(Translation::of('player').' '.Translation::of('monitor').' '.Translation::of('reboot').' '.Translation::of('clean_assets').' '.Translation::of('user').' '.Translation::of('password').' '.Translation::of('ip_address').' '.$player['address'].' '.$player['name'].' '.$player['location'].' '.$player['player_user'].' '.$player['created'].' '.$assetString.' '.$addon.' OSE');
 	array_push($output, $gen);
 }
 
 $gen                 = array();
-$gen['title'] 		   = 'Player Overview';
+$gen['title'] 		   = Translation::of('player');
 $gen['url'] 		     = 'index.php?site=players';
-$gen['description']  = 'Show the status of all Players';
-$gen['tokens'] 		   = 'player status online offline ip overview screenshot';
+$gen['description']  = Translation::of('player_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('player').' '.Translation::of('status').' '.Translation::of('online').' '.Translation::of('offline').' '.Translation::of('ip_address').' '.Translation::of('overview').' '.Translation::of('screenshot'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Settings';
+$gen['title'] 		   = Translation::of('settings');
 $gen['url'] 		     = 'index.php?site=settings';
-$gen['description']  = 'Change settings of SOMO';
-$gen['tokens'] 		   = 'profile settings design login name password user api public access log user group';
+$gen['description']  = Translation::of('settings_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('profile_settings').' '.Translation::of('design').' '.Translation::of('login').' '.Translation::of('name').' '.Translation::of('password').' '.Translation::of('user').' '.Translation::of('api_settings').' '.Translation::of('public_access_link').' '.Translation::of('log_time').' '.Translation::of('group'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Profile Settings';
+$gen['title'] 		   = Translation::of('profile_settings');
 $gen['url'] 		     = 'index.php?site=settings&view=profile';
-$gen['description']  = 'Change personal Profile Settings';
-$gen['tokens'] 		   = 'profile settings design login name password user firstname family lastname surname name';
+$gen['description']  = Translation::of('profile_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('profile_settings').' '.Translation::of('design').' '.Translation::of('login').' '.Translation::of('name').' '.Translation::of('password').' '.Translation::of('username').' '.Translation::of('firstname').' '.Translation::of('familyname'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'System Settings';
+$gen['title'] 		   = Translation::of('system_settings');
 $gen['url'] 		     = 'index.php?site=settings&view=system';
-$gen['description']  = 'Change SOMO System Settings';
-$gen['tokens'] 		   = 'system settings design name API default refresh time duration delay weeks end date timezone titel';
+$gen['description']  = Translation::of('settings_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('system_settings').' '.Translation::of('design').' '.Translation::of('name').' '.Translation::of('api_settings').' '.Translation::of('refresh').' '.Translation::of('default_settings').' '.Translation::of('duration_in_sec').' '.Translation::of('timezone'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Public Access Settings';
+$gen['title'] 		   = Translation::of('public_access_settings');
 $gen['url'] 		     = 'index.php?site=settings&view=publicaccess';
-$gen['description']  = 'Create or change the linnk for public Access';
-$gen['tokens'] 		   = 'public settings access open dark mode token new';
+$gen['description']  = Translation::of('public_access_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('public_access_settings').' '.Translation::of('dark_mode').' '.Translation::of('token'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'User Settings';
+$gen['title'] 		   = Translation::of('user_settings');
 $gen['url'] 		     = 'index.php?site=usermanagement';
-$gen['description']  = 'Create, edit or delete users';
-$gen['tokens'] 		   = 'user settings delete edit create account access groups status activated deactivated username first name family last login password';
+$gen['description']  = Translation::of('user_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('user_settings').' '.Translation::of('delete_user2').' '.Translation::of('edit_user2').' '.Translation::of('new_user').' '.Translation::of('account').' '.Translation::of('access').' '.Translation::of('groups').' '.Translation::of('status').' '.Translation::of('activated').' '.Translation::of('deactivated').' '.Translation::of('username').' '.Translation::of('firstname').' '.Translation::of('familyname').' '.Translation::of('login').' '.Translation::of('password'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Group Settings';
+$gen['title'] 		   = Translation::of('group_settings');
 $gen['url'] 		     = 'index.php?site=groupmanagement';
-$gen['description']  = 'Create, edit or delete groups';
-$gen['tokens'] 		   = 'group settings delete edit create account access groups status rights quick restrictions module player assets';
+$gen['description']  = Translation::of('group_search_desc');
+$gen['tokens'] 		   = strtolower(Translation::of('group_settings').' '.Translation::of('delete_group').' '.Translation::of('edit_group').' '.Translation::of('create_group').' '.Translation::of('account').' '.Translation::of('access').' '.Translation::of('status').' '.Translation::of('restrict_individual_modules').' '.Translation::of('player').' '.Translation::of('assets'));
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Multi Uploader';
+$gen['title'] 		   = Translation::of('multi_uploader');
 $gen['url'] 		     = 'index.php?site=multiuploader';
-$gen['description']  = 'Upload Assets to multiple Players simultaneously';
+$gen['description']  = Translation::of('multi_uploader_search_desc');
 $gen['tokens'] 		   = 'upload asset multiple multi dropzone url images video movie picture drag';
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Add-On';
+$gen['title'] 		   = Translation::of('addon');
 $gen['url'] 		     = 'index.php?site=addon';
-$gen['description']  = 'Install SOMO Add-On on remote players';
+$gen['description']  = Translation::of('addon_search_desc');
 $gen['tokens'] 		   = 'add on monitor output screenshot device info install remote soma beta reinstall manual installation bash pi ssh script';
 array_push($output, $gen);
 
@@ -137,9 +139,9 @@ $gen['tokens'] 		   = 'creator copyright atworkz github somo soma script';
 array_push($output, $gen);
 
 $gen                 = array();
-$gen['title'] 		   = 'Logout';
+$gen['title'] 		   = Translation::of('logout');
 $gen['url'] 		     = 'index.php?action=logout';
-$gen['description']  = 'Logout from SOMO';
+$gen['description']  = Translation::of('logout_search_desc');
 $gen['tokens'] 		   = 'logout logoff';
 array_push($output, $gen);
 

@@ -22,7 +22,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Player';
+$_moduleName = Translation::of('players');
 $_moduleLink = 'index.php?site=players';
 
 	function getPlayerName($playerID){

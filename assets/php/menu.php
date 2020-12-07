@@ -22,7 +22,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Menu';
+$_moduleName = Translation::of('menu');
 $_moduleLink = '';
 
 

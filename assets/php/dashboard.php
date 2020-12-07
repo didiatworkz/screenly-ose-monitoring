@@ -24,7 +24,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Dashboard';
+$_moduleName = Translation::of('dashboard');
 $_moduleLink = 'index.php?site=dashboard';
 
 if((isset($_GET['action']) && $_GET['action'] == 'refresh')){
@@ -204,7 +204,7 @@ if(getPlayerCount() > 0){
         </div>
       </div>
 
-      <div class="col-sm-8 col-lg-4">
+      <div class="col-sm-8 col-lg-4 col-md-6">
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center">

@@ -24,7 +24,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Add-on';
+$_moduleName = Translation::of('addon');
 $_moduleLink = 'index.php?site=addon';
 
 if((isset($argv) && $argv['1'] != '')){

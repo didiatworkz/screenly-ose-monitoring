@@ -24,7 +24,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Startup Wizard';
+$_moduleName = Translation::of('setup_wizard');
 $_moduleLink = 'index.php';
 
 if($set['firstStart'] != 0){

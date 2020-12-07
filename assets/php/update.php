@@ -24,7 +24,7 @@ require_once('translation.php');
 use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
-$_moduleName = 'Update';
+$_moduleName = Translation::of('update');
 $_moduleLink = '';
 
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){

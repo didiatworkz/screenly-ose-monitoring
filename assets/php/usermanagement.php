@@ -27,7 +27,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if(getGroupID($loginUserID) == 1 || hasSettingsUserRight($loginUserID)){
 
-  $_moduleName = 'User Management';
+  $_moduleName = Translation::of('user_management');
   $_moduleLink = 'index.php?site=usermanagement';
 
   if(isset($_POST['saveUser'])){
@@ -38,9 +38,10 @@ if(getGroupID($loginUserID) == 1 || hasSettingsUserRight($loginUserID)){
       $pass2      = md5($_POST['password2']);
       $status     = $_POST['status'];
       $group      = $_POST['group'];
+      $design     = $set['design'];
 
       if($user && ($pass1 == $pass2)){
-        $db->exec("INSERT INTO `users` (username, password, firstname, name, refreshscreen, active) values('".$user."', '".$pass2."', '".$firstname."', '".$name."', 5, '".$status."')");
+        $db->exec("INSERT INTO `users` (username, password, firstname, name, refreshscreen, active, design) values('".$user."', '".$pass2."', '".$firstname."', '".$name."', 5, '".$status."', '".$design."')");
         $userSQL = $db->query("SELECT userID FROM `users` WHERE username='".$user."' AND password='".$pass2."'");
         $userSQL = $userSQL->fetchArray(SQLITE3_ASSOC);
         $db->exec("INSERT INTO `userGroupMapping` (userID, groupID) values('".$userSQL['userID']."', '".$group."')");
