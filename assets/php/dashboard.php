@@ -67,20 +67,22 @@ if(getPlayerCount() > 0){
 
   $lastFivePlayer = NULL;
   $playerSQL = $db->query("SELECT playerID, name, address, created FROM player ORDER BY created DESC");
-  if($playerCount < 5) $maxEntries = $playerCount;
-  else $maxEntries = 5;
-  for ($i=0; $i < $maxEntries; $i++) {
-    $player	= $playerSQL->fetchArray(SQLITE3_ASSOC);
-    $lastFivePlayer .= '
-    <div class="list-item">
-      <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><line x1="7" y1="20" x2="17" y2="20" /><line x1="9" y1="16" x2="9" y2="20" /><line x1="15" y1="16" x2="15" y2="20" /><path d="M17 4h4v4" /><path d="M16 9l5-5" /></svg></div>
-      <div class="text-truncate">
-        <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-body d-block">'.$player['name'].'</a>
-        <small class="d-block text-muted text-truncate mt-n1">'.$player['address'].'</small>
+  if($playerCount > 0){
+    if($playerCount < 5) $maxEntries = $playerCount;
+    else $maxEntries = 5;
+    for ($i=0; $i < $maxEntries; $i++) {
+      $player	= $playerSQL->fetchArray(SQLITE3_ASSOC);
+      $lastFivePlayer .= '
+      <div class="list-item">
+        <div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><line x1="7" y1="20" x2="17" y2="20" /><line x1="9" y1="16" x2="9" y2="20" /><line x1="15" y1="16" x2="15" y2="20" /><path d="M17 4h4v4" /><path d="M16 9l5-5" /></svg></div>
+        <div class="text-truncate">
+          <a href="index.php?site=players&action=view&playerID='.$player['playerID'].'" class="text-body d-block">'.$player['name'].'</a>
+          <small class="d-block text-muted text-truncate mt-n1">'.$player['address'].'</small>
+        </div>
+        <div class="list-item-actions">'.$player['created'].'</div>
       </div>
-      <div class="list-item-actions">'.$player['created'].'</div>
-    </div>
-    ';
+      ';
+    }
   }
 
   $lastFiveAssets = NULL;
