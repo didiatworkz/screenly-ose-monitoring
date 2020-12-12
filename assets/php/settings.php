@@ -19,6 +19,7 @@ _______________________________________
 
 // Translation DONE
 
+
 // TRANSLATION CLASS
 require_once('translation.php');
 use Translation\Translation;
@@ -105,18 +106,18 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
         </div>
       </div>
       <div class="col-lg-9">
-        <div class="card card-lg">
+        <div class="card">
           <form id="accountForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
             <div class="card-body">
-            <h2 id="personal">'.Translation::of('personal').'</h2>
+            <h2 id="personal">'.Translation::of('personal_information').'</h2>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('firstname').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('firstname').'</label>
                 <div class="col">
                   <input name="firstname" type="text" class="form-control" id="InputFirstname" placeholder="John" value="'.$loginFirstname.'" />
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('name').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('name').'</label>
                 <div class="col">
                   <input name="name" type="text" class="form-control" id="InputName" placeholder="Doe" value="'.$loginName.'" />
                 </div>
@@ -124,20 +125,20 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
               <hr />
               <h2 id="account">'.Translation::of('account').'</h2>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('change_username').'</label>
                 <div class="col">
                   <input name="username" type="text" class="form-control" id="InputUsername" placeholder="'.Translation::of('new_username').'" value="'.$loginUsername.'" require />
                   <div class="help-block with-errors"></div>
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('new_password').'</label>
                 <div class="col">
                   <input name="password1" type="password" class="form-control" id="InputPassword1" placeholder="'.Translation::of('new_password').'" />
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('change_username').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('confirm_password').'</label>
                 <div class="col">
                 <input name="password2" type="password" class="form-control" id="InputPassword2" placeholder="'.Translation::of('confirm_password').'" data-match="#InputPassword1" data-match-error="Whoops, these don\'t match" />
                 <div class="help-block with-errors"></div>
@@ -146,7 +147,7 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
               <hr />
               <h2 id="account">'.Translation::of('player_control').'</h2>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('refresh_time_player').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('refresh_time_player').'</label>
                 <div class="col">
                   <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
                 </div>
@@ -250,18 +251,18 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
         </div>
       </div>
       <div class="col-lg-8">
-        <div class="card card-lg">
+        <div class="card">
           <div class="card-body">
             <form id="settingsForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST" data-toggle="validator">
-              <h2 id="system">'.Translation::of('system').'</h2>
+              <h2 id="system">'.Translation::of('system_settings').'</h2>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('title').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('title').'</label>
                 <div class="col">
                   <input name="name" type="text" class="form-control" id="InputSetName" placeholder="'.Translation::of('somo').'" value="'.$set['name'].'" required />
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('timezone').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('timezone').'</label>
                 <div class="col">
                   <select class="form-select" name="timezone">
                     '.timezone($set['timezone']).'
@@ -269,7 +270,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('design').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('design').'</label>
                 <div class="col">
                   <div class="row row-sm">
                     <div class="col-6">
@@ -277,20 +278,20 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
                         <input name="color" type="radio" name="design" value="0" class="form-colorinput-input" '.($set['design'] == '0' ? 'checked' : '').'>
                         <span class="form-colorinput-color bg-white"></span>
                       </label>
-                      '.Translation::of('light_mode').'
+                      <span class="ml-2">'.Translation::of('light_mode').'</span>
                     </div>
                     <div class="col-6">
                       <label class="form-colorinput align-middle">
                         <input name="color" type="radio" name="design" value="1" class="form-colorinput-input" '.($set['design'] == '1' ? 'checked' : '').'>
                         <span class="form-colorinput-color bg-dark"></span>
                       </label>
-                      '.Translation::of('dark_mode').'
+                      <span class="ml-2">'.Translation::of('dark_mode').'</span>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('debug_mode').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('debug_mode').'</label>
                 <div class="col">
                 <label class="form-check form-check-single form-switch">
                   <input class="form-check-input" name="debug" type="checkbox"'.checkboxState($set['debug']).'>
@@ -300,13 +301,13 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
               <hr />
               <h2 id="player">'.Translation::of('player_control').'</h2>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('delay_of_weeks').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('delay_of_weeks').'</label>
                 <div class="col">
                   <input name="end_date" type="text" class="form-control" id="InputSetEndDate" placeholder="1" value="'.$set['end_date'].'" required />
                 </div>
               </div>
               <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">'.Translation::of('assets_duration').'</label>
+                <label class="form-label col-4 col-form-label">'.Translation::of('assets_duration').'</label>
                 <div class="col">
                   <input name="duration" type="text" class="form-control" id="InputSetDuration" placeholder="30" value="'.$set['duration'].'" required />
                 </div>
@@ -549,7 +550,7 @@ else {
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11"></path><line x1="8" y1="8" x2="12" y2="8"></line><line x1="8" y1="12" x2="12" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="5" y="3" width="14" height="18" rx="2" /><line x1="9" y1="7" x2="15" y2="7" /><line x1="9" y1="11" x2="15" y2="11" /><line x1="9" y1="15" x2="13" y2="15" /></svg>
                 </span>
               </div>
               <div class="card-title mb-1">'.Translation::of('admin_logs').'</div>
@@ -565,7 +566,7 @@ else {
             <div class="card-body text-center">
               <div class="mb-3">
                 <span class="avatar avatar-xl">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="9.5" y1="11" x2="9.51" y2="11"></line><line x1="14.5" y1="11" x2="14.51" y2="11"></line><path d="M9.5 15a3.5 3.5 0 0 0 5 0"></path><path d="M7 5h1v-2h8v2h1a3 3 0 0 1 3 3v9a3 3 0 0 1 -3 3v1h-10v-1a3 3 0 0 1 -3 -3v-9a3 3 0 0 1 3 -3"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
                 </span>
               </div>
               <div class="card-title mb-1">'.Translation::of('user_settings').'</div>
