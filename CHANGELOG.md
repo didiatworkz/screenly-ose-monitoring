@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0] - 2020-12-xx
+
+### Added
+- New Design
+- Light and Dark mode
+- Dashboard
+- Group management
+- Rights management
+- Multi language support
+- Implement Device info in player details
+- Add-on overview
+- Add-on remote installation
+- Background runner
+- Debug mode
+- Admin log system
+- Setup Wizard
+- Player service log
+- Avatar upload
+- More Player information in settings
+
+
+### Changed
+- Improve Auto discovery
+- Improve security
+- Extend Search
+- Improve login
+- New Icons
+- Public access
+- Encrypt player password
+- Improve https handling
+
+### Removed
+- Black Dashboard Design
+
+
 ## [3.4] - 2020-10-22
 
 ### Added
