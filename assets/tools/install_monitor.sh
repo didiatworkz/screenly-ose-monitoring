@@ -4,8 +4,8 @@
 #
 # October 2019
 _ANSIBLE_VERSION=2.8.2
-#_BRANCH=v2.2
-_BRANCH=master
+_BRANCH=v2.4
+#_BRANCH=master
 
 
 header() {
