@@ -69,7 +69,7 @@
     dest: /usr/share/somo/version.txt
   when: versionscode
 
-# Update ose-monitoring
+# Update somo
 - name: Install packages
   apt:
     name: "{{ packages }}"
@@ -141,10 +141,10 @@
     version: "{{ MONITOR_BRANCH }}"
     force: yes
 
-- name: Copy ose-monitoring Script
+- name: Copy somo Script
   copy:
-    src: ose-monitoring
-    dest: /usr/bin/ose-monitoring
+    src: somo
+    dest: /usr/bin/somo
     owner: root
     group: root
     mode: 0755
@@ -156,7 +156,7 @@
     owner: www-data
     group: www-data
     recurse: yes
-    
+
 - name: Change temp folder permissions
   file:
     path: /var/www/html/monitor/assets/tmp
@@ -193,7 +193,7 @@
   when: versionscode
 
 - name: Version update
-  command: ose-monitoring --init
+  command: somo --init
 
 - name: Get current GIT Signature
   command: git rev-parse HEAD

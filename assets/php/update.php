@@ -28,7 +28,7 @@ $_moduleName = Translation::of('update');
 $_moduleLink = '';
 
 if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
-  shell_exec('ose-monitoring --scriptupdate');
+  shell_exec('somo --scriptupdate');
   $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");
   systemLog($_moduleName, 'Update available!', '', 1);
 }
