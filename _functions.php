@@ -13,7 +13,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-    Version 4.0  -  November 2020
+    Version 4.0  -  December 2020
 _______________________________________
 */
 
