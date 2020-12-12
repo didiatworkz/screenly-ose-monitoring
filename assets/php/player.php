@@ -53,6 +53,8 @@ $_moduleLink = 'index.php?site=players';
 	  $pass 			= isset($_POST['pass']) ? $_POST['pass'] : '';
 	  $firstStart = isset($_POST['firstStartPlayer']) ? $_POST['firstStartPlayer'] : '';
 
+		$pass = encrypting('encrypt', $pass);
+
 	  if($address){
 	    $db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
 			if($firstStart == 1){
@@ -72,6 +74,8 @@ $_moduleLink = 'index.php?site=players';
 	  $user 		= $_POST['user'];
 	  $pass 		= $_POST['pass'];
 	  $playerID = $_POST['playerID'];
+
+		$pass = encrypting('encrypt', $pass);
 
 
 	  if($address){

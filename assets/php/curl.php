@@ -29,7 +29,7 @@ function playerAuthentication($value = null){
   else return FALSE;
   $player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
   $player['player_user'] != '' ? $user = $player['player_user'] : $user = false;
-  $player['player_password'] != '' ? $pass = $player['player_password'] : $pass = false;
+  $player['player_password'] != '' ? $pass = encrypting('decrypt', $player['player_password']) : $pass = false;
   return array('username' => $user, 'password' => $pass);
 }
 
@@ -181,7 +181,7 @@ function playerImage($url){
 		   return callURL($method, $ip, $params, $playerID, true);
 		}
 		elseif ($code == 401) {
-			echo '<script>$.notify({icon: "tim-icons icon-bell-55",message: "<strong>Can not logged in to the player! </strong><br /> Wrong Username or Password!"},{type: "warning",timer: 2000 ,placement: {from: "top",align: "center"}});</script>';
+			#echo '<script>$.notify({icon: "tim-icons icon-bell-55", message: "<strong>Can not logged in to the player! </strong><br /> Wrong Username or Password!"},{type: "warning",timer: 2000 ,placement: {from: "bottom",align: "center"}});</script>';
 			return 'authentication error '.$code;
 		}
 		else return 'error '.$code;

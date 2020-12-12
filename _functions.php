@@ -79,3 +79,24 @@ _______________________________________
 
 	if($set['design'] == 1) $body_theme = ' theme-dark';
 	else $body_theme = '';
+
+	$_cryptKey = str_replace('.db', '', $db_cryproKey);
+
+	function encrypting($action, $string) {
+		global $dbase_file;
+		$output = false;
+		if(isset($dbase_file)) $secret_key = $dbase_file;
+		else $secret_key = '3a4eb9105c4505898b173e784d6d6cc56';
+    $encrypt_method = "AES-256-CBC";
+    $secret_iv = 'c0a64fcbb9885901a91625f1514536b987d24e441afc4dbb585f150742633af1';
+    $key = hash('sha256', $secret_key);
+
+    $iv = substr(hash('sha256', $secret_iv), 0, 16);
+    if ( $action == 'encrypt' ) {
+        $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+        $output = base64_encode($output);
+    } else if( $action == 'decrypt' ) {
+        $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+    }
+    return $output;
+	}
