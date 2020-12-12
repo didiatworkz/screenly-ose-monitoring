@@ -65,7 +65,7 @@ echo'
       echo '
       <div class="nav-item dropdown d-none d-md-flex mr-3">
         <a href="'.$_SERVER['REQUEST_URI'].'" class="nav-link px-0" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
         </a>
       </div>
       <div class="nav-item'.(isset($_GET['site']) && $_GET['site'] == 'settings' ? $nav_active : '').' dropdown d-none d-md-flex mr-3">
@@ -91,9 +91,13 @@ echo'
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="index.php?site=settings&view=profile">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon dropdown-item-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21v-2a4 4 0 0 1 4 -4h5a4 4 0 0 1 4 4v2"></path></svg>
+            '.Translation::of('profile_settings').'
+          </a>
           <a class="dropdown-item" href="index.php?action=logout">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dropdown-item-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path><path d="M7 12h14l-3 -3m0 6l3 -3"></path></svg>
-            Logout
+            '.Translation::of('logout').'
           </a>
         </div>
       </div>
