@@ -59,6 +59,11 @@ $('.changeState').on('click', function() {
         if($(this).hasClass('bg-danger')) $(this).text('inactive');
         else $(this).text('active');
       });
+      $('button[data-asset_id="'+asset+'"').toggle(function() {
+        $(this).toggleClass('btn-info btn-cyan').show();
+        if($(this).hasClass('btn-cyan')) $(this).html('<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>');
+        else $(this).html('<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>');
+      });
       $.notify({icon: 'tim-icons icon-bell-55',message: 'Asset status changed'},{type: 'success',timer: 1000,placement: {from: 'bottom',align: 'center'}});
     },
     error: function(data){
