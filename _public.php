@@ -116,6 +116,8 @@ if($_key == $securityToken){
     $playerSQL 		= $db->query("SELECT * FROM player ORDER BY name LIMIT ".$next.",".$_boxes);
 
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+      $displayPower = '';
+      $displayColor = '#d63939';
       if($player['name'] == ''){
         $name	 			= Translation::of('no_player_name');
         $imageTag 	= Translation::of('no_player_name').' '.$player['playerID'];
@@ -124,6 +126,18 @@ if($_key == $securityToken){
         $name 			= $player['name'];
         $imageTag 	= $player['name'];
       }
+      $displayAPI = callURL('GET', $player['address'].'/api/v1/info', false, $player['playerID'], false);
+      if(is_array($displayAPI)){
+        $displayPower = $displayAPI['display_power'];
+        if($displayPower == 'On') $displayColor = '#2fb344';
+      }
+
+      $display = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="52" height="52" viewBox="0 0 24 24" stroke-width="3" stroke="'.$displayColor.'" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <rect x="3" y="7" width="18" height="13" rx="2" />
+        <polyline points="16 3 12 7 8 3" />
+      </svg>';
+      
       echo'
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
           <div class="card card-sm">
@@ -135,13 +149,14 @@ if($_key == $securityToken){
                 </div>
                 <div class="ml-auto">
                   <a href="index.php?site=players&action=view&playerID=2" class="text-muted">
-                    '.$player['address'].'
+                    '.$player['address'].' '.$display.'
                   </a>
                 </div>
               </div>
             </div>
           </div>
         </div>';
+
     }
     echo'
       </div>';
