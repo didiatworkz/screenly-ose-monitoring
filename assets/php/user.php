@@ -364,8 +364,10 @@ function hasModuleRight($userID, $moduleName){
 // Login
 if(isset($_POST['Login']) && isset($_POST['user']) && isset($_POST['password'])){
   $user           = $_POST['user'];
+  $user           = SQLite3::escapeString($user);
   $pass           = md5(stripslashes($_POST['password']));
-  $userSQL			  = $db->query("SELECT * FROM `users` WHERE username='".$user."'");
+  $pass           = SQLite3::escapeString($pass);
+  $userSQL			  = $db->query("SELECT * FROM `users` WHERE username='".$user."' LIMIT 1");
   $userSQL 			  = $userSQL->fetchArray(SQLITE3_ASSOC);
   $loginID 	      = $userSQL['userID'];
   $loginUsername 	= $userSQL['username'];
@@ -429,14 +431,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'logout'){
 }
 
 if(isset($_POST['saveAccount'])){
-  $firstname       = $_POST['firstname'];
-  $name            = $_POST['name'];
-  $user            = $_POST['username'];
-  $refreshscreen   = isset($_POST['refreshscreen']) ? $_POST['refreshscreen'] : 5;
-  $firstStart 	   = isset($_POST['firstStartSettings']) ? $_POST['firstStartSettings'] : 0;
+  $firstname       = SQLite3::escapeString($_POST['firstname']);
+  $name            = SQLite3::escapeString($_POST['name']);
+  $user            = SQLite3::escapeString($_POST['username']);
+  $refreshscreen   = isset($_POST['refreshscreen']) ? SQLite3::escapeString($_POST['refreshscreen']) : 5;
+  $firstStart 	   = isset($_POST['firstStartSettings']) ? SQLite3::escapeString($_POST['firstStartSettings']) : 0;
   if($_POST['password1'] != '' && $_POST['password2'] != ''){
-    $pass1 = md5($_POST['password1']);
-    $pass2 = md5($_POST['password2']);
+    $pass1 = SQLite3::escapeString($_POST['password1']);
+    $pass2 = SQLite3::escapeString($_POST['password2']);
+    $pass1 = md5($pass1);
+    $pass2 = md5($pass2);
   }
   else {
     $pass1 = $loginPassword;
