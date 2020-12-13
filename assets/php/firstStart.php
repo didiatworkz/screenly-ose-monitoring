@@ -46,7 +46,7 @@ if($set['firstStart'] != 0){
              <p class="text-muted">'.Translation::of('wizard.welcome').'<br />'.Translation::of('wizard.thank_you').'<br />- didiatworkz</p>
            </div>
            ';
-//// TODO: Name and Firstname integration
+
   if($set['firstStart'] == 1){
     if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
       echo '
