@@ -17,6 +17,36 @@ _______________________________________
 _______________________________________
 */
 
+$reloadSite = '
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>SOMO - Maintenance mode</title>
+    <!-- Tabler Core -->
+    <link href="assets/css/tabler.min.css?t=1607864306" rel="stylesheet"/>
+    <!-- Tabler Plugins -->
+    <link href="assets/css/monitor.css?t=1607864306" rel="stylesheet"/>
+  </head>
+  <body class="antialiased border-top-wide border-primary d-flex flex-column">
+    <div class="flex-fill d-flex align-items-center justify-content-center">
+      <div class="container py-6">
+        <div class="empty">
+          <div class="empty-icon">
+            <img src="assets/img/undraw_server_down_s4lk.svg" height="256" class="mb-4"  alt="maintenance">
+          </div>
+          <p class="empty-title h3">Temporarily down for maintenance</p>
+          <p class="empty-subtitle text-muted pt-4">
+            This page will update itself in a few moments. <br />If this is not the case after 30 seconds, please refresh this page!
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>';
+
 $dbase_key		= ROOT_DIR.'/assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
   $dbase_file = ROOT_DIR.'/dbase.db';
@@ -37,8 +67,8 @@ if(!@file_exists($dbase_key)){
   $current = file_get_contents($dbase_key);
   file_put_contents($dbase_key, $keyFile);
   rename(ROOT_DIR.'/dbase.db',$token);
-  header("Refresh:0");
-  die("Reload this page");
+  header("Refresh:3");
+  die($reloadSite);
 }
 
 $db 			      = new SQLite3($dbase_file);
@@ -118,6 +148,6 @@ if(@file_exists('assets/tools/version_old.txt')){
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
-  header("Refresh:0");
-  die("Reload this page");
+  header("Refresh:3");
+  die($reloadSite);
 }
