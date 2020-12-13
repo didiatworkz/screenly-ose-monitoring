@@ -7,33 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0] - 2020-12-xx
 
 ### Added
-- New Design
-- Light and Dark mode
-- Dashboard
-- Group management
-- Rights management
-- Multi language support
-- Implement Device info in player details
 - Add-on overview
 - Add-on remote installation
-- Background runner
-- Debug mode
 - Admin log system
+- Avatar upload
+- Background runner
+- Dashboard
+- Debug mode
+- Group management
+- Implement Device info in player details
+- Light and Dark mode
+- More Player information in settings
+- Multi language support
+- New Design
+- Rights management
 - Setup Wizard
 - Player service log
-- Avatar upload
-- More Player information in settings
+- Uninstall routine
 
 
 ### Changed
-- Improve Auto discovery
-- Improve security
+- Encrypt player password
 - Extend Search
+- Improve Auto discovery
+- Improve https handling
 - Improve login
+- Improve security
 - New Icons
 - Public access
-- Encrypt player password
-- Improve https handling
 
 ### Removed
 - Black Dashboard Design
