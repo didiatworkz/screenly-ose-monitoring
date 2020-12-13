@@ -271,6 +271,7 @@ return [
     'php_version' => 'PHP Version',
     'platform' => 'Plattform',
     'player' => 'Player',
+    'player_assets_order' => 'asc',
     'players' => 'Players',
     'player_added' => 'Player hinzugefügt',
     'player_authentication' => 'Player-Authentifizierung',

@@ -92,7 +92,7 @@ $('.changeAsset').on('click', function() {
 var asset_table = $('#assets').DataTable({
   dom: 'tipr',
   responsive: false,
-  orderFixed: [[ 4, 'desc' ], [ 2, 'desc' ]],
+  orderFixed: [[ 4, playerAssetsOrder ], [ 2, 'desc' ]],
   rowGroup: {
     dataSrc: 4,
   },
