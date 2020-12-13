@@ -75,7 +75,7 @@ echo
 echo
 echo -e "[ \e[33mSOMO\e[39m ] Start installation..."
 sleep 5
-if [ ! -e /var/www/html/monitor/_functions.php ]
+if [ -e /var/www/html/monitor/_functions.php ]
 then
   _DEMOLOGIN=""
 else
