@@ -1,20 +1,28 @@
 <?php
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
 
-// // TRANSLATION CLASS
-// require_once('translation.php');
-// use Translation\Translation;
-// Translation::setLocalesDir(__DIR__ . '/../locales');
-//
-// '.Translation::of('all_player_listed_here').'
-// Translation::of('all_player_listed_here')
-// Translation::of('msg.all_player_listed_here')
-// Translation::of('msg.player_added_successfully', ['name' => $name])
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+        Transltion file en-US
+      Translated by didiatworkz
+_______________________________________
+*/
 
 return [
     'access' => 'Access',
     'account' => 'Account',
     'account_data_saved' => 'Account data saved!',
-    'account_settings' => 'Account',
+    'account_settings' => 'Account settings',
     'action_not_allowed' => 'Action not allowed',
     'activate_darkmode' => 'Activate Dark Mode',
     'activated' => 'Activated',
@@ -228,10 +236,10 @@ return [
     'msg.this_information_will_not_be_saved' => 'This information will not be saved!!',
     'msg.reboot_command_send' => 'Reboot command send!',
     'msg.reboot_really_player' => 'Do you really want to reboot the player now?',
-    'msg.user_created_successfully' => '{username} updated successfully!',
+    'msg.user_created_successfully' => '{username} successfully created!',
     'msg.user_delete_himself' => 'User has tried to delete himself!',
     'msg.user_successfully_deleted' => 'User successfully deleted!',
-    'msg.user_updated_successfully' => '{username} updated successfully!',
+    'msg.user_updated_successfully' => '{username} successfully updated!',
     'msg.you_cannot_change_admin' => 'You cannot change the administration group!',
     'name' => 'Name',
     'new_asset' => 'New asset',
@@ -326,7 +334,7 @@ return [
     'soma' => 'Screenly OSE Monitoring Add-ons',
     'soma_device_info' => 'SOMA Device Info',
     'soma.install' => 'Install SOMA',
-    'soma.manual_install_text1' => 'The Screenly OSE Monitoring addon allows you to retrieve even more data from the Screenly player and process it in the monitor. <br />You have the possibility to get a "live" image of the player\'s output.<br /><br />To install, you have to log in to the respective Screenly player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />',
+    'soma.manual_install_text1' => 'The Screenly OSE Monitoring add-on allows you to retrieve even more data from the Screenly player and process it in the monitor. <br />You have the possibility to get a "live" image of the player\'s output.<br /><br />To install, you have to log in to the respective Screenly player via SSH (How it works: <a href="https://www.raspberrypi.org/documentation/remote-access/ssh/" target="_blank">here</a>) <br />and execute this command:<br />',
     'soma.manual_install_text2' => 'After that the player restarts and the addon has been installed.',
     'soma.no_package_found' => 'No php-ssh2 package found! - Installation aborted!',
     'soma.start_installation' => 'Installation started - This may take a while...',
