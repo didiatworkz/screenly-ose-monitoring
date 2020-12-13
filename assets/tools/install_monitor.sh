@@ -107,7 +107,7 @@ echo
 echo
 echo -e "You can now start Screenly OSE Monitoring with the address: \n\e[93mhttp://$IP$_PORT\e[39m"
 echo
-echo "$_DEMOLOGIN"
+echo -e "$_DEMOLOGIN"
 echo
 echo
 echo
