@@ -41,10 +41,11 @@ EOF
       echo "other system relevant information."
 			echo
 			echo "Options: "
-			echo "  -v / --version | Show current installed Version"
-			echo "  -r / --restart | Restart the nginx services"
-			echo "  -c / --check   | Check all of all required files"
-			echo "  -u / --update  | Update to the latest version"
+			echo "  -v / --version    | Show current installed Version"
+			echo "  -r / --restart    | Restart the nginx services"
+			echo "  -c / --check      | Check all of all required files"
+			echo "  -u / --update     | Update to the latest version"
+			echo "  -d / --uninstall  | Uninstall Screenly OSE Monitoring"
       echo
       echo
             ;;
@@ -113,6 +114,45 @@ EOF
 			  fi
 			  bash <(curl -sL http://screenly-monitor.atworkz.de)
 			fi
+            ;;
+        -d|--uninstall)
+        echo
+        echo
+        echo
+			  echo -e ${ERROR}"Uninstallation of Screenly OSE Monitoring "${NOCOLOR}
+			  echo -e ${ERROR}"All data will be permanently removed! "${NOCOLOR}
+        echo
+			  read -p "Do you want to uninstall SOMO? [Y] (Y/n)" -n 1 -r -s UNINSTALL_BEGIN
+			  if [ "$UNINSTALL_BEGIN" == 'Y' ]
+			  then
+          echo
+          echo
+				  echo "Uninstallation started..."
+          sleep 5
+          echo
+          echo
+          echo "Remove /var/www/html/monitor"
+          sudo rm -rf /var/www/html/monitor
+          echo "Remove /usr/share/somo"
+          sudo rm -rf /usr/share/somo
+          echo "Remove /etc/nginx/sites-enabled/monitoring.conf"
+          sudo rm -rf /etc/nginx/sites-enabled/monitoring.conf
+          echo "Restart nginx service"
+          sudo systemctl restart nginx
+          echo "Remove /usr/bin/somo"
+          sudo rm -rf /usr/bin/somo
+          echo
+          echo "Uninstallation complete..."
+          echo
+          echo "Thank you for using Screenly OSE Monitoring (SOMO)"
+          echo "- didiatworkz"
+          echo
+          echo
+          echo
+				  exit 0
+			  fi
+        echo
+			  exit 0
             ;;
 		    --scriptupdate)
 			if [ "$LOCAL" == "$ONLINE" ]
