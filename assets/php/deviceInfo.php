@@ -36,7 +36,7 @@ function getDeviceInfoData($ip, $data){
   else return FALSE;
 }
 
-function colorProgrss($value){
+function colorProgress($value){
   if($value >= 50 && $value <= 64) return '#fab005';
   else if($value >= 65 && $value <= 80) return '#ff922b';
   else if($value >= 81 && $value <= 100) return '#cd201f';
@@ -48,8 +48,9 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $ip               = $_GET['ip'];
     $cpu              = round(getDeviceInfoData($ip, 'cpu'), 0);
     $cpu_frequency    = getDeviceInfoData($ip, 'cpu_frequency');
-    $memory           = round(getDeviceInfoData($ip, 'memory'), 0);
+    $memory_avail     = round(getDeviceInfoData($ip, 'memory'), 0);
     $memory_total     = round(getDeviceInfoData($ip, 'memory_total'), 0);
+    $memory           = $memory_total - $memory_avail-50;
     $memory_progress  = round($memory/$memory_total*100, 0);
     $temp             = getDeviceInfoData($ip, 'temp');
     $disk_free        = getDeviceInfoData($ip, 'disk');
@@ -70,18 +71,18 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
 
     $output = array();
     $output['cpu']['value']        = $cpu;
-    $output['cpu']['color']        = colorProgrss($cpu);
+    $output['cpu']['color']        = colorProgress($cpu);
     $output['cpu']['progress']     = $cpu;
     $output['cpu']['frequency']    = $cpu_frequency;
     $output['memory']['value']     = $memory;
-    $output['memory']['color']     = colorProgrss($memory_progress);
+    $output['memory']['color']     = colorProgress($memory_progress);
     $output['memory']['progress']  = $memory_progress;
     $output['memory']['total']     = $memory_total;
     $output['temp']['value']       = $temp;
-    $output['temp']['color']       = colorProgrss($temp);
+    $output['temp']['color']       = colorProgress($temp);
     $output['temp']['progress']    = $temp;
     $output['disk']['value']       = $disk;
-    $output['disk']['color']       = colorProgrss($disk_progress);
+    $output['disk']['color']       = colorProgress($disk_progress);
     $output['disk']['progress']    = $disk_progress;
     $output['disk']['total']       = $disk_total;
     $output['version']             = $version;
