@@ -122,6 +122,7 @@ bash <(curl -sL https://git.io/Jf900)
 
 <p align="center">
 <img title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/screens3.png" />
+<img title="Monitoring Overview" alt="Light and Dark Mode" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/light_dark.png" />
 </p>
 
 ## Any more questions?
