@@ -164,7 +164,7 @@ if(isset($_POST['editInformation'])){
 	if($playerID != ''){
 		header('HTTP/1.1 200 OK');
 		header('Content-Type: application/json');
-		$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => $player['player_password']);
+		$return_arr = array("player_name" => $player['name'], "player_address" => $player['address'], "player_location" => $player['location'], "player_user" => $player['player_user'], "player_password" => encrypting('decrypt', $player['player_password']));
 		echo json_encode($return_arr);
 	}
 	else header('HTTP/1.1 404 Not Found');
