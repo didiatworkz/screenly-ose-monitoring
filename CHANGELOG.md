@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0] - 2020-12-xx
 
 ### Added
+- Add-on deactivation #40
 - Add-on overview
 - Add-on remote installation
 - Admin log system
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Light and Dark mode
 - More Player information in settings
 - Multi language support
+- - Add en-US
+- - Add de-DE
 - New Design
 - Rights management
 - Setup Wizard
