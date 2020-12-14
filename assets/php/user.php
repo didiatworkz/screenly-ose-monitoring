@@ -411,20 +411,23 @@ if(isset($_SESSION['somo_auth'])) {
 		$somo_pass = $authent['1'];
 
     if(isset($somo_user) and isset($somo_pass)) {
-      $userSQL = $db->query("SELECT * FROM `users` WHERE userID='".$somo_user."' AND password='".$somo_pass."'");
+      $userSQL = $db->query("SELECT * FROM `users` WHERE userID='".$somo_user."' AND password='".$somo_pass."' LIMIT 1");
 
       while($user = $userSQL->fetchArray(SQLITE3_ASSOC)) {
-        $loginUserID 	    = $user['userID'];
-        $loginUsername    = $user['username'];
-        $loginPassword    = $user['password'];
-        $loginFirstname   = $user['firstname'];
-        $loginName        = $user['name'];
-        $loginRefreshTime = $user['refreshscreen'];
-        $loginFullname    = getFullname($loginUserID);
-        $loginGroupID     = getGroupID($loginUserID);
-        $loginGroupName   = getGroupName($loginUserID);
-        $loginUserAddon   = getUserAddonActivate($loginUserID);
-        $loggedIn = TRUE;
+        if($user['active'] == 0) $loggedIn = FALSE;
+        else {
+          $loginUserID      = $user['userID'];
+          $loginUsername    = $user['username'];
+          $loginPassword    = $user['password'];
+          $loginFirstname   = $user['firstname'];
+          $loginName        = $user['name'];
+          $loginRefreshTime = $user['refreshscreen'];
+          $loginFullname    = getFullname($loginUserID);
+          $loginGroupID     = getGroupID($loginUserID);
+          $loginGroupName   = getGroupName($loginUserID);
+          $loginUserAddon   = getUserAddonActivate($loginUserID);
+          $loggedIn = TRUE;
+        }
       }
     }
   }
