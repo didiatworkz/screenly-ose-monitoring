@@ -61,6 +61,9 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
     redirect($backLink, 0);
   }
 
+  if($loginUserAddon == 1) $addon_check = ' checked';
+  else $addon_check = '';
+
   echo '
   <div class="container-xl">
     <div class="page-header">
@@ -150,6 +153,15 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
                 <label class="form-label col-4 col-form-label">'.Translation::of('refresh_time_player').'</label>
                 <div class="col">
                   <input name="refreshscreen" type="text" class="form-control" id="InputSetRefresh" placeholder="5" value="'.$loginRefreshTime.'" required />
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
+                <label class="form-label col-4 col-form-label">'.Translation::of('addon').'</label>
+                <div class="col">
+                  <label class="form-check form-check-single form-switch">
+                    <input class="form-check-input" type="checkbox" data-id="'.$loginUserID.'" name="addon_switch"'.$addon_check.'>
+                  </label>
+
                 </div>
               </div>
             </div>

@@ -340,10 +340,11 @@ echo'
 
 <script>
 
-var scriptPlayerAuth = "'.($loggedIn ? $scriptPlayerAuth : '10').'";
+var scriptPlayerAuth 	= "'.($loggedIn ? $scriptPlayerAuth : '10').'";
 var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
-var settingsRunerTime = "'.($loggedIn ? $runnerTime : 'FALSE').'";
-var playerAssetsOrder = "'.Translation::of('player_assets_order').'";
+var settingsRunerTime 	= "'.($loggedIn ? $runnerTime : 'FALSE').'";
+var userAddonActive		= "'.($loggedIn ? $loginUserAddon : '0').'";
+var playerAssetsOrder 	= "'.Translation::of('player_assets_order').'";
 localStorage.removeItem("runnerExecute");
 
 if (!(localStorage.getItem("notification_style") === null && localStorage.getItem("notification_message") === null)) {

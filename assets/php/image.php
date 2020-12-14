@@ -21,8 +21,9 @@ include_once('curl.php');
 
 if(isset($_GET['image']) AND isset($_GET['ip'])){
     $ip       = $_GET['ip'];
+    (isset($_GET['active']) && $_GET['active'] == 0) ? $active = 0 : $active = 1;
     header("HTTP/1.1 200 OK");
-    $path     = playerImage($ip);
+    $path     = playerImage($ip, $active);
     $type     = pathinfo($path, PATHINFO_EXTENSION);
     $data     = file_get_contents($path);
     $base64   = 'data:image/'.$type.';base64,'.base64_encode($data);

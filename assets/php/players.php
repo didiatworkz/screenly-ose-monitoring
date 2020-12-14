@@ -159,138 +159,143 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
         }
 
         if(deviceInfoInstalled($player['address'])){
+          if($loginUserAddon == 1) $addon_check = ' checked';
+          else $addon_check = '';
+
           $deviceInfoHead = '
           <div class="d-inline-block">
-            <label class="form-check form-switch d-sm-inline-block mr-3">
-              <input class="form-check-input deviceCheckbox" type="checkbox" checked>
-              <span class="form-check-label">'.Translation::of('device_info').'</span>
-            </label>
+              <label class="form-check form-switch d-sm-inline-block mr-3">
+                <input type="checkbox" class="form-check-input" data-id="'.$loginUserID.'" name="addon_switch"'.$addon_check.'>
+                <span class="form-check-label">'.Translation::of('addon').'</span>
+              </label>
           </div>
           ';
-          $deviceInfoBox = '
-          <div class="row row-deck row-cards device-info" data-src="'.$player['address'].'">
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('uptime').'</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="upnow"></span></div>
-                  <div class="d-flex mb-2">
-                    <div><span class="uptime"></span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('hostname').'</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="hostname"></span></div>
-                  <div class="d-flex mb-2">
-                    <div>/etc/hostname</div>
+          if($loginUserAddon == 1){
+            $deviceInfoBox = '
+            <div class="row row-deck row-cards device-info" data-src="'.$player['address'].'">
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('uptime').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="upnow"></span></div>
+                    <div class="d-flex mb-2">
+                      <div><span class="uptime"></span></div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('platform').'</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="platformName"></span></div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('version').': <span class="platformVersion"></span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('version').'</div>
-                  </div>
-                  <div class="h1 mb-3"><span class="version"></span></div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('soma_device_info').'</div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('hostname').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="hostname"></span></div>
+                    <div class="d-flex mb-2">
+                      <div>/etc/hostname</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('platform').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="platformName"></span></div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('version').': <span class="platformVersion"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('version').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="version"></span></div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('soma_device_info').'</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('cpu').'</div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('cpu').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="cpu"></span>%</div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('frequency').': <span class="cpu_frequency"></span> MHz</div>
+                    </div>
                   </div>
-                  <div class="h1 mb-3"><span class="cpu"></span>%</div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('frequency').': <span class="cpu_frequency"></span> MHz</div>
+                  <div class="progress card-progress">
+                    <div class="progress-bar cpu-bar bg-red" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar cpu-bar bg-red" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('memory').'</div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('memory').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="memory"></span> MB</div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('total').': <span class="memory_total"></span> MB</div>
+                    </div>
                   </div>
-                  <div class="h1 mb-3"><span class="memory"></span> MB</div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('total').': <span class="memory_total"></span> MB</div>
+                  <div class="progress card-progress">
+                    <div class="progress-bar memory-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar memory-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('temperature').'</div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('temperature').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="temp"></span>°</div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('sensor_cpu').'</div>
+                    </div>
                   </div>
-                  <div class="h1 mb-3"><span class="temp"></span>°</div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('sensor_cpu').'</div>
+                  <div class="progress card-progress">
+                    <div class="progress-bar temp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar temp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex align-items-center">
-                    <div class="subheader">'.Translation::of('storage').'</div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="subheader">'.Translation::of('storage').'</div>
+                    </div>
+                    <div class="h1 mb-3"><span class="disk"></span> GB</div>
+                    <div class="d-flex mb-2">
+                      <div>'.Translation::of('total').': <span class="disk_total"></span> GB</div>
+                    </div>
                   </div>
-                  <div class="h1 mb-3"><span class="disk"></span> GB</div>
-                  <div class="d-flex mb-2">
-                    <div>'.Translation::of('total').': <span class="disk_total"></span> GB</div>
+                  <div class="progress card-progress">
+                    <div class="progress-bar disk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
-                </div>
-                <div class="progress card-progress">
-                  <div class="progress-bar disk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-            </div>
 
-          </div>
+            </div>
 
 
           ';
+          }
         }
 
 

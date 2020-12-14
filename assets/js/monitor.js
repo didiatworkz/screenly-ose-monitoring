@@ -72,6 +72,23 @@ $('.changeState').on('click', function() {
   });
 });
 
+$('input[name="addon_switch"]').on('change',function(){
+  var id = $(this).data('id');
+  var check = '0';
+  if ($(this).is(':checked')) check = 'on';
+  $.ajax({
+    url: '_functions.php',
+    type: 'POST',
+    data: { addon_switch_form: '1', addon_switch_user: id, addon_switch: check },
+    success: function(data){
+      location.reload(0);
+    },
+    error: function(data){
+      $.notify({icon: 'tim-icons icon-bell-55',message: 'Error! - Can \'t change Addon State'},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
+    }
+  });
+});
+
 $('.changeAsset').on('click', function() {
   var order = $(this).data('order');
   var id = getUrlParameterByName('playerID');
@@ -352,7 +369,8 @@ function loadDeviceInfo(){
       data: {deviceInfo: 1, ip: url},
       type: 'GET',
       success: function(data){
-        if ($('.deviceCheckbox').is(':checked')) {
+        if (userAddonActive == 0) $(element).hide()
+        else {
           $(element).show();
           //console.log(data);
           data = JSON.parse(data)
@@ -378,7 +396,6 @@ function loadDeviceInfo(){
           $('span.uptime').text(data.uptime.stamp);
           $('span.upnow').text(data.uptime.now);
         }
-        else $(element).hide();
       },
       error: function(data){
         $(element).html("");
@@ -732,9 +749,11 @@ $("form#Login").submit(function(e){
 function reloadPlayerImage(){
   $('img.player').each(function(index, element){
     var url = $(element).attr('data-src');
+    var active = 1;
+    if(userAddonActive == 0) active = 0;
     $.ajax({
       url: 'assets/php/image.php',
-      data: {image: 1, ip: url},
+      data: {image: 1, ip: url, active: active},
       dataType: 'json',
       type: 'GET',
       success: function(data){

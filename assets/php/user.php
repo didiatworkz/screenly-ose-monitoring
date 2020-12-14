@@ -176,6 +176,14 @@ function getUserAvatar($userID, $extraClass = ''){
   return $output;
 }
 
+function getUserAddonActivate($userID){
+  global $db;
+  $sql      = $db->query("SELECT activate_addon FROM `users` WHERE userID='".$userID."'");
+  $return   = $sql->fetchArray(SQLITE3_ASSOC);
+  if($return['activate_addon'] == 1) return '1';
+  else return '0';
+}
+
 // Group Rights
 // Assets
 function hasAssetAddRight($userID){
@@ -415,6 +423,7 @@ if(isset($_SESSION['somo_auth'])) {
         $loginFullname    = getFullname($loginUserID);
         $loginGroupID     = getGroupID($loginUserID);
         $loginGroupName   = getGroupName($loginUserID);
+        $loginUserAddon   = getUserAddonActivate($loginUserID);
         $loggedIn = TRUE;
       }
     }
@@ -428,6 +437,18 @@ if(isset($_GET['action']) && $_GET['action'] == 'logout'){
     $_SESSION['password'] = '';
   } else $logedout = FALSE;
   redirect('index.php', 0);
+}
+
+if(isset($_POST['addon_switch_form'])){
+  $userID = $_POST['addon_switch_user'];
+  if(isset($_POST['addon_switch']) && $_POST['addon_switch'] == 'on') $addon_switch = '1';
+  else $addon_switch = '0';
+
+  if($userID){
+    $db->exec("UPDATE `users` SET activate_addon='".$addon_switch."' WHERE userID='".$userID."'");
+    header('HTTP/1.1 200 OK');
+  } else header('HTTP/1.1 404 Not Found');
+
 }
 
 if(isset($_POST['saveAccount'])){

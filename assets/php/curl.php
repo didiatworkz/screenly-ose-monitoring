@@ -101,9 +101,9 @@ function systemPing($ip){
     return $rval === 0;
 }
 
-function playerImage($url){
+function playerImage($url, $active = 1){
   if(checkAddress($url)) {
-    if(checkAddress($url.':9020/screen/screenshot.png')) return 'http://'.$url.':9020/screen/screenshot.png?t='.time();
+    if(checkAddress($url.':9020/screen/screenshot.png') && $active == 1) return 'http://'.$url.':9020/screen/screenshot.png?t='.time();
     else return 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/img/online.png';
   }
   else return 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/img/offline.png';

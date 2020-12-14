@@ -141,7 +141,7 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("DROP TABLE `userGroups_tmp`");
 
     $db->exec("ALTER TABLE `users` RENAME TO `users_tmp`");
-    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,	`password`	TEXT NOT NULL,	`firstname`	TEXT,	`name`	TEXT,	`refreshscreen`	INTEGER DEFAULT 5,	`updateEntry`	INTEGER, `active`	INTEGER,	`last_login` INTEGER,	`news` INTEGER DEFAULT 0,	`design` INTEGER DEFAULT 0)");
+    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,	`password`	TEXT NOT NULL,	`firstname`	TEXT,	`name`	TEXT,	`refreshscreen`	INTEGER DEFAULT 5,	`updateEntry`	INTEGER, `active`	INTEGER,	`last_login` INTEGER,	`news` INTEGER DEFAULT 0,	`design` INTEGER DEFAULT 0,	`activate_addon` INTEGER DEFAULT 1)");
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
 
