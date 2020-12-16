@@ -29,13 +29,14 @@ if(isset($_POST['newAsset'])){
 	$now				= strtotime("-10 minutes");
 	$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
 	$url 				= isset($_POST['url']) ? $_POST['url'] : '';
-	$name 			= (isset($_POST['name']) ? $_POST['name'] : $_POST['url']);
+	$name 			= isset($_POST['name']) ? $_POST['name'] : $_POST['url'];
 	$mimetype		= $_POST['mimetype'];
-	$start 			= date("Y-m-d", $now);
-	$start_time	= "00:00";
-	$end 				= date("Y-m-d", strtotime("+".$set['end_date']." week"));
-	$end_time		= $start_time;
-	$duration 	= $set['duration'];
+	$start 			= isset($_POST['start_date']) ? $_POST['start_date'] : date("Y-m-d", $now);
+	$start_time	= isset($_POST['start_time']) ? $_POST['start_time'] : '00:00';
+	$end 				= isset($_POST['end_date']) ? $_POST['end_date'] : date("Y-m-d", strtotime("+".$set['end_date']." week"));
+	$end_time		= isset($_POST['end_time']) ? $_POST['end_time'] : '00:00';
+	$duration 	= isset($_POST['duration']) ? $_POST['duration'] : $set['duration'];
+	$active 		= isset($_POST['active']) ? 1 : 0;
 	$cancel 		= FALSE;
 	$output			= NULL;
 
@@ -68,7 +69,8 @@ if(isset($_POST['newAsset'])){
 
 		$data 										= array();
 		$data['mimetype'] 				= $mimetype;
-		$data['is_enabled'] 			= 1;
+		$data['is_enabled'] 			= $active;
+		$data['is_active'] 				= $active;
 		$data['name'] 						= $name;
 		$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
 		$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';

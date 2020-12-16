@@ -45,6 +45,34 @@ function getUrlParameterByName(name, url)
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+
+flatpickr(".asset_start", {
+  altInput: true,
+  altFormat: "d.m.Y",
+  dateFormat: "Y-m-d",
+  defaultDate: $(this).data('start-date')
+});
+flatpickr(".asset_start_time", {
+  enableTime: true,
+  noCalendar: true,
+  dateFormat: "H:i",
+  time_24hr: true,
+  defaultDate: $(this).data('start-time')
+});
+flatpickr(".asset_end", {
+  altInput: true,
+  altFormat: "d.m.Y",
+  dateFormat: "Y-m-d",
+  defaultDate: $(this).data('end-date')
+});
+flatpickr(".asset_end_time", {
+  enableTime: true,
+  noCalendar: true,
+  dateFormat: "H:i",
+  time_24hr: true,
+  defaultDate: $(this).data('end-time')
+});
+
 $('.changeState').on('click', function() {
   var asset = $(this).data('asset_id');
   var id = getUrlParameterByName('playerID');
@@ -201,14 +229,25 @@ if ($('.drop').length) {
       var fname = file.name;
       var ftype = file.type;
       var playerID = getUrlParameterByName('playerID');
-      console.log(playerID)
+      console.log(playerID);
       if(ftype.includes("image")) mimetype = "image";
       else if (ftype.includes("video")) mimetype = "video";
       else mimetype = "unknown";
+
+      var data = {
+        'name' : fname,
+        'url' : response,
+        'mimetype' : mimetype,
+        'id' : playerID,
+        'newAsset' : upload_asset,
+      };
+
+      data = $('#drop_extra').serialize() + '&' + $.param(data);
+
       $.ajax({
        url: '_functions.php',
        type: 'POST',
-       data: { name: fname, url: response, mimetype: mimetype, id: playerID, newAsset: upload_asset  },
+       data: data,
        timeout: 5000,
        success: function(data){
          setNotification('success', data);
