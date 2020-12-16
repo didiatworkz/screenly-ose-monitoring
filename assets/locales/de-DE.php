@@ -111,7 +111,7 @@ return [
     'dropzone.dictDefaultMessage' => 'Dateien zum Hochladen hier ablegen',
     'dropzone.dictFallbackMessage' => 'Ihr Browser unterstützt keine Drag\'n\'Drop-Datei-Uploads.',
     'dropzone.dictFallbackText' => 'Bitte verwenden Sie das untenstehende Fallback-Formular, um Ihre Dateien wie in alten Zeiten hochzuladen.',
-    'dropzone.dictFileTooBig' => 'Datei zu groß ({{filesize}}MiB). Maximale Dateigröße: {{maxFilesize}}MiB.',
+    'dropzone.dictFileTooBig' => 'Datei zu groß ({{filesize}}MiB). Maximale Dateigröße: {{maxFilesize}}MiB. Bitte lade das direkt über das Player Management hoch!',
     'dropzone.dictInvalidFileType' => 'Sie können keine Dateien dieses Typs hochladen.',
     'dropzone.dictResponseError' => 'Der Server hat mit dem Code {{statusCode}} geantwortet.',
     'dropzone.dictCancelUpload' => 'Hochladen abbrechen',

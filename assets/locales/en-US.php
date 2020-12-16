@@ -111,7 +111,7 @@ return [
     'dropzone.dictDefaultMessage' => 'Drop files here to upload',
     'dropzone.dictFallbackMessage' => 'Your browser does not support drag\'n\'drop file uploads.',
     'dropzone.dictFallbackText' => 'Please use the fallback form below to upload your files like in the olden days.',
-    'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.',
+    'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB. Please upload this file via the Player Management directly',
     'dropzone.dictInvalidFileType' => 'You can\'t upload files of this type.',
     'dropzone.dictResponseError' => 'Server responded with {{statusCode}} code.',
     'dropzone.dictCancelUpload' => 'Cancel upload',

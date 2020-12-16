@@ -190,14 +190,12 @@ if ($('.drop').length) {
   var upload_asset = 1;
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 100,
-    parallelUploads: 100,
     addRemoveLinks: true,
     maxFilesize: 100,
     timeout: 60000,
     paramName: "file_upload",
     acceptedFiles: acceptedFileTypes,
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
-    complete: function(file){ $('#newAsset').modal('hide'); location.reload(); },
     success: function(file, response){
       var mimetype = "unknown";
       var fname = file.name;
@@ -234,7 +232,6 @@ if ($('.dropzoneMulti').length) {
     timeout: 60000,
     method: 'post',
     url: '_functions.php',
-    dictFileTooBig: 'This file is to big! Max allowed {{maxFilesize}}MB. Please upload this file via the Player Management driectly',
     accept: function(file, done) {
         console.log("uploaded");
         done();
