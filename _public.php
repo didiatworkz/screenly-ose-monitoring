@@ -54,19 +54,19 @@ echo '
 		<meta name="theme-color" content="#f5f7fb">
 
     <!-- Tabler Core -->
-    <link href="assets/css/tabler.min.css" rel="stylesheet"/>
+    <link href="assets/css/tabler.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
     <!-- Tabler Plugins -->
-    <link href="assets/css/tabler-buttons.min.css" rel="stylesheet"/>
-    <link href="assets/css/monitor.css" rel="stylesheet"/>
+    <link href="assets/css/tabler-buttons.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
+    <link href="assets/css/monitor.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
 
 		<!-- Libs JS -->
-    <script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery-ui.min.js"></script>
-		<script src="assets/libs/DataTables/datatables.min.js"></script>
-		<script src="assets/libs/dropzone/dropzone.min.js"></script>
+    <script src="assets/js/jquery.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/js/jquery-ui.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/DataTables/datatables.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/dropzone/dropzone.min.js?t='.$set['updatecheck'].'"></script>
 
 		<!-- Tabler Core -->
-		<script src="assets/js/tabler.min.js?1588343458"></script>
+		<script src="assets/js/tabler.min.js?t='.$set['updatecheck'].'"></script>
     <style>
       body {
       	display: none;
@@ -137,7 +137,7 @@ if($_key == $securityToken){
         <rect x="3" y="7" width="18" height="13" rx="2" />
         <polyline points="16 3 12 7 8 3" />
       </svg>';
-      
+
       echo'
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
           <div class="card card-sm">
@@ -210,12 +210,14 @@ echo '
 
 <script>
 
-  var scriptPlayerAuth = "0";
-  var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
-  var settingsRunerTime = "FALSE";
+  var scriptPlayerAuth    = "0";
+  var settingsRefreshRate = "5000";
+  var settingsRunerTime   = "FALSE";
+  var userAddonActive		  = "1";
+  var playerAssetsOrder 	= "asc";
 
 </script>
-<script src="assets/js/monitor.js"></script>
+<script src="assets/js/monitor.js?t='.$set['updatecheck'].'"></script>
 <script>
   document.body.style.display = "block"
 </script>';
