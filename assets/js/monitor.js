@@ -191,7 +191,7 @@ if ($('.drop').length) {
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 100,
     addRemoveLinks: true,
-    maxFilesize: 100,
+    maxFilesize: 60,
     timeout: 60000,
     paramName: "file_upload",
     acceptedFiles: acceptedFileTypes,
