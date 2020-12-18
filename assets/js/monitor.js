@@ -295,11 +295,23 @@ if ($('.dropzoneMulti').length) {
         $("input:checkbox[name='id[]']:checked").each(function(){
           ids.push($(this).val());
         });
+        var form = { };
+        $.each($('#dropzoneupload').serializeArray(), function() {
+            form[this.name] = this.value;
+        });
+
+        if(form.active == 'on') data.append("active", form.active);
         data.append("playerID", ids);
         data.append("multidrop", '1');
         data.append("newAsset", '1');
         data.append("mimetype", mimetype);
         data.append("name", fname);
+        data.append("duration", form.duration);
+        data.append("end_date", form.end_date);
+        data.append("end_time", form.end_time);
+        data.append("start_date", form.start_date);
+        data.append("start_time", form.start_time);
+        console.log(data);
         $('#uploadfiles').hide();
       });
 
