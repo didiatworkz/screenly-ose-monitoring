@@ -116,7 +116,7 @@ return [
     'dropzone.dictFileTooBig' => 'Datei zu groß ({{filesize}}MiB). Maximale Dateigröße: {{maxFilesize}}MiB. Bitte lade das direkt über das Player Management hoch!',
     'dropzone.dictInvalidFileType' => 'Sie können keine Dateien dieses Typs hochladen.',
     'dropzone.dictResponseError' => 'Der Server hat mit dem Code {{statusCode}} geantwortet.',
-    'dropzone.dictCancelUpload' => 'Hochladen abbrechen',
+    'dropzone.dictCancelUpload' => 'Abbrechen',
     'dropzone.dictCancelUploadConfirmation' => 'Sind Sie sicher, dass Sie das Hochladen abbrechen möchten?',
     'dropzone.dictRemoveFile' => 'Datei entfernen',
     'dropzone.dictMaxFilesExceeded' => 'Sie können keine weiteren Dateien hochladen.',
