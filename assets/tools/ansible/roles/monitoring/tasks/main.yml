@@ -11,37 +11,43 @@
     state: touch
     mode: 0777
 
-- set_fact: update_version="False"
+- name: Reset Update variable
+  set_fact: update_version="False"
 
 - name: check if older version installed
   stat:
     path: /etc/nginx/sites-enabled/monitor.conf
   register: monitorScript_s
 
-- set_fact: old_monitor="{{monitorScript_s.stat.exists}}"
+- name: Set result variable for older version
+  set_fact: old_monitor="{{monitorScript_s.stat.exists}}"
 
 - name: check if version 1.0 installed
   stat:
     path: /var/www/html/assets/tools/version.txt
   register: version1_0_s
 
-- set_fact: version1_0="{{version1_0_s.stat.exists}}"
+- name: Set result variable for version 1.0
+  set_fact: version1_0="{{version1_0_s.stat.exists}}"
 
 - name: check if version 1.1 installed
   stat:
     path: /var/www/html/monitor/assets/tools/version.txt
   register: version1_1_s
 
-- set_fact: version1_1="{{version1_1_s.stat.exists}}"
+- name: Set result variable for version 1.1
+  set_fact: version1_1="{{version1_1_s.stat.exists}}"
 
 - name: check if version 2.0 installed
   stat:
     path: /var/www/html/monitor/assets/tools/key.php
   register: version2_0_s
 
-- set_fact: version2_0="{{version2_0_s.stat.exists}}"
+- name: Set result variable for version 2.0
+  set_fact: version2_0="{{version2_0_s.stat.exists}}"
 
-- set_fact: update_version="True"
+- name: Set update variable
+  set_fact: update_version="True"
   when: (old_monitor) and (version1_0 or version1_1)
 
 - name: check if old version code available
@@ -49,7 +55,8 @@
     path: /var/www/html/monitor/assets/tools/version.txt
   register: versionscode_s
 
-- set_fact: versionscode="{{versionscode_s.stat.exists}}"
+- name: Read old version code
+  set_fact: versionscode="{{versionscode_s.stat.exists}}"
 
 - name: Backup Database
   copy:
@@ -87,7 +94,8 @@
   shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)'"
   register: php_output
 
-- set_fact:
+- name: Set PHP Version
+  set_fact:
     MONITORING_PHP_VERSION: "{{ php_output.stdout }}"
 
 - name: Copy monitoing.conf
