@@ -103,7 +103,6 @@ if(isset($_POST['newAsset'])){
 
 		'.$output;
 	}
-	die();
 }
 
 if(isset($_POST['changeAssetState'])){
