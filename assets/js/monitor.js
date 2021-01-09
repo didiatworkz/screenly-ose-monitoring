@@ -219,8 +219,8 @@ if ($('.drop').length) {
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 100,
     addRemoveLinks: true,
-    maxFilesize: 60,
-    timeout: 60000,
+    maxFilesize: uploadMaxSize,
+    timeout: 7200,
     paramName: "file_upload",
     acceptedFiles: acceptedFileTypes,
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
@@ -267,8 +267,8 @@ if ($('.dropzoneMulti').length) {
     autoProcessQueue: false,
     parallelUploads: 100,
     addRemoveLinks: true,
-    maxFilesize: 60,
-    timeout: 60000,
+    maxFilesize: uploadMaxSize,
+    timeout: 7200,
     method: 'post',
     url: '_functions.php',
     accept: function(file, done) {

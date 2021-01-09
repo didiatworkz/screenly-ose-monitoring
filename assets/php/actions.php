@@ -199,12 +199,13 @@ if(isset($_POST['saveSettings']) && (getGroupID($loginUserID) == 1 || hasSetting
   $name 		 			= $_POST['name'];
   $design		 		 	= $_POST['color'] == '' ? '0' : $_POST['color'];
   $timezone	 		 	= $_POST['timezone'];
+  $uploadMaxSize 	= $_POST['uploadMaxSize'];
   $debug	 		 		= isset($_POST['debug']) ? 1 : 0;
   $firstStart 		= isset($_POST['firstStartSettings']) ? $_POST['firstStartSettings'] : 0;
 
 
   if($duration AND $end_date){
-    if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', design='".$design."', timezone='".$timezone."', duration='".$duration."', debug='".$debug."' WHERE settingsID='1'")){
+    if($db->exec("UPDATE settings SET end_date='".$end_date."', name='".$name."', design='".$design."', uploadMaxSize='".$uploadMaxSize."', timezone='".$timezone."', duration='".$duration."', debug='".$debug."' WHERE settingsID='1'")){
       if($firstStart == 1){
         $db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
       }

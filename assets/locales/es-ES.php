@@ -184,6 +184,7 @@ return [
     'manage_rights' => 'Administrar permisos',
     'manual' => 'Manual',
     'manual_installation' => 'Instalación manual',
+    'max_asset_upload_size_in_mb' => 'Tamaño máximo de carga de activos (MB)',
     'memory' => 'Memoría',
     'menu' => 'Menú',
     'mode' => 'Modo',

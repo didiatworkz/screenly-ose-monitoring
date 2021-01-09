@@ -70,6 +70,8 @@ _______________________________________
 
 	$runnerTime = getRunnerTime();
 
+	$uploadMaxSize = $set['uploadMaxSize'];
+
 	date_default_timezone_set($set['timezone']);
 
 	if($set['name'] != 'SOMO'){

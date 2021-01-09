@@ -344,6 +344,7 @@ var scriptPlayerAuth 	= "'.($loggedIn ? $scriptPlayerAuth : '10').'";
 var settingsRefreshRate = "'.($loggedIn ? $loginRefreshTime : '5').'000";
 var settingsRunerTime 	= "'.($loggedIn ? $runnerTime : 'FALSE').'";
 var userAddonActive		= "'.($loggedIn ? $loginUserAddon : '0').'";
+var uploadMaxSize		= '.($loggedIn ? $uploadMaxSize : '50').';
 var playerAssetsOrder 	= "'.Translation::of('player_assets_order').'";
 localStorage.removeItem("runnerExecute");
 

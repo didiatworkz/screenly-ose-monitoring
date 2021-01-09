@@ -303,6 +303,12 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
                 </div>
               </div>
               <div class="form-group mb-3 row">
+                <label class="form-label col-4 col-form-label">'.Translation::of('max_asset_upload_size_in_mb').'</label>
+                <div class="col">
+                <input name="uploadMaxSize" type="number" class="form-control" placeholder="50" value="'.$set['uploadMaxSize'].'" required />
+                </div>
+              </div>
+              <div class="form-group mb-3 row">
                 <label class="form-label col-4 col-form-label">'.Translation::of('debug_mode').'</label>
                 <div class="col">
                 <label class="form-check form-check-single form-switch">

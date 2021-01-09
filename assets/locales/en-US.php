@@ -184,6 +184,7 @@ return [
     'manage_rights' => 'Manage rights',
     'manual' => 'Manual',
     'manual_installation' => 'Manual installation',
+    'max_asset_upload_size_in_mb' => 'Maximum asset upload size (MB)',
     'memory' => 'Memory',
     'menu' => 'Menu',
     'mode' => 'Mode',
