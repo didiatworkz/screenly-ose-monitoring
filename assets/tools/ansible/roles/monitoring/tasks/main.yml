@@ -121,21 +121,7 @@
   replace:
     dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
     regexp: '^memory_limit.*$'
-    replace: 'memory_limit = 1024M'
-    backup: yes
-
-- name: Update php.ini post_max_size
-  replace:
-    dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
-    regexp: '^post_max_size.*$'
-    replace: 'post_max_size = 512M'
-    backup: yes
-
-- name: Update php.ini upload_max_filesize
-  replace:
-    dest: "/etc/php/{{MONITORING_PHP_VERSION}}/fpm/php.ini"
-    regexp: '^upload_max_filesize.*$'
-    replace: 'upload_max_filesize = 128M'
+    replace: 'memory_limit = 128M'
     backup: yes
 
 - name: Restart PHP-FPM
