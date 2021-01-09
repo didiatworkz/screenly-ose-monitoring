@@ -58,11 +58,11 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $disk             = round($disk_total - $disk_free, 2);
     $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
+    $platform         = str_replace('\'', '"', $platform);
 
-    list($platformName, $platformVersion) = explode(',', $platform);
-    $platformName     = str_replace("'", "", $platformName);
-    $platformName     = str_replace("(", "", $platformName);
-    $platformVersion  = str_replace("'", "", $platformVersion);
+    $platformArr      = json_decode($platform, true);
+    $platformName     = ucfirst($platformArr['id']);
+    $platformVersion  = $platformArr['codename'];
     $uptime           = getDeviceInfoData($ip, 'uptime');
     $uptimeDifferent  = timeago($uptime);
     $version          = getDeviceInfoData($ip, 'version');
@@ -93,4 +93,5 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $output['uptime']['now']       = $uptimeDifferent;
 
     echo json_encode($output);
+
 }
