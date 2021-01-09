@@ -55,41 +55,44 @@ else {
     $db->exec("UPDATE `player` SET status='0' WHERE playerID='".$id."'");
     $db->exec("UPDATE `player` SET bg_sync='".$now."' WHERE playerID='".$id."'");
 
-    if(checkAddress($ip.'/api/'.$apiVersion.'/assets')){
-      if($_TEST) echo $name.'<br />';
+    if(checkAddress($ip)){
 
       // SET Status online
       $db->exec("UPDATE `player` SET status='1' WHERE playerID='".$id."'");
 
-      // GET Assets
-      $playerAssets = getApiData($player['address'].'/api/'.$apiVersion.'/assets', $id);
-      if(strpos($playerAssets, 'error') === false) {
-        $db->exec("UPDATE `player` SET assets='".$playerAssets."' WHERE playerID='".$id."'");
-        if($_TEST) echo $playerAssets.'<br />';
-      }
+      if(checkAddress($ip.'/api/docs/')){
+        if($_TEST) echo $name.'<br />';
 
-      // GET monitorOutput Version
+        // GET Assets
+        $playerAssets = getApiData($player['address'].'/api/'.$apiVersion.'/assets', $id);
+        if(strpos($playerAssets, 'error') === false) {
+          $db->exec("UPDATE `player` SET assets='".$playerAssets."' WHERE playerID='".$id."'");
+          if($_TEST) echo $playerAssets.'<br />';
+        }
 
-      $db->exec("UPDATE `player` SET monitorOutput='0' WHERE playerID='".$id."'");
-      $db->exec("UPDATE `player` SET deviceInfo='0' WHERE playerID='".$id."'");
+        // GET monitorOutput Version
 
-      if(checkAddress($ip.':9020/screen/screenshot.png')){
-        $db->exec("UPDATE `player` SET monitorOutput='1.0' WHERE playerID='".$id."'");
-        if($_TEST) echo '1.0 <br />';
-      }
+        $db->exec("UPDATE `player` SET monitorOutput='0' WHERE playerID='".$id."'");
+        $db->exec("UPDATE `player` SET deviceInfo='0' WHERE playerID='".$id."'");
 
-      if(checkAddress($ip.':9020/version')){
-        $apiVM = getApiData($ip.':9020/version', $id);
-        if($apiVM != '')$db->exec("UPDATE `player` SET monitorOutput='".$apiVM."' WHERE playerID='".$id."'");
-        if($_TEST) echo $apiVM.'<br />';
-      }
+        if(checkAddress($ip.':9020/screen/screenshot.png')){
+          $db->exec("UPDATE `player` SET monitorOutput='1.0' WHERE playerID='".$id."'");
+          if($_TEST) echo '1.0 <br />';
+        }
+
+        if(checkAddress($ip.':9020/version')){
+          $apiVM = getApiData($ip.':9020/version', $id);
+          if($apiVM != '')$db->exec("UPDATE `player` SET monitorOutput='".$apiVM."' WHERE playerID='".$id."'");
+          if($_TEST) echo $apiVM.'<br />';
+        }
 
 
-      // GET deviceInfo Version
-      if(checkAddress($ip.':9021/version')){
-        $apiVD = getApiData($ip.':9021/version', $id);
-        if($apiVD != '')$db->exec("UPDATE `player` SET deviceInfo='".$apiVD."' WHERE playerID='".$id."'");
-        if($_TEST) echo $apiVD.'<br />';
+        // GET deviceInfo Version
+        if(checkAddress($ip.':9021/version')){
+          $apiVD = getApiData($ip.':9021/version', $id);
+          if($apiVD != '')$db->exec("UPDATE `player` SET deviceInfo='".$apiVD."' WHERE playerID='".$id."'");
+          if($_TEST) echo $apiVD.'<br />';
+        }
       }
     }
   }
