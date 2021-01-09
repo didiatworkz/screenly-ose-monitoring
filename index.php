@@ -29,7 +29,7 @@ echo'
     <link href="assets/libs/nouislider/distribute/nouislider.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
 
 		<link rel="stylesheet" href="assets/libs/DataTables/datatables.min.css?t='.$set['updatecheck'].'" />
-		<link rel="stylesheet" href="assets/libs/dropzone/dropzone.min.css?t='.$set['updatecheck'].'">
+		<link rel="stylesheet" href="/assets/libs/dropzone/dist/min/dropzone.min.css?t='.$set['updatecheck'].'">
 
     <!-- Tabler Core -->
     <link href="assets/css/tabler.min.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
@@ -42,7 +42,7 @@ echo'
 		<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/js/jquery-ui.min.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/libs/DataTables/datatables.min.js?t='.$set['updatecheck'].'"></script>
-		<script src="assets/libs/dropzone/dropzone.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="/assets/libs/dropzone/dist/dropzone.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/php/dropzone_lang.js.php?t='.$set['updatecheck'].'"></script>
 		<script src="assets/libs/flatpickr/dist/flatpickr.min.js?t='.$set['updatecheck'].'"></script>
 		<!-- Tabler Core -->
