@@ -217,22 +217,30 @@ if ($('.drop').length) {
   var acceptedFileTypes = "image/*, video/*";
   var upload_asset = 1;
   var myDropzone = new Dropzone(".dropzone", {
-    parallelUploads: 100,
+    parallelUploads: 10,
     addRemoveLinks: true,
+    chunking: true,
+    chunkSize: 5*1024*1024,
+    forceChunking: true,
+    retryChunks: true,
+    retryChunksLimit: 5,
     maxFilesize: uploadMaxSize,
-    timeout: 7200,
+    timeout: 72000,
     paramName: "file_upload",
     acceptedFiles: acceptedFileTypes,
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
     success: function(file, response){
+      var response = file.xhr.response;
       var mimetype = "unknown";
       var fname = file.name;
       var ftype = file.type;
       var playerID = getUrlParameterByName('playerID');
-      console.log(playerID);
+      console.log('Send to player: ' + playerID);
       if(ftype.includes("image")) mimetype = "image";
       else if (ftype.includes("video")) mimetype = "video";
       else mimetype = "unknown";
+
+      response = response.replace(/\"/g, '');
 
       var data = {
         'name' : fname,
@@ -248,13 +256,29 @@ if ($('.drop').length) {
        url: '_functions.php',
        type: 'POST',
        data: data,
-       timeout: 5000,
+       timeout: 10000,
        success: function(data){
          setNotification('success', data);
          myDropzone.removeFile(file);
        },
-       error: function(data){
-         $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
+       error : function(xhr, textStatus, errorThrown) {
+        if (textStatus == 'timeout') {
+            this.tryCount++;
+            if (this.tryCount <= this.retryLimit) {
+                //try again
+                $.ajax(this);
+                return;
+            }
+            return;
+        }
+        if (xhr.status == 500) {
+            //handle error
+        } else {
+            //handle error
+        }
+
+         setNotification('danger', xhr);
+         console.log(xhr);
        }
      });
     }
@@ -265,7 +289,7 @@ if ($('.dropzoneMulti').length) {
   var myMulitDropzone = new Dropzone(".dropzoneMulti", {
     acceptedFiles: acceptedFileTypes,
     autoProcessQueue: false,
-    parallelUploads: 100,
+    parallelUploads: 10,
     addRemoveLinks: true,
     maxFilesize: uploadMaxSize,
     timeout: 7200,
