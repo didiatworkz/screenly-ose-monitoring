@@ -49,7 +49,7 @@ if(hasModuleRight($loginUserID, 'multi')){
       if(hasPlayerRight($loginUserID, $player["playerID"])){
       $playerList .= '
       <label class="form-selectgroup-item flex-fill">
-        <input type="checkbox" name="id[]" data-ip="'.$player['address'].'" value="'.$player["playerID"].'" class="form-selectgroup-input">
+        <input type="checkbox" name="id[]" data-id="'.$player['playerID'].'" data-endpoint="'.checkHTTP($player['address']).$player['address'].'/api/v1/file_asset" value="'.$player["playerID"].'" class="form-selectgroup-input">
         <div class="form-selectgroup-label d-flex align-items-center p-3">
           <div class="mr-3">
             <span class="form-selectgroup-check"></span>

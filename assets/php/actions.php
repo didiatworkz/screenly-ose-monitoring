@@ -37,19 +37,35 @@ if(isset($_POST['newAsset'])){
 	$end_time		= isset($_POST['end_time']) ? $_POST['end_time'] : '00:00';
 	$duration 	= isset($_POST['duration']) ? $_POST['duration'] : $set['duration'];
 	$active 		= isset($_POST['active']) ? 1 : 0;
-	$cancel 		= FALSE;
-	$output			= NULL;
+
 
 	if($name == '') $name = $url;
 
 	if(isset($_POST['multidrop'])){
-		$images		= curl_file_create($_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['name']);
-		$images		= array('file_upload' => $images);
+		$dzuuid							= isset($_POST['dzuuid']) ? $_POST['dzuuid'] : '';
+		$dzchunkindex				= isset($_POST['dzchunkindex']) ? $_POST['dzchunkindex'] : '';
+		$dztotalfilesize		= isset($_POST['dztotalfilesize']) ? $_POST['dztotalfilesize'] : '';
+		$dzchunksize				= isset($_POST['dzchunksize']) ? $_POST['dzchunksize'] : '';
+		$dztotalchunkcount 	= isset($_POST['dztotalchunkcount']) ? $_POST['dztotalchunkcount'] : '';
+		$dzchunkbyteoffset	= isset($_POST['dzchunkbyteoffset']) ? $_POST['dzchunkbyteoffset'] : '';
+		$image							= curl_file_create($_FILES['file']['tmp_name'],$_FILES['file']['type'],$_FILES['file']['name']);
+		$data3								= array(
+			'file_upload' 			=> $image,
+			'dzuuid' 						=> $dzuuid,
+			'dzchunkindex' 			=> $dzchunkindex,
+			'dztotalfilesize' 	=> $dztotalfilesize,
+			'dzchunksize' 			=> $dzchunksize,
+			'dztotalchunkcount' => $dztotalchunkcount,
+			'dzchunkbyteoffset' => $dzchunkbyteoffset
+		);
 		$ids 			= $_POST['playerID'];
 		$id				= explode(',', $ids);
 	}
 
 	for ($i=0; $i < count($id); $i++) {
+		$url				= NULL;
+		$output			= NULL;
+		$send 			= TRUE;
 		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
 		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
@@ -59,49 +75,69 @@ if(isset($_POST['newAsset'])){
 
 		if(isset($_POST['multidrop'])){
 			//print_r($images);
-			print_r($player['address'].'/api/v1/file_asset');
-			$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $images, $id[$i], false);
+			//print_r();
+			$send	= FALSE;
+			if($set['debug'] == 1) echo 'Send to: '.$player['address'].'/api/v1/file_asset<br />';
+			if($set['debug'] == 1) print_r($data3);
+
+
+			$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $data3, $id[$i], false);
+			if($set['debug'] == 1) echo 'Response: '.$url.'<br />';
 			if (strpos($url, '/home/pi/screenly_assets') === false) {
+				if($set['debug'] == 1) echo' Error !<br />';
 				$output .= $player['name'];
 				continue;
 			}
+			else {
+				if($dzchunkindex == ($dztotalchunkcount-1)){
+					if($set['debug'] == 1) echo'Chunking...DONE<br />';
+					$send = TRUE;
+				}
+				else {
+					if($set['debug'] == 1) echo'Chunking...'.$dzchunkindex.' of '.($dztotalchunkcount-1).'<br />';
+				}
+			}
 		}
 
-		$data 										= array();
-		$data['mimetype'] 				= $mimetype;
-		$data['is_enabled'] 			= $active;
-		$data['is_active'] 				= $active;
-		$data['name'] 						= $name;
-		$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
-		$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
-		$data['duration'] 				= $duration;
-		$data['play_order']				= 0;
-		$data['nocache'] 					= 0;
-		$data['uri'] 							= $url;
-		$data['skip_asset_check'] = 1;
+		if($send){
 
-		//print_r($data);
-		//echo'<script>console.log("ID: '.$id[$i].'")</script>';
+			$data 										= array();
+			$data['mimetype'] 				= $mimetype;
+			$data['is_enabled'] 			= $active;
+			$data['is_active'] 				= $active;
+			$data['name'] 						= $name;
+			$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
+			$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
+			$data['duration'] 				= $duration;
+			$data['play_order']				= 0;
+			$data['nocache'] 					= 0;
+			$data['uri'] 							= $url;
+			$data['skip_asset_check'] = 1;
 
-		if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id[$i], false)){
-			if(strpos($out, '201') === false){
-				$output .= $player['name'].'
-				';
-			} else if(!isset($_POST['multidrop'])) echo Translation::of('msg.asset_added_successfully_player', ['name' => $player['name']]);
+			//print_r($data);
+			if($set['debug'] == 1) echo 'ID: '.$id[$i].'<br />';
+			if($set['debug'] == 1) echo 'Send to API <br />';
+			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id[$i], false)){
+				if($set['debug'] == 1) echo 'API Call: '.$out.'<br />';
+				if(strpos($out, '201') === false){
+					$output .= $player['name'].'
+					';
+				} else if(!isset($_POST['multidrop'])) echo Translation::of('msg.asset_added_successfully_player', ['name' => $player['name']]);
+			}
+			else {
+				header('HTTP/1.1 404 Not Found');
+				$output .= Translation::of('msg.cant_delete_asset');
+			}
 		}
-		else {
-			header('HTTP/1.1 404 Not Found');
-			$output .= Translation::of('msg.cant_delete_asset');
+
+		if($output == NULL){
+			header('HTTP/1.1 200 OK');
+		} else {
+			header('HTTP/1.1 500 Internal Server Error');
+			echo Translation::of('msg.cant_upload_to').'
+
+			'.$output;
 		}
-	}
-
-	if($output == NULL){
-		header('HTTP/1.1 200 OK');
-	} else {
-		header('HTTP/1.1 500 Internal Server Error');
-		echo Translation::of('msg.cant_upload_to').'
-
-		'.$output;
 	}
 }
 

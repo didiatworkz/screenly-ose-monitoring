@@ -145,10 +145,18 @@ function playerImage($url, $active = 1){
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 				break;
 			case 'POST3':
-				$headers = array(
-					'Accept: */*',
-					'Content-Type: multipart/form-data',
-				);
+        $headers = array(
+          'Content-Type: multipart/form-data',
+          'Cache-Control: no-cache',
+          'Pragma: no-cache',
+        );
+        if(isset($params['dztotalfilesize'])){
+          $size = $params['dztotalfilesize'];
+          if($params['dztotalfilesize'] <= ($params['dzchunkbyteoffset'] + $params['dzchunksize'])) $nextbytes = $params['dztotalfilesize'];
+          else $nextbytes = $params['dzchunkbyteoffset'] + $params['dzchunksize'];
+          array_push($headers, 'Content-Range: bytes ' . ((int)$params['dzchunksize']*(int)$params['dzchunkindex']).'-'.(int)$nextbytes.'/'.(int)$params['dztotalfilesize'], 'Transfer-Encoding: chunked');
+        }
+
 				curl_setopt($curl, CURLOPT_POST, true);
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 				curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);

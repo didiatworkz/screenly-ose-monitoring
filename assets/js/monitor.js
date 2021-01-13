@@ -220,15 +220,17 @@ if ($('.drop').length) {
     parallelUploads: 10,
     addRemoveLinks: true,
     chunking: true,
-    chunkSize: 5*1024*1024,
+    chunkSize: 3*1024*1024,
     forceChunking: true,
     retryChunks: true,
-    retryChunksLimit: 5,
+    retryChunksLimit: 10,
     maxFilesize: uploadMaxSize,
-    timeout: 72000,
     paramName: "file_upload",
     acceptedFiles: acceptedFileTypes,
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
+    sending: function(file, response){
+      console.log(file);
+    },
     success: function(file, response){
       var response = file.xhr.response;
       var mimetype = "unknown";
@@ -291,12 +293,18 @@ if ($('.dropzoneMulti').length) {
     autoProcessQueue: false,
     parallelUploads: 10,
     addRemoveLinks: true,
+    chunking: true,
+    chunkSize: 3*1024*1024,
+    forceChunking: true,
+    retryChunks: true,
+    retryChunksLimit: 10,
+    maxFiles: 10,
     maxFilesize: uploadMaxSize,
-    timeout: 7200,
-    method: 'post',
     url: '_functions.php',
     accept: function(file, done) {
-        console.log("uploaded");
+        console.log("loaded");
+        $('#refresh').hide();
+        $('#uploadfiles').show();
         done();
     },
 
@@ -305,6 +313,12 @@ if ($('.dropzoneMulti').length) {
 
       $('#uploadfiles').on("click", function() {
           myMulitDropzone.processQueue();
+      });
+
+
+      myMulitDropzone.on("processing", function(file, xhr, data) {
+        $('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+        $('input:checkbox[name="id[]"]').attr('disabled', true);
       });
 
       myMulitDropzone.on("sending", function(file, xhr, data) {
@@ -335,8 +349,7 @@ if ($('.dropzoneMulti').length) {
         data.append("end_time", form.end_time);
         data.append("start_date", form.start_date);
         data.append("start_time", form.start_time);
-        console.log(data);
-        $('#uploadfiles').hide();
+
       });
 
       this.on("success", function(file){
@@ -345,7 +358,9 @@ if ($('.dropzoneMulti').length) {
         console.log(file.xhr.response);
       });
 
-      this.on("complete", function(file){
+      this.on("queuecomplete", function(file){
+        console.log('queuecomplete');
+        $('#uploadfiles').hide();
         $('#refresh').show();
         $('.dz-message').text("Upload done! - Reload this page...");
       });
