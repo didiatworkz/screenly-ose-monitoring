@@ -131,6 +131,10 @@ table.dataTable tr.dtrg-group td {
     width: 100px;
     height: 100px;
 }
+.dropzone .dz-preview .dz-progress .dz-upload {
+    background: #206bc4;
+    background: linear-gradient(to bottom, #789AC1, #206bc4);
+}
 
 
 /* DARK MODE */
