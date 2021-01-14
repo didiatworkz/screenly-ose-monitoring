@@ -233,8 +233,7 @@ if ($('.drop').length) {
       console.log(file);
     },
     totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
-      var current_title_tmp = current_title;
-      current_title.text = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title_tmp;
+      document.title = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title;
     },
     success: function(file, response){
       var response = file.xhr.response;
@@ -314,8 +313,7 @@ if ($('.dropzoneMulti').length) {
         done();
     },
     totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
-      var current_title_tmp = current_title;
-      current_title.text = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title_tmp;
+      document.title = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title;
     },
 
     init: function (e) {
