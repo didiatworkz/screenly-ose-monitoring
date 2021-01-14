@@ -25,7 +25,13 @@ use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if(isset($_POST['newAsset'])){
-	$id 				= array();
+	if(is_array($_POST['id'])){
+		$id 	 		= isset($_POST['id']) ? $_POST['id'] : '';
+	}
+	else {
+		$id				= array();
+		$id[] 	 	= isset($_POST['id']) ? $_POST['id'] : '';
+	}
 	$now				= strtotime("-10 minutes");
 	$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
 	$url 				= isset($_POST['url']) ? $_POST['url'] : '';
@@ -63,7 +69,6 @@ if(isset($_POST['newAsset'])){
 	}
 
 	for ($i=0; $i < count($id); $i++) {
-		$url				= NULL;
 		$output			= NULL;
 		$send 			= TRUE;
 		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
@@ -76,6 +81,7 @@ if(isset($_POST['newAsset'])){
 		if(isset($_POST['multidrop'])){
 			//print_r($images);
 			//print_r();
+			$url	= NULL;
 			$send	= FALSE;
 			if($set['debug'] == 1) echo 'Send to: '.$player['address'].'/api/v1/file_asset<br />';
 			if($set['debug'] == 1) print_r($data3);
@@ -98,8 +104,6 @@ if(isset($_POST['newAsset'])){
 				}
 			}
 		}
-
-		if(isset($_POST['multidropurl'])) $send	= TRUE;
 
 		if($send){
 			$data 										= array();

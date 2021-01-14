@@ -376,14 +376,16 @@ $("#assetNewForm").submit(function(e) {
   e.preventDefault();
   var form = $(this);
   var loopLength = 1;
-  if(form.data('multiloader') == true) {
+  var reload = true;
+  var formData = form.serialize();
+
+  if(formData.indexOf("multiloader") >= 0) {
     loopLength = form[0].length;
   }
 
-  var formData = form.serialize();
-
   for (var i = 0; i < loopLength; i++) {
-    if(form.data('multiloader') == true) {
+    if(formData.indexOf("multiloader") >= 0) {
+      reload = false;
       if(form[0][i].checked == true){
         var newID = form[0][i].value;
         formData = $('input:not([name^=id])', this).serialize() + '&id=' + newID;
@@ -398,9 +400,7 @@ $("#assetNewForm").submit(function(e) {
      success: function(data){
        $('#newAsset').modal('hide');
        setNotification('success', data);
-       setTimeout(function() {
-         location.reload();
-       }, 0);
+       if(reload) location.reload();
      },
      error: function(data){
        $.notify({icon: 'tim-icons icon-bell-55',message: data},{type: 'danger',timer: 1000,placement: {from: 'bottom',align: 'center'}});
