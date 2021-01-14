@@ -38,7 +38,6 @@ if(hasModuleRight($loginUserID, 'multi')){
     $active_url = 'active';
   }
 
-
   if(isset($_POST['send'])){
       redirect($_moduleLink, 0);
   }
@@ -196,6 +195,7 @@ if(hasModuleRight($loginUserID, 'multi')){
               <div class="col-md-12">
                 <input name="mimetype" type="hidden" value="webpage" />
                 <input name="newAsset" type="hidden" value="1" />
+                <input name="multidropurl" type="hidden" value="1" />
                 <button type="submit" name="saveAsset" class="btn btn-success btn-block">'.Translation::of('upload').'</button>
               </div>
             </form>

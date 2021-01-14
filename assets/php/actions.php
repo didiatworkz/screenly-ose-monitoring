@@ -99,8 +99,9 @@ if(isset($_POST['newAsset'])){
 			}
 		}
 
-		if($send){
+		if(isset($_POST['multidropurl'])) $send	= TRUE;
 
+		if($send){
 			$data 										= array();
 			$data['mimetype'] 				= $mimetype;
 			$data['is_enabled'] 			= $active;
@@ -135,7 +136,6 @@ if(isset($_POST['newAsset'])){
 		} else {
 			header('HTTP/1.1 500 Internal Server Error');
 			echo Translation::of('msg.cant_upload_to').'
-
 			'.$output;
 		}
 	}
