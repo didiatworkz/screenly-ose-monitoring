@@ -41,11 +41,12 @@ then
 fi
 
 echo
-echo -e "[ \e[33mSOMO\e[39m ] Check if Screenly installed..."
 echo
+echo
+echo -e "[ \e[33mSOMO\e[39m ] Check if Screenly installed..."
 if [ ! -e /home/pi/screenly/server.py ]
 then
-  echo -e "[ \e[32mNO\e[39m ] Screenly installed"
+  echo -e "[ \e[33mSOMO\e[39m ] [ \e[32mNO\e[39m ] Screenly installed"
   echo "----------------------------------------------"
   echo
   echo -e "[ \e[33mSOMO\e[39m ] Start Server installation preperation"
@@ -66,13 +67,11 @@ then
   _PORT=""
 
 else
-  echo -e "[ \e[93mYES\e[39m ] Screenly installed"
+  echo -e "[ \e[33mSOMO\e[39m ] [ \e[93mYES\e[39m ] Screenly installed"
   _SERVERMODE="listen 9000;"
   _PORT=":9000"
 fi
 sleep 2
-echo
-echo
 echo -e "[ \e[33mSOMO\e[39m ] Start installation..."
 sleep 5
 if [ -e /var/www/html/monitor/_functions.php ]
