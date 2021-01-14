@@ -216,7 +216,6 @@ Dropzone.autoDiscover = false;
 if ($('.drop').length) {
   var acceptedFileTypes = "image/*, video/*";
   var upload_asset = 1;
-  var current_title = document.title;
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 10,
     addRemoveLinks: true,
@@ -231,9 +230,6 @@ if ($('.drop').length) {
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
     sending: function(file, response){
       console.log(file);
-    },
-    totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
-      document.title = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title;
     },
     success: function(file, response){
       var response = file.xhr.response;
@@ -292,7 +288,6 @@ if ($('.drop').length) {
 }
 
 if ($('.dropzoneMulti').length) {
-  var current_title = document.title;
   var myMulitDropzone = new Dropzone(".dropzoneMulti", {
     acceptedFiles: acceptedFileTypes,
     autoProcessQueue: false,
@@ -312,10 +307,6 @@ if ($('.dropzoneMulti').length) {
         $('#uploadfiles').show();
         done();
     },
-    totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
-      document.title = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title;
-    },
-
     init: function (e) {
       var myMulitDropzone = this;
 
