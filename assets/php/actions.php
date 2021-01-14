@@ -26,8 +26,8 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if(isset($_POST['newAsset'])){
 	if(isset($_POST['id'])){
-		if(is_array($_POST['id'])) $id = $_POST['id'];
-		else $id = array($_POST['id']);
+		$id_temp = $_POST['id'];
+		if(!is_array($id_temp)) $id = array($id_temp);
 	}
 
 	$now				= strtotime("-10 minutes");
