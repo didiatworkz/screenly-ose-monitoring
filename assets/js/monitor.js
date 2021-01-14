@@ -317,7 +317,7 @@ if ($('.dropzoneMulti').length) {
     uploadprogress: function(file, progress, bytesSent) {
       if (file.previewElement) {
         var current_title_tmp = current_title;
-        current_title.text = '[' + progress + '% uploaded...] ' + current_title_tmp;
+        document.title = '[' + progress + '% uploaded...] ' + current_title_tmp;
       }
     },
 
