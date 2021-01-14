@@ -47,7 +47,7 @@ $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
   $assetString = NULL;
   $assets = json_decode($player['assets'], true);
-  if(is_iterable($assets)){
+  if(is_array($assets)){
     for ($i=0; $i < count($assets); $i++) {
       $start_date = str_replace(':00+00:00', '', $assets[$i]['end_date']);
       $start_date = str_replace('T', ' ', $start_date);
