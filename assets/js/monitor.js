@@ -216,6 +216,7 @@ Dropzone.autoDiscover = false;
 if ($('.drop').length) {
   var acceptedFileTypes = "image/*, video/*";
   var upload_asset = 1;
+  var current_title = $(document).attr('title');
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 10,
     addRemoveLinks: true,
@@ -230,6 +231,12 @@ if ($('.drop').length) {
     headers:{'Authorization':'Basic ' + scriptPlayerAuth},
     sending: function(file, response){
       console.log(file);
+    },
+    uploadprogress: function(file, progress, bytesSent) {
+      if (file.previewElement) {
+        var current_title_tmp = current_title;
+        current_title.text = '[' + progress + '% uploaded...] ' + current_title_tmp;
+      }
     },
     success: function(file, response){
       var response = file.xhr.response;
@@ -248,7 +255,7 @@ if ($('.drop').length) {
         'name' : fname,
         'url' : response,
         'mimetype' : mimetype,
-        'id' : playerID,
+        'id[]' : playerID,
         'newAsset' : upload_asset,
       };
 
@@ -306,6 +313,12 @@ if ($('.dropzoneMulti').length) {
         $('#refresh').hide();
         $('#uploadfiles').show();
         done();
+    },
+    uploadprogress: function(file, progress, bytesSent) {
+      if (file.previewElement) {
+        var current_title_tmp = current_title;
+        current_title.text = '[' + progress + '% uploaded...] ' + current_title_tmp;
+      }
     },
 
     init: function (e) {
