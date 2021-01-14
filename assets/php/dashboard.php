@@ -47,7 +47,7 @@ if(getPlayerCount() > 0){
       $playerCount++;
       $assets = $player['assets'];
       $assets = json_decode($assets, true);
-      if(is_iterable($assets)){
+      if(is_array($assets)){
         for ($i=0; $i < count($assets); $i++) {
           $assetCount++;
           if($assets[$i]['is_enabled'] == 1) $assetShowCount++;
@@ -100,7 +100,7 @@ if(getPlayerCount() > 0){
     {
       $assets = $player['assets'];
       $assets = json_decode($assets, true);
-      if(is_iterable($assets)){
+      if(is_array($assets)){
         for ($i=0; $i < count($assets); $i++) {
           // 2020-10-28T00:00:00+00:00
           $date_now = date("Y-m-d");
