@@ -47,20 +47,20 @@ if(hasModuleRight($loginUserID, 'multi')){
     while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
       if(hasPlayerRight($loginUserID, $player["playerID"])){
       $playerList .= '
-      <label class="form-selectgroup-item flex-fill">
-        <input type="checkbox" name="id[]" data-id="'.$player['playerID'].'" data-endpoint="'.checkHTTP($player['address']).$player['address'].'/api/v1/file_asset" value="'.$player["playerID"].'" class="form-selectgroup-input">
-        <div class="form-selectgroup-label d-flex align-items-center p-3">
-          <div class="mr-3">
-            <span class="form-selectgroup-check"></span>
-          </div>
-          <div class="form-selectgroup-label-content d-flex align-items-center">
-            <div class="lh-sm">
-              <div class="strong">'.$player['name'].'</div>
-              <div class="text-muted">IP: '.$player['address'].'</div>
-            </div>
-          </div>
-        </div>
-      </label>
+            <label class="form-selectgroup-item flex-fill">
+              <input type="checkbox" name="id[]" data-id="'.$player['playerID'].'" data-ip="'.$player['address'].'" data-endpoint="'.checkHTTP($player['address']).$player['address'].'/api/v1/file_asset" value="'.$player["playerID"].'" class="form-selectgroup-input">
+              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                <div class="mr-3">
+                  <span class="form-selectgroup-check"></span>
+                </div>
+                <div class="form-selectgroup-label-content d-flex align-items-center">
+                  <div class="lh-sm">
+                    <div class="strong">'.$player['name'].'</div>
+                    <div class="text-muted">IP: '.$player['address'].'</div>
+                  </div>
+                </div>
+              </div>
+            </label>
         ';
       }
 
@@ -196,7 +196,7 @@ if(hasModuleRight($loginUserID, 'multi')){
                 <input name="mimetype" type="hidden" value="webpage" />
                 <input name="newAsset" type="hidden" value="1" />
                 <input name="multidropurl" type="hidden" value="1" />
-                <button type="submit" name="saveAsset" class="btn btn-success btn-block">'.Translation::of('upload').'</button>
+                <input name="uploadURL" type="submit" class="btn btn-success btn-block" value="'.Translation::of('upload').'" />
               </div>
             </form>
           </div>
