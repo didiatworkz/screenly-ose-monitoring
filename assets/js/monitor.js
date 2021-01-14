@@ -216,7 +216,7 @@ Dropzone.autoDiscover = false;
 if ($('.drop').length) {
   var acceptedFileTypes = "image/*, video/*";
   var upload_asset = 1;
-  var current_title = $(document).attr('title');
+  var current_title = document.title;
   var myDropzone = new Dropzone(".dropzone", {
     parallelUploads: 10,
     addRemoveLinks: true,
@@ -232,10 +232,10 @@ if ($('.drop').length) {
     sending: function(file, response){
       console.log(file);
     },
-    uploadprogress: function(file, progress, bytesSent) {
+    totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
       if (file.previewElement) {
         var current_title_tmp = current_title;
-        current_title.text = '[' + progress + '% uploaded...] ' + current_title_tmp;
+        current_title.text = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title_tmp;
       }
     },
     success: function(file, response){
@@ -295,6 +295,7 @@ if ($('.drop').length) {
 }
 
 if ($('.dropzoneMulti').length) {
+  var current_title = document.title;
   var myMulitDropzone = new Dropzone(".dropzoneMulti", {
     acceptedFiles: acceptedFileTypes,
     autoProcessQueue: false,
@@ -314,10 +315,10 @@ if ($('.dropzoneMulti').length) {
         $('#uploadfiles').show();
         done();
     },
-    uploadprogress: function(file, progress, bytesSent) {
+    totaluploadprogress: function(uploadProgress, totalBytes, totalBytesSent) {
       if (file.previewElement) {
         var current_title_tmp = current_title;
-        document.title = '[' + progress + '% uploaded...] ' + current_title_tmp;
+        current_title.text = '[' + uploadProgress.toFixed() + '% uploaded...] ' + current_title_tmp;
       }
     },
 
