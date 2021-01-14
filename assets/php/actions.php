@@ -25,11 +25,7 @@ use Translation\Translation;
 Translation::setLocalesDir(__DIR__ . '/../locales');
 
 if(isset($_POST['newAsset'])){
-	if(isset($_POST['id'])){
-		$id_temp = $_POST['id'];
-		if(!is_array($id_temp)) $id = array($id_temp);
-	}
-
+	$id 	 			= isset($_POST['id']) ? $_POST['id'] : array();
 	$now				= strtotime("-10 minutes");
 	$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
 	$url 				= isset($_POST['url']) ? $_POST['url'] : '';

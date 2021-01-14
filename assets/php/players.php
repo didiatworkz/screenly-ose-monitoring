@@ -692,7 +692,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                     </div>
 
                     <div class="modal-footer">
-                      <input name="id" type="hidden" value="'.$player['playerID'].'" />
+                      <input name="id[]" type="hidden" value="'.$player['playerID'].'" />
                       <input name="mimetype" type="hidden" value="webpage" />
                       <input name="newAsset" type="hidden" value="1" />
                       <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
