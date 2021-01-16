@@ -76,7 +76,9 @@ function loadDeviceInfo() {
 					$('span.hostname').text(data.hostname);
 					$('span.platformName').text(data.platform.name);
 					$('span.platformVersion').text(data.platform.version);
-					$('span.version').html(data.version);
+					$('span.versiondev').html(data.versiondev);
+					$('span.versionmon').html(data.versionmon);
+					$('span.versiondesc').html(data.versiondesc);
 					$('span.uptime').text(data.uptime.stamp);
 					$('span.upnow').text(data.uptime.now);
 				}

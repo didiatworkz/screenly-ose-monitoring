@@ -216,11 +216,22 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 <div class="card">
                   <div class="card-body">
                     <div class="d-flex align-items-center">
-                      <div class="subheader">'.Translation::of('version').'</div>
+                      <div class="subheader">'.Translation::of('soma_device_info').'</div>
                     </div>
-                    <div class="h1 mb-3"><span class="version"></span></div>
-                    <div class="d-flex mb-2">
-                      <div>'.Translation::of('soma_device_info').'</div>
+                    <div class="h3">
+                      <table class="table table-sm">
+                          <tr>
+                            <td>Device Info:</td>
+                            <td><span class="versiondev"></span></td>
+                          </tr>
+                          <tr>
+                            <td>Monitor Output:</td>
+                            <td><span class="versionmon"></span></td>
+                          </tr>
+                      </table>
+                    </div>
+                    <div class="d-flex">
+                      <div><span class="versiondesc"></span></div>
                     </div>
                   </div>
                 </div>

@@ -36,6 +36,13 @@ function getDeviceInfoData($ip, $data){
   else return FALSE;
 }
 
+function getMonitorInfoData($ip, $data){
+  $ip = $ip.':9020/'.$data;
+  $output = getApiData($ip);
+  if($output != '') return $output;
+  else return FALSE;
+}
+
 function colorProgress($value){
   if($value >= 50 && $value <= 64) return '#fab005';
   else if($value >= 65 && $value <= 80) return '#ff922b';
@@ -65,8 +72,10 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $platformVersion  = $platformArr['codename'];
     $uptime           = getDeviceInfoData($ip, 'uptime');
     $uptimeDifferent  = timeago($uptime);
-    $version          = getDeviceInfoData($ip, 'version');
-    if(abs($version) < $devInfVersion) $version = $version.' - <small class="blink text-muted"><a href="index.php?site=addon">Update available</a></small>';
+    $versionDev       = getDeviceInfoData($ip, 'version');
+    $versionMon       = getMonitorInfoData($ip, 'version');
+    $versionDesc      = '';
+    if($versionDev < $devInfVersion || $versionMon < $monitorInfo) $versionDesc = '<a href="index.php?site=addon" class="blink text-muted">>> Update available</a>';
     $hostname         = json_encode(getDeviceInfoData($ip, 'hostname'));
     $hostname         = str_replace('"', "", $hostname);
 
@@ -86,7 +95,9 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $output['disk']['color']       = colorProgress($disk_progress);
     $output['disk']['progress']    = $disk_progress;
     $output['disk']['total']       = $disk_total;
-    $output['version']             = $version;
+    $output['versiondev']          = $versionDev;
+    $output['versionmon']          = $versionMon;
+    $output['versiondesc']         = $versionDesc;
     $output['platform']['name']    = $platformName;
     $output['platform']['version'] = $platformVersion;
     $output['hostname']            = $hostname;
