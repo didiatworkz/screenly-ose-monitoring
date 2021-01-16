@@ -575,7 +575,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
 
           if(hasAssetAddRight($loginUserID)) echo'
           <!-- newAsset -->
-          <div class="modal modal-blur fade" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
+          <div class="modal modal-blur fade close_modal" id="newAsset" tabindex="-1" role="dialog" aria-labelledby="newAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content shadow">
                 <div class="modal-header">
@@ -780,7 +780,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-link  close_modal" data-close="#newAsset">'.Translation::of('close').'</button>
+                    <button type="button" class="btn btn-link" data-close="#newAsset">'.Translation::of('close').'</button>
                   </div>
                 </div>
               </div>
