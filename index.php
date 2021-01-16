@@ -257,7 +257,7 @@ echo'
 						  </tr>
 						  <tr>
 						    <td>'.Translation::of('project').':</td>
-						    <td><a href="https://github.com/didiatworkz/screenly-ose-monitor" target="_blank">GitHub</a></td>
+						    <td><a href="https://github.com/didiatworkz/screenly-ose-monitoring" target="_blank">GitHub</a></td>
 						  </tr>
 							<tr>
 						    <td>'.Translation::of('copyright').':</td>

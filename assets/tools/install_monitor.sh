@@ -83,7 +83,7 @@ fi
 echo -e "[ \e[33mSOMO\e[39m ] Remove old git repository if exists"
 sudo rm -rf /tmp/monitor
 echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
-sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitor.git /tmp/monitor
+sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitoring.git /tmp/monitor
 cd /tmp/monitor/assets/tools/ansible/
 echo -e "[ \e[33mSOMO\e[39m ] Create /var/www/monitor folder"
 sudo mkdir -p /var/www/html

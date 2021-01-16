@@ -56,7 +56,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 
 ## Bugs
 No errors were found in the tests. If you find a problem or bug, please report it:<br />
-[Open Issue List](https://github.com/didiatworkz/screenly-ose-monitor/issues?q=is:issue%20label:bug)
+[Open Issue List](https://github.com/didiatworkz/screenly-ose-monitoring/issues?q=is:issue%20label:bug)
 
 ---
 
@@ -75,7 +75,7 @@ Very simple installation:
 1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+[F1])
 2. Copy this line and execute it
 ```sh
-bash <(curl -sL https://git.io/fjg7h)
+bash <(curl -sL https://git.io/JtTFf)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
 4. Open your Browser to the IP address of the Raspberry Pi like: http://[screenly-ip-address]:9000
@@ -107,7 +107,7 @@ So the monitoring is accessible via the normal IP address!__
 
 ### Update SOMO
 ```sh
-bash <(curl -sL https://git.io/fjg7h)
+bash <(curl -sL https://git.io/JtTFf)
 ```
 
 ### Update Extension
@@ -117,7 +117,7 @@ bash <(curl -sL https://git.io/Jf900)
 ```
 
 ### Changelog
-[Open Changelog](https://github.com/didiatworkz/screenly-ose-monitor/blob/master/CHANGELOG.md)
+[Open Changelog](https://github.com/didiatworkz/screenly-ose-monitoring/blob/master/CHANGELOG.md)
 
 
 <p align="center">
@@ -127,7 +127,7 @@ bash <(curl -sL https://git.io/Jf900)
 
 ## Any more questions?
 There's something else that wasn't answered here?
-Then just have a look at the [wiki-page]([https://github.com/didiatworkz/screenly-ose-monitor/wiki](https://github.com/didiatworkz/screenly-ose-monitor/wiki)). Maybe you will find an answer there.
+Then just have a look at the [wiki-page]([https://github.com/didiatworkz/screenly-ose-monitoring/wiki](https://github.com/didiatworkz/screenly-ose-monitoring/wiki)). Maybe you will find an answer there.
 
 Thanks for using this project! <br />
 \- didiatworkz

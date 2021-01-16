@@ -130,7 +130,7 @@
 
 - name: Clone repository from github.com
   git:
-    repo: "https://github.com/didiatworkz/screenly-ose-monitor.git"
+    repo: "https://github.com/didiatworkz/screenly-ose-monitoring.git"
     dest: /var/www/html/monitor
     version: "{{ MONITOR_BRANCH }}"
     force: yes

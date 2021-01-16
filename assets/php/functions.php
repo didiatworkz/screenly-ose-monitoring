@@ -73,4 +73,4 @@ function systemLog($module, $info, $who = 0, $show = 0, $relevant = 0){
   $db->exec("INSERT INTO `log` (userID, logTime, moduleName, info, show, relevant) values('".$who."', '".$when."', '".$module."', '".$info."', '".$show."', '".$relevant."')");
 }
 
-if(isset($_GET['somo_link'])) redirect('https://github.com/didiatworkz/screenly-ose-monitor', 0);
+if(isset($_GET['somo_link'])) redirect('https://github.com/didiatworkz/screenly-ose-monitoring', 0);

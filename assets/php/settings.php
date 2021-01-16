@@ -252,7 +252,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
                 <td>'.phpversion('ssh2').'</td>
               </tr>
               </table>
-              <a href="https://github.com/didiatworkz/screenly-ose-monitor/issues/new/choose" class="btn btn-block btn-secondary" target="_blank">'.Translation::of('you_need_help').'</a>
+              <a href="https://github.com/didiatworkz/screenly-ose-monitoring/issues/new/choose" class="btn btn-block btn-secondary" target="_blank">'.Translation::of('you_need_help').'</a>
             </div>
           </div>
           <h5 class="subheader">'.Translation::of('on_this_page').'</h5>
