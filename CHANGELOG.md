@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add-on deactivation #40
 - Add-on overview
 - Add-on remote installation
+- Add-on version check
 - Admin log system
 - Avatar upload
 - Background runner
