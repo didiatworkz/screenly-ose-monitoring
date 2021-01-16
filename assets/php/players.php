@@ -442,19 +442,21 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
       <div class="container-fluid p-0">
         <div class="row">
           <div class="col-xs-12 col-sm-4 col-lg-3 order-sm-4 order-lg-4 order-xl-4" '.$showBox.'>
-            <div class="card">
-              <img src="'.$loadingImage.'" class="card-img-top player" data-src="'.$player['address'].'" alt="...">
-            </div>
+            <div class="sticky-top">
+              <div class="card">
+                <img src="'.$loadingImage.'" class="card-img-top player" data-src="'.$player['address'].'" alt="...">
+              </div>
 
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex align-items-center">
-                  <div class="subheader">'.Translation::of('player_control').'</div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="subheader">'.Translation::of('player_control').'</div>
+                  </div>
+                  '.$serviceLog.'
+                  '.$bulkDelete.'
+                  '.$reboot.'
+
                 </div>
-                '.$serviceLog.'
-                '.$bulkDelete.'
-                '.$reboot.'
-
               </div>
             </div>
           </div>
