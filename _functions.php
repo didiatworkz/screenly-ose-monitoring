@@ -17,88 +17,88 @@ _______________________________________
 _______________________________________
 */
 
-	$apiVersion	= 'v1.2';
+$apiVersion			= 'v1.2';
 
-	$_modules = array(
-			'addon',
-			'dashboard',
-			'groupmanagement',
-			'players',
-			'settings',
-			'tester',
-			'usermanagement',
-			'multiuploader',
-	);
+$_modules = array(
+		'addon',
+		'dashboard',
+		'groupmanagement',
+		'players',
+		'settings',
+		'tester',
+		'usermanagement',
+		'multiuploader',
+);
 
 
 /* _______________________________ */
 
 
-	$_loadMessureStart = array_sum(explode(' ',  microtime()));
-	$backLink			= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
-	$firstSetup 	= 0;
-	$loadingImage = 'assets/img/spinner.gif';
+$_loadMessureStart = array_sum(explode(' ',  microtime()));
+$backLink			= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
+$firstSetup 	= 0;
+$loadingImage = 'assets/img/spinner.gif';
 
 
-	if(isset($_GET['site'])){
-		$site = $_GET['site'];
-	} else $site = NULL;
+if(isset($_GET['site'])){
+	$site = $_GET['site'];
+} else $site = NULL;
 
-	define('ROOT_DIR', realpath(__DIR__));
-	include_once('assets/php/database.php');
+define('ROOT_DIR', realpath(__DIR__));
+include_once('assets/php/database.php');
 
-	if($set['debug'] == 1){
-		include_once('assets/php/error_handler.php');
-		ini_set('display_errors', 1);
-		set_error_handler('somo_error_handler');
-		error_reporting(E_ALL|E_STRICT);
-	}
-	else ini_set('display_errors', 0);
+if($set['debug'] == 1){
+	include_once('assets/php/error_handler.php');
+	ini_set('display_errors', 1);
+	set_error_handler('somo_error_handler');
+	error_reporting(E_ALL|E_STRICT);
+}
+else ini_set('display_errors', 0);
 
-	session_set_cookie_params($set['sessionTime'], '/' );
-	session_name('somo_session');
-	session_start();
+session_set_cookie_params($set['sessionTime'], '/' );
+session_name('somo_session');
+session_start();
 
-	include_once('assets/php/functions.php');
-	include_once('assets/php/user.php');
-	include_once('assets/php/curl.php');
-	include_once('assets/php/deviceInfo.php');
-	include_once('assets/php/player.php');
-	include_once('assets/php/update.php');
-	include_once('assets/php/actions.php');
+include_once('assets/php/functions.php');
+include_once('assets/php/user.php');
+include_once('assets/php/curl.php');
+include_once('assets/php/deviceInfo.php');
+include_once('assets/php/player.php');
+include_once('assets/php/update.php');
+include_once('assets/php/actions.php');
 
 
-	$runnerTime = getRunnerTime();
+$runnerTime = getRunnerTime();
 
-	$uploadMaxSize = $set['uploadMaxSize'];
+$uploadMaxSize = $set['uploadMaxSize'];
 
-	date_default_timezone_set($set['timezone']);
+date_default_timezone_set($set['timezone']);
 
-	if($set['name'] != 'SOMO'){
-		define('_SYSTEM_NAME', $set['name'].' - SOMO');
-	}
-	else define('_SYSTEM_NAME', $set['name']);
+if($set['name'] != 'SOMO'){
+	define('_SYSTEM_NAME', $set['name'].' - SOMO');
+}
+else define('_SYSTEM_NAME', $set['name']);
 
-	if($set['design'] == 1) $body_theme = ' theme-dark';
-	else $body_theme = '';
+if($set['design'] == 1) $body_theme = ' theme-dark';
+else $body_theme = '';
 
-	$_cryptKey = str_replace('.db', '', $db_cryproKey);
+$_cryptKey = str_replace('.db', '', $db_cryproKey);
 
-	function encrypting($action, $string) {
-		global $dbase_file;
-		$output = false;
-		if(isset($dbase_file)) $secret_key = $dbase_file;
-		else $secret_key = '3a4eb9105c4505898b173e784d6d6cc56';
-    $encrypt_method = "AES-256-CBC";
-    $secret_iv = 'c0a64fcbb9885901a91625f1514536b987d24e441afc4dbb585f150742633af1';
-    $key = hash('sha256', $secret_key);
+function encrypting($action, $string) {
+	global $dbase_file;
+	$output = false;
+	if(isset($dbase_file)) $secret_key = $dbase_file;
+	else $secret_key = '3a4eb9105c4505898b173e784d6d6cc56';
+  $encrypt_method = "AES-256-CBC";
+  $secret_iv = 'c0a64fcbb9885901a91625f1514536b987d24e441afc4dbb585f150742633af1';
+  $key = hash('sha256', $secret_key);
 
-    $iv = substr(hash('sha256', $secret_iv), 0, 16);
-    if ( $action == 'encrypt' ) {
-        $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-        $output = base64_encode($output);
-    } else if( $action == 'decrypt' ) {
-        $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
-    }
-    return $output;
-	}
+  $iv = substr(hash('sha256', $secret_iv), 0, 16);
+  if ( $action == 'encrypt' ) {
+      $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+      $output = base64_encode($output);
+  } else if( $action == 'decrypt' ) {
+      $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+  }
+  return $output;
+}
