@@ -58,7 +58,7 @@ $_moduleLink = 'index.php?site=players';
 	  if($address){
 	    $db->exec("INSERT INTO player (name, address, location, player_user, player_password, userID) values('".$name."', '".$address."', '".$location."', '".$user."', '".$pass."', '".$loginUserID."')");
 			if($firstStart == 1){
-				$db->exec("UPDATE settings SET firstStart='3' WHERE settingsID='1'");
+				$db->exec("UPDATE settings SET firstStart='4' WHERE settingsID='1'");
 			}
 	    sysinfo('success', Translation::of('msg.player_added_successfully', ['name' => $name]));
 			systemLog($_moduleName, 'Player: '.$name.' - '.Translation::of('msg.player_added_successfully', ['name' => $name]), $loginUserID, 1);
