@@ -75,7 +75,7 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $versionDev       = getDeviceInfoData($ip, 'version');
     $versionMon       = getMonitorInfoData($ip, 'version');
     $versionDesc      = '';
-    if($versionDev < $devInfVersion || $versionMon < $monitorInfo) $versionDesc = '<a href="index.php?site=addon" class="blink text-muted">>> Update available</a>';
+    if($versionDev < $devInfVersion || $versionMon < $monitorInfo) $versionDesc = '<a href="index.php?site=addon" class="text-muted">>> Update available</a>';
     $hostname         = json_encode(getDeviceInfoData($ip, 'hostname'));
     $hostname         = str_replace('"', "", $hostname);
 

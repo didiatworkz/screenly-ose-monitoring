@@ -231,7 +231,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       </table>
                     </div>
                     <div class="d-flex">
-                      <div><span class="versiondesc"></span></div>
+                      <div class="blink"><span class="versiondesc"></span></div>
                     </div>
                   </div>
                 </div>
