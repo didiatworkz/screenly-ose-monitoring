@@ -175,7 +175,7 @@ else {
                         $deviceInfo   = $player['deviceInfo'];
 
                         $offline = '<span class="badge bg-danger p-1">'.strtolower(Translation::of('offline')).'</span>';
-                        $not = '<span class="badge bg-danger p-1">'.Translation::of('not_installed').'</span>';
+                        $not = '<span class="badge bg-default p-1">'.Translation::of('not_installed').'</span>';
                         if(checkAddress($ip, '50')){
                           $counter = 0;
                           $onlineS = '<span class="badge bg-green p-1">'.strtolower(Translation::of('online')).'</span>';
@@ -193,12 +193,12 @@ else {
                             $logBtn = '<button class="btn btn-outline-info ml-2 openlog" data-id="'.$id.'">Log-File</button>';
                           }
                           else {
-
                             $logBtn = '';
                           }
 
-                          if($counter == 0) $optionS = '<button class="btn btn-outline-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
-                          else $optionS = '<button class="btn btn-outline-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
+                          if($counter == 0) $optionS = '<button class="btn btn-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
+                          else if($counter != 0 && ($deviceInfo < $devInfVersion || $monitorOutput < $monInfVersion)) $optionS = '<button class="btn btn-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('update_available').'</button>'.$logBtn;
+                          else $optionS = '<button class="btn btn-success installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
                           $counter = 0;
                         }
                         else {
@@ -277,7 +277,7 @@ else {
       </div>
 
       <!-- installAddon -->
-  		<div class="modal fade" id="installAddon" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+  		<div class="modal fade close_modal" id="installAddon" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
   			<div class="modal-dialog" role="document">
   				<div class="modal-content">
   					<div class="modal-header">
@@ -319,7 +319,7 @@ else {
   					  </div>
               <div class="modal-footer">
                 <input name="addonInstall" type="hidden" value="true" />
-                <button type="button" class="btn btn-secondary close_modal mr-auto" data-close="#installer" data-dismiss="modal">'.Translation::of('close').'</button>
+                <button type="button" class="btn btn-secondary mr-auto" data-close="#installer" data-dismiss="modal">'.Translation::of('close').'</button>
                 <button type="submit" name="updatePlayer" id="btnText" class="btn btn-warning install">'.Translation::of('install').'</button>
               </div>
             </form>

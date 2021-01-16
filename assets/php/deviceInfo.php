@@ -66,6 +66,7 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $uptime           = getDeviceInfoData($ip, 'uptime');
     $uptimeDifferent  = timeago($uptime);
     $version          = getDeviceInfoData($ip, 'version');
+    if(abs($version) < $devInfVersion) $version = $version.' - <small class="blink text-muted"><a href="index.php?site=addon">Update available</a></small>';
     $hostname         = json_encode(getDeviceInfoData($ip, 'hostname'));
     $hostname         = str_replace('"', "", $hostname);
 
@@ -93,5 +94,6 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $output['uptime']['now']       = $uptimeDifferent;
 
     echo json_encode($output);
+
 
 }

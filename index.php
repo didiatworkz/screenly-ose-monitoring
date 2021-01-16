@@ -108,7 +108,7 @@ echo'
 
 		if(hasPlayerAddRight($loginUserID)) echo'
 		<!-- newPlayer -->
-		<div class="modal modal-blur fade" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
+		<div class="modal modal-blur fade close_modal" id="newPlayer" tabindex="-1" role="dialog" aria-labelledby="newPlayerModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		    <div class="modal-content shadow">
 		      <div class="modal-header">
@@ -223,7 +223,7 @@ echo'
 		          </div>
 		          <div class="modal-footer">
 		            <input name="userID" type="hidden" value="'.$loginUserID.'" />
-		            <button type="button" class="btn btn-link link-link close_modal" data-close="#newPlayer">'.Translation::of('close').'</button>
+		            <button type="button" class="btn btn-link link-link" data-close="#newPlayer">'.Translation::of('close').'</button>
 		            <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
 		          </div>
 		        </form>
