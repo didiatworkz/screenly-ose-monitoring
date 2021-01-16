@@ -780,7 +780,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-link" data-close="#newAsset">'.Translation::of('close').'</button>
+                    <button type="button" class="btn btn-link mr-auto" data-close="#newAsset">'.Translation::of('close').'</button>
                   </div>
                 </div>
               </div>
