@@ -180,7 +180,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('uptime').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="upnow"></span></div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div><span class="uptime"></span></div>
                     </div>
                   </div>
@@ -193,7 +193,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('hostname').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="hostname"></span></div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>/etc/hostname</div>
                     </div>
                   </div>
@@ -206,7 +206,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('platform').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="platformName"></span></div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>'.Translation::of('version').': <span class="platformVersion"></span></div>
                     </div>
                   </div>
@@ -244,7 +244,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('cpu').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="cpu"></span>%</div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>'.Translation::of('frequency').': <span class="cpu_frequency"></span> MHz</div>
                     </div>
                   </div>
@@ -260,7 +260,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('memory').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="memory"></span> MB</div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>'.Translation::of('total').': <span class="memory_total"></span> MB</div>
                     </div>
                   </div>
@@ -276,7 +276,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('temperature').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="temp"></span>°</div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>'.Translation::of('sensor_cpu').'</div>
                     </div>
                   </div>
@@ -292,7 +292,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <div class="subheader">'.Translation::of('storage').'</div>
                     </div>
                     <div class="h1 mb-3"><span class="disk"></span> GB</div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                       <div>'.Translation::of('total').': <span class="disk_total"></span> GB</div>
                     </div>
                   </div>
@@ -376,7 +376,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 </div>
               </div>
               <div class="h1 mb-3">'.$playerName.'</div>
-              <div class="d-flex mb-2">
+              <div class="d-flex">
                 <div>'.$playerLocation.'</div>
               </div>
             </div>
@@ -389,7 +389,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 <div class="subheader">'.Translation::of('status').'</div>
               </div>
               <div class="h1 mb-3">'.$status.'</div>
-              <div class="d-flex mb-2">
+              <div class="d-flex">
                 <div>'.$player['address'].'</div>
               </div>
             </div>
@@ -402,7 +402,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 <div class="subheader">'.Translation::of('display').'</div>
               </div>
               <div class="h1 mb-3">'.strtoupper($displayPower).'</div>
-              <div class="d-flex mb-2">
+              <div class="d-flex">
                 <div>'.$displayRes.'</div>
               </div>
             </div>
