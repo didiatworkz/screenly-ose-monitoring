@@ -198,7 +198,7 @@ if($set['firstStart'] != 0){
                 <a href="index.php?action=startup" class="btn btn-link link-secondary">
                     Set up later
                   </a>
-                <button type="submit" name="saveIP" class="btn btn-primary">'.Translation::of('continue').'</button>
+                <button type="submit" name="saveIP" value="1" class="btn btn-primary">'.Translation::of('continue').'</button>
               </div>
             </div>
           </div>
