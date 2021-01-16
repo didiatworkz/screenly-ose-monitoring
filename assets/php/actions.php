@@ -227,12 +227,12 @@ if(isset($_POST['changeOrder'])){
 
 // Settings
 if(isset($_POST['saveSettings']) && (getGroupID($loginUserID) == 1 || hasSettingsSystemRight($loginUserID))){
-  $duration				= $_POST['duration'];
-  $end_date 			= $_POST['end_date'];
-  $name 		 			= $_POST['name'];
+  $duration				= isset($_POST['duration']) ? $_POST['duration'] : $set['duration'];
+  $end_date 			= isset($_POST['end_date']) ? $_POST['end_date'] : $set['end_date'];
+  $name 		 			= isset($_POST['name']) ? $_POST['name'] : $set['name'];
   $design		 		 	= $_POST['color'] == '' ? '0' : $_POST['color'];
-  $timezone	 		 	= $_POST['timezone'];
-  $uploadMaxSize 	= $_POST['uploadMaxSize'];
+  $timezone	 		 	= isset($_POST['timezone']) ? $_POST['timezone'] : $set['timezone'];
+  $uploadMaxSize 	= isset($_POST['uploadMaxSize']) ? $_POST['uploadMaxSize'] : $set['uploadMaxSize'];
   $debug	 		 		= isset($_POST['debug']) ? 1 : 0;
   $firstStart 		= isset($_POST['firstStartSettings']) ? $_POST['firstStartSettings'] : 0;
 
