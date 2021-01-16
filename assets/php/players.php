@@ -561,7 +561,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                   <td>'.$player['playerID'].'</td>
                   <td>'.$mimetypeIcon.' '.$playerAPI[$i]['name'].'</td>
                   <td>'.$active.'</td>
-                  <td><span class="d-block d-sm-none"><br /></span>'.Translation::of('start').': '.$start.'<br />'.Translation::of('end').':&nbsp;&nbsp;&nbsp;'.$end.'</td>
+                  <td><span class="d-block d-sm-none"><br /></span>'.Translation::of('start').': '.$start.'<br />'.Translation::of('end').': '.$end.'</td>
                   <td class="d-none">'.$shown.'</td>
                   <td>
 
