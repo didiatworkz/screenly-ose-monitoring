@@ -334,6 +334,7 @@ return [
     'setup_wizard' => 'Einrichtungsassistent',
     'show' => 'Anzeigen',
     'shown' => 'Angezeigt',
+    'skip' => 'Überspringen',
     'sqlite_version' => 'SQLite Version',
     'soma' => 'Screenly OSE Monitoring Add-ons',
     'soma_device_info' => 'SOMA Geräte-Info',

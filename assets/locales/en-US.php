@@ -334,6 +334,7 @@ return [
     'setup_wizard' => 'Setup wizard',
     'show' => 'Show',
     'shown' => 'Shown',
+    'skip' => 'Skip',
     'sqlite_version' => 'SQLite version',
     'soma' => 'Screenly OSE Monitoring Add-ons',
     'soma_device_info' => 'SOMA Device Info',

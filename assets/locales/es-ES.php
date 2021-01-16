@@ -334,6 +334,7 @@ return [
     'setup_wizard' => 'Asistente de configuración',
     'show' => 'Mostrar',
     'shown' => 'Mostrado',
+    'skip' => 'Salta',
     'sqlite_version' => 'Versión de SQLite',
     'soma' => 'Complementos de Screenly OSE Monitoring',
     'soma_device_info' => 'Información del dispositivo SOMA',

@@ -195,9 +195,7 @@ if($set['firstStart'] != 0){
               <div class="btn-list justify-content-end">
                 <input name="firstStartPlayer" type="hidden" value="1"/>
                 <input name="address" type="hidden" id="InputAdress" value="'.$_SERVER['SERVER_ADDR'].'" />
-                <a href="index.php?action=startup" class="btn btn-link link-secondary">
-                    Set up later
-                  </a>
+                <a href="index.php?action=startup" class="btn btn-link link-secondary">'.Translation::of('skip').'</a>
                 <button type="submit" name="saveIP" value="1" class="btn btn-primary">'.Translation::of('continue').'</button>
               </div>
             </div>
