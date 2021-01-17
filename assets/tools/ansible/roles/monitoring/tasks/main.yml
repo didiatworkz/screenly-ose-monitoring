@@ -5,13 +5,13 @@
     state: directory
     mode: 0755
 
-- name: Create somo latest_monitor file
+- name: Create latest_monitor file
   file:
     path: /usr/share/somo/latest_monitor
     state: touch
     mode: 0777
 
-- name: Reset Update variable
+- name: Reset update variable
   set_fact: update_version="False"
 
 - name: check if older version installed
@@ -50,7 +50,7 @@
   set_fact: update_version="True"
   when: (old_monitor) and (version1_0 or version1_1)
 
-- name: check if old version code available
+- name: Check if old version code available
   stat:
     path: /var/www/html/monitor/assets/tools/version.txt
   register: versionscode_s
@@ -58,19 +58,19 @@
 - name: Read old version code
   set_fact: versionscode="{{versionscode_s.stat.exists}}"
 
-- name: Backup Database
+- name: Backup database
   copy:
     src: /var/www/html/dbase.db
     dest: /usr/share/somo/dbase.db.bak
   when: update_version and version1_0
 
-- name: Backup Database
+- name: Backup database
   copy:
     src: /var/www/html/monitor/dbase.db
     dest: /usr/share/somo/dbase.db.bak
   when: update_version and version1_1 and not version2_0
 
-- name: Backup Version Code
+- name: Backup version file
   copy:
     src: /var/www/html/monitor/assets/tools/version.txt
     dest: /usr/share/somo/version.txt
@@ -94,11 +94,11 @@
   shell: "php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)'"
   register: php_output
 
-- name: Set PHP Version
+- name: Set PHP version
   set_fact:
     MONITORING_PHP_VERSION: "{{ php_output.stdout }}"
 
-- name: Copy monitoing.conf
+- name: Copy nginx configuration
   template:
     src: monitoring.j2
     dest: /etc/nginx/sites-enabled/monitoring.conf
@@ -124,18 +124,18 @@
     replace: 'memory_limit = 128M'
     backup: yes
 
-- name: Restart PHP-FPM
+- name: Restart php-fpm service
   command: /bin/true
   notify: restart-fpm
 
-- name: Clone repository from github.com
+- name: Clone repository from github
   git:
     repo: "https://github.com/didiatworkz/screenly-ose-monitoring.git"
     dest: /var/www/html/monitor
     version: "{{ MONITOR_BRANCH }}"
     force: yes
 
-- name: Copy somo Script
+- name: Copy somo script
   copy:
     src: somo
     dest: /usr/bin/somo
@@ -151,7 +151,7 @@
     group: www-data
     recurse: yes
 
-- name: Change temp folder permissions
+- name: Change somo tmp folder permissions
   file:
     path: /var/www/html/monitor/assets/tmp
     state: directory
@@ -159,7 +159,7 @@
     group: www-data
     mode: 0777
 
-- name: Retore Database Backup
+- name: Restore database backup
   copy:
     src: /usr/share/somo/dbase.db.bak
     dest: /var/www/html/monitor/dbase.db
@@ -177,7 +177,7 @@
     mode: 0644
   when: (old_monitor) and (version1_0 or version1_1)
 
-- name: Retore Version Code
+- name: Restore version code
   copy:
     src: /usr/share/somo/version.txt
     dest: /var/www/html/monitor/assets/tools/version.txt
@@ -186,16 +186,16 @@
     mode: 0644
   when: versionscode
 
-- name: Version update
+- name: Initiate version update via somo
   command: somo --init
 
-- name: Get current GIT Signature
+- name: Get current GIT signature
   command: git rev-parse HEAD
   args:
     chdir: /var/www/html/monitor
   register: git_result
 
-- name: Refresh GIT Signature
+- name: Refresh GIT signature
   copy:
     content: "{{ git_result.stdout }}"
     dest: /usr/share/somo/latest_monitor
