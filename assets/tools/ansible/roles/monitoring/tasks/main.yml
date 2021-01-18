@@ -1,4 +1,4 @@
-# Check older versions
+---
 - name: Create somo directory
   file:
     path: /usr/share/somo
