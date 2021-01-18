@@ -8,43 +8,76 @@
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/
 
-    http://www.atworkz.de
-       info@atworkz.de
-________________________________________
-      Screenly OSE Monitor
-        Database Module
-________________________________________
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
+
+       Screenly OSE Monitoring
+          Database Module
+_______________________________________
 */
 
-$dbase_key		= 'assets/tools/key.php';
+$reloadSite = '
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>SOMO - Maintenance mode</title>
+    <!-- Tabler Core -->
+    <link href="assets/css/tabler.min.css?t=1607864306" rel="stylesheet"/>
+    <!-- Tabler Plugins -->
+    <link href="assets/css/monitor.css?t=1607864306" rel="stylesheet"/>
+  </head>
+  <body class="antialiased border-top-wide border-primary d-flex flex-column">
+    <div class="flex-fill d-flex align-items-center justify-content-center">
+      <div class="container py-6">
+        <div class="empty">
+          <div class="empty-icon">
+            <img src="assets/img/undraw_server_down_s4lk.svg" height="256" class="mb-4"  alt="maintenance">
+          </div>
+          <p class="empty-title h3">Temporarily down for maintenance</p>
+          <p class="empty-subtitle text-muted pt-4">
+            This page will update itself in a few moments. <br />If this is not the case after 30 seconds, please refresh this page!
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>';
+
+$dbase_key		= ROOT_DIR.'/assets/tools/key.php';
 if(!@file_exists($dbase_key)) {
-  $dbase_file = 'dbase.db';
+  $dbase_file = ROOT_DIR.'/dbase.db';
 } else {
   include_once($dbase_key);
   $dbase_file = $db_cryproKey;
-  if(@file_exists('dbase.db')) {
-    unlink('dbase.db');
+  if(@file_exists(ROOT_DIR.'/dbase.db')) {
+    unlink(ROOT_DIR.'/dbase.db');
   }
-
 }
 
+$systemVersion  = file_get_contents(ROOT_DIR.'/assets/tools/version.txt');
+
 if(!@file_exists($dbase_key)){
-  $token = md5($systemVersion.time().$loginPassword).'.db';
+  $token = md5($systemVersion.time().rand()).'.db';
   $keyFile = '<?php
   $db_cryproKey = "'.$token.'";';
   $current = file_get_contents($dbase_key);
   file_put_contents($dbase_key, $keyFile);
-  rename("dbase.db",$token);
-  header("Refresh:0");
-  die("Reload this page");
+  rename(ROOT_DIR.'/dbase.db',$token);
+  header("Refresh:3");
+  die($reloadSite);
 }
 
 $db 			      = new SQLite3($dbase_file);
+$db             ->busyTimeout(5000);
 $set 			      = $db->query("SELECT * FROM settings");
 $set 			      = $set->fetchArray(SQLITE3_ASSOC);
 $securityToken	= $set['token'];
 $updatecheck	  = $set['updatecheck'];
-$systemVersion  = file_get_contents('assets/tools/version.txt');
+
 
 
 if(@file_exists('assets/tools/version_old.txt')){
@@ -88,8 +121,29 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("UPDATE `settings` SET name='Screenly OSE Monitoring' WHERE settingsID=1");
     $db->exec("DROP TABLE `settings_tmp`");
   }
+  if($oldVersion <= '4.0'){			// Update Database to Version 4.0
+    $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
+    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `status` INTEGER DEFAULT 0, `assets` TEXT, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
+    $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,sync,created) SELECT userID,name,location,address,player_user,player_password,sync,created FROM `player_tmp`");
+    $db->exec("DROP TABLE `player_tmp`");
+    $db->exec("ALTER TABLE `settings` RENAME TO `settings_tmp`");
+    $db->exec("CREATE TABLE `settings` (`settingsID` INTEGER PRIMARY KEY AUTOINCREMENT,`duration`	INTEGER,	`token`	TEXT,	`name`	TEXT,	`end_date`	INTEGER, `firstStart`	INTEGER,	`updatecheck`	INTEGER, `design` INTEGER DEFAULT 0, `uploadMaxSize` INTEGER DEFAULT 50, `timezone` TEXT DEFAULT 'Europe/Berlin', `sessionTime` INTEGER DEFAULT 36000, `debug` INTEGER DEFAULT 0)");
+    $db->exec("INSERT INTO `settings`(name,duration,token,end_date,updatecheck) SELECT name,duration,token,end_date,updatecheck FROM `settings_tmp`");
+    $db->exec("UPDATE `settings` SET name='SOMO' WHERE settingsID=1");
+    $db->exec("DROP TABLE `settings_tmp`");
+    $db->exec("CREATE TABLE IF NOT EXISTS `log` (`logID` INTEGER PRIMARY KEY AUTOINCREMENT, `userID`	INTEGER DEFAULT 0, `logTime`	INTEGER, `moduleName`	TEXT, `info`	TEXT, `show`	INTEGER DEFAULT 0, `relevant`	INTEGER DEFAULT 0)");
+    $db->exec("ALTER TABLE `userGroups` RENAME TO `userGroups_tmp`");
+    $db->exec("CREATE TABLE `userGroups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`players`	TEXT,	`players_enable` INTEGER DEFAULT 0,	`modules`	TEXT,	`modules_enable` INTEGER DEFAULT 0,	`ass_add`	INTEGER DEFAULT 0,	`ass_edit`	INTEGER DEFAULT 0,	`ass_delete`	INTEGER DEFAULT 0,	`ass_clean`	INTEGER DEFAULT 0,	`ass_state`	INTEGER DEFAULT 0, `pla_add`	INTEGER DEFAULT 0, `pla_edit`	INTEGER DEFAULT 0,	`pla_delete`	INTEGER DEFAULT 0, 	`pla_reboot`	INTEGER DEFAULT 0,	`mod_multi`	INTEGER DEFAULT 0,	`mod_addon`	INTEGER DEFAULT 0,	`set_system`	INTEGER DEFAULT 0, `set_user`	INTEGER DEFAULT 0,	`set_user_add`	INTEGER DEFAULT 0,	`set_user_edit`	INTEGER DEFAULT 0,	`set_user_delete`	INTEGER DEFAULT 0,	`set_public`	INTEGER DEFAULT 0)");
+    $db->exec("INSERT INTO `userGroups`(groupID,name) SELECT groupID,name FROM `userGroups_tmp`");
+    $db->exec("UPDATE `userGroups` SET players='".serialize()."', modules='".serialize()."', ass_add=1, ass_edit=1, ass_delete=1, ass_clean=1, ass_state=1, pla_add=1, pla_edit=1,	pla_delete=1, pla_reboot=1,	set_system=1,	set_user_add=1,	set_user_edit=1, set_user_delete=1, set_public=1 WHERE name='Admin'");
+    $db->exec("DROP TABLE `userGroups_tmp`");
+    $db->exec("ALTER TABLE `users` RENAME TO `users_tmp`");
+    $db->exec("CREATE TABLE `users` (`userID` INTEGER PRIMARY KEY AUTOINCREMENT, `username`	TEXT NOT NULL,	`password`	TEXT NOT NULL,	`firstname`	TEXT,	`name`	TEXT,	`refreshscreen`	INTEGER DEFAULT 5,	`updateEntry`	INTEGER, `active`	INTEGER,	`last_login` INTEGER,	`news` INTEGER DEFAULT 0,	`design` INTEGER DEFAULT 0,	`activate_addon` INTEGER DEFAULT 1)");
+    $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
+    $db->exec("DROP TABLE `users_tmp`");
+  }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
-  header("Refresh:0");
-  die("Reload this page");
+  header("Refresh:3");
+  die($reloadSite);
 }

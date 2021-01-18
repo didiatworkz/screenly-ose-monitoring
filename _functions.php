@@ -1,95 +1,97 @@
 <?php
-  /*
-	                            _
-	   ____                    | |
-	  / __ \__      _____  _ __| | __ ____
-	 / / _` \ \ /\ / / _ \| '__| |/ /|_  /
-	| | (_| |\ V  V / (_) | |  |   <  / /
-	 \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
-	  \____/
+/*
+                            _
+   ____                    | |
+  / __ \__      _____  _ __| | __ ____
+ / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+| | (_| |\ V  V / (_) | |  |   <  / /
+ \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+  \____/
 
-			http://www.atworkz.de
-			   info@atworkz.de
-	________________________________________
-			  Screenly OSE Monitor
-		   Version 3.3 - June 2020
-	________________________________________
-	*/
+        http://www.atworkz.de
+           info@atworkz.de
+_______________________________________
 
-	$_DEBUG 		= 'NO';
-	$_TIMEZONE 	= 'Europe/Berlin';
-	$apiVersion	= 'v1.2';
+       Screenly OSE Monitoring
+    Version 4.0  -  January 2021
+_______________________________________
+*/
 
-	$_modules = array(
-					'usermanagement',
-					'multiuploader',
-	);
+$apiVersion	= 'v1.2';
+
+$_modules = array(
+		'addon',
+		'dashboard',
+		'groupmanagement',
+		'multiuploader',
+		'players',
+		'settings',
+		'usermanagement',
+);
 
 
 /* _______________________________ */
 
-	if($_DEBUG == 'YES'){
-		ini_set('display_errors', 1);
-		error_reporting(E_ALL|E_STRICT);
-	}
-	else ini_set('display_errors', 0);
+$_loadMessureStart  = array_sum(explode(' ',  microtime()));
+$backLink						= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
+$firstSetup 				= 0;
+$loadingImage 			= 'assets/img/spinner.gif';
 
-	date_default_timezone_set($_TIMEZONE);
+if(isset($_GET['site'])){
+	$site = $_GET['site'];
+} else $site = NULL;
 
-	$backLink			= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['PHP_SELF'];
-	$firstSetup 	= 0;
-	$loadingImage = 'assets/img/spinner.gif';
+define('ROOT_DIR', realpath(__DIR__));
+include_once('assets/php/database.php');
 
-	$_loadMessureStart = array_sum(explode(' ',  microtime()));
+if($set['debug'] == 1){
+	include_once('assets/php/error_handler.php');
+	ini_set('display_errors', 1);
+	set_error_handler('somo_error_handler');
+	error_reporting(E_ALL|E_STRICT);
+} else ini_set('display_errors', 0);
 
-	if(isset($_GET['site'])){
-		$site = $_GET['site'];
-	} else $site = NULL;
+ini_set('session.gc_maxlifetime', $set['sessionTime']);
+setcookie(session_name('somo_session'),session_id(),time()+$set['sessionTime'], "/");
+session_start();
+date_default_timezone_set($set['timezone']);
 
-	function redirect($url, $time = 0){
-		echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';
-	}
+include_once('assets/php/functions.php');
+include_once('assets/php/user.php');
+include_once('assets/php/curl.php');
+include_once('assets/php/deviceInfo.php');
+include_once('assets/php/player.php');
+include_once('assets/php/update.php');
+include_once('assets/php/actions.php');
 
-	function sysinfo($style, $message, $refresh = false){
-		echo '
-		<script>
-			localStorage.setItem("notification_style", "'.$style.'");
-			localStorage.setItem("notification_message", "'.$message.'");
-			localStorage.setItem("notification_counter", "1");
-		</script>';
-	}
+$runnerTime 		= getRunnerTime();
+$uploadMaxSize 	= $set['uploadMaxSize'];
+$_cryptKey 			= str_replace('.db', '', $db_cryproKey);
 
-	include_once('assets/php/database.php');
-	include_once('assets/php/user.php');
-	include_once('assets/php/player.php');
-	include_once('assets/php/update.php');
-	include_once('assets/php/actions.php');
-
-	function firstStart($mode = 'get', $value = null){
-		global $db;
-		if($mode == 'set' AND $value != NULL){
-			$db->exec("UPDATE `settings` SET firstStart='".$value."' WHERE settingsID=1");
-			return true;
-		}
-		else {
-			$SQL = $db->query("SELECT firstStart FROM settings");
-			$fetch = $SQL->fetchArray(SQLITE3_ASSOC);
-			return $fetch['firstStart'];
-		}
-	}
-
-	if($loginUsername == 'demo' && $loginPassword == 'fe01ce2a7fbac8fafaed7c982a04e229'){
-		setcookie('firstSetup', true, time() + (86400 * 999), '/');
-		firstStart('set', 1);
-	}
-	else if (isset($_COOKIE['firstSetup']) && $playerCount == 0 && firstStart() <= 2) {
-		firstStart('set', 2);
-	}
-	else if($playerCount >= 1 OR firstStart() == 3) {
-		setcookie('firstSetup',  null, -1, '/');
-	}
-
-if($set['name'] != 'Screenly OSE Monitoring'){
-	define('_SYSTEM_NAME', $set['name'].' - Screenly OSE Monitoring');
+if($set['name'] != 'SOMO'){
+	define('_SYSTEM_NAME', $set['name'].' - SOMO');
 }
 else define('_SYSTEM_NAME', $set['name']);
+
+if($set['design'] == 1) $body_theme = ' theme-dark';
+else $body_theme = '';
+
+function encrypting($action, $string) {
+	global $dbase_file;
+	$output = false;
+	if(isset($dbase_file)) $secret_key = $dbase_file;
+	else $secret_key = '3a4eb9105c4505898b173e784d6d6cc56';
+
+  $encrypt_method = "AES-256-CBC";
+  $secret_iv = 'c0a64fcbb9885901a91625f1514536b987d24e441afc4dbb585f150742633af1';
+  $key = hash('sha256', $secret_key);
+
+  $iv = substr(hash('sha256', $secret_iv), 0, 16);
+  if ( $action == 'encrypt' ) {
+      $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+      $output = base64_encode($output);
+  } else if( $action == 'decrypt' ) {
+      $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+  }
+  return $output;
+}

@@ -12,17 +12,24 @@
        info@atworkz.de
 ________________________________________
       Screenly OSE Monitor
-        Discover Module
+       Discover Function
 ________________________________________
 */
 //  discover.php?range=192.168.178.0/24
+
+// Translation: DONE
+
+// TRANSLATION CLASS
+require_once('translation.php');
+use Translation\Translation;
+Translation::setLocalesDir(__DIR__ . '/../locales');
 
   if(isset($_GET['range']) AND isset($_GET['userID'])){
     list($ip, $mask) = explode('/', $_GET['range']);
     if(filter_var($ip, FILTER_VALIDATE_IP) AND $mask <= 30){
       $ipaddress = $_GET['range'];
-    } else die("No Valid IP Address!");
-  } else die("No IP Address!");
+    } else die(Translation::of('no_valid_ip'));
+  } else die(Translation::of('no_ip_address'));
 
   $rootPath = '/var/www/html/monitor';
   $dbase_key = $rootPath.'/assets/tools/key.php';
@@ -51,10 +58,27 @@ ________________________________________
       return $ips;
   }
 
+  function checkAddressData($site, $search, $return_data=false){
+    $ch = curl_init($site);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 100);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    if (strpos($data, $search) !== false) {
+      if($return_data == false) return true;
+      else return $data;
+    }
+    return false;
+  }
+
   function checkAddress($ip){
 		$ch = curl_init($ip);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 10);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 40);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
     curl_setopt($ch, CURLOPT_HEADER, true);
@@ -62,24 +86,32 @@ ________________________________________
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		if(($httpcode>=200 && $httpcode<300) || $httpcode==401) return true;
-		else return false;
+		if($httpcode>=200 && $httpcode<400) {
+      if ($httpcode == 301) {
+        $ip = str_replace("http://", "https://", $ip);
+      }
+      if(checkAddressData($ip, '<title>Screenly API</title>')){
+        return true;
+      }
+    }
+		return false;
 	}
 
   function getPlayerName($ip){
-    $ch = curl_init($ip);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
-      $name = $result['1']['0'];
-      if(!strpos($name, ' - ') === false){
-        $name = str_replace("Screenly OSE", "", $name);
-        $name = str_replace(" - ", "", $name);
+    $output = checkAddressData($ip, '<title>', true);
+
+    $nameIP = explode('.', $ip);
+    $name = '[AUTO] '.$nameIP['3'];
+
+    if(strpos($output, 'Screenly OSE') !== false){
+      if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
+        $name = $result['1']['0'];
+        if(!strpos($name, ' - ') === false){
+          $name = str_replace("Screenly OSE", "", $name);
+          $name = str_replace(" - ", "", $name);
+        }
       }
     }
-    else $name = '[AUTO] '.$ip;
 
     return $name;
   }
@@ -93,19 +125,18 @@ ________________________________________
 
   $range = getIpRange($ipaddress);
 
-  echo 'Start Discovery <br />';
-  echo 'IP Addresses: '.long2ip($range['firstIP']).' - '.long2ip($range['lastIP']).'<br />';
+  $logDetail = Translation::of('start_discovery').' <br />';
+  $logDetail .= Translation::of('ip_addresses').': '.long2ip($range['firstIP']).' - '.long2ip($range['lastIP']).'<br />';
   $j = 0;
   $k = 0;
   $ip = getEachIpInRange ($ipaddress);
   for ($i=0; $i < sizeof($ip); $i++) {
     $now = $ip[$i];
-    if(checkAddress($now.'/api/v1.2/assets')){
-      echo " [Found] ".$now.'<br />';
+    if(checkAddress('http://'.$now.'/api/docs/')){
+      $logDetail .=  $now.' - '.strtoupper(Translation::of('found'));
       $j++;
       if(array_search($now, $players) == 0){
-        echo " [CREATE] ".$now.'<br />';
-
+        $logDetail .=  ' - '.strtoupper(Translation::of('created'));
 
         $name = getPlayerName($now);
 				$address 	= $now;
@@ -115,17 +146,40 @@ ________________________________________
 				if($address){
 					$db->exec("INSERT INTO player (name, address, location, userID) values('".$name."', '".$address."', '".$location."', '".$userID."')");
           $k++;
-          echo " [ADDED] ".$now.'<br />';
+          $logDetail .=  ' - '.strtoupper(Translation::of('added'));
 				}
       }
-      echo '<br />';
+      $logDetail .=  '<br />';
     }
   }
-  echo 'End Discovery <br /><br /><br />';
-  echo '['.$i.'] IP Addresses scanned<br />';
-  echo '['.$j.'] Player found<br />';
-  echo '['.$k.'] Player added<br />';
+  $logDetail .=  Translation::of('end_discovery').' <br /><br /><br />';
+  echo '
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        '.Translation::of('scanned_ips').'
+        <span class="badge bg-info badge-pill"> '.$i.' </span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        '.Translation::of('player_found').'
+        <span class="badge bg-info badge-pill"> '.$j.' </span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        '.Translation::of('player_added').'
+        <span class="badge bg-orange badge-pill"> '.$k.' </span>
+      </li>
+    </ul>
 
-
+    <br /><br />
+    <p>
+      <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#details" aria-expanded="false" aria-controls="details">
+        '.Translation::of('detailed_report').'
+      </button>
+    </p>
+    <div class="collapse" id="details">
+      <div class="card card-body">
+        '.$logDetail.'
+      </div>
+    </div>
+    ';
 
  ?>

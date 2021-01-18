@@ -7,9 +7,7 @@
  * $ php -m | grep ssh
  *
  * Installing:
- * $ sudo apt-get install php5-dev php5-cli php-pear build-essential openssl-dev zlib1g-dev libssh2-1-dev
- * $ sudo pecl install -f ssh2
- * $ echo 'extension=ssh2.so' > /etc/php5/conf.d/ssh2.ini
+ * $ sudo apt-get install php-ssh2
  *
  * Using:
  * |

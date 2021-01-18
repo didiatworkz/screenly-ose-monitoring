@@ -8,7 +8,7 @@ assignees: 'didiatworkz'
 ---
 
 <!-- Did you know that we maintain a WIKI for this project?
-Maybe your question can already be answered here: https://github.com/didiatworkz/screenly-ose-monitor/wiki
+Maybe your question can already be answered here: https://github.com/didiatworkz/screenly-ose-monitoring/wiki
 If not, feel free to ask your question: -->
 
 What's your question?
