@@ -1,3 +1,4 @@
+---
 - name: Install Screenly OSE Monitoring
   hosts: all
   user: pi
@@ -5,6 +6,7 @@
   vars:
     MONITOR_BRANCH: "{{ lookup('env', 'MONITOR_BRANCH') }}"
     SERVER_MODE: "{{ lookup('env', 'SERVER_MODE') }}"
+    ansible_python_interpreter: /usr/bin/python3
 
   handlers:
     - name: restart-nginx
