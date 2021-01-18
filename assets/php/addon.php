@@ -196,9 +196,9 @@ else {
                             $logBtn = '';
                           }
 
-                          if($counter == 0) $optionS = '<button class="btn btn-secondary installAddon" data-src="'.$player['address'].'" data-header="Install">'.Translation::of('soma.install').'</button>';
-                          else if($counter != 0 && ($deviceInfo < $devInfVersion || $monitorOutput < $monInfVersion)) $optionS = '<button class="btn btn-warning installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('update_available').'</button>'.$logBtn;
-                          else $optionS = '<button class="btn btn-success installAddon" data-src="'.$player['address'].'" data-header="Reinstall">'.Translation::of('reinstall').'</button>'.$logBtn;
+                          if($counter == 0) $optionS = '<button class="btn btn-secondary installAddon" data-src="'.$player['address'].'" data-header="'.Translation::of('install').'">'.Translation::of('soma.install').'</button>';
+                          else if($counter != 0 && ($deviceInfo < $devInfVersion || $monitorOutput < $monInfVersion)) $optionS = '<button class="btn btn-warning installAddon" data-src="'.$player['address'].'" data-header="'.Translation::of('reinstall').'">'.Translation::of('update_available').'</button>'.$logBtn;
+                          else $optionS = '<button class="btn btn-success installAddon" data-src="'.$player['address'].'" data-header="'.Translation::of('reinstall').'">'.Translation::of('reinstall').'</button>'.$logBtn;
                           $counter = 0;
                         }
                         else {
@@ -281,7 +281,7 @@ else {
   			<div class="modal-dialog" role="document">
   				<div class="modal-content">
   					<div class="modal-header">
-  						<h5 class="modal-title" id="editPlayerModalLabel"><span id="headerText"></span> '.Translation::of('addon').'</h5>
+  						<h5 class="modal-title" id="editPlayerModalLabel"><span id="headerText"></span></h5>
   						<button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
   							<span aria-hidden="true">&times;</span>
   						</button>
