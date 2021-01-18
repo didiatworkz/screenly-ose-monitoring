@@ -51,8 +51,9 @@ if($set['debug'] == 1){
 	error_reporting(E_ALL|E_STRICT);
 } else ini_set('display_errors', 0);
 
-session_start();
+ini_set('session.gc_maxlifetime', $set['sessionTime']);
 setcookie(session_name('somo_session'),session_id(),time()+$set['sessionTime'], "/");
+session_start();
 date_default_timezone_set($set['timezone']);
 
 include_once('assets/php/functions.php');
