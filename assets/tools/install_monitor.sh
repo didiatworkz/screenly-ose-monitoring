@@ -91,7 +91,7 @@ echo -e "[ \e[33mSOMO\e[39m ] Set installation parameter"
 export SERVER_MODE=$_SERVERMODE
 export MONITOR_BRANCH=$_BRANCH
 echo -e "[ \e[33mSOMO\e[39m ] Start installation"
-sudo -E ansible-playbook site.yml -e 'ansible_python_interpreter=""/usr/bin/python3"'
+sudo -E ansible-playbook site.yml
 sudo systemctl restart nginx
 IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
