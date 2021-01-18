@@ -15,7 +15,6 @@
 - [Login](#login)
 - [Update](#update)
 - [Changelog](#changelog)
-- [Bash Controll](#bash-controll)
 - [More Questions?](#any-more-questions)
 
 
