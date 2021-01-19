@@ -60,10 +60,11 @@ echo '
     <link href="assets/css/monitor.css?t='.$set['updatecheck'].'" rel="stylesheet"/>
 
 		<!-- Libs JS -->
-    <script src="assets/js/jquery.min.js?t='.$set['updatecheck'].'"></script>
+    		<script src="assets/js/jquery.min.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/js/jquery-ui.min.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/libs/DataTables/datatables.min.js?t='.$set['updatecheck'].'"></script>
 		<script src="assets/libs/dropzone/dropzone.min.js?t='.$set['updatecheck'].'"></script>
+		<script src="assets/libs/flatpickr/dist/flatpickr.min.js?t='.$set['updatecheck'].'"></script>
 
 		<!-- Tabler Core -->
 		<script src="assets/js/tabler.min.js?t='.$set['updatecheck'].'"></script>
