@@ -74,7 +74,7 @@ Very simple installation:
 1. Connect to the player via SSH or terminal ([CTRL]+[ALT]+[F1])
 2. Copy this line and execute it
 ```sh
-bash <(curl -sL https://git.io/JtTFf)
+bash <(curl -sL https://git.io/JttTW)
 ```
 3. Answer the questions and installation will be start (This may take a while - Don't worry)
 4. Open your Browser to the IP address of the Raspberry Pi like: http://[screenly-ip-address]:9000
@@ -106,7 +106,8 @@ So the monitoring is accessible via the normal IP address!__
 
 ### Update SOMO
 ```sh
-bash <(curl -sL https://git.io/JtTFf)
+bash <(curl -sL https://git.io/JttTW)
+
 ```
 
 ### Update Extension
