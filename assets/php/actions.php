@@ -110,8 +110,8 @@ if(isset($_POST['newAsset'])){
 			$data['mimetype'] 				= $mimetype;
 			$data['is_enabled'] 			= $active;
 			$data['name'] 						= $name;
-			$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
-			$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
+			$data['start_date'] 			= convertToUTC($start.' '.$start_time, $set['timezone']);
+			$data['end_date'] 				= convertToUTC($end.' '.$end_time, $set['timezone']);
 			$data['play_order']				= 0;
 			$data['nocache'] 					= 0;
 			$data['uri'] 							= $url;

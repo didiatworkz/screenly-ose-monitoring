@@ -120,7 +120,7 @@ $_moduleLink = 'index.php?site=players';
 	  $id 				= $_POST['id'];
 	  $asset 			= $_POST['asset'];
 	  $name 			= $_POST['name'];
-	  $start 			= date("Y-m-d", strtotime($_POST['start_date']));
+	  $start 			= $_POST['start_date'];
 	  $start_time	= $_POST['start_time'];
 	  $end 				= $_POST['end_date'];
 	  $end_time		= $_POST['end_time'];
@@ -140,9 +140,8 @@ $_moduleLink = 'index.php?site=players';
 
 	  if($data['duration'] != $duration && $duration > 1) $data['duration'] = $duration;
 	  else $data['duration'] = 30;
-	  $data['start_date'] = $start.'T'.$start_time.':00.000Z';
-	  $data['end_date'] = $end.'T'.$end_time.':00.000Z';
-
+		$data['start_date'] 			= convertToUTC($start.' '.$start_time, $set['timezone']);
+		$data['end_date'] 				= convertToUTC($end.' '.$end_time, $set['timezone']);
 	  if(callURL('PUT', $player['address'].'/api/'.$apiVersion.'/assets/'.$asset, $data, $id, false)){
 	    sysinfo('success', Translation::of('msg.asset_update_successfully'));
 			systemLog($_moduleName, 'PlayerID: '.$player['name'].' - '.Translation::of('msg.asset_update_successfully').' - AssetID: '.$asset, $loginUserID, 1);

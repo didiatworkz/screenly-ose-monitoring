@@ -509,23 +509,17 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <tbody>
                   ';
       for($i=0; $i < sizeof($playerAPI); $i++)  {
-        $startAsset				= explode("T", $playerAPI[$i]['start_date']);
-        $startAssetTime		= explode("+", $startAsset['1']);
-        $startAssetTimeHM	= explode(":", $startAssetTime['0']);
-        $start						= date('d.m.Y', strtotime($startAsset['0']));
-        $start_date				= date('Y-m-d', strtotime($startAsset['0']));
-        $start_time				= $startAssetTimeHM['0'].':'.$startAssetTimeHM['1'];
-        $endAsset					= explode("T", $playerAPI[$i]['end_date']);
-        $endAssetTime			= explode("+", $endAsset['1']);
-        $endAssetTimeHM		= explode(":", $endAssetTime['0']);
-        $end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+        $start						= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
+        $start_date				= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
+        $start_time				= date('H:i', strtotime($playerAPI[$i]['start_date']));
+        $end_time					= date('H:i', strtotime($playerAPI[$i]['end_date']));
 
-        if (strpos($endAsset['0'], '9999') === false) {
-          $end				= date('d.m.Y', strtotime($endAsset['0']));
-          $end_date		= date('Y-m-d', strtotime($endAsset['0']));
+        if (strpos($playerAPI[$i]['end_date'], '9999') === false) {
+          $end				= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
+          $end_date		= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
         } else {
           $end				= Translation::of('forever');
-          $end_date		= $endAsset['0'];
+          $end_date		= '9999-01-01';
         }
 
         $yes 							= '<span class="badge bg-success p-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  '.strtolower(Translation::of('active')).'  </span>';
