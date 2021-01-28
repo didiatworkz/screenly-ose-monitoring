@@ -54,14 +54,14 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     header("HTTP/1.1 200 OK");
     $ip               = $_GET['ip'];
     $cpu              = round(getDeviceInfoData($ip, 'cpu'), 0);
-    $cpu_frequency    = getDeviceInfoData($ip, 'cpu_frequency');
+    $cpu_frequency    = round(getDeviceInfoData($ip, 'cpu_frequency'), 0);
     $memory_avail     = round(getDeviceInfoData($ip, 'memory'), 0);
     $memory_total     = round(getDeviceInfoData($ip, 'memory_total'), 0);
     $memory           = $memory_total - $memory_avail-50;
     $memory_progress  = round($memory/$memory_total*100, 0);
-    $temp             = getDeviceInfoData($ip, 'temp');
-    $disk_free        = getDeviceInfoData($ip, 'disk');
-    $disk_total       = getDeviceInfoData($ip, 'disk_total');
+    $temp             = round(getDeviceInfoData($ip, 'temp'), 0);
+    $disk_free        = round(getDeviceInfoData($ip, 'disk'), 0);
+    $disk_total       = round(getDeviceInfoData($ip, 'disk_total'), 0);
     $disk             = round($disk_total - $disk_free, 2);
     $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
