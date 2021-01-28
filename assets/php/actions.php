@@ -27,7 +27,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 if(isset($_POST['newAsset'])){
 	$id 	 			= isset($_POST['id']) ? $_POST['id'] : array();
 	$now				= strtotime("-10 minutes");
-	$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
+	//$id[] 			= isset($_POST['id']) ? $_POST['id'] : '';
 	$url 				= isset($_POST['url']) ? $_POST['url'] : '';
 	$name 			= isset($_POST['name']) ? $_POST['name'] : $_POST['url'];
 	$mimetype		= $_POST['mimetype'];
@@ -37,6 +37,7 @@ if(isset($_POST['newAsset'])){
 	$end_time		= isset($_POST['end_time']) ? $_POST['end_time'] : '00:00';
 	$duration 	= isset($_POST['duration']) ? $_POST['duration'] : $set['duration'];
 	$active 		= isset($_POST['active']) ? 1 : 0;
+
 
 
 	if($name == '') $name = $url;
@@ -62,14 +63,19 @@ if(isset($_POST['newAsset'])){
 		$id				= explode(',', $ids);
 	}
 
-	for ($i=0; $i < count($id); $i++) {
-		$output			= NULL;
-		$send 			= TRUE;
-		$playerSQL 	= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
-		$player 		= $playerSQL->fetchArray(SQLITE3_ASSOC);
 
-		$assetLogName = strlen($name) > 35 ? substr($name,0,32)."..." : $name;
-		systemLog('Player', 'Upload asset: '.$assetLogName.' to player '.$player['name'], $loginUserID, 1);
+
+	for ($i=0; $i < count($id); $i++) {
+		$output					= NULL;
+		$send 					= TRUE;
+		$playerSQL 			= $db->query("SELECT * FROM `player` WHERE playerID='".$id[$i]."'");
+		$player 				= $playerSQL->fetchArray(SQLITE3_ASSOC);
+		$playerID 			= $player['playerID'];
+		$playerName			= $player['name'];
+		$playerAddress 	= $player['address'];
+
+		$assetLogName 	= strlen($name) > 35 ? substr($name,0,32)."..." : $name;
+		systemLog('Player', 'Upload asset: '.$assetLogName.' to player '.$playerName, $loginUserID, 1);
 
 
 		if(isset($_POST['multidrop'])){
@@ -77,15 +83,15 @@ if(isset($_POST['newAsset'])){
 			//print_r();
 			$url	= NULL;
 			$send	= FALSE;
-			if($set['debug'] == 1) echo 'Send to: '.$player['address'].'/api/v1/file_asset<br />';
+			if($set['debug'] == 1) echo 'Send to: '.$playerAddress.'/api/v1/file_asset<br />';
 			if($set['debug'] == 1) print_r($data3);
 
 
-			$url = callURL('POST3', $player['address'].'/api/v1/file_asset', $data3, $id[$i], false);
+			$url = callURL('POST3', $playerAddress.'/api/v1/file_asset', $data3, $playerID, false);
 			if($set['debug'] == 1) echo 'Response: '.$url.'<br />';
 			if (strpos($url, '/home/pi/screenly_assets') === false) {
 				if($set['debug'] == 1) echo' Error !<br />';
-				$output .= $player['name'];
+				$output .= $playerName;
 				continue;
 			}
 			else {
@@ -103,25 +109,26 @@ if(isset($_POST['newAsset'])){
 			$data 										= array();
 			$data['mimetype'] 				= $mimetype;
 			$data['is_enabled'] 			= $active;
-			$data['is_active'] 				= $active;
 			$data['name'] 						= $name;
 			$data['start_date'] 			= $start.'T'.$start_time.':00.000Z';
 			$data['end_date'] 				= $end.'T'.$end_time.':00.000Z';
-			$data['duration'] 				= $duration;
 			$data['play_order']				= 0;
 			$data['nocache'] 					= 0;
 			$data['uri'] 							= $url;
 			$data['skip_asset_check'] = 1;
+			if($mimetype == 'video') $data['duration'] = '0';
+			else $data['duration'] = $duration;
 
 			//print_r($data);
-			if($set['debug'] == 1) echo 'ID: '.$id[$i].'<br />';
-			if($set['debug'] == 1) echo 'Send to API <br />';
-			if($out = callURL('POST', $player['address'].'/api/'.$apiVersion.'/assets', $data, $id[$i], false)){
+			if($set['debug'] == 1) echo 'ID: '.$playerID.'<br />';
+			if($set['debug'] == 1) echo 'Send to API: '.$playerAddress.'/api/'.$apiVersion.'/assets <br />';
+			if($set['debug'] == 1) echo 'Data:<pre>'.json_encode($data).'</pre><br />';
+			if($out = callURL('POST', $playerAddress.'/api/'.$apiVersion.'/assets', $data, $playerID, false)){
 				if($set['debug'] == 1) echo 'API Call: '.$out.'<br />';
 				if(strpos($out, '201') === false){
-					$output .= $player['name'].'
+					$output .= $playerName.'
 					';
-				} else if(!isset($_POST['multidrop'])) echo Translation::of('msg.asset_added_successfully_player', ['name' => $player['name']]);
+				} else if(!isset($_POST['multidrop'])) echo Translation::of('msg.asset_added_successfully_player', ['name' => $playerName]);
 			}
 			else {
 				header('HTTP/1.1 404 Not Found');
@@ -133,8 +140,7 @@ if(isset($_POST['newAsset'])){
 			header('HTTP/1.1 200 OK');
 		} else {
 			header('HTTP/1.1 500 Internal Server Error');
-			echo Translation::of('msg.cant_upload_to').'
-			'.$output;
+			echo Translation::of('msg.cant_upload_to').' '.$output;
 		}
 	}
 }
