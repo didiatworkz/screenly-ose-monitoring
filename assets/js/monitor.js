@@ -58,10 +58,10 @@ function loadDeviceInfo() {
 			},
 			type: 'GET',
 			success: function(data) {
-				if (userAddonActive == 0) $(element).hide()
+				if (userAddonActive === 0) $(element).hide();
 				else {
 					$(element).show();
-					data = JSON.parse(data)
+					data = JSON.parse(data);
 					$('span.cpu').text(data.cpu.value);
 					$('span.cpu_frequency').text(data.cpu.frequency);
 					$('div.cpu-bar').css('width', data.cpu.progress + '%').attr('aria-valuenow', data.cpu.progress).css('background-color', data.cpu.color);
@@ -83,7 +83,7 @@ function loadDeviceInfo() {
 					$('span.upnow').text(data.uptime.now);
 				}
 			},
-			error: function(data) {
+			error: function() {
 				$(element).html("");
 				console.log('No connection - ' + url);
 			},
@@ -99,7 +99,7 @@ function reloadPlayerImage() {
 	$('img.player').each(function(index, element) {
 		var url = $(element).attr('data-src');
 		var active = 1;
-		if (userAddonActive == 0) active = 0;
+		if (userAddonActive === 0) active = 0;
 		$.ajax({
 			url: 'assets/php/image.php',
 			data: {
@@ -112,12 +112,12 @@ function reloadPlayerImage() {
 			success: function(data) {
 				$(element).attr('src', data);
 			},
-			error: function(data) {
+			error: function() {
 				$(element).attr('src', 'assets/img/offline.png');
 				console.log('No connection - ' + url);
 			},
 		});
-	})
+	});
 }
 
 /**
@@ -126,15 +126,15 @@ function reloadPlayerImage() {
  */
 function loadRunner() {
 	var now = Math.round(new Date() / 1000);
-	if (settingsRunerTime && (settingsRunerTime <= now) && localStorage['runnerExecute'] === undefined) {
+	if (settingsRunerTime && (settingsRunerTime <= now) && localStorage.runnerExecute === undefined) {
 		$.ajax({
 			url: 'assets/php/runner.php',
 			type: 'GET',
-			success: function(data) {
-				localStorage['runnerExecute'] = true;
+			success: function() {
+				localStorage.runnerExecute = true;
 				console.log('Runner executed');
 			},
-			error: function(data) {
+			error: function() {
 				console.log('Runner error');
 			},
 		});
@@ -226,7 +226,7 @@ $('.changeState').on('click', function() {
 			id: id,
 			changeAssetState: changeAssetState
 		},
-		success: function(data) {
+		success: function() {
 			$('span[data-asset_id="' + asset + '"').toggle(function() {
 				$(this).toggleClass('bg-success bg-danger').show();
 				if ($(this).hasClass('bg-danger')) $(this).text('inactive');
@@ -249,7 +249,7 @@ $('.changeState').on('click', function() {
 				}
 			});
 		},
-		error: function(data) {
+		error: function() {
 			$.notify({
 				icon: 'tim-icons icon-bell-55',
 				message: 'Error! - Can \'t change the Asset'
@@ -280,10 +280,10 @@ $('input[name="addon_switch"]').on('change', function() {
 			addon_switch_user: id,
 			addon_switch: check
 		},
-		success: function(data) {
+		success: function() {
 			location.reload(0);
 		},
-		error: function(data) {
+		error: function() {
 			$.notify({
 				icon: 'tim-icons icon-bell-55',
 				message: 'Error! - Can \'t change Addon State'
@@ -327,7 +327,7 @@ $('.changeAsset').on('click', function() {
 				}
 			});
 		},
-		error: function(data) {
+		error: function() {
 			$.notify({
 				icon: 'tim-icons icon-bell-55',
 				message: 'Error! - Can \'t change the Asset'
@@ -345,7 +345,6 @@ $('.changeAsset').on('click', function() {
 
 var asset_table = $('#assets').DataTable({
 	dom: 'tipr',
-	responsive: false,
 	orderFixed: [[4, playerAssetsOrder], [2, 'desc']],
 	rowGroup: {
 		dataSrc: 4,
@@ -363,7 +362,7 @@ var asset_table = $('#assets').DataTable({
   }],
 	stateSave: true,
 	autoWidth: false,
-	initComplete: (settings, json) => {
+	initComplete: () => {
 		$('.dataTables_paginate').appendTo('#dataTables_paginate');
 		$('.dataTables_info').appendTo('#dataTables_info');
 	},
@@ -374,7 +373,7 @@ var asset_table = $('#assets').DataTable({
 
 $('#assetSearch').keyup(function() {
 	asset_table.search($(this).val()).draw();
-})
+});
 $(document).ready(function() {
 	$('#assetSearch').val(asset_table.search()).change;
 });
@@ -426,8 +425,9 @@ $('input:radio[name="add_asset_mode"]').click(function() {
 Dropzone.autoDiscover = false;
 if ($('.drop').length) {
 	var acceptedFileTypes = "image/*, video/*";
-	var upload_asset = 1;
 	var myDropzone = new Dropzone(".dropzone", {
+		acceptedFiles: acceptedFileTypes,
+		autoProcessQueue: false,
 		parallelUploads: 10,
 		addRemoveLinks: true,
 		chunking: true,
@@ -435,73 +435,65 @@ if ($('.drop').length) {
 		forceChunking: true,
 		retryChunks: true,
 		retryChunksLimit: 10,
+		maxFiles: 10,
 		maxFilesize: uploadMaxSize,
-		paramName: "file_upload",
-		acceptedFiles: acceptedFileTypes,
-		headers: {
-			'Authorization': 'Basic ' + scriptPlayerAuth
-		},
-		sending: function(file, response) {
-			console.log(file);
-		},
-		success: function(file, response) {
-			var response = file.xhr.response;
-			var mimetype = "unknown";
-			var fname = file.name;
-			var ftype = file.type;
-			var playerID = getUrlParameterByName('playerID');
-			console.log('Send to player: ' + playerID);
-			if (ftype.includes("image")) mimetype = "image";
-			else if (ftype.includes("video")) mimetype = "video";
-			else mimetype = "unknown";
+		url: '_functions.php',
+		init: function() {
+			var myMulitDropzone = this;
 
-			response = response.replace(/\"/g, '');
+			$('#uploadfiles').on("click", function() {
+				myMulitDropzone.processQueue();
+			});
 
-			var data = {
-				'name': fname,
-				'url': response,
-				'mimetype': mimetype,
-				'id[]': playerID,
-				'newAsset': upload_asset,
-			};
 
-			data = $('#drop_extra').serialize() + '&' + $.param(data);
+			myMulitDropzone.on("processing", function() {
+				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+				$('input:checkbox[name="id[]"]').attr('disabled', true);
+			});
 
-			$.ajax({
-				url: '_functions.php',
-				type: 'POST',
-				data: data,
-				timeout: 10000,
-				success: function(data) {
-					setNotification('success', data);
-					myDropzone.removeFile(file);
-				},
-				error: function(xhr, textStatus, errorThrown) {
-					if (textStatus == 'timeout') {
-						this.tryCount++;
-						if (this.tryCount <= this.retryLimit) {
-							//try again
-							$.ajax(this);
-							return;
-						}
-						return;
-					}
-					if (xhr.status == 500) {
-						//handle error
-					} else {
-						//handle error
-					}
+			myMulitDropzone.on("sending", function(file, xhr, data) {
+				var mimetype = "unknown";
+				var fname = file.name;
+				var ftype = file.type;
+				var playerID = getUrlParameterByName('playerID');
+				if (ftype.includes("image")) mimetype = "image";
+				else if (ftype.includes("video")) mimetype = "video";
+				else mimetype = "unknown";
 
-					setNotification('danger', xhr);
-					console.log(xhr);
-				}
+				var form = {};
+				$.each($('#dropzoneupload').serializeArray(), function() {
+					form[this.name] = this.value;
+				});
+
+				if (form.active == 'on') data.append("active", form.active);
+				data.append("playerID", playerID);
+				data.append("multidrop", '1');
+				data.append("newAsset", '1');
+				data.append("mimetype", mimetype);
+				data.append("name", fname);
+				data.append("duration", form.duration);
+				data.append("end_date", form.end_date);
+				data.append("end_time", form.end_time);
+				data.append("start_date", form.start_date);
+				data.append("start_time", form.start_time);
+			});
+
+			this.on("success", function(file) {
+				myMulitDropzone.removeFile(file);
+				console.log(file.xhr.response);
+			});
+
+			this.on("queuecomplete", function() {
+				console.log('queuecomplete');
+				$('#uploadfiles').hide();
+				location.reload();
 			});
 		}
 	});
 }
 
 if ($('.dropzoneMulti').length) {
-	var myMulitDropzone = new Dropzone(".dropzoneMulti", {
+	var myMulitDropzone = new Dropzone(".dropzone", {
 		acceptedFiles: acceptedFileTypes,
 		autoProcessQueue: false,
 		parallelUploads: 10,
@@ -520,7 +512,7 @@ if ($('.dropzoneMulti').length) {
 			$('#uploadfiles').show();
 			done();
 		},
-		init: function(e) {
+		init: function() {
 			var myMulitDropzone = this;
 
 			$('#uploadfiles').on("click", function() {
@@ -528,7 +520,7 @@ if ($('.dropzoneMulti').length) {
 			});
 
 
-			myMulitDropzone.on("processing", function(file, xhr, data) {
+			myMulitDropzone.on("processing", function() {
 				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
 			});
@@ -565,11 +557,10 @@ if ($('.dropzoneMulti').length) {
 
 			this.on("success", function(file) {
 				myMulitDropzone.removeFile(file);
-				var response = file.xhr.response;
 				console.log(file.xhr.response);
 			});
 
-			this.on("queuecomplete", function(file) {
+			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
 				$('#uploadfiles').hide();
 				$('#refresh').show();
@@ -579,7 +570,7 @@ if ($('.dropzoneMulti').length) {
 	});
 }
 
-$('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+$('a[data-toggle="tab"]').on('show.bs.tab', function() {
 	$('.card-body').find('input[type=checkbox]:checked').remove();
 });
 
@@ -597,7 +588,7 @@ $("#assetNewForm").submit(function(e) {
 	for (var i = 0; i < loopLength; i++) {
 		if (formData.indexOf("multiloader") >= 0) {
 			reload = false;
-			if (form[0][i].checked == true) {
+			if (form[0][i].checked === true) {
 				var newID = form[0][i].value;
 				formData = $('input:not([name^=id])', this).serialize() + '&id=' + newID;
 			} else continue;
@@ -816,7 +807,7 @@ var addon_table = $('#addon').DataTable({
 
 $('#addonSearch').keyup(function() {
 	addon_table.search($(this).val()).draw();
-})
+});
 
 $('#addonLength_change').val(addon_table.page.len());
 
@@ -840,13 +831,13 @@ $('.openlog').on('click', function() {
 	var eP = $('#log-modal');
 	eP.find('#headerText').text(header);
 	eP.find('.logrefresh').data('id', id);
-	loadLog(id)
+	loadLog(id);
 	eP.modal('show');
 });
 
 $('.logrefresh').on('click', function() {
 	var id = $(this).data('id');
-	loadLog(id)
+	loadLog(id);
 });
 
 $('button.reboot').on('click', function() {
@@ -919,7 +910,7 @@ var users_table = $('#users').DataTable({
 
 $('#usersSearch').keyup(function() {
 	users_table.search($(this).val()).draw();
-})
+});
 
 $('#usersLength_change').val(users_table.page.len());
 
@@ -1011,7 +1002,7 @@ var log_table = $('#log').DataTable({
 
 $('#logSearch').keyup(function() {
 	log_table.search($(this).val()).draw();
-})
+});
 
 $('#logLength_change').val(log_table.page.len());
 
@@ -1064,6 +1055,6 @@ $(document).ready(function() {
 	if ($('.device-info').length) loadDeviceInfo();
 });
 
-setInterval('reloadPlayerImage();', settingsRefreshRate);
-setInterval('loadDeviceInfo();', 1000);
-setInterval('loadRunner();', 2000);
+setInterval('reloadPlayerImage()', settingsRefreshRate);
+setInterval('loadDeviceInfo()', 1000);
+setInterval('loadRunner()', 2000);

@@ -204,7 +204,7 @@ if(hasModuleRight($loginUserID, 'multi')){
 
           <div class="view_upload tab" style="display: none;">
             <form id="dropzoneupload">
-              <div class="col-md-12">
+              <div class="col-md-12 mb-3">
                 <div class="form-group">
                   <div id="imageUpload" class="dropzoneMulti dropzone"></div>
                 </div>

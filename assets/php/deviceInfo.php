@@ -54,15 +54,15 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     header("HTTP/1.1 200 OK");
     $ip               = $_GET['ip'];
     $cpu              = round(getDeviceInfoData($ip, 'cpu'), 0);
-    $cpu_frequency    = getDeviceInfoData($ip, 'cpu_frequency');
+    $cpu_frequency    = round(getDeviceInfoData($ip, 'cpu_frequency'), 0);
     $memory_avail     = round(getDeviceInfoData($ip, 'memory'), 0);
     $memory_total     = round(getDeviceInfoData($ip, 'memory_total'), 0);
     $memory           = $memory_total - $memory_avail-50;
     $memory_progress  = round($memory/$memory_total*100, 0);
-    $temp             = getDeviceInfoData($ip, 'temp');
-    $disk_free        = getDeviceInfoData($ip, 'disk');
-    $disk_total       = getDeviceInfoData($ip, 'disk_total');
-    $disk             = round($disk_total - $disk_free, 2);
+    $temp             = round(getDeviceInfoData($ip, 'temp'), 0);
+    $disk_free        = number_format(getDeviceInfoData($ip, 'disk'), 2);
+    $disk_total       = number_format(getDeviceInfoData($ip, 'disk_total'), 2);
+    $disk             = number_format($disk_total - $disk_free, 2);
     $disk_progress    = round(getDeviceInfoData($ip, 'disk_percent'), 0);
     $platform         = getDeviceInfoData($ip, 'platform');
     $platform         = str_replace('\'', '"', $platform);
@@ -80,7 +80,7 @@ if(isset($_GET['deviceInfo']) AND isset($_GET['ip'])){
     $hostname         = str_replace('"', "", $hostname);
 
     $output = array();
-    $output['cpu']['value']        = $cpu;
+    $output['cpu']['value']        = str_pad($cpu, 2, '0', STR_PAD_LEFT);
     $output['cpu']['color']        = colorProgress($cpu);
     $output['cpu']['progress']     = $cpu;
     $output['cpu']['frequency']    = $cpu_frequency;

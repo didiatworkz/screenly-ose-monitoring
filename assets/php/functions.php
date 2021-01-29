@@ -35,6 +35,14 @@ function timeago($timestamp) {
    }
 }
 
+function convertToUTC($time, $zone){
+  $tz_to = 'UTC';
+  $format = 'Y-m-d\TH:i:s\Z';
+  $dt = new DateTime($time, new DateTimeZone($zone));
+  $dt->setTimeZone(new DateTimeZone($tz_to));
+  return $dt->format($format);
+}
+
 
 function redirect($url, $time = 0){
   echo '<meta http-equiv="refresh" content="'.$time.';URL='.$url.'">';

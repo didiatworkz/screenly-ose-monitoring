@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="4.0"
+VERSION="4.1"
 LOCAL=$(cat /usr/share/somo/latest_monitor)
 ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitoring | head -1 | sed "s/\tHEAD//")
 ACTION='\033[1;90m'

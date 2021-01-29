@@ -106,11 +106,10 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </svg>
         </a>';
         if(hasPlayerRebootRight($loginUserID)) $reboot = '<button data-playerid="'.$player['playerID'].'" class="btn btn-danger btn-block mt-2 reboot">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z"></path>
-            <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
-            <line x1="12" y1="4" x2="12" y2="12"></line>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
+        </svg>
           '.Translation::of('reboot').'
         </button>';
 
@@ -509,23 +508,17 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
               <tbody>
                   ';
       for($i=0; $i < sizeof($playerAPI); $i++)  {
-        $startAsset				= explode("T", $playerAPI[$i]['start_date']);
-        $startAssetTime		= explode("+", $startAsset['1']);
-        $startAssetTimeHM	= explode(":", $startAssetTime['0']);
-        $start						= date('d.m.Y', strtotime($startAsset['0']));
-        $start_date				= date('Y-m-d', strtotime($startAsset['0']));
-        $start_time				= $startAssetTimeHM['0'].':'.$startAssetTimeHM['1'];
-        $endAsset					= explode("T", $playerAPI[$i]['end_date']);
-        $endAssetTime			= explode("+", $endAsset['1']);
-        $endAssetTimeHM		= explode(":", $endAssetTime['0']);
-        $end_time					= $endAssetTimeHM['0'].':'.$endAssetTimeHM['1'];
+        $start						= date('d.m.Y', strtotime($playerAPI[$i]['start_date']));
+        $start_date				= date('Y-m-d', strtotime($playerAPI[$i]['start_date']));
+        $start_time				= date('H:i', strtotime($playerAPI[$i]['start_date']));
+        $end_time					= date('H:i', strtotime($playerAPI[$i]['end_date']));
 
-        if (strpos($endAsset['0'], '9999') === false) {
-          $end				= date('d.m.Y', strtotime($endAsset['0']));
-          $end_date		= date('Y-m-d', strtotime($endAsset['0']));
+        if (strpos($playerAPI[$i]['end_date'], '9999') === false) {
+          $end				= date('d.m.Y', strtotime($playerAPI[$i]['end_date']));
+          $end_date		= date('Y-m-d', strtotime($playerAPI[$i]['end_date']));
         } else {
           $end				= Translation::of('forever');
-          $end_date		= $endAsset['0'];
+          $end_date		= '9999-01-01';
         }
 
         $yes 							= '<span class="badge bg-success p-1" data-asset_id="'.$playerAPI[$i]['asset_id'].'">  '.strtolower(Translation::of('active')).'  </span>';
@@ -715,85 +708,84 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                 </div>
                 <div class="view_upload tab" style="display: none;">
                   <div class="modal-body">
-                    <div class="mb-3">
-                      <form action="'.checkHTTP($player['address']).$player['address'].'/api/v1/file_asset" class="dropzone drop">
-                        <div class="fallback">
-                          <input name="file" type="file" multiple />
-                        </div>
-                      </form>
-                    </div>
-                    <div class="mb-3">
-                      <div class="form-label">'.Translation::of('asset_settings').'</div>
-                      <label class="form-check form-switch">
-                        <input class="form-check-input toggle_div" data-src=".defaults_upload" type="checkbox">
-                        <span class="form-check-label">'.Translation::of('change_defaults').'</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="modal-body defaults_upload" style="display: none">
-                    <form id="drop_extra">
-                      <div class="row">
-                        <div class="col-lg-8">
-                          <div class="mb-3">
-                            <label class="form-label">'.Translation::of('start').'</label>
-                            <div class="input-icon caltime-padding">
-                              <input name="start_date" type="text" value="'.date('Y-m-d', strtotime('now')).'" class="form-control asset_start" placeholder="'.Translation::of('start_date').'" />
-                              <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="4" y="5" width="16" height="16" rx="2" /><line x1="16" y1="3" x2="16" y2="7" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="4" y1="11" x2="20" y2="11" /><line x1="11" y1="15" x2="12" y2="15" /><line x1="12" y1="15" x2="12" y2="18" /></svg>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-4">
-                          <div class="mb-3">
-                            <label class="form-label">&nbsp;</label>
-                            <div class="input-icon caltime-padding">
-                              <input name="start_time" type="text" class="form-control asset_start_time" placeholder="'.Translation::of('start_time').'" value="00:00" />
-                              <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 9 15"></polyline></svg>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-8">
-                          <div class="mb-3">
-                            <label class="form-label">'.Translation::of('end').'</label>
-                            <div class="input-icon caltime-padding">
-                              <input name="end_date" type="date" class="form-control asset_end" placeholder="'.Translation::of('end_date').'" value="'.date('Y-m-d', strtotime('+'.$set['end_date'].' week')).'" />
-                              <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="4" y="5" width="16" height="16" rx="2" /><line x1="16" y1="3" x2="16" y2="7" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="4" y1="11" x2="20" y2="11" /><line x1="11" y1="15" x2="12" y2="15" /><line x1="12" y1="15" x2="12" y2="18" /></svg>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-4">
-                          <div class="mb-3">
-                            <label class="form-label">&nbsp;</label>
-                            <div class="input-icon caltime-padding">
-                              <input name="end_time" type="time" class="form-control asset_end_time" placeholder="'.Translation::of('end_time').'" value="00:00" />
-                              <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 9 15"></polyline></svg>
-                              </span>
-                            </div>
-                          </div>
+                    <form id="dropzoneupload">
+                      <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                          <div id="imageUpload" class="dropzone drop"></div>
                         </div>
                       </div>
                       <div class="mb-3">
-                        <label class="form-label">'.Translation::of('duration_in_sec').'</label>
-                        <input name="duration" type="number" class="form-control" value="'.$set['duration'].'" />
-                      </div>
-                      <div class="mb-3">
-                        <label class="row">
-                          <span class="col">'.Translation::of('active').'</span>
-                          <span class="col-auto">
-                            <label class="form-check form-check-single form-switch">
-                              <input class="form-check-input" name="active" type="checkbox" checked>
-                            </label>
-                          </span>
+                        <div class="form-label">'.Translation::of('asset_settings').'</div>
+                        <label class="form-check form-switch">
+                          <input class="form-check-input toggle_div" data-src=".defaults_upload" type="checkbox">
+                          <span class="form-check-label">'.Translation::of('change_defaults').'</span>
                         </label>
+                      </div>
+                      <div class="defaults_upload" style="display: none">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <div class="mb-3">
+                              <label class="form-label">'.Translation::of('start').'</label>
+                              <div class="input-icon caltime-padding">
+                                <input name="start_date" type="text" value="'.date('Y-m-d', strtotime('now')).'" class="form-control asset_start" placeholder="'.Translation::of('start_date').'" />
+                                <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="4" y="5" width="16" height="16" rx="2" /><line x1="16" y1="3" x2="16" y2="7" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="4" y1="11" x2="20" y2="11" /><line x1="11" y1="15" x2="12" y2="15" /><line x1="12" y1="15" x2="12" y2="18" /></svg>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="mb-3">
+                              <label class="form-label">&nbsp;</label>
+                              <div class="input-icon caltime-padding">
+                                <input name="start_time" type="text" class="form-control asset_start_time" placeholder="'.Translation::of('start_time').'" value="00:00" />
+                                <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 9 15"></polyline></svg>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <div class="mb-3">
+                              <label class="form-label">'.Translation::of('end').'</label>
+                              <div class="input-icon caltime-padding">
+                                <input name="end_date" type="date" class="form-control asset_end" placeholder="'.Translation::of('end_date').'" value="'.date('Y-m-d', strtotime('+'.$set['end_date'].' week')).'" />
+                                <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="4" y="5" width="16" height="16" rx="2" /><line x1="16" y1="3" x2="16" y2="7" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="4" y1="11" x2="20" y2="11" /><line x1="11" y1="15" x2="12" y2="15" /><line x1="12" y1="15" x2="12" y2="18" /></svg>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="mb-3">
+                              <label class="form-label">&nbsp;</label>
+                              <div class="input-icon caltime-padding">
+                                <input name="end_time" type="time" class="form-control asset_end_time" placeholder="'.Translation::of('end_time').'" value="00:00" />
+                                <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 9 15"></polyline></svg>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">'.Translation::of('duration_in_sec').'</label>
+                          <input name="duration" type="number" class="form-control" value="'.$set['duration'].'" />
+                        </div>
+                        <div class="mb-3">
+                          <label class="row">
+                            <span class="col">'.Translation::of('active').'</span>
+                            <span class="col-auto">
+                              <label class="form-check form-check-single form-switch">
+                                <input class="form-check-input" name="active" type="checkbox" checked>
+                              </label>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-link mr-auto" data-close="#newAsset">'.Translation::of('close').'</button>
+                    <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
+                    <button type="button" id="uploadfiles" class="btn btn-success">'.Translation::of('upload').'</button>
                   </div>
                 </div>
               </div>

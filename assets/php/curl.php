@@ -177,6 +177,9 @@ function playerImage($url, $active = 1){
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    #curl_setopt($curl, CURLOPT_VERBOSE, true);
+    #$fp = fopen(dirname(__FILE__).'/curl_errorlog.txt', 'w');
+    #curl_setopt($curl, CURLOPT_STDERR, $fp);
 
 		$response = curl_exec($curl);
 		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
