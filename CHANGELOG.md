@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed upload error
 - Fixed timezone settings
 - Fixed Device-Info output
-
+- Replace reboot icon
+- Fix modal close function
 
 ## [4.0] - 2020-01-18
 
