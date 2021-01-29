@@ -106,11 +106,10 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           </svg>
         </a>';
         if(hasPlayerRebootRight($loginUserID)) $reboot = '<button data-playerid="'.$player['playerID'].'" class="btn btn-danger btn-block mt-2 reboot">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z"></path>
-            <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
-            <line x1="12" y1="4" x2="12" y2="12"></line>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-md" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
+        </svg>
           '.Translation::of('reboot').'
         </button>';
 
@@ -785,7 +784,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-link mr-auto" data-close="#newAsset">'.Translation::of('close').'</button>
+                    <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
                     <button type="button" id="uploadfiles" class="btn btn-success">'.Translation::of('upload').'</button>
                   </div>
                 </div>
