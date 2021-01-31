@@ -6,7 +6,7 @@
 _______________________________________
 
        Screenly OSE Monitoring
-        Transltion file tr-TR
+        Translation file tr-TR
       Translated by Umit YAVUZ
 _______________________________________
 */
