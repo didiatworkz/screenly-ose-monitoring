@@ -1018,7 +1018,7 @@ $('#logLength_change').change(function() {
 // Profile settings
 if ($('.avatar_upload').length) {
 	var myAvatarDropzone = new Dropzone(".avatar_upload", {
-		maxFilesize: 5,
+		maxFilesize: 3,
 		maxFile: 1,
 		parallelUploads: 1,
 		acceptedFiles: "image/*",
