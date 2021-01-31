@@ -440,6 +440,7 @@ if ($('.drop').length) {
 		url: '_functions.php',
 		init: function() {
 			var myMulitDropzone = this;
+			var errors = false;
 
 			$('#uploadfiles').on("click", function() {
 				myMulitDropzone.processQueue();
@@ -478,6 +479,10 @@ if ($('.drop').length) {
 				data.append("start_time", form.start_time);
 			});
 
+			this.on("error", function(file) {
+				errors = true;
+			});
+
 			this.on("success", function(file) {
 				myMulitDropzone.removeFile(file);
 				console.log(file.xhr.response);
@@ -486,7 +491,7 @@ if ($('.drop').length) {
 			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
 				$('#uploadfiles').hide();
-				location.reload();
+				if (!errors) location.reload();
 			});
 		}
 	});
