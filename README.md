@@ -1,11 +1,9 @@
-
-
 # Screenly OSE Monitoring (SOMO)
 <p align="center">
-<img width="800px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/manage5.png" />
+<img width="800px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/manage5.png" />
 </p>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v4.1) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v4.2) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
 
 - [Intro](#what-is-this)
 - [Features](#features)
@@ -19,7 +17,7 @@
 
 
 ## What is this?
-<img align="left" width="300px" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/manage4.png" style="padding-right: 12px; padding-bottom:12px" />
+<img align="left" width="300px" title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/manage4.png" style="padding-right: 12px; padding-bottom:12px" />
 
 Screenly OSE Monitoring is a web-based application that is simultaneously installed on a Screenly OSE Player or as standalone server solution.
 
@@ -36,7 +34,7 @@ By installing an add-on on each player, it is also possible to display a "live f
 
 ## Features
 
-<img width="300px" align="right" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/image1.png">
+<img width="300px" align="right" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/image1.png">
 
 + Easy administration
 + Dashboard
@@ -89,7 +87,7 @@ Username: demo<br />
 Password: demo
 
 <p align="center">
-<img width="600px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/livecase.png" />
+<img width="600px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/livecase.png" />
 </p>
 
 ---
@@ -121,8 +119,8 @@ bash <(curl -sL https://git.io/Jf900)
 
 
 <p align="center">
-<img title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/screens3.png" />
-<img title="Monitoring Overview" alt="Light and Dark Mode" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/v4.0/.github/IMAGES/light_dark.png" />
+<img title="Monitoring Overview" alt="Monitoring Overview" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/screens3.png" />
+<img title="Monitoring Overview" alt="Light and Dark Mode" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/light_dark.png" />
 </p>
 
 ## Any more questions?

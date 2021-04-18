@@ -142,6 +142,9 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
   }
+  if($oldVersion <= '4.2'){			// Update Database to Version 4.2
+    // none
+  }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');
   header("Refresh:3");
