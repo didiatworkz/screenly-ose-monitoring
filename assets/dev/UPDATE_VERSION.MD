@@ -4,7 +4,7 @@ This information is only for developers who want to further develop the script a
 ## Files
 + /assets/version.txt
 + /assets/php/database.php
-+ /assets/ansible/roles/monitoring/files/ose-monitoring
++ /assets/ansible/roles/monitoring/files/somo
 + /CHANGELOG.md
 + /README.md
 
