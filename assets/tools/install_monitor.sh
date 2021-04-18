@@ -2,7 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitor
 #
-# January 2021
+# April 2021
 _ANSIBLE_VERSION=2.9.9
 _BRANCH=v4.2
 #_BRANCH=master
@@ -21,7 +21,7 @@ cat << "EOF"
  \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
   \____/                www.atworkz.de
 
-        Screenly OSE Monitoring
+        Screenly OSE Monitoring (SOMO)
 EOF
 tput sgr 0
 echo
@@ -49,7 +49,7 @@ then
   echo -e "[ \e[33mSOMO\e[39m ] [ \e[32mNO\e[39m ] Screenly installed"
   echo "----------------------------------------------"
   echo
-  echo -e "[ \e[33mSOMO\e[39m ] Start preperation for server installation"
+  echo -e "[ \e[33mSOMO\e[39m ] Start preparation for server installation"
   echo -e "[ \e[33mSOMO\e[39m ] Create /etc/ansible folder"
   sudo mkdir -p /etc/ansible
   echo -e "[ \e[33mSOMO\e[39m ] Add localhost to /etc/ansible/hosts"
@@ -70,7 +70,7 @@ else
   _PORT=":9000"
 fi
 sleep 2
-echo -e "[ \e[33mSOMO\e[39m ] Start preperation for installation"
+echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation"
 sleep 5
 if [ -e /var/www/html/monitor/_functions.php ]
 then
