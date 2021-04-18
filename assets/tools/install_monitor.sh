@@ -4,8 +4,8 @@
 #
 # January 2021
 _ANSIBLE_VERSION=2.9.9
-#_BRANCH=v4.0
-_BRANCH=master
+_BRANCH=v4.2
+#_BRANCH=master
 
 # ==========================
 
