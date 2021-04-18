@@ -57,11 +57,9 @@ then
   echo -e "[ \e[33mSOMO\e[39m ] Update apt cache"
   sudo apt update
   echo -e "[ \e[33mSOMO\e[39m ] Remove old package"
-  sudo apt-get purge -y python-setuptools python-pip python-pyasn1 libffi-dev
+  sudo apt-get purge -y python3-setuptools python3-pip python3-pyasn1 libffi-dev
   echo -e "[ \e[33mSOMO\e[39m ] Install new packages"
-  sudo apt-get install -y python3-dev git-core libffi-dev libssl-dev
-  echo -e "[ \e[33mSOMO\e[39m ] Install pip3 via pypa.io"
-  curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3
+  sudo apt-get install --no-install-recommends git-core libffi-dev libssl-dev python3-dev python3-pip python3-setuptools python3-wheel -y
   sudo pip3 install ansible=="$_ANSIBLE_VERSION"
   _SERVERMODE="listen 80 default_server;"
   _PORT=""
