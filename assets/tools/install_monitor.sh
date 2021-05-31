@@ -3,7 +3,7 @@
 # Screenly OSE Monitoring
 #
 # June 2021
-_ANSIBLE_VERSION=2.9.9
+_ANSIBLE_VERSION=2.10.0
 _BRANCH=v4.2
 #_BRANCH=master
 
