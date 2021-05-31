@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by didiatworkz
-# Screenly OSE Monitor
+# Screenly OSE Monitoring
 #
-# April 2021
+# June 2021
 _ANSIBLE_VERSION=2.9.9
 _BRANCH=v4.2
 #_BRANCH=master
@@ -43,10 +43,9 @@ fi
 echo
 echo
 echo
-echo -e "[ \e[33mSOMO\e[39m ] Check if Screenly installed..."
-if [ ! -e /home/pi/screenly/server.py ]
-then
-  echo -e "[ \e[33mSOMO\e[39m ] [ \e[32mNO\e[39m ] Screenly installed"
+echo -e "[ \e[33mSOMO\e[39m ] Check if port 0.0.0.0:80 in use..."
+if ! nc -z localhost 80; then
+  echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:80 is not in use!"
   echo "----------------------------------------------"
   echo
   echo -e "[ \e[33mSOMO\e[39m ] Start preparation for server installation"
@@ -65,7 +64,8 @@ then
   _PORT=""
 
 else
-  echo -e "[ \e[33mSOMO\e[39m ] [ \e[93mYES\e[39m ] Screenly installed"
+  echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:80 is in use!"
+  echo -e "[ \e[33mSOMO\e[39m ] Choose port 0.0.0.0:9000"
   _SERVERMODE="listen 9000;"
   _PORT=":9000"
 fi
