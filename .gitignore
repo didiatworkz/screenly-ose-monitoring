@@ -3,4 +3,5 @@ assets/css/demo.min.css
 .DS_Store
 .vscode
 assets/img/avatars/*.txt
+assets/tmp/*
 *.db
