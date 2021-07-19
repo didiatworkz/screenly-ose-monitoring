@@ -5,3 +5,4 @@ assets/css/demo.min.css
 assets/img/avatars/*.txt
 assets/tmp/*
 *.db
+assets/tools/key.php
