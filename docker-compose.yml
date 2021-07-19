@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+    nginx:
+        container_name: somo-nginx
+        image: nginx:1.20.1-alpine
+        hostname: somo.local
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./:/var/www/html/monitor
+            - ./assets/tools/docker/confs/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./assets/tools/docker/certs:/etc/ssl/nginx
+            #- ./assets/tools/docker/somo:/usr/bin/somo
+        restart: unless-stopped
+    php:
+        container_name: somo-php
+        image: php:fpm
+        depends_on:
+            - nginx
+        ports:
+            - "9000:9000"
+        build:
+            context: ./assets/tools/docker
+            dockerfile: php
+        volumes:
+            - ./:/var/www/html/monitor
+            - ./assets/tools/docker/confs/phplog.conf:/usr/local/etc/php-fpm.d/log.conf
+            - ./assets/tools/docker/confs/php.ini:/usr/local/etc/php/conf.d/php.ini
+            - ./assets/tools/docker/confs/fpm.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+        restart: unless-stopped
