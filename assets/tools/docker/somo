@@ -74,7 +74,36 @@ EOF
 			echo "Check file integrity..."
 			sleep 2
 
-      array=( index.php _functions.php _public.php assets/php/actions.php assets/php/addon.php assets/php/curl.php assets/php/dashboard.php assets/php/database.php assets/php/datatable_lang.json.php assets/php/deviceInfo.php assets/php/discover.php assets/php/dropzone_lang.js.php assets/php/error_handler.php assets/php/firstStart.php assets/php/functions.php assets/php/groupmanagement.php assets/php/image.php assets/php/login.php assets/php/menu.php assets/php/multiuploader.php assets/php/player.php assets/php/players.php assets/php/runner.php assets/php/settings.php assets/php/ssh.class.php assets/php/translation.php assets/php/update.php assets/php/user.php assets/php/usermanagement.php  )
+      array=""
+      array="${array} index.php"
+      array="${array} _functions.php"
+      array="${array} _public.php"
+      array="${array} assets/php/actions.php"
+      array="${array} assets/php/addon.php"
+      array="${array} assets/php/curl.php"
+      array="${array} assets/php/dashboard.php"
+      array="${array} assets/php/database.php"
+      array="${array} assets/php/datatable_lang.json.php"
+      array="${array} assets/php/deviceInfo.php"
+      array="${array} assets/php/discover.php"
+      array="${array} assets/php/dropzone_lang.js.php"
+      array="${array} assets/php/error_handler.php"
+      array="${array} assets/php/firstStart.php"
+      array="${array} assets/php/functions.php"
+      array="${array} assets/php/groupmanagement.php"
+      array="${array} assets/php/image.php"
+      array="${array} assets/php/login.php"
+      array="${array} assets/php/menu.php"
+      array="${array} assets/php/multiuploader.php"
+      array="${array} assets/php/player.php"
+      array="${array} assets/php/runner.php"
+      array="${array} assets/php/settings.php"
+      array="${array} assets/php/ssh.class.php"
+      array="${array} assets/php/translation.php"
+      array="${array} assets/php/update.php"
+      array="${array} assets/php/user.php"
+      array="${array} assets/php/usermanagement.php"
+
       FAILCOUNTER=0
       for i in "${array[@]}"
       do
