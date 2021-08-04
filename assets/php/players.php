@@ -142,19 +142,19 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
           $displayRes = explode(',', $displayAPI['display_info']);
           $displayRes = $displayRes['1'];
           $displayPower = $displayAPI['display_power'];
-          $displayAPILog = $displayAPI['viewlog'];
-          for ($i=0; $i < count($displayAPILog); $i++) {
-            if(preg_match_all('/\[|\]/', $displayAPILog[$i], $matches)) {
-              if(count($matches[0]) <= 3){
-                $displayLog .= '<small class="text-muted mt-n4">';
-                $displayLog .= $displayAPILog[$i];
-                $displayLog .= '</small>';
-                $matches[0] = 0;
-              }
-            } else $displayLog .= $displayAPILog[$i];
+          // $displayAPILog = $displayAPI['viewlog'];
+          // for ($i=0; $i < count($displayAPILog); $i++) {
+          //   if(preg_match_all('/\[|\]/', $displayAPILog[$i], $matches)) {
+          //     if(count($matches[0]) <= 3){
+          //       $displayLog .= '<small class="text-muted mt-n4">';
+          //       $displayLog .= $displayAPILog[$i];
+          //       $displayLog .= '</small>';
+          //       $matches[0] = 0;
+          //     }
+          //   } else $displayLog .= $displayAPILog[$i];
 
-            $displayLog .= '<br />';
-          }
+          //   $displayLog .= '<br />';
+          // }
         }
 
         if(deviceInfoInstalled($player['address'])){
