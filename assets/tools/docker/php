@@ -1,9 +1,0 @@
-FROM php:7.4.21-fpm
-RUN apt-get update
-RUN apt-get install curl libpng-dev libzip-dev libonig-dev libssh2-1-dev libssh2-1 -y
-RUN rm -rf /var/lib/apt/lists/*
-RUN rm -rf /var/lib/apt/cache/*
-
-RUN pecl install ssh2-1.2
-RUN docker-php-ext-install mbstring gd zip
-RUN docker-php-ext-enable ssh2
