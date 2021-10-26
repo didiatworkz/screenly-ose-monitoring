@@ -1,6 +1,6 @@
 FROM php:7.4.25-apache-buster
 
-#Install dependencies
+# Install dependencies
 RUN apt update \
   && apt install wget locales git zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
   && apt-get clean \
@@ -8,12 +8,12 @@ RUN apt update \
   && rm -r /var/cache/apt \
   && pecl install ssh2-1.3.1
 
-#Setup server
+# Setup server
 RUN docker-php-ext-install pdo zip gd \
   && docker-php-ext-enable ssh2 \
   && apt remove git zip libzip-dev zlib1g-dev libpng-dev -y
 
-#Generate php config
+# Generate php config
 RUN echo "en_US.UTF-8 UTF-8\nde_DE.UTF-8 UTF-8\n" >> /etc/locale.gen \
   && locale-gen
 
