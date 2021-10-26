@@ -2,7 +2,7 @@ FROM php:7.4.25-apache-buster
 
 # Install dependencies
 RUN apt update \
-  && apt install wget locales git zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
+  && apt install curl wget locales git zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -r /var/cache/apt \
