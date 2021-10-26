@@ -62,12 +62,12 @@ EOF
             ;;
         --reset-version)
   		echo "Reset system version to 3.0"
-  		echo "3.0" > /var/www/html/monitor/assets/tools/version_old.txt
+  		echo "3.0" > /var/www/html/assets/tools/version_old.txt
           ;;
 		    --init)
 			echo "Set version..."
-			cp -rf /var/www/html/monitor/assets/tools/version.txt /var/www/html/monitor/assets/tools/version_old.txt
-			echo $VERSION > /var/www/html/monitor/assets/tools/version.txt
+			cp -rf /var/www/html/assets/tools/version.txt /var/www/html/assets/tools/version_old.txt
+			echo $VERSION > /var/www/html/assets/tools/version.txt
             ;;
         -c|--check)
       echo
