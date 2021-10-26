@@ -2,8 +2,7 @@
 # Created by didiatworkz
 # Screenly OSE Monitoring
 #
-# June 2021
-_ANSIBLE_VERSION=2.10.0
+# October 2021
 _BRANCH=v4.2
 #_BRANCH=master
 
@@ -40,6 +39,9 @@ then
     exit
 fi
 
+#check if previus version installed (<=4.1)
+#check if previus version installed (docker)
+
 echo
 echo
 echo
@@ -48,18 +50,7 @@ if ! nc -z localhost 80; then
   echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:80 is not in use!"
   echo "----------------------------------------------"
   echo
-  echo -e "[ \e[33mSOMO\e[39m ] Start preparation for server installation"
-  echo -e "[ \e[33mSOMO\e[39m ] Create /etc/ansible folder"
-  sudo mkdir -p /etc/ansible
-  echo -e "[ \e[33mSOMO\e[39m ] Add localhost to /etc/ansible/hosts"
-  echo -e "[local]\nlocalhost ansible_connection=local" | sudo tee /etc/ansible/hosts > /dev/null
-  echo -e "[ \e[33mSOMO\e[39m ] Update apt cache"
-  sudo apt update
-  echo -e "[ \e[33mSOMO\e[39m ] Remove old package"
-  sudo apt-get purge -y python3-setuptools python3-pip python3-pyasn1 libffi-dev
-  echo -e "[ \e[33mSOMO\e[39m ] Install new packages"
-  sudo apt-get install --no-install-recommends git-core libffi-dev libssl-dev python3-dev python3-pip python3-setuptools python3-wheel -y
-  sudo pip3 install ansible=="$_ANSIBLE_VERSION"
+  
   _SERVERMODE="listen 80 default_server;"
   _PORT=""
 
@@ -69,8 +60,17 @@ else
   _SERVERMODE="listen 9000;"
   _PORT=":9000"
 fi
-sleep 2
+echo 
 echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation"
+sleep 2
+echo -e "[ \e[33mSOMO\e[39m ] Update apt cache"
+sudo apt update
+echo -e "[ \e[33mSOMO\e[39m ] Install new packages"
+sudo apt-get install --no-install-recommends git-core netcat -y
+echo -e "[ \e[33mSOMO\e[39m ] Install latest docker version"
+curl -sSL https://get.docker.com | sh
+echo -e "[ \e[33mSOMO\e[39m ] Add $(whomi) to group 'docker'"
+sudo usermod -aG docker $(whoami)
 sleep 5
 if [ -e /var/www/html/monitor/_functions.php ]
 then
@@ -79,18 +79,24 @@ else
   _DEMOLOGIN="\e[94mUsername: \e[93mdemo\e[39m \n\e[94mPassword: \e[93mdemo\e[39m"
 fi
 echo -e "[ \e[33mSOMO\e[39m ] Remove old git repository if exists"
-sudo rm -rf /tmp/monitor
+sudo rm -rf /home/$(whoami)/somo
+echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
+sudo mkdir -p /home/$(whoami)/somo
 echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
-sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitoring.git /tmp/monitor
-cd /tmp/monitor/assets/tools/ansible/
-echo -e "[ \e[33mSOMO\e[39m ] Create /var/www/monitor folder"
-sudo mkdir -p /var/www/html
+sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitoring.git /home/$(whoami)/somo
 echo -e "[ \e[33mSOMO\e[39m ] Set installation parameter"
-export SERVER_MODE=$_SERVERMODE
-export MONITOR_BRANCH=$_BRANCH
-echo -e "[ \e[33mSOMO\e[39m ] Start installation"
-sudo -E ansible-playbook site.yml
-sudo systemctl restart nginx
+
+echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
+#create file in tmp
+#copy file to systemd
+#enable service
+echo -e "[ \e[33mSOMO\e[39m ] Activate cronjob"
+#copy cronjob to cron.d
+echo -e "[ \e[33mSOMO\e[39m ] Register somo in /usr/bin"
+#copy somo file
+#set chmod
+
+
 IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
 echo
