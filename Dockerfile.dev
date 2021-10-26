@@ -25,10 +25,7 @@ RUN echo "memory_limit=128M\n\
 
 RUN echo "error_log=/var/www/php_error.log\n\
   error_reporting=E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT\n\
-  display_errors=Off\n\
+  display_errors=On\n\
   log_errors=On" > /usr/local/etc/php/conf.d/error.ini
 
 WORKDIR /var/www/html
-
-EXPOSE 80
-EXPOSE 443
