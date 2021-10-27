@@ -53,6 +53,7 @@ if [ -f "$FILE" ]; then
         sleep 2
         echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
         mkdir -p /home/"$(whoami)"/somo_backup
+        mkdir -p /home/"$(whoami)"/somo_backup/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Search for old database..."
         DB_FILE=$(ls /var/www/html/monitor/ | grep -x '.\{20,\}.db')
@@ -78,7 +79,7 @@ if [ -f "$FILE" ]; then
         sudo chown "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/database.db
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-        sudo cp -f /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
+        sudo cp -rf /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
         sudo chown -R "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
@@ -172,6 +173,7 @@ if [ -n "$DOCK_ID" ]; then
 
     echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
     mkdir -p /home/"$(whoami)"/somo_backup
+    mkdir -p /home/"$(whoami)"/somo_backup/avatars
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
     cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
@@ -258,8 +260,8 @@ if [ "$BACKUP_C1" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
-    cp -f /home/"$(whoami)"/somo_backup/avatars /home/"$(whoami)"/somo/assets/img/avatars
-    mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
+    cp -rf /home/"$(whoami)"/somo_backup/avatars /home/"$(whoami)"/somo/assets/img/avatars
+    mv /home/"$(whoami)"/somo_backup /tmp/somo_backup
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
 
