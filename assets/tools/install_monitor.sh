@@ -281,7 +281,7 @@ then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
     cp -rf /home/"$(whoami)"/somo_backup/avatars /home/"$(whoami)"/somo/assets/img/avatars
-    mv /home/"$(whoami)"/somo_backup /tmp/somo_backup
+    sudo rm -rf /home/"$(whoami)"/somo_backup
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
 
@@ -321,4 +321,13 @@ echo -e "$_DEMOLOGIN"
 echo
 echo
 echo
+if [ "$UPGRADE" == "0" ]
+then
+    read -p "The system need to be restarted. Do you want to this now? (y/N)" -n 1 -r -s REBOOT
+    echo
+    if [ "$REBOOT" != "y" ]
+    then
+        sudo reboot
+    fi
+fi
 exit
