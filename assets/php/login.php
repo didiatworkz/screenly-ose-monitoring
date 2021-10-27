@@ -37,11 +37,11 @@ echo'
         <div class="card-body">
           <h2 class="mb-5 text-center">'._SYSTEM_NAME.'</h2>
           <div class="mb-3">
-            <label class="form-label">Username</label>
+            <label class="form-label">'.Translation::of('username').'</label>
             <input name="user" type="text" class="form-control" placeholder="'.Translation::of('username').'" autofocus autocomplete="section-login username">
           </div>
           <div class="mb-2">
-            <label class="form-label">Password</label>
+            <label class="form-label">'.Translation::of('password').'</label>
             <input name="password" type="password" class="form-control" placeholder="'.Translation::of('password').'" autocomplete="section-login current-password">
           </div>
           <div class="form-footer">
