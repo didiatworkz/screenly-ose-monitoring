@@ -209,6 +209,9 @@ fi
 
 echo -e "[ \e[33mSOMO\e[39m ] Add $(whoami) to group 'docker'..."
 sudo usermod -aG docker "$(whoami)"
+
+echo -e "[ \e[33mSOMO\e[39m ] Pull docker image..."
+sudo docker pull atworkz/somo:latest
 sleep 5
 
 if [ -z "$PORT" ]; then
@@ -246,19 +249,19 @@ git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monito
 
 echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
 
-cat <<EOT >> /tmp/docker.somo.service
+cat <<EOT > /tmp/docker.somo.service
 [Unit]
 Description=Screenly OSE Monitoring Service
 After=docker.service
-Requires=docker.service
+Wants=network-online.target docker.socket
+Requires=docker.socket
 
 [Service]
-TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/docker run -d --rm --name somo -v /home/$(whoami)/somo:/var/www/html -p $PORT:80 atworkz/somo:latest
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 EOT
 sudo cp -f /tmp/docker.somo.service /etc/systemd/system/docker.somo.service
 sudo systemctl enable docker.somo
@@ -269,7 +272,7 @@ sudo chmod 755 /usr/bin/somo
 
 echo -e "[ \e[33mSOMO\e[39m ] Create and activate cronjob"
 #copy cronjob to cron.d
-cat <<EOT >> /tmp/somo
+cat <<EOT > /tmp/somo
 0 */2 * * * * "$(whoami)" /usr/bin/somo --scriptupdate
 EOT
 sudo cp -f /tmp/somo /etc/cron.d/somo
