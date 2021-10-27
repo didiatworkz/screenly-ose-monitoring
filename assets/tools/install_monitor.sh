@@ -105,10 +105,12 @@ if [ -f "$FILE" ]; then
     echo -e "[ \e[33mSOMO\e[39m ] Remove /usr/bin/somo"
     sudo rm -rf /usr/bin/somo
     echo -e "[ \e[33mSOMO\e[39m ] Cleanup complete!"
+    sleep 2
     echo
 
     # Remove nginx?
     echo -e "[ \e[33mSOMO\e[39m ] Check if nginx installed..."
+    sleep 2
     if command -v nginx &> /dev/null
     then
         echo -e "[ \e[33mSOMO\e[39m ] nginx installed!"
@@ -205,7 +207,7 @@ else
     curl -sSL https://get.docker.com | sh
 fi
 
-echo -e "[ \e[33mSOMO\e[39m ] Add $(whomi) to group 'docker'..."
+echo -e "[ \e[33mSOMO\e[39m ] Add $(whoami) to group 'docker'..."
 sudo usermod -aG docker "$(whoami)"
 sleep 5
 
