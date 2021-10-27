@@ -254,10 +254,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=0
 Restart=always
-ExecStart=/usr/bin/docker run -d --rm --name somo \
-    -v /home/$(whoami)/somo:/var/www/html \
-    -p $PORT:80 \
-    atworkz/somo:latest
+ExecStart=/usr/bin/docker run -d --rm --name somo -v /home/$(whoami)/somo:/var/www/html -p $PORT:80 atworkz/somo:latest
 
 [Install]
 WantedBy=default.target
