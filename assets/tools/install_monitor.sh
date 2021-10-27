@@ -33,7 +33,7 @@ header
 echo
 echo
 read -p "Do you want to install the Screenly OSE Monitoring? (y/N)" -n 1 -r -s INSTALL_BEGIN
-
+echo
 if [ "$INSTALL_BEGIN" != "y" ]
 then
     echo
@@ -46,11 +46,11 @@ if [ -f "$FILE" ]; then
     echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (<=4.1)"
     echo
     read -p "Do you want a backup of the old database? (y/N)" -n 1 -r -s BACKUP_C1
+    echo
     if [ "$BACKUP_C1" == "y" ]
     then
-        echo
         echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
-
+        sleep 2
         echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
         mkdir -p /home/"$(whoami)"/somo_backup
 
@@ -78,7 +78,7 @@ if [ -f "$FILE" ]; then
         sudo chown "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/database.db
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-        sudo cp -f /var/www/html/monitor/img/avatars /home/"$(whoami)"/somo_backup/avatars
+        sudo cp -f /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
         sudo chown -R "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
@@ -143,6 +143,7 @@ then
     echo "- php-curl"
     echo "- php-ssh2"
     read -p "Do you want to remove nginx-light, php-fpm, php-sqlite3, php-curl, php-ssh2 (y/N)" -n 1 -r -s REM_PACK
+    echo
     if [ "$REM_PACK" == "y" ]
     then
         echo -e "[ \e[33mSOMO\e[39m ] Start removing the packages..."
@@ -176,7 +177,7 @@ if [ -n "$DOCK_ID" ]; then
     cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-    sudo cp -f /home/"$(whoami)"/somo/avatars /home/"$(whoami)"/somo_backup/avatars
+    sudo cp -f /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
     BACKUP_C2=1
@@ -206,6 +207,7 @@ if [ -z "$PORT" ]; then
     else
       echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:9000 is in use!"
       read -p "Enter a free port 0.0.0.0:xxxx" -r MANUEL_PORT
+      echo
       PORT="$MANUEL_PORT"
       _PORT=":$MANUEL_PORT"
     fi
@@ -256,7 +258,7 @@ if [ "$BACKUP_C1" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
-    cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
+    cp -f /home/"$(whoami)"/somo_backup/avatars /home/"$(whoami)"/somo/assets/img/avatars
     mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
