@@ -84,6 +84,7 @@ if [ -f "$FILE" ]; then
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
         BACKUP_C1=1
+        sleep 2
     fi
 fi
 
@@ -132,6 +133,7 @@ if [ -f "$FILE" ]; then
         ASK_NGINX=0    
     fi
 fi
+sleep 2
 
 #Remove nginx
 if [ "$ASK_NGINX" == "1" ]
@@ -159,7 +161,7 @@ fi
 DOCK_ID=$(docker ps -q -f name=somo)
 if [ -n "$DOCK_ID" ]; then
     echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
-
+    sleep 2
     PORT=$(sudo docker container port "$DOCK_ID" | awk '{print $1}' | sed s'/\/tcp//')
     _PORT=":$PORT"
 
@@ -183,6 +185,7 @@ if [ -n "$DOCK_ID" ]; then
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
     BACKUP_C2=1
+    sleep 2
 fi
 echo 
 echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation"
