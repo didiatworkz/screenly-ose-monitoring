@@ -239,6 +239,7 @@ else
 fi
 
 echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
+sudo rm -rf /home/"$(whoami)"/somo
 mkdir -p /home/"$(whoami)"/somo
 echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
 git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
