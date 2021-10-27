@@ -79,10 +79,11 @@ if [ -f "$FILE" ]; then
         sudo chown "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/database.db
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-        sudo cp -rf /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
+        sudo cp -rf /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup
         sudo chown -R "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
+        echo
         BACKUP_C1=1
         sleep 2
     fi
@@ -181,22 +182,30 @@ if [ -n "$DOCK_ID" ]; then
     cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-    sudo cp -f /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup/avatars
+    sudo cp -f /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
     BACKUP_C2=1
     sleep 2
 fi
 echo 
-echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation"
+echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation..."
 sleep 2
-echo -e "[ \e[33mSOMO\e[39m ] Update apt cache"
+echo -e "[ \e[33mSOMO\e[39m ] Update apt cache..."
 sudo apt update
-echo -e "[ \e[33mSOMO\e[39m ] Install new packages"
+
+echo -e "[ \e[33mSOMO\e[39m ] Install new packages..."
 sudo apt-get install --no-install-recommends git-core netcat -y
-echo -e "[ \e[33mSOMO\e[39m ] Install latest docker version"
-curl -sSL https://get.docker.com | sh
-echo -e "[ \e[33mSOMO\e[39m ] Add $(whomi) to group 'docker'"
+
+echo -e "[ \e[33mSOMO\e[39m ] Install latest docker version..."
+if command -v docker &> /dev/null
+then
+    echo -e "[ \e[33mSOMO\e[39m ] Docker already installed!"
+else
+    curl -sSL https://get.docker.com | sh
+fi
+
+echo -e "[ \e[33mSOMO\e[39m ] Add $(whomi) to group 'docker'..."
 sudo usermod -aG docker "$(whoami)"
 sleep 5
 
@@ -220,11 +229,17 @@ if [ -z "$PORT" ]; then
 fi
 echo -e "[ \e[33mSOMO\e[39m ] Set port in config to: 0.0.0.0:$PORT!"
 
+if [ -e /home/"$(whoami)"/somo/_functions.php ]
+then
+    UPGRADE=1
+else
+    UPGRADE=0
+fi
 
 echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
 sudo mkdir -p /home/"$(whoami)"/somo
 echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
-sudo git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
+git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
 
 echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
 
@@ -246,7 +261,7 @@ ExecStart=/usr/bin/docker run -d --rm --name somo \
 WantedBy=default.target
 EOT
 sudo cp -f /tmp/docker.somo.service /etc/systemd/system/docker.somo.service
-systemctl enable docker.somo
+sudo systemctl enable docker.somo
 
 echo -e "[ \e[33mSOMO\e[39m ] Register somo command"
 sudo cp -f /home/"$(whoami)"/somo/assets/tools/somo /usr/bin/somo
@@ -280,7 +295,7 @@ then
     sudo systemctl start docker.somo.service
 fi
 
-if [ -e /home/"$(whoami)"/somo/_functions.php ]
+if [ "$UPGRADE" == "1" ]
 then
   _DEMOLOGIN=""
 else
