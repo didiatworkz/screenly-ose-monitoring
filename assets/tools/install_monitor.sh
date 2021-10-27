@@ -114,8 +114,8 @@ if [ -f "$FILE" ]; then
         if [ -f "$FILE" ]; then  
             echo -e "[ \e[33mSOMO\e[39m ] Screenly OSE installed!"
             echo -e "[ \e[33mSOMO\e[39m ] Check if nginx needed anymore..."
-            FILE=/home/"$(whoami)"/screenly/docker-compose.yml
-            if [ -f "$FILE" ]; then  
+            DOCK_IMAGE=$(docker images -q screenly/srly-ose-server)
+            if [ -n "$DOCK_IMAGE" ]; then 
                 echo -e "[ \e[33mSOMO\e[39m ] nginx not needed anymore!"
                 ASK_NGINX=1
             else
