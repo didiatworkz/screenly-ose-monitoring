@@ -4,6 +4,7 @@
 #
 # October 2021
 _BRANCH=v4.2
+_DBRANCH=nightly
 #_BRANCH=master
 
 # ==========================
@@ -214,7 +215,7 @@ echo -e "[ \e[33mSOMO\e[39m ] Add $(whoami) to group 'docker'..."
 sudo usermod -aG docker "$(whoami)"
 
 echo -e "[ \e[33mSOMO\e[39m ] Pull docker image..."
-sudo docker pull atworkz/somo:latest
+sudo docker pull atworkz/somo:"$_DBRANCH"
 sleep 5
 
 if [ -z "$PORT" ]; then
@@ -247,6 +248,7 @@ fi
 echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
 sudo rm -rf /home/"$(whoami)"/somo
 mkdir -p /home/"$(whoami)"/somo
+
 echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
 git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
 
@@ -329,7 +331,7 @@ if [ "$UPGRADE" == "0" ]
 then
     read -p "The system need to be restarted. Do you want to this now? (y/N)" -n 1 -r -s REBOOT
     echo
-    if [ "$REBOOT" != "y" ]
+    if [ "$REBOOT" == "y" ]
     then
         sudo reboot
     fi
