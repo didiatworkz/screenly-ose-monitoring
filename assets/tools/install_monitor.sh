@@ -7,6 +7,7 @@ _BRANCH=v4.2
 #_BRANCH=master
 
 # ==========================
+PORT=""
 
 header() {
 #clear
@@ -39,26 +40,146 @@ then
     exit
 fi
 
-#check if previus version installed (<=4.1)
-#check if previus version installed (docker)
+#check if previous version installed (<=4.1)
+FILE=/var/www/html/monitor/_functions.php
+if [ -f "$FILE" ]; then
+    echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (<=4.1)"
+    echo
+    read -p "Do you want a backup of the old database? (y/N)" -n 1 -r -s BACKUP_C1
+    if [ "$BACKUP_C1" == "y" ]
+    then
+        echo
+        echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
 
-echo
-echo
-echo
-echo -e "[ \e[33mSOMO\e[39m ] Check if port 0.0.0.0:80 in use..."
-if ! nc -z localhost 80; then
-  echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:80 is not in use!"
-  echo "----------------------------------------------"
-  echo
-  
-  _SERVERMODE="listen 80 default_server;"
-  _PORT=""
+        echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
+        mkdir -p /home/"$(whoami)"/somo_backup
 
-else
-  echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:80 is in use!"
-  echo -e "[ \e[33mSOMO\e[39m ] Choose port 0.0.0.0:9000"
-  _SERVERMODE="listen 9000;"
-  _PORT=":9000"
+        echo -e "[ \e[33mSOMO\e[39m ] Search for old database..."
+        DB_FILE=$(ls /var/www/html/monitor/ | grep -x '.\{20,\}.db')
+        if [ -z "$DB_FILE" ]
+        then
+            echo -e "[ \e[33mSOMO\e[39m ] Database Hash not found!"
+            echo -e "[ \e[33mSOMO\e[39m ] Search for default database"
+            DB_FILE=$(ls /var/www/html/monitor/ | grep dbase.db)
+        fi
+        if [ -z "$DB_FILE" ]
+        then
+            echo -e "[ \e[33mSOMO\e[39m ] Default database not found!"
+            echo -e "[ \e[33mSOMO\e[39m ] Cancel installation!"
+            echo
+            echo
+            echo -e "[ \e[33mSOMO\e[39m ] Please check SOMO Wiki - Error 2020"
+            echo -e "[ \e[33mSOMO\e[39m ] Visit: https://git.io/JiSg5"
+            exit
+        fi
+        echo -e "[ \e[33mSOMO\e[39m ] Database found: $DB_FILE"
+        echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
+        sudo cp -f /var/www/html/monitor/"$DB_FILE" /home/"$(whoami)"/somo_backup/database.db
+        sudo chown "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/database.db
+
+        echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
+        sudo cp -f /var/www/html/monitor/img/avatars /home/"$(whoami)"/somo_backup/avatars
+        sudo chown -R "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/avatars
+
+        echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
+        BACKUP_C1=1
+    fi
+fi
+
+# Cleanup old SOMO files
+FILE=/etc/nginx/sites-enabled/monitoring.conf
+if [ -f "$FILE" ]; then
+    echo -e "[ \e[33mSOMO\e[39m ] Start cleanup"
+    sleep 2
+    echo -e "[ \e[33mSOMO\e[39m ] Remove /var/www/html/monitor"
+    sudo rm -rf /var/www/html/monitor
+    echo -e "[ \e[33mSOMO\e[39m ] Remove /usr/share/somo"
+    sudo rm -rf /usr/share/somo
+    echo -e "[ \e[33mSOMO\e[39m ] Remove /etc/nginx/sites-enabled/monitoring.conf"
+    sudo rm -rf /etc/nginx/sites-enabled/monitoring.conf
+    echo -e "[ \e[33mSOMO\e[39m ] Restart nginx service"
+    sudo systemctl restart nginx
+    echo -e "[ \e[33mSOMO\e[39m ] Remove /usr/bin/somo"
+    sudo rm -rf /usr/bin/somo
+    echo -e "[ \e[33mSOMO\e[39m ] Cleanup complete!"
+    echo
+
+    # Remove nginx?
+    echo -e "[ \e[33mSOMO\e[39m ] Check if nginx installed..."
+    if command -v nginx &> /dev/null
+    then
+        echo -e "[ \e[33mSOMO\e[39m ] nginx installed!"
+        echo -e "[ \e[33mSOMO\e[39m ] Check if Screenly OSE installed..."
+        FILE=/home/"$(whoami)"/screenly/server.py
+        if [ -f "$FILE" ]; then  
+            echo -e "[ \e[33mSOMO\e[39m ] Screenly OSE installed!"
+            echo -e "[ \e[33mSOMO\e[39m ] Check if nginx needed anymore..."
+            FILE=/home/"$(whoami)"/screenly/docker-compose.yml
+            if [ -f "$FILE" ]; then  
+                echo -e "[ \e[33mSOMO\e[39m ] nginx not needed anymore!"
+                ASK_NGINX=1
+            else
+                echo -e "[ \e[33mSOMO\e[39m ] nginx can't be removed!"
+                ASK_NGINX=0
+            fi
+        else 
+            echo -e "[ \e[33mSOMO\e[39m ] nginx not needed anymore!"
+            ASK_NGINX=1
+        fi
+    else 
+        echo -e "[ \e[33mSOMO\e[39m ] nginx isn't installed anymore!"
+        ASK_NGINX=0    
+    fi
+fi
+
+#Remove nginx
+if [ "$ASK_NGINX" == "1" ]
+then
+    echo -e "[ \e[33mSOMO\e[39m ] SOMO no longer requires the following..."
+    echo -e "[ \e[33mSOMO\e[39m ] packages due to a system change:"
+    echo "- nginx-light"
+    echo "- php-fpm"
+    echo "- php-sqlite3"
+    echo "- php-curl"
+    echo "- php-ssh2"
+    read -p "Do you want to remove nginx-light, php-fpm, php-sqlite3, php-curl, php-ssh2 (y/N)" -n 1 -r -s REM_PACK
+    if [ "$REM_PACK" == "y" ]
+    then
+        echo -e "[ \e[33mSOMO\e[39m ] Start removing the packages..."
+        sudo apt remove nginx-light php-fpm php-sqlite3 php-curl php-ssh2 -y
+
+        echo -e "[ \e[33mSOMO\e[39m ] Removed all packages that are no longer needed!"
+    fi
+fi
+
+
+#check if previous version installed (docker)
+DOCK_ID=$(docker ps -q -f name=somo)
+if [ -n "$DOCK_ID" ]; then
+    echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
+
+    PORT=$(sudo docker container port "$DOCK_ID" | awk '{print $1}' | sed s'/\/tcp//')
+    _PORT=":$PORT"
+
+    echo -e "[ \e[33mSOMO\e[39m ] Stop and remove container..."
+    sudo docker stop "$DOCK_ID"
+    sudo docker rm "$DOCK_ID"
+
+    echo -e "[ \e[33mSOMO\e[39m ] Container stopped and removed!"
+
+    echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
+
+    echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
+    mkdir -p /home/"$(whoami)"/somo_backup
+
+    echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
+    cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
+
+    echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
+    sudo cp -f /home/"$(whoami)"/somo/avatars /home/"$(whoami)"/somo_backup/avatars
+
+    echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
+    BACKUP_C2=1
 fi
 echo 
 echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation"
@@ -70,32 +191,94 @@ sudo apt-get install --no-install-recommends git-core netcat -y
 echo -e "[ \e[33mSOMO\e[39m ] Install latest docker version"
 curl -sSL https://get.docker.com | sh
 echo -e "[ \e[33mSOMO\e[39m ] Add $(whomi) to group 'docker'"
-sudo usermod -aG docker $(whoami)
+sudo usermod -aG docker "$(whoami)"
 sleep 5
-if [ -e /var/www/html/monitor/_functions.php ]
+
+if [ -z "$PORT" ]; then
+  echo -e "[ \e[33mSOMO\e[39m ] Check if port 0.0.0.0:80 in use..."
+  if ! nc -z localhost 80; then
+    PORT="80"
+    _PORT=""
+  else
+    if ! nc -z localhost 9000; then
+      PORT="9000"
+      _PORT=":9000"
+    else
+      echo -e "[ \e[33mSOMO\e[39m ] 0.0.0.0:9000 is in use!"
+      read -p "Enter a free port 0.0.0.0:xxxx" -r MANUEL_PORT
+      PORT="$MANUEL_PORT"
+      _PORT=":$MANUEL_PORT"
+    fi
+  fi
+fi
+echo -e "[ \e[33mSOMO\e[39m ] Set port in config to: 0.0.0.0:$PORT!"
+
+
+echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
+sudo mkdir -p /home/"$(whoami)"/somo
+echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
+sudo git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
+
+echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
+
+cat <<EOT >> /tmp/docker.somo.service
+[Unit]
+Description=Screenly OSE Monitoring Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/docker run -d --rm --name somo \
+    -v /home/$(whoami)/somo:/var/www/html \
+    -p $PORT:80 \
+    atworkz/somo:latest
+
+[Install]
+WantedBy=default.target
+EOT
+sudo cp -f /tmp/docker.somo.service /etc/systemd/system/docker.somo.service
+systemctl enable docker.somo
+
+echo -e "[ \e[33mSOMO\e[39m ] Register somo command"
+sudo cp -f /home/"$(whoami)"/somo/assets/tools/somo /usr/bin/somo
+sudo chmod 755 /usr/bin/somo
+
+echo -e "[ \e[33mSOMO\e[39m ] Create and activate cronjob"
+#copy cronjob to cron.d
+cat <<EOT >> /tmp/somo
+0 */2 * * * * "$(whoami)" /usr/bin/somo --scriptupdate
+EOT
+sudo cp -f /tmp/somo /etc/cron.d/somo
+
+if [ "$BACKUP_C1" == "1" ]
+then
+    echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
+    cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
+    cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
+    mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
+    echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
+fi
+
+if [ "$BACKUP_C2" == "1" ]
+then
+    echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
+    cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
+    cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
+    mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
+    echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
+
+    echo -e "[ \e[33mSOMO\e[39m ] Start docker.somo.service"
+    sudo systemctl start docker.somo.service
+fi
+
+if [ -e /home/"$(whoami)"/somo/_functions.php ]
 then
   _DEMOLOGIN=""
 else
   _DEMOLOGIN="\e[94mUsername: \e[93mdemo\e[39m \n\e[94mPassword: \e[93mdemo\e[39m"
 fi
-echo -e "[ \e[33mSOMO\e[39m ] Remove old git repository if exists"
-sudo rm -rf /home/$(whoami)/somo
-echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
-sudo mkdir -p /home/$(whoami)/somo
-echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
-sudo git clone --branch $_BRANCH https://github.com/didiatworkz/screenly-ose-monitoring.git /home/$(whoami)/somo
-echo -e "[ \e[33mSOMO\e[39m ] Set installation parameter"
-
-echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
-#create file in tmp
-#copy file to systemd
-#enable service
-echo -e "[ \e[33mSOMO\e[39m ] Activate cronjob"
-#copy cronjob to cron.d
-echo -e "[ \e[33mSOMO\e[39m ] Register somo in /usr/bin"
-#copy somo file
-#set chmod
-
 
 IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
