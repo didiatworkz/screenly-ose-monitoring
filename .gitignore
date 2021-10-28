@@ -2,6 +2,5 @@
 .vscode
 assets/css/demo.css
 assets/css/demo.min.css
-assets/data/avatars/*.txt
-assets/data/database.db
+assets/data/*
 assets/tmp/*
