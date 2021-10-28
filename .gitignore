@@ -4,5 +4,4 @@ assets/css/demo.min.css
 .vscode
 assets/img/avatars/*.txt
 assets/tmp/*
-*.db
-assets/tools/key.php
+database.db
