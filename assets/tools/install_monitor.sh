@@ -243,6 +243,7 @@ then
     UPGRADE=1
 else
     UPGRADE=0
+    cp /home/"$(whoami)"/somo/dbase.sample.db /home/"$(whoami)"/somo/database.db
 fi
 
 echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
