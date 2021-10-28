@@ -1,19 +1,14 @@
-#!/bin/sh
-VERSION="4.2"
-LOCAL=$(cat /usr/share/somo/latest_monitor)
+#!/bin/bash
+VERSION=$(cat /home/"$(whoami)"/somo/assets/tools/version.txt)
+LOCAL=$(cd /home/"$(whoami)"/somo/ && git rev-parse HEAD)
 ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitoring | head -1 | sed "s/\tHEAD//")
 ACTION='\033[1;90m'
 FOUND='\033[1;92m'
 NOCOLOR='\033[0m'
 ERROR='\033[0;31m'
-PHPVERSION=$(php -v | head -n1 | grep -Po '(?<=PHP )([0-9]+.[0-9]+)')
 IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
-if [ ! -e /home/pi/screenly/server.py ]
-then
-  PORT=""
-else
-  PORT=":9000"
-fi
+DOCK_ID=$(docker ps -q -f name=somo)
+PORT=$(sudo docker container port "$DOCK_ID" | awk '{print $1}' | sed s'/\/tcp//')
 
 while [[ $# -gt 0 ]] ; do
     case $1 in
@@ -34,7 +29,7 @@ EOF
       echo
 			echo "Screenly OSE Monitoring is a web-based application that is simultaneously"
       echo "installed on a Screenly OSE Player or as standalone solution."
-			echo "You can open the web-interface via the IP address \"$IP$PORT\"."
+			echo "You can open the web-interface via the IP address \"$IP:$PORT\"."
       echo
 			echo "In addition, the monitoring offers an add-on that can be installed on other"
 			echo "players to display the current online status of the player or some"
@@ -45,39 +40,40 @@ EOF
 			echo "  -r / --restart    | Restart the nginx services"
 			echo "  -c / --check      | Check all of all required files"
 			echo "  -u / --update     | Update to the latest version"
-      echo "  --reset-version   | Reset system version to initiate DB refresh"
+      echo "  --reset-db        | Reset system database"
 			echo "  -d / --uninstall  | Uninstall Screenly OSE Monitoring"
       echo
       echo
             ;;
         -v|--version)
-			echo "$VERSION"
+			echo -e "[ \e[33mSOMO\e[39m ] $VERSION"
 			shift
             ;;
         -r|--restart)
-			echo "Restart nginx service"
-			sudo systemctl restart nginx
-      echo "Restart php$PHPVERSION-fpm service"
-			sudo systemctl restart php$PHPVERSION-fpm
+			echo -e "[ \e[33mSOMO\e[39m ] Restart somo service"
+			sudo systemctl restart docker.somo
             ;;
-        --reset-version)
-  		echo "Reset system version to 3.0"
-  		echo "3.0" > /var/www/html/assets/tools/version_old.txt
+        --reset)
+  		echo -e "[ \e[33mSOMO\e[39m ] Reset system"
+      sudo rm -rf /home/"$(whoami)"/somo/database.db
+  		cp /home/"$(whoami)"/somo/dbase.sample.db /home/"$(whoami)"/somo/database.db
+      echo -e "[ \e[33mSOMO\e[39m ] -- Done"
+      echo "For login use:"
+      echo
+      echo "Username: demo"
+      echo "Password: demo"
           ;;
-		    --init)
-			echo "Set version..."
-			cp -rf /var/www/html/assets/tools/version.txt /var/www/html/assets/tools/version_old.txt
-			echo $VERSION > /var/www/html/assets/tools/version.txt
-            ;;
         -c|--check)
       echo
-			echo "Check file integrity..."
+			echo -e "[ \e[33mSOMO\e[39m ] Check file integrity..."
 			sleep 2
 
       array=""
       array="${array} index.php"
       array="${array} _functions.php"
       array="${array} _public.php"
+      array="${array} dbase.sample.db"
+      array="${array} database.db"
       array="${array} assets/php/actions.php"
       array="${array} assets/php/addon.php"
       array="${array} assets/php/curl.php"
@@ -108,75 +104,82 @@ EOF
       for i in "${array[@]}"
       do
         echo
-  		    echo -e ${ACTION}Check if "$i" exists
-  		    echo -e ----------------------------------------------------${NOCOLOR}
-  		    if [ ! -e "/var/www/html/monitor/$i" ]
+  		    echo -e "${ACTION}Check if $i exists"
+  		    echo -e "----------------------------------------------------${NOCOLOR}"
+  		    if [ ! -e "/home/$(whoami)/somo/$i" ]
   		    then
-  		      echo -e ${ERROR}"$i not exists "${NOCOLOR}
-            FAILCOUNTER=$[$FAILCOUNTER +1]
+  		      echo -e "${ERROR}$i not exists ${NOCOLOR}"
+            FAILCOUNTER="${FAILCOUNTER +1}"
   		    else
-  			    echo -e ${FOUND}"$i exists "${NOCOLOR}
+  			    echo -e "${FOUND}$i exists ${NOCOLOR}"
   		    fi
   			echo
       done
       if [ "$FAILCOUNTER" -gt 0 ]; then
         echo
         echo ================================================================
-        echo -e ${ERROR}"Several files are missing! - Please check "${NOCOLOR}
+        echo -e "${ERROR}Several files are missing! - Please check ${NOCOLOR}"
       else
         echo
         echo ================================================================
-        echo -e ${FOUND}"All files were found "${NOCOLOR}
+        echo -e "${FOUND}All files were found ${NOCOLOR}"
       fi
       echo
       echo
             ;;
         -u|--update)
-			echo "Check for newer version..."
+			echo -e "[ \e[33mSOMO\e[39m ] Check for newer version..."
 			if [ "$LOCAL" == "$ONLINE" ]
 			then
-			  echo -e "No Update available!"
+			  echo -e "[ \e[33mSOMO\e[39m ] No Update available!"
 		      echo
 		      exit 0
 			else
-		      echo "Update available!"
+		    echo -e "[ \e[33mSOMO\e[39m ] Update available!"
 			  read -p "Do you want to start the update? [y] (y/N)" -n 1 -r -s UPDATE_BEGIN
 			  if [ "$UPDATE_BEGIN" != 'y' ]
-			  then
-				echo
-				exit 0
+          then
+          echo
+          exit 0
 			  fi
-			  bash <(curl -sL https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring/master/assets/tools/install_monitor.sh)
+			  bash <(curl -sL https://git.io/JttTW)
 			fi
             ;;
         -d|--uninstall)
         echo
         echo
         echo
-			  echo -e ${ERROR}"Uninstallation of Screenly OSE Monitoring "${NOCOLOR}
-			  echo -e ${ERROR}"All data will be permanently removed! "${NOCOLOR}
+			  echo -e "${ERROR}Uninstallation of Screenly OSE Monitoring ${NOCOLOR}"
+			  echo -e "${ERROR}All data will be permanently removed! ${NOCOLOR}"
         echo
 			  read -p "Do you want to uninstall SOMO? [Y] (Y/n)" -n 1 -r -s UNINSTALL_BEGIN
 			  if [ "$UNINSTALL_BEGIN" == 'Y' ]
 			  then
           echo
           echo
-				  echo "Uninstallation started..."
+				  echo -e "[ \e[33mSOMO\e[39m ] Uninstallation started..."
           sleep 5
+          DOCK_CON=$(docker ps -q -f name=somo)
+          DOCK_IMG=$(docker images -q atworkz/somo:latest)
           echo
           echo
-          echo "Remove /var/www/html/monitor"
-          sudo rm -rf /var/www/html/monitor
-          echo "Remove /usr/share/somo"
-          sudo rm -rf /usr/share/somo
-          echo "Remove /etc/nginx/sites-enabled/monitoring.conf"
-          sudo rm -rf /etc/nginx/sites-enabled/monitoring.conf
-          echo "Restart nginx service"
-          sudo systemctl restart nginx
-          echo "Remove /usr/bin/somo"
+          echo -e "[ \e[33mSOMO\e[39m ] Stop somo service"
+          sudo systemctl stop docker.somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove service file"
+          sudo rm -rf /etc/systemd/system/docker.somo.service
+          echo -e "[ \e[33mSOMO\e[39m ] Remove docker container"
+          sudo docker container rm "$DOCK_CON"
+          echo -e "[ \e[33mSOMO\e[39m ] Remove docker image"
+          sudo docker image rm "$DOCK_IMG"
+          echo -e "[ \e[33mSOMO\e[39m ] Remove cronjob"
+          sudo rm -rf /etc/cron.d/somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove /home/$(whoami)/somo"
+          sudo rm -rf /home/"$(whoami)"/somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove /usr/bin/somo"
           sudo rm -rf /usr/bin/somo
           echo
-          echo "Uninstallation complete..."
+          echo -e "[ \e[33mSOMO\e[39m ] Uninstallation complete..."
+          echo
           echo
           echo "Thank you for using Screenly OSE Monitoring (SOMO)"
           echo "- didiatworkz"
@@ -193,13 +196,13 @@ EOF
 			then
 		      exit 0
 			else
-		      echo true > /var/www/html/monitor/update.txt
+		      echo true > /home/"$(whoami)"/somo/update.txt
 			  exit 0
 			fi
 			echo Done!
             ;;
 		*)
-			echo "Invalid Option! - Please enter --help for more commands"
+			echo -e "[ \e[33mSOMO\e[39m ] Invalid Option! - Please enter --help for more commands"
             ;;
     esac
     shift
