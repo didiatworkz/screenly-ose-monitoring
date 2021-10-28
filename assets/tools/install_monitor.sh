@@ -297,7 +297,7 @@ then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
     cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
-    mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
+    sudo rm -rf /home/"$(whoami)"/somo_backup
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
 
