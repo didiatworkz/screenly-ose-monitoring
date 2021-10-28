@@ -174,7 +174,7 @@ if [ -n "$DOCK_ID" ]; then
 
     echo -e "[ \e[33mSOMO\e[39m ] Stop and remove container..."
     sudo docker stop "$DOCK_ID"
-    sudo docker rm "$DOCK_ID"
+    sudo docker container rm "$DOCK_ID"
 
     echo -e "[ \e[33mSOMO\e[39m ] Container stopped and removed!"
 
@@ -277,7 +277,6 @@ sudo cp -f /home/"$(whoami)"/somo/assets/tools/somo /usr/bin/somo
 sudo chmod 755 /usr/bin/somo
 
 echo -e "[ \e[33mSOMO\e[39m ] Create and activate cronjob"
-#copy cronjob to cron.d
 cat <<EOT > /tmp/somo
 0 */2 * * * * "$(whoami)" /usr/bin/somo --scriptupdate
 EOT
