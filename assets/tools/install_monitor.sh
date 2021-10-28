@@ -169,14 +169,8 @@ if [ -n "$DOCK_ID" ]; then
     PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
     _PORT=":$PORT"
 
-    echo -e "[ \e[33mSOMO\e[39m ] Stop service..."
+    echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
     sudo systemctl stop docker.somo
-
-    echo -e "[ \e[33mSOMO\e[39m ] Stop and remove container..."
-    sudo docker stop somo
-    sudo docker container rm somo
-
-    echo -e "[ \e[33mSOMO\e[39m ] Container stopped and removed!"
 
     echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
 
