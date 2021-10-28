@@ -166,7 +166,7 @@ DOCK_ID=$(docker ps -q -f name=somo)
 if [ -n "$DOCK_ID" ]; then
     echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
     sleep 2
-    PORT=$(sudo docker container port "$DOCK_ID" | awk '{print $1}' | sed s'/\/tcp//')
+    PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
     _PORT=":$PORT"
 
     echo -e "[ \e[33mSOMO\e[39m ] Stop service..."
@@ -188,7 +188,7 @@ if [ -n "$DOCK_ID" ]; then
     cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-    sudo cp -f /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup
+    sudo cp -rf /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
     BACKUP_C2=1
