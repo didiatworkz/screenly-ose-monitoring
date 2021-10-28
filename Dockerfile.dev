@@ -2,7 +2,7 @@ FROM php:7.4.25-apache-buster
 
 #Install dependencies
 RUN apt update \
-  && apt install bash nano iputils-ping curl wget locales git zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
+  && apt install bash nano iputils-ping curl cron iproute2 git wget locales zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -r /var/cache/apt \
@@ -11,7 +11,7 @@ RUN apt update \
 #Setup server
 RUN docker-php-ext-install pdo zip gd \
   && docker-php-ext-enable ssh2 \
-  && apt remove git zip libzip-dev zlib1g-dev libpng-dev -y
+  && apt remove zip libzip-dev zlib1g-dev libpng-dev -y
 
 #Generate php config
 RUN echo "en_US.UTF-8 UTF-8\nde_DE.UTF-8 UTF-8\n" >> /etc/locale.gen \
@@ -28,6 +28,11 @@ RUN echo "error_log=/var/www/php_error.log\n\
   display_errors=On\n\
   log_errors=On" > /usr/local/etc/php/conf.d/error.ini
 
-RUN usermod -u 1000 www-data;
-
 WORKDIR /var/www/html
+
+COPY ./ /var/www/html
+COPY assets/tools/crontab /etc/cron.d/somo
+COPY assets/tools/somo_update /usr/bin/somo_update
+RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo_update
+
+ENTRYPOINT /var/www/html/entrypoint.sh

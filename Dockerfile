@@ -2,7 +2,7 @@ FROM php:7.4.25-apache-buster
 
 # Install dependencies
 RUN apt update \
-  && apt install curl wget locales git zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
+  && apt install curl cron wget locales git-core iproute2 zip libzip-dev zlib1g-dev libpng-dev libssh2-1-dev libssh2-1 -y --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -r /var/cache/apt \
@@ -28,6 +28,14 @@ RUN echo "error_log=/var/www/php_error.log\n\
   display_errors=Off\n\
   log_errors=On" > /usr/local/etc/php/conf.d/error.ini
 
-RUN usermod -u 1000 www-data;
-
 WORKDIR /var/www/html
+
+
+
+COPY ./ /var/www/html
+COPY assets/tools/crontab /etc/cron.d/somo
+COPY assets/tools/somo /usr/bin/somo
+RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo && chown -R www-data:www-data /var/www/html
+
+ENTRYPOINT /var/www/html/entrypoint.sh
+
