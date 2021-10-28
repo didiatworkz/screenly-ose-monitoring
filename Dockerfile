@@ -28,4 +28,6 @@ RUN echo "error_log=/var/www/php_error.log\n\
   display_errors=Off\n\
   log_errors=On" > /usr/local/etc/php/conf.d/error.ini
 
+RUN usermod -u 1000 www-data;
+
 WORKDIR /var/www/html
