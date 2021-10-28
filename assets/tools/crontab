@@ -1,0 +1,3 @@
+# m h dom mon dow user command
+*/2 * * * *  root /usr/bin/curl --silent -L http://localhost/assets/php/runner.php &>/dev/null
+* */2 * * *  root /usr/bin/somo_update
