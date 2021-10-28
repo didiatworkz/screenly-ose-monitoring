@@ -298,10 +298,10 @@ then
     cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
     mv cp -f /home/"$(whoami)"/somo_backup /tmp/somo_backup
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
-
-    echo -e "[ \e[33mSOMO\e[39m ] Start docker.somo.service"
-    sudo systemctl start docker.somo.service
 fi
+
+echo -e "[ \e[33mSOMO\e[39m ] Start docker.somo.service"
+sudo systemctl start docker.somo.service
 
 if [ "$UPGRADE" == "1" ]
 then
