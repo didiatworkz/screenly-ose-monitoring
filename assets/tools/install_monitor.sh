@@ -264,7 +264,7 @@ Requires=docker.socket
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/docker run -d --rm --name somo -v /home/$(whoami)/somo:/var/www/html -p $PORT:80 atworkz/somo:latest
+ExecStart=/usr/bin/docker run -d --rm --name somo -v /home/$(whoami)/somo:/var/www/html -p $PORT:80 atworkz/somo:$_DBRANCH
 
 [Install]
 WantedBy=multi-user.target
