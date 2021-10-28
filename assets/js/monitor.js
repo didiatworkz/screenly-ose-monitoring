@@ -121,27 +121,6 @@ function reloadPlayerImage() {
 }
 
 /**
- * Background data collector
- * @method loadRunner
- */
-function loadRunner() {
-	var now = Math.round(new Date() / 1000);
-	if (settingsRunerTime && (settingsRunerTime <= now) && localStorage.runnerExecute === undefined) {
-		$.ajax({
-			url: 'assets/php/runner.php',
-			type: 'GET',
-			success: function() {
-				localStorage.runnerExecute = true;
-				console.log('Runner executed');
-			},
-			error: function() {
-				console.log('Runner error');
-			},
-		});
-	}
-}
-
-/**
  * Refresh log output
  * @method loadLog
  * @param  {[string]} id ID of the player
@@ -1062,4 +1041,3 @@ $(document).ready(function() {
 
 setInterval('reloadPlayerImage()', settingsRefreshRate);
 setInterval('loadDeviceInfo()', 1000);
-setInterval('loadRunner()', 2000);

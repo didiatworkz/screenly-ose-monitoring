@@ -341,13 +341,10 @@ echo'
 <script>
 
 var scriptPlayerAuth 	= "'.($loggedIn ? $scriptPlayerAuth : '10').'";
-var settingsRunerTime 	= "'.($loggedIn ? $runnerTime : 'FALSE').'";
 var playerAssetsOrder 	= "'.Translation::of('player_assets_order').'";
 var settingsRefreshRate = '.($loggedIn ? $loginRefreshTime : '5').'000;
 var userAddonActive		= '.($loggedIn ? $loginUserAddon : '0').';
 var uploadMaxSize		= '.(($loggedIn && $uploadMaxSize != '') ? $uploadMaxSize : '50').';
-
-localStorage.removeItem("runnerExecute");
 
 if (!(localStorage.getItem("notification_style") === null && localStorage.getItem("notification_message") === null)) {
 	if(localStorage.getItem("notification_counter") == "1"){
