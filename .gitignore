@@ -1,7 +1,7 @@
-assets/css/demo.css
-assets/css/demo.min.css
 .DS_Store
 .vscode
-assets/img/avatars/*.txt
+assets/css/demo.css
+assets/css/demo.min.css
+assets/data/avatars/*.txt
+assets/data/database.db
 assets/tmp/*
-database.db
