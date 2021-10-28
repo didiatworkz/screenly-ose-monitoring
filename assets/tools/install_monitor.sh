@@ -173,8 +173,8 @@ if [ -n "$DOCK_ID" ]; then
     sudo systemctl stop docker.somo
 
     echo -e "[ \e[33mSOMO\e[39m ] Stop and remove container..."
-    sudo docker stop "$DOCK_ID"
-    sudo docker container rm "$DOCK_ID"
+    sudo docker stop somo
+    sudo docker container rm somo
 
     echo -e "[ \e[33mSOMO\e[39m ] Container stopped and removed!"
 
