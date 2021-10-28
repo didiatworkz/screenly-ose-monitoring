@@ -49,7 +49,8 @@ $reloadSite = '
 
 $systemVersion  = file_get_contents('assets/tools/version.txt');
 
-$db 			      = new SQLite3('database.db');
+$dbase_file      = 'assets/data/database.db';
+$db 			      = new SQLite3($dbase_file);
 $db             ->busyTimeout(5000);
 $set 			      = $db->query("SELECT * FROM settings");
 $set 			      = $set->fetchArray(SQLITE3_ASSOC);
