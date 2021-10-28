@@ -47,31 +47,9 @@ $reloadSite = '
   </body>
 </html>';
 
-$dbase_key		= ROOT_DIR.'/assets/tools/key.php';
-if(!@file_exists($dbase_key)) {
-  $dbase_file = ROOT_DIR.'/dbase.db';
-} else {
-  include_once($dbase_key);
-  $dbase_file = $db_cryproKey;
-  if(@file_exists(ROOT_DIR.'/dbase.db')) {
-    unlink(ROOT_DIR.'/dbase.db');
-  }
-}
+$systemVersion  = file_get_contents('assets/tools/version.txt');
 
-$systemVersion  = file_get_contents(ROOT_DIR.'/assets/tools/version.txt');
-
-if(!@file_exists($dbase_key)){
-  $token = md5($systemVersion.time().rand()).'.db';
-  $keyFile = '<?php
-  $db_cryproKey = "'.$token.'";';
-  $current = file_get_contents($dbase_key);
-  file_put_contents($dbase_key, $keyFile);
-  rename(ROOT_DIR.'/dbase.db',$token);
-  header("Refresh:3");
-  die($reloadSite);
-}
-
-$db 			      = new SQLite3($dbase_file);
+$db 			      = new SQLite3('database.db');
 $db             ->busyTimeout(5000);
 $set 			      = $db->query("SELECT * FROM settings");
 $set 			      = $set->fetchArray(SQLITE3_ASSOC);
