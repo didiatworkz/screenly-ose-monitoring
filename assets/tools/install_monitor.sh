@@ -271,6 +271,7 @@ WantedBy=multi-user.target
 EOT
 sudo cp -f /tmp/docker.somo.service /etc/systemd/system/docker.somo.service
 sudo systemctl enable docker.somo
+sudo systemctl daemon-reload
 
 echo -e "[ \e[33mSOMO\e[39m ] Register somo command"
 sudo cp -f /home/"$(whoami)"/somo/assets/tools/somo /usr/bin/somo
