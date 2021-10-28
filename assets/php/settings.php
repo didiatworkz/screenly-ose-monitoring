@@ -48,14 +48,14 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
     $data = base64_encode(file_get_contents( $_FILES["file"]["tmp_name"]));
     $file = 'data:'.$check['mime'].';base64,'.$data;
     $newfilename = md5($loginUsername).'.txt';
-    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetPath = dirname( __FILE__ ).'/../data/avatars/';
     $targetFile =  $targetPath.$newfilename;
     file_put_contents($targetFile, $file);
   }
 
   if (isset($_GET['removeavatar']) && $_GET['removeavatar'] == '1') {
     $newfilename = md5($loginUsername).'.txt';
-    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetPath = dirname( __FILE__ ).'/../data/avatars/';
     $targetFile =  $targetPath.$newfilename;
     unlink($targetFile);
     redirect($backLink, 0);

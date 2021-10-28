@@ -167,7 +167,7 @@ function getUserAvatar($userID, $extraClass = ''){
   if($extraClass != '') $extraClass = ' '.$extraClass;
   $sql     = $db->query("SELECT username FROM `users` WHERE userID='".$userID."'");
   $return  = $sql->fetchArray(SQLITE3_ASSOC);
-  $imagePath = 'assets/img/avatars/'.md5($return['username']).'.txt';
+  $imagePath = 'assets/data/avatars/'.md5($return['username']).'.txt';
   if (file_exists($imagePath)) {
     $data = file_get_contents($imagePath);
     $output = '<span class="avatar'.$extraClass.'" style="background-image: url('.$data.')"></span>';
