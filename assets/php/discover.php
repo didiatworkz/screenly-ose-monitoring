@@ -32,7 +32,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
   } else die(Translation::of('no_ip_address'));
 
   $rootPath = '/var/www/html';
-  $dbase = $rootPath.'/assets/database.db';
+  $dbase = $rootPath.'/assets/data/database.db';
   $db = new SQLite3($dbase);
 
   function getIpRange($cidr) {
