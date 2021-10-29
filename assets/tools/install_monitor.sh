@@ -166,29 +166,32 @@ fi
 #check if previous version installed (docker)
 DOCK_ID=$(docker ps -q -f name=somo)
 if [ -n "$DOCK_ID" ]; then
-    echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
-    sleep 2
-    PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
-    _PORT=":$PORT"
+    FILE=$D_SOMO/database.db
+    if [ -f "$FILE" ]; then
+        echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
+        sleep 2
+        PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
+        _PORT=":$PORT"
 
-    echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
-    sudo systemctl stop docker.somo
+        echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
+        sudo systemctl stop docker.somo
 
-    echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
+        echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
 
-    echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
-    mkdir -p "$D_SOMO_BACKUP"
-    mkdir -p "$D_SOMO_BACKUP"/avatars
+        echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
+        mkdir -p "$D_SOMO_BACKUP"
+        mkdir -p "$D_SOMO_BACKUP"/avatars
 
-    echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
-    cp -f "$D_SOMO"/database.db "$D_SOMO_BACKUP"/database.db
+        echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
+        cp -f "$D_SOMO"/database.db "$D_SOMO_BACKUP"/database.db
 
-    echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-    sudo cp -rf "$D_SOMO"/avatars "$D_SOMO_BACKUP"
+        echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
+        sudo cp -rf "$D_SOMO"/avatars "$D_SOMO_BACKUP"
 
-    echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
-    BACKUP_C2=1
-    sleep 2
+        echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
+        BACKUP_C2=1
+        sleep 2
+    fi
 fi
 echo 
 echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation..."
