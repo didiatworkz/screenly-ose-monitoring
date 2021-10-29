@@ -565,6 +565,11 @@ $("#assetNewForm").submit(function(e) {
 	var reload = true;
 	var formData = form.serialize();
 
+	$("#saveAssetBtn").prop("disabled", true);
+	$("#saveAssetBtn").html(
+		`<span class="spinner-border spinner-border-sm icon mr-2" role="status" aria-hidden="true"></span> Processing...`
+	);
+
 	if (formData.indexOf("multiloader") >= 0) {
 		loopLength = form[0].length;
 	}

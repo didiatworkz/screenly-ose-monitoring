@@ -39,7 +39,6 @@ if(isset($_POST['newAsset'])){
 	$active 		= isset($_POST['active']) ? 1 : 0;
 
 
-
 	if($name == '') $name = $url;
 
 	if(isset($_POST['multidrop'])){
@@ -107,6 +106,12 @@ if(isset($_POST['newAsset'])){
 
 		if($send){
 			$data 										= array();
+			if ($mimetype == 'webpage') {
+				if (strpos($url, "www.youtube.com") || strpos($url, "youtu.be")) {
+					$mimetype = 'youtube_asset';
+					$data['is_processing'] = 0;
+				}
+			}
 			$data['mimetype'] 				= $mimetype;
 			$data['is_enabled'] 			= $active;
 			$data['name'] 						= $name;

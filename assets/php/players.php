@@ -701,8 +701,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
                       <input name="id[]" type="hidden" value="'.$player['playerID'].'" />
                       <input name="mimetype" type="hidden" value="webpage" />
                       <input name="newAsset" type="hidden" value="1" />
-                      <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close').'</button>
-                      <button type="submit" name="saveAsset" class="btn btn-success">'.Translation::of('save').'</button>
+                      <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">'.Translation::of('close'). '</button>
+                      <button type="submit" id="saveAssetBtn" name="saveAsset" class="btn btn-success">'.Translation::of('save').'</button>
                     </div>
                   </form>
                 </div>
