@@ -30,7 +30,6 @@ RUN echo "error_log=/var/www/php_error.log\n\
 
 WORKDIR /var/www/html
 
-COPY ./ /var/www/html
 COPY assets/tools/crontab /etc/cron.d/somo
 COPY assets/tools/somo_update /usr/bin/somo_update
 RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo_update
