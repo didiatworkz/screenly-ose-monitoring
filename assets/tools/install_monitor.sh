@@ -9,6 +9,8 @@ _DBRANCH=nightly
 
 # ==========================
 PORT=""
+D_SOMO=/home/$(whoami)/.somo
+D_SOMO_BACKUP=/home/$(whoami)/.somo_backup
 
 header() {
 #clear
@@ -53,8 +55,8 @@ if [ -f "$FILE" ]; then
         echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
         sleep 2
         echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
-        mkdir -p /home/"$(whoami)"/somo_backup
-        mkdir -p /home/"$(whoami)"/somo_backup/avatars
+        mkdir -p "$D_SOMO_BACKUP"
+        mkdir -p "$D_SOMO_BACKUP"/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Search for old database..."
         DB_FILE=$(ls /var/www/html/monitor/ | grep -x '.\{20,\}.db')
@@ -76,12 +78,12 @@ if [ -f "$FILE" ]; then
         fi
         echo -e "[ \e[33mSOMO\e[39m ] Database found: $DB_FILE"
         echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
-        sudo cp -f /var/www/html/monitor/"$DB_FILE" /home/"$(whoami)"/somo_backup/database.db
-        sudo chown "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/database.db
+        sudo cp -f /var/www/html/monitor/"$DB_FILE" "$D_SOMO_BACKUP"/database.db
+        sudo chown "$(whoami)":"$(whoami)" "$D_SOMO_BACKUP"/database.db
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-        sudo cp -rf /var/www/html/monitor/assets/img/avatars /home/"$(whoami)"/somo_backup
-        sudo chown -R "$(whoami)":"$(whoami)" /home/"$(whoami)"/somo_backup/avatars
+        sudo cp -rf /var/www/html/monitor/assets/img/avatars "$D_SOMO_BACKUP"
+        sudo chown -R "$(whoami)":"$(whoami)" "$D_SOMO_BACKUP"/avatars
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
         echo
@@ -175,14 +177,14 @@ if [ -n "$DOCK_ID" ]; then
     echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
 
     echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
-    mkdir -p /home/"$(whoami)"/somo_backup
-    mkdir -p /home/"$(whoami)"/somo_backup/avatars
+    mkdir -p "$D_SOMO_BACKUP"
+    mkdir -p "$D_SOMO_BACKUP"/avatars
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
-    cp -f /home/"$(whoami)"/somo/database.db /home/"$(whoami)"/somo_backup/database.db
+    cp -f "$D_SOMO"/database.db "$D_SOMO_BACKUP"/database.db
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-    sudo cp -rf /home/"$(whoami)"/somo/assets/img/avatars /home/"$(whoami)"/somo_backup
+    sudo cp -rf "$D_SOMO"/avatars "$D_SOMO_BACKUP"
 
     echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
     BACKUP_C2=1
@@ -195,7 +197,7 @@ echo -e "[ \e[33mSOMO\e[39m ] Update apt cache..."
 sudo apt update
 
 echo -e "[ \e[33mSOMO\e[39m ] Install new packages..."
-sudo apt-get install --no-install-recommends git-core netcat -y
+sudo apt-get install --no-install-recommends netcat wget -y
 
 echo -e "[ \e[33mSOMO\e[39m ] Install latest docker version..."
 if command -v docker &> /dev/null
@@ -203,10 +205,11 @@ then
     echo -e "[ \e[33mSOMO\e[39m ] Docker already installed!"
 else
     curl -sSL https://get.docker.com | sh
+
+    echo -e "[ \e[33mSOMO\e[39m ] Add '$(whoami)' to group 'docker'..."
+    sudo usermod -aG docker "$(whoami)"
 fi
 
-echo -e "[ \e[33mSOMO\e[39m ] Add $(whoami) to group 'docker'..."
-sudo usermod -aG docker "$(whoami)"
 
 echo -e "[ \e[33mSOMO\e[39m ] Pull docker image..."
 sudo docker pull atworkz/somo:"$_DBRANCH"
@@ -232,23 +235,20 @@ if [ -z "$PORT" ]; then
 fi
 echo -e "[ \e[33mSOMO\e[39m ] Set port in config to: 0.0.0.0:$PORT!"
 
-if [ -e /home/"$(whoami)"/somo/_functions.php ]
+if [ -e "$D_SOMO"/database.db ]
 then
     UPGRADE=1
 else
     UPGRADE=0
-    cp /home/"$(whoami)"/somo/dbase.sample.db /home/"$(whoami)"/somo/database.db
 fi
 
-echo -e "[ \e[33mSOMO\e[39m ] Create /home/$(whoami)/somo folder"
-sudo rm -rf /home/"$(whoami)"/somo
-mkdir -p /home/"$(whoami)"/somo
-
-echo -e "[ \e[33mSOMO\e[39m ] Clone repository"
-git clone --branch "$_BRANCH" https://github.com/didiatworkz/screenly-ose-monitoring.git /home/"$(whoami)"/somo
+DIRECTORY="$D_SOMO"
+if [ ! -d "$DIRECTORY" ]; then
+    echo -e "[ \e[33mSOMO\e[39m ] Create $DIRECTORY folder"
+    mkdir -p "$DIRECTORY"
+fi
 
 echo -e "[ \e[33mSOMO\e[39m ] Create and activate systemd service"
-
 cat <<EOT > /tmp/docker.somo.service
 [Unit]
 Description=Screenly OSE Monitoring Service
@@ -258,7 +258,8 @@ Requires=docker.socket
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/docker run --rm --name somo -v /home/$(whoami)/somo:/var/www/html -p $PORT:80 atworkz/somo:$_DBRANCH
+ExecStartPre=-/usr/bin/docker rm somo
+ExecStart=/usr/bin/docker run --name somo -v $D_SOMO:/var/www/html/assets/data -p $PORT:80 -e "UID=$(id -u)" -e "GID=$(id -g)" atworkz/somo:$_DBRANCH
 
 [Install]
 WantedBy=multi-user.target
@@ -268,30 +269,25 @@ sudo systemctl enable docker.somo
 sudo systemctl daemon-reload
 
 echo -e "[ \e[33mSOMO\e[39m ] Register somo command"
-sudo cp -f /home/"$(whoami)"/somo/assets/tools/somo /usr/bin/somo
+wget -O /tmp/somo https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring/v4.2/assets/tools/somo
+sudo cp -f /tmp/somo /usr/bin/somo
 sudo chmod 755 /usr/bin/somo
-
-echo -e "[ \e[33mSOMO\e[39m ] Create and activate cronjob"
-cat <<EOT > /tmp/somo
-0 */2 * * * * "$(whoami)" /usr/bin/somo --scriptupdate
-EOT
-sudo cp -f /tmp/somo /etc/cron.d/somo
 
 if [ "$BACKUP_C1" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
-    cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
-    cp -rf /home/"$(whoami)"/somo_backup/avatars /home/"$(whoami)"/somo/assets/img/avatars
-    sudo rm -rf /home/"$(whoami)"/somo_backup
+    cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
+    cp -rf "$D_SOMO_BACKUP"/avatars "$D_SOMO"/avatars
+    sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
 
 if [ "$BACKUP_C2" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
-    cp -f /home/"$(whoami)"/somo_backup/database.db /home/"$(whoami)"/somo/database.db
-    cp -f /home/"$(whoami)"/somo_backup/assets /home/"$(whoami)"/somo/img/assets
-    sudo rm -rf /home/"$(whoami)"/somo_backup
+    cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
+    cp -f "$D_SOMO_BACKUP"/assets "$D_SOMO"/assets
+    sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
 
