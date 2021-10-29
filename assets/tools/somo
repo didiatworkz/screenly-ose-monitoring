@@ -1,7 +1,5 @@
 #!/bin/bash
-VERSION=$(cat /home/"$(whoami)"/somo/assets/tools/version.txt)
-LOCAL=$(cd /home/"$(whoami)"/somo/ && git rev-parse HEAD)
-ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitoring | head -1 | sed "s/\tHEAD//")
+VERSION=$(docker exec -it somo cat /var/www/html/assets/tools/version.txt)
 ACTION='\033[1;90m'
 FOUND='\033[1;92m'
 NOCOLOR='\033[0m'
@@ -39,7 +37,6 @@ EOF
 			echo "  -v / --version    | Show current installed Version"
 			echo "  -r / --restart    | Restart the nginx services"
 			echo "  -c / --check      | Check all of all required files"
-			echo "  -u / --update     | Update to the latest version"
       echo "  --reset-db        | Reset system database"
 			echo "  -d / --uninstall  | Uninstall Screenly OSE Monitoring"
       echo
@@ -56,7 +53,7 @@ EOF
         --reset)
   		echo -e "[ \e[33mSOMO\e[39m ] Reset system"
       sudo rm -rf /home/"$(whoami)"/somo/database.db
-  		cp /home/"$(whoami)"/somo/dbase.sample.db /home/"$(whoami)"/somo/database.db
+  		sudo systemctl restart docker.somo
       echo -e "[ \e[33mSOMO\e[39m ] -- Done"
       echo "For login use:"
       echo
@@ -106,7 +103,7 @@ EOF
         echo
   		    echo -e "${ACTION}Check if $i exists"
   		    echo -e "----------------------------------------------------${NOCOLOR}"
-  		    if [ ! -e "/home/$(whoami)/somo/$i" ]
+  		    if [ ! -e "docker exec -it somo cat /var/www/html/$i" ]
   		    then
   		      echo -e "${ERROR}$i not exists ${NOCOLOR}"
             FAILCOUNTER="${FAILCOUNTER +1}"
@@ -127,24 +124,6 @@ EOF
       echo
       echo
             ;;
-        -u|--update)
-			echo -e "[ \e[33mSOMO\e[39m ] Check for newer version..."
-			if [ "$LOCAL" == "$ONLINE" ]
-			then
-			  echo -e "[ \e[33mSOMO\e[39m ] No Update available!"
-		      echo
-		      exit 0
-			else
-		    echo -e "[ \e[33mSOMO\e[39m ] Update available!"
-			  read -p "Do you want to start the update? [y] (y/N)" -n 1 -r -s UPDATE_BEGIN
-			  if [ "$UPDATE_BEGIN" != 'y' ]
-          then
-          echo
-          exit 0
-			  fi
-			  bash <(curl -sL https://git.io/JttTW)
-			fi
-            ;;
         -d|--uninstall)
         echo
         echo
@@ -160,7 +139,6 @@ EOF
 				  echo -e "[ \e[33mSOMO\e[39m ] Uninstallation started..."
           sleep 5
           DOCK_CON=$(docker ps -q -f name=somo)
-          DOCK_IMG=$(docker images -q atworkz/somo:latest)
           echo
           echo
           echo -e "[ \e[33mSOMO\e[39m ] Stop somo service"
@@ -170,7 +148,7 @@ EOF
           echo -e "[ \e[33mSOMO\e[39m ] Remove docker container"
           sudo docker container rm "$DOCK_CON"
           echo -e "[ \e[33mSOMO\e[39m ] Remove docker image"
-          sudo docker image rm "$DOCK_IMG"
+          sudo docker rmi -f $(docker images -q atworkz/somo)
           echo -e "[ \e[33mSOMO\e[39m ] Remove cronjob"
           sudo rm -rf /etc/cron.d/somo
           echo -e "[ \e[33mSOMO\e[39m ] Remove /home/$(whoami)/somo"
@@ -190,16 +168,6 @@ EOF
 			  fi
         echo
 			  exit 0
-            ;;
-		    --scriptupdate)
-			if [ "$LOCAL" == "$ONLINE" ]
-			then
-		      exit 0
-			else
-		      echo true > /home/"$(whoami)"/somo/update.txt
-			  exit 0
-			fi
-			echo Done!
             ;;
 		*)
 			echo -e "[ \e[33mSOMO\e[39m ] Invalid Option! - Please enter --help for more commands"
