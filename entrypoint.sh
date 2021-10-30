@@ -15,6 +15,7 @@ EOF
 echo
 echo
 echo
+echo
 export > /root/env.sh
 
 #Fix cron execution
