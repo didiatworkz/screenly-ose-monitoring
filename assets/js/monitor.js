@@ -429,6 +429,7 @@ if ($('.drop').length) {
 			myMulitDropzone.on("processing", function() {
 				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
+				errors = false;
 			});
 
 			myMulitDropzone.on("sending", function(file, xhr, data) {
@@ -469,7 +470,7 @@ if ($('.drop').length) {
 
 			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
-				$('#uploadfiles').hide();
+				if (!errors) $('#uploadfiles').hide();
 				if (!errors) location.reload();
 			});
 		}
@@ -477,6 +478,7 @@ if ($('.drop').length) {
 }
 
 if ($('.dropzoneMulti').length) {
+	var acceptedFileTypes = "image/*, video/*";
 	var myMulitDropzone = new Dropzone(".dropzone", {
 		acceptedFiles: acceptedFileTypes,
 		autoProcessQueue: false,
@@ -507,6 +509,7 @@ if ($('.dropzoneMulti').length) {
 			myMulitDropzone.on("processing", function() {
 				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
+				errors = false;
 			});
 
 			myMulitDropzone.on("sending", function(file, xhr, data) {
@@ -544,11 +547,15 @@ if ($('.dropzoneMulti').length) {
 				console.log(file.xhr.response);
 			});
 
+			this.on("error", function (file) {
+				errors = true;
+			});
+
 			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
-				$('#uploadfiles').hide();
-				$('#refresh').show();
-				$('.dz-message').text("Upload done! - Reload this page...");
+				if (!errors) $('#uploadfiles').hide();
+				if (!errors) $('#refresh').show();
+				if (!errors) $('.dz-message').text("Upload done! - Reload this page...");
 			});
 		}
 	});
