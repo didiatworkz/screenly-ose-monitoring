@@ -266,7 +266,7 @@ Requires=docker.socket
 [Service]
 Restart=always
 ExecStartPre=-/usr/bin/docker rm somo
-ExecStart=/usr/bin/docker run --name somo -v $D_SOMO:/var/www/html/assets/data -p $PORT:80 -e "UID=$(id -u)" -e "GID=$(id -g)" -e "H_IP=$IP:$PORT" atworkz/somo:$_DBRANCH
+ExecStart=/usr/bin/docker run --name somo -v $D_SOMO:/var/www/html/assets/data -p $PORT:80 -e "UID=$(id -u)" -e "GID=$(id -g)" -e "H_IP=$IP" -e "H_PORT=$PORT" atworkz/somo:$_DBRANCH
 
 [Install]
 WantedBy=multi-user.target

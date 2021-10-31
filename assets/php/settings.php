@@ -28,8 +28,8 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 $_moduleName = Translation::of('settings');
 $_moduleLink = 'index.php?site=settings';
 
-if(getenv("H_IP")) $host_ip = getenv("H_IP");
-else $_SERVER['SERVER_ADDR'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '');
+if(getenv("H_IP")) $host_ip = getenv("H_IP") . (getenv("H_PORT") != '80' ? ':' . getenv("H_PORT") : '');
+else $host_ip = $_SERVER['SERVER_ADDR'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '');
 
 // Public Access Link
 if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && (getGroupID($loginUserID) == 1 || hasSettingsPublicRight($loginUserID))){
