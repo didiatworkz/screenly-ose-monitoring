@@ -11,6 +11,7 @@ _DBRANCH=nightly
 PORT=""
 D_SOMO=/home/$(whoami)/.somo
 D_SOMO_BACKUP=/home/$(whoami)/.somo_backup
+IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 
 header() {
 #clear
@@ -265,7 +266,7 @@ Requires=docker.socket
 [Service]
 Restart=always
 ExecStartPre=-/usr/bin/docker rm somo
-ExecStart=/usr/bin/docker run --name somo -v $D_SOMO:/var/www/html/assets/data -p $PORT:80 -e "UID=$(id -u)" -e "GID=$(id -g)" atworkz/somo:$_DBRANCH
+ExecStart=/usr/bin/docker run --name somo -v $D_SOMO:/var/www/html/assets/data -p $PORT:80 -e "UID=$(id -u)" -e "GID=$(id -g)" -e "H_IP=$IP:$PORT" atworkz/somo:$_DBRANCH
 
 [Install]
 WantedBy=multi-user.target
@@ -309,7 +310,6 @@ else
   _DEMOLOGIN="\e[94mUsername: \e[93mdemo\e[39m \n\e[94mPassword: \e[93mdemo\e[39m"
 fi
 
-IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sleep 2
 echo
 echo
