@@ -30,8 +30,6 @@ RUN echo "error_log=/var/www/php_error.log\n\
 
 WORKDIR /var/www/html
 
-
-
 COPY ./ /var/www/html
 COPY assets/tools/crontab /etc/cron.d/somo
 COPY assets/tools/somo /usr/bin/somo
