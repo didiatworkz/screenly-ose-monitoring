@@ -173,6 +173,9 @@ if [ -n "$DOCK_ID" ]; then
         PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
         _PORT=":$PORT"
 
+        echo -e "[ \e[33mSOMO\e[39m ] Read old version number"
+        OLD_VERSION=$(docker exec -it somo cat /var/www/html/assets/data/version.txt)
+
         echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
         sudo systemctl stop docker.somo
 
@@ -281,6 +284,7 @@ then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
     cp -rf "$D_SOMO_BACKUP"/avatars "$D_SOMO"/avatars
+    echo "4.1" > "$D_SOMO"/version_old.txt
     sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi
@@ -290,6 +294,7 @@ then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
     cp -f "$D_SOMO_BACKUP"/assets "$D_SOMO"/assets
+    echo "$OLD_VERSION" > "$D_SOMO"/version_old.txt
     sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
 fi

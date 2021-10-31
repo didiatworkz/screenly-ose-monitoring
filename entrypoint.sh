@@ -1,5 +1,7 @@
 #!/bin/bash
 
+_VERSION=4.2
+
 cat << "EOF"
                             _
    ____                    | |
@@ -26,16 +28,20 @@ CONTAINER_ALREADY_STARTED="CONTAINER_ALREADY_STARTED_PLACEHOLDER"
 if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
     touch $CONTAINER_ALREADY_STARTED
     echo "-- First container startup --"
-    FILE=/var/www/html/assets/data/database.db
+    FILE1=/var/www/html/assets/data/database.db
+    FILE2=/var/www/html/assets/data/version.txt
     DIRECTORY=/var/www/html/assets/data/avatars
-    if [ ! -f "$FILE" ]; then
+    if [ ! -f "$FILE1" ]; then
         echo "-- Create Database --"
-        cp /var/www/html/dbase.sample.db "$FILE"
-        chown www-data:www-data "$FILE"
+        cp /var/www/html/dbase.sample.db "$FILE1"
+        chown www-data:www-data "$FILE1"
         echo "For first login use:"
         echo
         echo "Username: demo"
         echo "Password: demo"
+    fi
+    if [ ! -f "$FILE2" ]; then
+        echo "$_VERSION" > "$FILE2"
     fi
     if [ ! -d "$DIRECTORY" ]; then
         mkdir -p "$DIRECTORY"

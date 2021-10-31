@@ -47,7 +47,7 @@ $reloadSite = '
   </body>
 </html>';
 
-$systemVersion  = file_get_contents('assets/tools/version.txt');
+$systemVersion  = file_get_contents('assets/data/version.txt');
 
 $dbase_file      = 'assets/data/database.db';
 $db 			      = new SQLite3($dbase_file);
@@ -59,8 +59,8 @@ $updatecheck	  = $set['updatecheck'];
 
 
 
-if(@file_exists('assets/tools/version_old.txt')){
-  $oldVersion = file_get_contents('assets/tools/version_old.txt');
+if(@file_exists('assets/data/version_old.txt')){
+  $oldVersion = file_get_contents('assets/data/version_old.txt');
   if($oldVersion <= '2.0'){			// Update Database to Version 2.0
     $db->exec("ALTER TABLE `settings` ADD COLUMN `token` TEXT");
     $db->exec("ALTER TABLE `settings` ADD COLUMN `end_date` INTEGER");
@@ -121,8 +121,8 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
   }
-  if($oldVersion <= '4.2'){			// Update Database to Version 4.2
-    // none
+  if($oldVersion <= '4.2'){      // Update Database to Version 4.2
+    $db->exec("CREATE TABLE `player_groups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT)");
   }
   unlink('assets/tools/version_old.txt');
   unlink('update.txt');

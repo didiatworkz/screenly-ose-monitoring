@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=$(docker exec -it somo cat /var/www/html/assets/tools/version.txt)
+VERSION=$(docker exec -it somo cat /var/www/html/assets/data/version.txt)
 ACTION='\033[1;90m'
 FOUND='\033[1;92m'
 NOCOLOR='\033[0m'
