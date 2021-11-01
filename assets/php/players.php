@@ -947,6 +947,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'view'){
   } else redirect($backLink, 0);
 }
 else {
+  if(getGroupCount() > 0){
+    $playerSQL = $db->query("SELECT * FROM player_group ORDER BY name ASC");
+    $groupGrid = TRUE;
+  }
+  else {
+    $groupGrid = FALSE;
+  }
   $playerSQL = $db->query("SELECT * FROM player ORDER BY name ASC");
 
   if(getPlayerCount() > 0){
@@ -955,59 +962,255 @@ else {
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">
-            Player Overview
+            '. Translation::of('player_overview'). '
           </h2>
         </div>';
 
         if(hasPlayerAddRight($loginUserID)) echo'
         <div class="col-auto ml-auto d-print-none">
-          <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-none d-sm-inline-block" data-toggle="modal" data-target="#modal-report">
+          <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-none d-sm-inline-block" data-toggle="modal">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            Add Player
+            '. Translation::of('add_player'). '
           </a>
-          <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-sm-none btn-icon" data-toggle="modal" data-target="#modal-report" aria-label="Create new report">
+          <a href="javascript:void(0)" data-toggle="modal" data-target="#modalGroup" class="btn btn-info ml-3 d-none d-sm-inline-block" data-toggle="modal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><path d="M14 17h6m-3 -3v6" /></svg>
+            '. Translation::of('create_groups'). '
+          </a>
+          <a href="javascript:void(0)" data-toggle="modal" data-target="#newPlayer" class="btn btn-primary ml-3 d-sm-none btn-icon" data-toggle="modal" title="'.Translation::of('add_player').'">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          </a>
+          <a href="javascript:void(0)" data-toggle="modal" data-target="#modalGroup" class="btn btn-info ml-3 d-sm-none btn-icon" data-toggle="modal" title="'.Translation::of('create_groups').'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><path d="M14 17h6m-3 -3v6" /></svg>
           </a>
         </div>';
         echo '
       </div>
     </div>
-  <div class="row">
     ';
-    while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
-      if(hasPlayerRight($loginUserID, $player['playerID'])){
-        if($player['name'] == ''){
-          $name	 		= Translation::of('no_player_name');
-          $imageTag = Translation::of('no_player_name').' '.$player['playerID'];
-        }
-        else {
-          $name 		= $player['name'];
-          $imageTag = $player['name'];
-        }
-        echo'
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
-          <div class="card card-sm">
-            <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="lh-sm">
-                  <div>'.$name.'</div>
-                </div>
-                <div class="ml-auto">
-                  <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="text-muted">
-                    '.$player['address'].'
-                  </a>
+      $groupSQL = $db->query("SELECT * FROM player_group ORDER BY name ASC");
+      while($group = $groupSQL->fetchArray(SQLITE3_ASSOC)){
+        $dataPlayerList = '';
+        $playerSQL = $db->query("SELECT * FROM player WHERE groupID=".$group['groupID']." ORDER BY name ASC");
+        while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)) $dataPlayerList .= $player['playerID'].',';
+        $dataPlayerList = substr($dataPlayerList, 0, -1);
+        $editGroupBtn = '<a href="#" class="text-warning editGroup" data-id="'.$group['groupID'].'" data-name="'.$group['name'].'" data-color="'.$group['color'].'" data-player=\''.$dataPlayerList.'\'><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" /><line x1="13.5" y1="6.5" x2="17.5" y2="10.5" /></svg></a>';
+        $deleteGroupBtn = '<a href="index.php?site=player&action=delete_group&groupID='.$group['groupID'].'" class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg></a>';
+
+        echo '
+        <div class="card card-sm">
+        <div class="card-status-top bg-'.$group['color'].'"></div>
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-3">
+                <h3 class="card-title">'.$group['name'].'</h3>
+              </div>
+              <div class="col"></div>
+              <div class="col-auto">
+                '.$editGroupBtn.' '.$deleteGroupBtn.'
+              </div>
+            </div>
+            
+            <div class="row">
+        ';
+        while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+          if(hasPlayerRight($loginUserID, $player['playerID'])){
+            if($player['name'] == ''){
+              $name	 		= Translation::of('no_player_name');
+              $imageTag = Translation::of('no_player_name').' '.$player['playerID'];
+            }
+            else {
+              $name 		= $player['name'];
+              $imageTag = $player['name'];
+            }
+            echo'
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
+              <div class="card card-sm">
+                <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="lh-sm">
+                      <div>'.$name.'</div>
+                    </div>
+                    <div class="ml-auto">
+                      <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="text-muted">
+                        '.$player['address'].'
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            ';
+          }
+        }
+        echo '
+      </div>
           </div>
         </div>
         ';
       }
+
+      echo'
+    <div class="row">
+      ';
+      $playerSQL = $db->query("SELECT * FROM player WHERE groupID IS NULL ORDER BY name ASC");
+      while($player = $playerSQL->fetchArray(SQLITE3_ASSOC)){
+        if(hasPlayerRight($loginUserID, $player['playerID'])){
+          if($player['name'] == ''){
+            $name	 		= Translation::of('no_player_name');
+            $imageTag = Translation::of('no_player_name').' '.$player['playerID'];
+          }
+          else {
+            $name 		= $player['name'];
+            $imageTag = $player['name'];
+          }
+          echo'
+          <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-string="'.$name.'">
+            <div class="card card-sm">
+              <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="d-block"><img src="'.$loadingImage.'" data-src="'.$player['address'].'" alt="'.$imageTag.'" class="player card-img-top"></a>
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="lh-sm">
+                    <div>'.$name.'</div>
+                  </div>
+                  <div class="ml-auto">
+                    <a href="'.$_moduleLink.'&action=view&playerID='.$player['playerID'].'" class="text-muted">
+                      '.$player['address'].'
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          ';
+        }
+      }
+      echo '
+    </div>
+      ';
+    
+    if (hasAssetEditRight($loginUserID)) {
+      $playerListSQL = $db->query("SELECT playerID, name FROM player ORDER BY name ASC");
+      $playerList = '<div class="col">';
+        while($playList = $playerListSQL->fetchArray(SQLITE3_ASSOC)){
+          $playerList .= '
+                        <label class="form-check">
+                          <input class="form-check-input" name="group_player[]" type="checkbox" value="'.$playList['playerID'].'">
+                          <span class="form-check-label">'.$playList['name'].'</span>
+                        </label>
+                        ';
+        }
+        $playerList .= '</div>';
+          echo '
+          <!-- Group -->
+          <div class="modal modal-blur fade" id="modalGroup" tabindex="-1" role="dialog" aria-labelledby="modalGroupModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content shadow">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalGroupModalLabel">'.Translation::of('create_groups').'</h5>
+                  <h5 class="modal-title" id="editGroupModalLabel" style="display:none">'.Translation::of('edit_group').'</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="'.Translation::of('close').'">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form id="assetEditForm" action="'.$_SERVER['REQUEST_URI'].'" method="POST">
+                  <div class="modal-body">
+                    <div class="row mb-3 align-items-end">
+                      <div class="col">
+                        <label class="form-label">'.Translation::of('name').'</label>
+                        <input type="text" id="group_name" name="group_name" class="form-control">
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">'.Translation::of('color').'</label>
+                      <div class="row g-2">
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="dark" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-dark"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput form-colorinput-light">
+                            <input name="group_color" type="radio" value="white" class="form-colorinput-input" checked>
+                            <span class="form-colorinput-color bg-white"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="blue" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-blue"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="azure" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-azure"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="indigo" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-indigo"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="purple" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-purple"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="pink" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-pink"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="red" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-red"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="orange" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-orange"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="yellow" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-yellow"></span>
+                          </label>
+                        </div>
+                        <div class="col-auto">
+                          <label class="form-colorinput">
+                            <input name="group_color" type="radio" value="lime" class="form-colorinput-input">
+                            <span class="form-colorinput-color bg-lime"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-3 align-items-end">
+                      <div class="col">
+                        <label class="form-label">'.Translation::of('player').'</label>
+                        '.$playerList.'
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input name="new_group" id="modalGroupSend" type="hidden" value="1" />
+                    <input name="groupID" id="groupID" type="hidden" value="0" />
+                    <button type="button" class="btn btn-link mr-auto" data-dismiss="modal">' . Translation::of('close') . '</button>
+                    <button type="submit" id="modalGroupEditBtn" class="btn btn-warning" style="display: none">' . Translation::of('update') . '</button>
+                    <button type="submit" id="modalGroupNewBtn" class="btn btn-success ">' . Translation::of('create') . '</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>';
     }
-    echo '
-  </div>
-  ';
   }
   else {
     echo '

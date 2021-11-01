@@ -427,7 +427,7 @@ if ($('.drop').length) {
 
 
 			myMulitDropzone.on("processing", function() {
-				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
 				errors = false;
 			});
@@ -507,7 +507,7 @@ if ($('.dropzoneMulti').length) {
 
 
 			myMulitDropzone.on("processing", function() {
-				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
 				errors = false;
 			});
@@ -574,7 +574,7 @@ $("#assetNewForm").submit(function(e) {
 
 	$("#saveAssetBtn").prop("disabled", true);
 	$("#saveAssetBtn").html(
-		`<span class="spinner-border spinner-border-sm icon mr-2" role="status" aria-hidden="true"></span> Processing...`
+		`<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...`
 	);
 
 	if (formData.indexOf("multiloader") >= 0) {
@@ -744,6 +744,39 @@ $('.editPlayerOpen').on('click', function() {
 			});
 		}
 	});
+});
+
+// Edit Group
+$(document).on("click", ".editGroup", function () {
+	var headline = $(".modal-content #editGroupModalLabel").text();
+	$(".modal-content #group_name").val($(this).data("name"));
+	$(".modal-content input[name=group_color][value=" + $(this).data("color") + "]").prop("checked", true);
+	$(".modal-content #groupID").val($(this).data("id"));
+	$(".modal-content #modalGroupSend").attr("name", "edit_group");
+	var players = $(this).data("player");
+	players = players.toString();
+	if (players === "") {
+		players = '0';
+	}
+	console.log(players);
+	if (players.search(",")){
+		players = players.split(',');
+		for (let index = 0; index < players.length; index++) {
+			$(".modal-content input[name*=group_player][value=" + players[index] + "]").prop("checked", true);
+		}
+	} else $(".modal-content input[name*=group_player][value=" + players + "]").prop("checked", true);
+	$(".modal-content #modalGroupModalLabel").hide();
+	$(".modal-content #modalGroupNewBtn").hide();
+	$(".modal-content #editGroupModalLabel").text(headline.replace('{groupname}', $(this).data("name")));
+	$(".modal-content #editGroupModalLabel").show();
+	$(".modal-content #modalGroupEditBtn").show();
+	$("#modalGroup").modal("show");
+});
+
+// Reset modalGroup Form
+$('#modalGroup').on('hide.bs.modal', function (e) {
+	$('#modalGroup form')[0].reset();
+	$('input[name*=group_player]').prop('checked', false);
 });
 
 // Install Extensions

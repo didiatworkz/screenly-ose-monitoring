@@ -122,10 +122,15 @@ if(@file_exists('assets/data/version_old.txt')){
     $db->exec("DROP TABLE `users_tmp`");
   }
   if($oldVersion <= '4.2'){      // Update Database to Version 4.2
-    $db->exec("CREATE TABLE `player_groups` (`groupID` INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT)");
+    $db->exec("DROP TABLE `player_group`");
+    $db->exec("CREATE TABLE `player_group` (`groupID`	INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`description`	TEXT,	`color`	TEXT DEFAULT 'white')");
+    $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
+    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER, `groupID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `status` INTEGER DEFAULT 0, `assets` TEXT, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
+    $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,monitorOutput,sync,deviceInfo,assets,bg_sync,created) SELECT userID,name,location,address,player_user,player_password,monitorOutput,sync,deviceInfo,assets,bg_sync,created FROM `player_tmp`");
+    $db->exec("DROP TABLE `player_tmp`");
   }
-  unlink('assets/tools/version_old.txt');
-  unlink('update.txt');
+  if(@file_exists('assets/data/version_old.txt')) unlink('assets/data/version_old.txt');
+  if(@file_exists('update.txt')) unlink('update.txt');
   header("Refresh:3");
   die($reloadSite);
 }

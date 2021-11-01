@@ -75,6 +75,14 @@ function getPlayerCount(){
   return $playerCount;
 }
 
+function getGroupCount(){
+  global $db;
+  $groupCount = $db->query("SELECT COUNT(*) AS counter FROM player_group");
+  $groupCount = $groupCount->fetchArray(SQLITE3_ASSOC);
+  $groupCount = $groupCount['counter'];
+  return $groupCount;
+}
+
 function systemLog($module, $info, $who = 0, $show = 0, $relevant = 0){
   global $db;
   $when = time();
