@@ -165,7 +165,7 @@ fi
 
 
 #check if previous version installed (docker)
-DOCK_ID=$(docker ps -q -f name=somo)
+DOCK_ID="$(docker ps -q -f name=somo)"
 if [ -n "$DOCK_ID" ]; then
     FILE=$D_SOMO/database.db
     if [ -f "$FILE" ]; then
