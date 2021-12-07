@@ -45,7 +45,7 @@ if((isset($argv) && $argv['1'] != '')){
   shell_exec('curl -X GET "'.$localServer.'/assets/php/runner.php?mode=addon&state=start&uid='.$userID.'&player='.$server_host.'"');
 
   //TODO Change branch!
-  $cmd = "rm -rf install.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/v3.0/install.sh && chmod +x install.sh && ./install.sh";
+  $cmd = "rm -rf install.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/master/install.sh && chmod +x install.sh && ./install.sh";
   //$cmd = "ls";
   $cmd = "echo '" . $server_password . "' | sudo -S " . $cmd;
 
