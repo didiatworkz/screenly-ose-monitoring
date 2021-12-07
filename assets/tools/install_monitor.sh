@@ -53,6 +53,7 @@ if [ -f "$FILE" ]; then
     echo
     if [ "$BACKUP_C1" == "y" ]
     then
+        echo
         echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
         sleep 2
         echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
@@ -165,38 +166,41 @@ fi
 
 
 #check if previous version installed (docker)
-DOCK_ID="$(docker ps -q -f name=somo)"
-if [ -n "$DOCK_ID" ]; then
-    FILE=$D_SOMO/database.db
-    if [ -f "$FILE" ]; then
-        echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
-        sleep 2
-        PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
-        _PORT=":$PORT"
+if command -v docker &> /dev/null; then
+    DOCK_ID="$(docker ps -q -f name=somo)"
+    if [ -n "$DOCK_ID" ]; then
+        FILE=$D_SOMO/database.db
+        if [ -f "$FILE" ]; then
+            echo -e "[ \e[33mSOMO\e[39m ] Old SOMO version found (docker)"
+            sleep 2
+            PORT=$(sudo docker container port "$DOCK_ID" | head -n 1 | awk '{print $3}' | sed s'/0.0.0.0://')
+            _PORT=":$PORT"
 
-        echo -e "[ \e[33mSOMO\e[39m ] Read old version number"
-        OLD_VERSION=$(docker exec -it somo cat /var/www/html/assets/data/version.txt)
+            echo -e "[ \e[33mSOMO\e[39m ] Read old version number"
+            OLD_VERSION=$(docker exec -it somo cat /var/www/html/assets/data/version.txt)
 
-        echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
-        sudo systemctl stop docker.somo
+            echo -e "[ \e[33mSOMO\e[39m ] Stop somo service..."
+            sudo systemctl stop docker.somo
 
-        echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
+            echo -e "[ \e[33mSOMO\e[39m ] Start Backup"
 
-        echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
-        mkdir -p "$D_SOMO_BACKUP"
-        mkdir -p "$D_SOMO_BACKUP"/avatars
+            echo -e "[ \e[33mSOMO\e[39m ] Create backup folder"
+            mkdir -p "$D_SOMO_BACKUP"
+            mkdir -p "$D_SOMO_BACKUP"/avatars
 
-        echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
-        cp -f "$D_SOMO"/database.db "$D_SOMO_BACKUP"/database.db
+            echo -e "[ \e[33mSOMO\e[39m ] Backup database: $DB_FILE"
+            cp -f "$D_SOMO"/database.db "$D_SOMO_BACKUP"/database.db
 
-        echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
-        sudo cp -rf "$D_SOMO"/avatars "$D_SOMO_BACKUP"
+            echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
+            sudo cp -rf "$D_SOMO"/avatars "$D_SOMO_BACKUP"
 
-        echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
-        BACKUP_C2=1
-        sleep 2
+            echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
+            BACKUP_C2=1
+            sleep 2
+        fi
     fi
 fi
+
 echo 
 echo -e "[ \e[33mSOMO\e[39m ] Start preparation for installation..."
 sleep 2
@@ -276,7 +280,7 @@ sudo systemctl enable docker.somo
 sudo systemctl daemon-reload
 
 echo -e "[ \e[33mSOMO\e[39m ] Register somo command"
-wget -O /tmp/somo https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring/v4.2/assets/tools/somo
+wget -O /tmp/somo "https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring/$_BRANCH/assets/tools/somo"
 sudo cp -f /tmp/somo /usr/bin/somo
 sudo chmod 755 /usr/bin/somo
 
@@ -294,7 +298,7 @@ if [ "$BACKUP_C2" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
-    cp -f "$D_SOMO_BACKUP"/assets "$D_SOMO"/assets
+    cp -f "$D_SOMO_BACKUP"/avatars "$D_SOMO"/avatars
     echo "$OLD_VERSION" > "$D_SOMO"/version_old.txt
     sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
