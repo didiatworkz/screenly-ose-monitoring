@@ -76,7 +76,6 @@ if(isset($_POST['newAsset'])){
 		$assetLogName 	= strlen($name) > 35 ? substr($name,0,32)."..." : $name;
 		systemLog('Player', 'Upload asset: '.$assetLogName.' to player '.$playerName, $loginUserID, 1);
 
-
 		if(isset($_POST['multidrop'])){
 			//print_r($images);
 			//print_r();
@@ -84,7 +83,6 @@ if(isset($_POST['newAsset'])){
 			$send	= FALSE;
 			if($set['debug'] == 1) echo 'Send to: '.$playerAddress.'/api/v1/file_asset<br />';
 			if($set['debug'] == 1) print_r($data3);
-
 
 			$url = callURL('POST3', $playerAddress.'/api/v1/file_asset', $data3, $playerID, false);
 			if($set['debug'] == 1) echo 'Response: '.$url.'<br />';
