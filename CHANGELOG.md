@@ -6,12 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.2] - 2021-00-00
 
+### Added
+- Manage player in groups #56
+
 ### Changed
-- Fixed upload error
-- Fixed timezone settings
+- Change nginx to docker #72
+- Changed installation process
+- Fixed modal close function
 - Fixed Device-Info output
+- Fixed timezone settings
+- Fixed upload error #64
+- Fixed youtube upload #69
 - Replace reboot icon
-- Fix modal close function
+- Update packages
 
 ## [4.1] - 2021-01-28
 
