@@ -298,7 +298,7 @@ if [ "$BACKUP_C2" == "1" ]
 then
     echo -e "[ \e[33mSOMO\e[39m ] Restore Backup..."
     cp -f "$D_SOMO_BACKUP"/database.db "$D_SOMO"/database.db
-    cp -f "$D_SOMO_BACKUP"/avatars "$D_SOMO"/avatars
+    cp -rf "$D_SOMO_BACKUP"/avatars "$D_SOMO"/avatars
     echo "$OLD_VERSION" > "$D_SOMO"/version_old.txt
     sudo rm -rf "$D_SOMO_BACKUP"
     echo -e "[ \e[33mSOMO\e[39m ] Restore complete!"
