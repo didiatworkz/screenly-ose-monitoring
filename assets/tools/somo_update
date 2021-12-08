@@ -1,0 +1,10 @@
+#!/bin/bash
+ONLINE=$(git ls-remote https://github.com/didiatworkz/screenly-ose-monitoring | head -1 | sed "s/\tHEAD//")
+LOCAL=$(cd /var/www/html/ && git rev-parse HEAD)
+if [ "$LOCAL" == "$ONLINE" ]
+then
+    exit 0
+else
+    echo true > /var/www/html/update.txt
+  exit 0
+fi

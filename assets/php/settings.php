@@ -28,6 +28,9 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 $_moduleName = Translation::of('settings');
 $_moduleLink = 'index.php?site=settings';
 
+if(getenv("H_IP")) $host_ip = getenv("H_IP") . (getenv("H_PORT") != '80' ? ':' . getenv("H_PORT") : '');
+else $host_ip = $_SERVER['SERVER_ADDR'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '');
+
 // Public Access Link
 if(isset($_GET['generateToken']) && $_GET['generateToken'] == 'yes' && (getGroupID($loginUserID) == 1 || hasSettingsPublicRight($loginUserID))){
   $now 	 = time();
@@ -48,14 +51,14 @@ if(isset($_GET['view']) && $_GET['view'] == 'profile'){
     $data = base64_encode(file_get_contents( $_FILES["file"]["tmp_name"]));
     $file = 'data:'.$check['mime'].';base64,'.$data;
     $newfilename = md5($loginUsername).'.txt';
-    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetPath = dirname( __FILE__ ).'/../data/avatars/';
     $targetFile =  $targetPath.$newfilename;
     file_put_contents($targetFile, $file);
   }
 
   if (isset($_GET['removeavatar']) && $_GET['removeavatar'] == '1') {
     $newfilename = md5($loginUsername).'.txt';
-    $targetPath = dirname( __FILE__ ).'/../img/avatars/';
+    $targetPath = dirname( __FILE__ ).'/../data/avatars/';
     $targetFile =  $targetPath.$newfilename;
     unlink($targetFile);
     redirect($backLink, 0);
@@ -232,7 +235,7 @@ else if(isset($_GET['view']) && $_GET['view'] == 'system' && hasSettingsSystemRi
               </tr>
               <tr>
                 <td>'.Translation::of('server_ip').':</td>
-                <td>'.$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').'</td>
+                <td>'.$host_ip.'</td>
               </tr>
               '.$server_output.'
               <tr>

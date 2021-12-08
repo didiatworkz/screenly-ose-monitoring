@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.1] - 2020-01-28
+## [4.2] - 2021-00-00
+
+### Added
+- Manage player in groups #56
+
+### Changed
+- Change nginx to docker #72
+- Changed installation process
+- Fixed modal close function
+- Fixed Device-Info output
+- Fixed timezone settings
+- Fixed upload error #64
+- Fixed youtube upload #69
+- Replace reboot icon
+- Update packages
+
+## [4.1] - 2021-01-28
 
 ### Changed
 - Fixed upload error
@@ -13,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace reboot icon
 - Fix modal close function
 
-## [4.0] - 2020-01-18
+## [4.0] - 2021-01-18
 
 ### Added
 - Add-on deactivation #40

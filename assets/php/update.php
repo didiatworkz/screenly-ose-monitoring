@@ -27,12 +27,6 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 $_moduleName = Translation::of('update');
 $_moduleLink = '';
 
-if($updatecheck < time() && (date("d", $updatecheck) != date("d"))){
-  shell_exec('somo --scriptupdate');
-  $db->exec("UPDATE `settings` SET updatecheck='".time()."' WHERE settingsID=1");
-  systemLog($_moduleName, 'Update available!', '', 1);
-}
-
 if(@file_exists('update.txt') && isAdmin($loginUserID)) {
   $update_badge = '<span class="badge bg-red blink"></span>';
   $update_info = '

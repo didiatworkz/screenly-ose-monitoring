@@ -28,9 +28,9 @@ $now = time();
 
 if(isset($_GET['mode']) && $_GET['mode'] == 'addon'){
   if($_GET['player'] != '' AND $_GET['state'] == 'end'){
-    $logFile = file_get_contents('/var/www/html/monitor/assets/tmp/'.$_GET['player'].'.txt');
+    $logFile = file_get_contents(basename('/var/www/html/assets/tmp/'.$_GET['player'].'.txt'));
     $log = unserialize($logFile);
-    @unlink('/var/www/html/monitor/assets/tmp/'.$_GET['player'].'.txt');
+    @unlink('/var/www/html/assets/tmp/'.$_GET['player'].'.txt');
     $logoutput = SQLite3::escapeString($log['output']);
     $db->exec("UPDATE `player` SET logOutput='".$logoutput."' WHERE address='".$log['player']."'");
     systemLog('Add-On', 'Installation on '.$log['player'].' finished', $log['userID'], 1);

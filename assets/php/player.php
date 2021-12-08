@@ -43,6 +43,50 @@ $_moduleLink = 'index.php?site=players';
 		return $output;
 	}
 
+	// POST: new_group - Create a new player group
+	if(isset($_POST['new_group'])){
+	  $name 			= isset($_POST['group_name']) ? $_POST['group_name'] : '';
+	  $color 			= isset($_POST['group_color']) ? $_POST['group_color'] : 'white';
+	  $player			= isset($_POST['group_player']) ? $_POST['group_player'] : array();
+	  if($name AND $color){
+	    $db->exec("INSERT INTO player_group (name, color) values('".$name."', '".$color."')");
+
+			$groupSQL 	= $db->query("SELECT groupID FROM player_group WHERE name='".$name."' AND color='".$color."'");
+			$group = $groupSQL->fetchArray(SQLITE3_ASSOC);
+			for ($i=0; $i < count($player); $i++) { 
+				$db->exec("UPDATE player SET groupID='".$group['groupID']."' WHERE playerID='".$player[$i]."'");
+			}
+		}
+		redirect($backLink);
+	}
+
+	// POST: editGroup - Update player group information
+	if(isset($_POST['edit_group'])){
+	  $groupID		= $_POST['groupID'];
+	  $name 			= isset($_POST['group_name']) ? $_POST['group_name'] : '';
+	  $color	 		= isset($_POST['group_color']) ? $_POST['group_color'] : 'white';
+		$player			= isset($_POST['group_player']) ? $_POST['group_player'] : array();
+
+	  if($groupID AND $name AND $color){
+	    $db->exec("UPDATE player_group SET name='".$name."', color='".$color."' WHERE groupID='".$groupID."'");
+			$db->exec("UPDATE player SET groupID=NULL WHERE groupID='".$groupID."'");
+			for ($i=0; $i < count($player); $i++) { 
+				$db->exec("UPDATE player SET groupID='".$groupID."' WHERE playerID='".$player[$i]."'");
+			}
+		}
+		redirect($backLink);
+	}
+
+	// GET: action:delete_group - Delete group from database
+	if(isset($_GET['action']) && $_GET['action'] == 'delete_group'){
+	  $groupID = $_GET['groupID'];
+
+	  if(isset($groupID)){
+			$db->exec("UPDATE player SET groupID=NULL WHERE groupID='".$groupID."'");
+			$db->exec("DELETE FROM player_group WHERE groupID='".$groupID."'");
+	  } 
+	  redirect('index.php?site=players');
+	}
 
 	// POST: saveIP - Auto discovery function
 	if(isset($_POST['saveIP'])){

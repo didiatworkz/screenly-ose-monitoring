@@ -1,0 +1,178 @@
+#!/bin/bash
+VERSION=$(docker exec -it somo cat /var/www/html/assets/data/version.txt)
+ACTION='\033[1;90m'
+FOUND='\033[1;92m'
+NOCOLOR='\033[0m'
+ERROR='\033[0;31m'
+IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
+DOCK_ID=$(docker ps -q -f name=somo)
+PORT=$(sudo docker container port "$DOCK_ID" | awk '{print $1}' | sed s'/\/tcp//')
+
+while [[ $# -gt 0 ]] ; do
+    case $1 in
+        -h|-\?|--help)
+        tput setaf 172
+        cat << "EOF"
+                                    _
+           ____                    | |
+          / __ \__      _____  _ __| | __ ____
+         / / _` \ \ /\ / / _ \| '__| |/ /|_  /
+        | | (_| |\ V  V / (_) | |  |   <  / /
+         \ \__,_| \_/\_/ \___/|_|  |_|\_\/___|
+          \____/                www.atworkz.de
+
+                Screenly OSE Monitoring (SOMO)
+EOF
+      tput sgr 0
+      echo
+			echo "Screenly OSE Monitoring is a web-based application that is simultaneously"
+      echo "installed on a Screenly OSE Player or as standalone solution."
+			echo "You can open the web-interface via the IP address \"$IP:$PORT\"."
+      echo
+			echo "In addition, the monitoring offers an add-on that can be installed on other"
+			echo "players to display the current online status of the player or some"
+      echo "other system relevant information."
+			echo
+			echo "Options: "
+			echo "  -v / --version    | Show current installed Version"
+			echo "  -r / --restart    | Restart the nginx services"
+			echo "  -c / --check      | Check all of all required files"
+      echo "  --reset-db        | Reset system database"
+			echo "  -d / --uninstall  | Uninstall Screenly OSE Monitoring"
+      echo
+      echo
+            ;;
+        -v|--version)
+			echo -e "[ \e[33mSOMO\e[39m ] $VERSION"
+			shift
+            ;;
+        -r|--restart)
+			echo -e "[ \e[33mSOMO\e[39m ] Restart somo service"
+			sudo systemctl restart docker.somo
+            ;;
+        --reset)
+  		echo -e "[ \e[33mSOMO\e[39m ] Reset system"
+      sudo rm -rf /home/"$(whoami)"/somo/database.db
+  		sudo systemctl restart docker.somo
+      echo -e "[ \e[33mSOMO\e[39m ] -- Done"
+      echo "For login use:"
+      echo
+      echo "Username: demo"
+      echo "Password: demo"
+          ;;
+        -c|--check)
+      echo
+			echo -e "[ \e[33mSOMO\e[39m ] Check file integrity..."
+			sleep 2
+
+      array=""
+      array="${array} index.php"
+      array="${array} _functions.php"
+      array="${array} _public.php"
+      array="${array} dbase.sample.db"
+      array="${array} database.db"
+      array="${array} assets/php/actions.php"
+      array="${array} assets/php/addon.php"
+      array="${array} assets/php/curl.php"
+      array="${array} assets/php/dashboard.php"
+      array="${array} assets/php/database.php"
+      array="${array} assets/php/datatable_lang.json.php"
+      array="${array} assets/php/deviceInfo.php"
+      array="${array} assets/php/discover.php"
+      array="${array} assets/php/dropzone_lang.js.php"
+      array="${array} assets/php/error_handler.php"
+      array="${array} assets/php/firstStart.php"
+      array="${array} assets/php/functions.php"
+      array="${array} assets/php/groupmanagement.php"
+      array="${array} assets/php/image.php"
+      array="${array} assets/php/login.php"
+      array="${array} assets/php/menu.php"
+      array="${array} assets/php/multiuploader.php"
+      array="${array} assets/php/player.php"
+      array="${array} assets/php/runner.php"
+      array="${array} assets/php/settings.php"
+      array="${array} assets/php/ssh.class.php"
+      array="${array} assets/php/translation.php"
+      array="${array} assets/php/update.php"
+      array="${array} assets/php/user.php"
+      array="${array} assets/php/usermanagement.php"
+
+      FAILCOUNTER=0
+      for i in "${array[@]}"
+      do
+        echo
+  		    echo -e "${ACTION}Check if $i exists"
+  		    echo -e "----------------------------------------------------${NOCOLOR}"
+  		    if [ ! -e "docker exec -it somo cat /var/www/html/$i" ]
+  		    then
+  		      echo -e "${ERROR}$i not exists ${NOCOLOR}"
+            FAILCOUNTER="${FAILCOUNTER +1}"
+  		    else
+  			    echo -e "${FOUND}$i exists ${NOCOLOR}"
+  		    fi
+  			echo
+      done
+      if [ "$FAILCOUNTER" -gt 0 ]; then
+        echo
+        echo ================================================================
+        echo -e "${ERROR}Several files are missing! - Please check ${NOCOLOR}"
+      else
+        echo
+        echo ================================================================
+        echo -e "${FOUND}All files were found ${NOCOLOR}"
+      fi
+      echo
+      echo
+            ;;
+        -d|--uninstall)
+        echo
+        echo
+        echo
+			  echo -e "${ERROR}Uninstallation of Screenly OSE Monitoring ${NOCOLOR}"
+			  echo -e "${ERROR}All data will be permanently removed! ${NOCOLOR}"
+        echo
+			  read -p "Do you want to uninstall SOMO? [Y] (Y/n)" -n 1 -r -s UNINSTALL_BEGIN
+			  if [ "$UNINSTALL_BEGIN" == 'Y' ]
+			  then
+          echo
+          echo
+				  echo -e "[ \e[33mSOMO\e[39m ] Uninstallation started..."
+          sleep 5
+          DOCK_CON=$(docker ps -q -f name=somo)
+          echo
+          echo
+          echo -e "[ \e[33mSOMO\e[39m ] Stop somo service"
+          sudo systemctl stop docker.somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove service file"
+          sudo rm -rf /etc/systemd/system/docker.somo.service
+          echo -e "[ \e[33mSOMO\e[39m ] Remove docker container"
+          sudo docker container rm "$DOCK_CON"
+          echo -e "[ \e[33mSOMO\e[39m ] Remove docker image"
+          sudo docker rmi -f $(docker images -q atworkz/somo)
+          echo -e "[ \e[33mSOMO\e[39m ] Remove cronjob"
+          sudo rm -rf /etc/cron.d/somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove /home/$(whoami)/somo"
+          sudo rm -rf /home/"$(whoami)"/somo
+          echo -e "[ \e[33mSOMO\e[39m ] Remove /usr/bin/somo"
+          sudo rm -rf /usr/bin/somo
+          echo
+          echo -e "[ \e[33mSOMO\e[39m ] Uninstallation complete..."
+          echo
+          echo
+          echo "Thank you for using Screenly OSE Monitoring (SOMO)"
+          echo "- didiatworkz"
+          echo
+          echo
+          echo
+				  exit 0
+			  fi
+        echo
+			  exit 0
+            ;;
+		*)
+			echo -e "[ \e[33mSOMO\e[39m ] Invalid Option! - Please enter --help for more commands"
+            ;;
+    esac
+    shift
+done
+exit 0

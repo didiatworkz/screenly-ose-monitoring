@@ -31,10 +31,9 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
     } else die(Translation::of('no_valid_ip'));
   } else die(Translation::of('no_ip_address'));
 
-  $rootPath = '/var/www/html/monitor';
-  $dbase_key = $rootPath.'/assets/tools/key.php';
-  include_once($dbase_key);
-  $db = new SQLite3($rootPath.'/'.$db_cryproKey);
+  $rootPath = '/var/www/html';
+  $dbase = $rootPath.'/assets/data/database.db';
+  $db = new SQLite3($dbase);
 
   function getIpRange($cidr) {
       list($ip, $mask) = explode('/', $cidr);

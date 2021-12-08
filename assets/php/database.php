@@ -47,30 +47,9 @@ $reloadSite = '
   </body>
 </html>';
 
-$dbase_key		= ROOT_DIR.'/assets/tools/key.php';
-if(!@file_exists($dbase_key)) {
-  $dbase_file = ROOT_DIR.'/dbase.db';
-} else {
-  include_once($dbase_key);
-  $dbase_file = $db_cryproKey;
-  if(@file_exists(ROOT_DIR.'/dbase.db')) {
-    unlink(ROOT_DIR.'/dbase.db');
-  }
-}
+$systemVersion  = file_get_contents('assets/data/version.txt');
 
-$systemVersion  = file_get_contents(ROOT_DIR.'/assets/tools/version.txt');
-
-if(!@file_exists($dbase_key)){
-  $token = md5($systemVersion.time().rand()).'.db';
-  $keyFile = '<?php
-  $db_cryproKey = "'.$token.'";';
-  $current = file_get_contents($dbase_key);
-  file_put_contents($dbase_key, $keyFile);
-  rename(ROOT_DIR.'/dbase.db',$token);
-  header("Refresh:3");
-  die($reloadSite);
-}
-
+$dbase_file      = 'assets/data/database.db';
 $db 			      = new SQLite3($dbase_file);
 $db             ->busyTimeout(5000);
 $set 			      = $db->query("SELECT * FROM settings");
@@ -80,8 +59,8 @@ $updatecheck	  = $set['updatecheck'];
 
 
 
-if(@file_exists('assets/tools/version_old.txt')){
-  $oldVersion = file_get_contents('assets/tools/version_old.txt');
+if(@file_exists('assets/data/version_old.txt')){
+  $oldVersion = file_get_contents('assets/data/version_old.txt');
   if($oldVersion <= '2.0'){			// Update Database to Version 2.0
     $db->exec("ALTER TABLE `settings` ADD COLUMN `token` TEXT");
     $db->exec("ALTER TABLE `settings` ADD COLUMN `end_date` INTEGER");
@@ -142,8 +121,16 @@ if(@file_exists('assets/tools/version_old.txt')){
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
   }
-  unlink('assets/tools/version_old.txt');
-  unlink('update.txt');
+  if($oldVersion <= '4.2'){      // Update Database to Version 4.2
+    $db->exec("DROP TABLE `player_group`");
+    $db->exec("CREATE TABLE `player_group` (`groupID`	INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`description`	TEXT,	`color`	TEXT DEFAULT 'white')");
+    $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
+    $db->exec("CREATE TABLE `player` (`playerID` INTEGER PRIMARY KEY AUTOINCREMENT,`userID`	INTEGER, `groupID`	INTEGER,	`name`	TEXT,	`address`	TEXT UNIQUE,	`location`	TEXT, `player_user`	TEXT,	`player_password`	TEXT,	`monitorOutput`	TEXT DEFAULT 0,	`deviceInfo`	TEXT DEFAULT 0, `status` INTEGER DEFAULT 0, `assets` TEXT, `logOutput`	TEXT,	`sync`	TEXT,	`bg_sync`	TEXT,	`created`	TEXT DEFAULT CURRENT_TIMESTAMP)");
+    $db->exec("INSERT INTO `player`(userID,name,location,address,player_user,player_password,monitorOutput,sync,deviceInfo,assets,bg_sync,created) SELECT userID,name,location,address,player_user,player_password,monitorOutput,sync,deviceInfo,assets,bg_sync,created FROM `player_tmp`");
+    $db->exec("DROP TABLE `player_tmp`");
+  }
+  if(@file_exists('assets/data/version_old.txt')) unlink('assets/data/version_old.txt');
+  if(@file_exists('update.txt')) unlink('update.txt');
   header("Refresh:3");
   die($reloadSite);
 }

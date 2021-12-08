@@ -121,27 +121,6 @@ function reloadPlayerImage() {
 }
 
 /**
- * Background data collector
- * @method loadRunner
- */
-function loadRunner() {
-	var now = Math.round(new Date() / 1000);
-	if (settingsRunerTime && (settingsRunerTime <= now) && localStorage.runnerExecute === undefined) {
-		$.ajax({
-			url: 'assets/php/runner.php',
-			type: 'GET',
-			success: function() {
-				localStorage.runnerExecute = true;
-				console.log('Runner executed');
-			},
-			error: function() {
-				console.log('Runner error');
-			},
-		});
-	}
-}
-
-/**
  * Refresh log output
  * @method loadLog
  * @param  {[string]} id ID of the player
@@ -448,8 +427,9 @@ if ($('.drop').length) {
 
 
 			myMulitDropzone.on("processing", function() {
-				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
+				errors = false;
 			});
 
 			myMulitDropzone.on("sending", function(file, xhr, data) {
@@ -490,7 +470,7 @@ if ($('.drop').length) {
 
 			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
-				$('#uploadfiles').hide();
+				if (!errors) $('#uploadfiles').hide();
 				if (!errors) location.reload();
 			});
 		}
@@ -498,6 +478,7 @@ if ($('.drop').length) {
 }
 
 if ($('.dropzoneMulti').length) {
+	var acceptedFileTypes = "image/*, video/*";
 	var myMulitDropzone = new Dropzone(".dropzone", {
 		acceptedFiles: acceptedFileTypes,
 		autoProcessQueue: false,
@@ -526,8 +507,9 @@ if ($('.dropzoneMulti').length) {
 
 
 			myMulitDropzone.on("processing", function() {
-				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span class="ml-2">Uploading...</span>');
+				$('#uploadfiles').attr('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...');
 				$('input:checkbox[name="id[]"]').attr('disabled', true);
+				errors = false;
 			});
 
 			myMulitDropzone.on("sending", function(file, xhr, data) {
@@ -565,11 +547,15 @@ if ($('.dropzoneMulti').length) {
 				console.log(file.xhr.response);
 			});
 
+			this.on("error", function (file) {
+				errors = true;
+			});
+
 			this.on("queuecomplete", function() {
 				console.log('queuecomplete');
-				$('#uploadfiles').hide();
-				$('#refresh').show();
-				$('.dz-message').text("Upload done! - Reload this page...");
+				if (!errors) $('#uploadfiles').hide();
+				if (!errors) $('#refresh').show();
+				if (!errors) $('.dz-message').text("Upload done! - Reload this page...");
 			});
 		}
 	});
@@ -585,6 +571,11 @@ $("#assetNewForm").submit(function(e) {
 	var loopLength = 1;
 	var reload = true;
 	var formData = form.serialize();
+
+	$("#saveAssetBtn").prop("disabled", true);
+	$("#saveAssetBtn").html(
+		`<span class="spinner-border spinner-border-sm me-2" role="status"></span> Processing...`
+	);
 
 	if (formData.indexOf("multiloader") >= 0) {
 		loopLength = form[0].length;
@@ -753,6 +744,39 @@ $('.editPlayerOpen').on('click', function() {
 			});
 		}
 	});
+});
+
+// Edit Group
+$(document).on("click", ".editGroup", function () {
+	var headline = $(".modal-content #editGroupModalLabel").text();
+	$(".modal-content #group_name").val($(this).data("name"));
+	$(".modal-content input[name=group_color][value=" + $(this).data("color") + "]").prop("checked", true);
+	$(".modal-content #groupID").val($(this).data("id"));
+	$(".modal-content #modalGroupSend").attr("name", "edit_group");
+	var players = $(this).data("player");
+	players = players.toString();
+	if (players === "") {
+		players = '0';
+	}
+	console.log(players);
+	if (players.search(",")){
+		players = players.split(',');
+		for (let index = 0; index < players.length; index++) {
+			$(".modal-content input[name*=group_player][value=" + players[index] + "]").prop("checked", true);
+		}
+	} else $(".modal-content input[name*=group_player][value=" + players + "]").prop("checked", true);
+	$(".modal-content #modalGroupModalLabel").hide();
+	$(".modal-content #modalGroupNewBtn").hide();
+	$(".modal-content #editGroupModalLabel").text(headline.replace('{groupname}', $(this).data("name")));
+	$(".modal-content #editGroupModalLabel").show();
+	$(".modal-content #modalGroupEditBtn").show();
+	$("#modalGroup").modal("show");
+});
+
+// Reset modalGroup Form
+$('#modalGroup').on('hide.bs.modal', function (e) {
+	$('#modalGroup form')[0].reset();
+	$('input[name*=group_player]').prop('checked', false);
 });
 
 // Install Extensions
@@ -1062,4 +1086,3 @@ $(document).ready(function() {
 
 setInterval('reloadPlayerImage()', settingsRefreshRate);
 setInterval('loadDeviceInfo()', 1000);
-setInterval('loadRunner()', 2000);

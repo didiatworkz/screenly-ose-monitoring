@@ -45,7 +45,7 @@ if((isset($argv) && $argv['1'] != '')){
   shell_exec('curl -X GET "'.$localServer.'/assets/php/runner.php?mode=addon&state=start&uid='.$userID.'&player='.$server_host.'"');
 
   //TODO Change branch!
-  $cmd = "rm -rf install.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/v3.0/install.sh && chmod +x install.sh && ./install.sh";
+  $cmd = "rm -rf install.sh && wget https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitoring-addon/master/install.sh && chmod +x install.sh && ./install.sh";
   //$cmd = "ls";
   $cmd = "echo '" . $server_password . "' | sudo -S " . $cmd;
 
@@ -62,7 +62,7 @@ if((isset($argv) && $argv['1'] != '')){
   $output['output'] .= date("Y-m-d H:i:s")."\n";
   $output['output'] .= "[END] Installation of SOMA Add-on\n";
 
-  $file = fopen('/var/www/html/monitor/assets/tmp/'.$server_host.'.txt', "w") or die("Unable to open file!");
+  $file = fopen('/var/www/html/assets/tmp/'.$server_host.'.txt', "w") or die("Unable to open file!");
   $contents = serialize($output);
   fwrite($file, $contents);
   fclose($file);
@@ -77,10 +77,10 @@ elseif(isset($_POST['addonInstall']) && $_POST['addonInstall'] == 'true' && $_PO
   $user = $_POST['user'];
   $pass = $_POST['pass'];
 
-  $test =  shell_exec("apt policy php-ssh2");
+  $test =  shell_exec("apt policy libssh2-1");
   if (strpos($test, 'Installed: (none)') === false) {
-      shell_exec("php /var/www/html/monitor/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass." ".$loginUserID. " ".$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '').' > /dev/null 2>/dev/null &');
-      //shell_exec('php /var/www/html/monitor/assets/php/addon.php 192.168.178.54 22 pi raspberry 1 192.168.178.100');
+      shell_exec("php /var/www/html/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass." ".$loginUserID. " ".$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '')." > /dev/null 2>/dev/null &");
+      //shell_exec('php /var/www/html/assets/php/addon.php 192.168.178.54 22 pi raspberry 1 192.168.178.100');
       die(Translation::of('soma.start_installation'));
   } else die(Translation::of('soma.no_package_found'));
 

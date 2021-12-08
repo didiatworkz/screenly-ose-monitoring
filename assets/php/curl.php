@@ -54,7 +54,7 @@ function getApiData($ip, $playerID = null){
   $prefix = checkHTTP($ip);
 
   $playerAuth = playerAuthentication($playerID);
-  if($playerAuth['username'] != '' AND $playerAuth['password'] !=''){
+  if(is_array($playerAuth) AND $playerAuth['username'] != '' AND $playerAuth['password'] !=''){
     $user = $playerAuth['username'];
     $pass = $playerAuth['password'];
   }
@@ -104,9 +104,9 @@ function systemPing($ip){
 function playerImage($url, $active = 1){
   if(checkAddress($url)) {
     if(checkAddress($url.':9020/screen/screenshot.png') && $active == 1) return 'http://'.$url.':9020/screen/screenshot.png?t='.time();
-    else return 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/img/online.png';
+    else return 'http://localhost/assets/img/online.png';
   }
-  else return 'http://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/assets/img/offline.png';
+  else return 'http://localhost/assets/img/offline.png';
 }
 
   //OLD

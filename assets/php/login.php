@@ -25,20 +25,23 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
 $_moduleName = Translation::of('login');
 $_moduleLink = '';
 
+$nextPage = $_SERVER['PHP_SELF'];
+$nextPage = str_replace('/', '', $nextPage);
+
 
 echo'
 <body class="antialiased border-top-wide border-primary d-flex flex-column">
   <div class="flex-fill d-flex flex-column justify-content-center">
     <div class="container-tight py-6">
-      <form id="Login" action="'.$_SERVER['PHP_SELF'].'" class="card card-md" method="POST">
+      <form id="Login" action="'.$nextPage.'" class="card card-md" method="POST">
         <div class="card-body">
           <h2 class="mb-5 text-center">'._SYSTEM_NAME.'</h2>
           <div class="mb-3">
-            <label class="form-label">Username</label>
+            <label class="form-label">'.Translation::of('username').'</label>
             <input name="user" type="text" class="form-control" placeholder="'.Translation::of('username').'" autofocus autocomplete="section-login username">
           </div>
           <div class="mb-2">
-            <label class="form-label">Password</label>
+            <label class="form-label">'.Translation::of('password').'</label>
             <input name="password" type="password" class="form-control" placeholder="'.Translation::of('password').'" autocomplete="section-login current-password">
           </div>
           <div class="form-footer">
