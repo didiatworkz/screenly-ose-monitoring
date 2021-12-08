@@ -107,7 +107,7 @@ if(isset($_POST['newAsset'])){
 		if($send){
 			$data 										= array();
 			if ($mimetype == 'webpage') {
-				if (strpos($url, "www.youtube.com") || strpos($url, "youtu.be")) {
+				if (strpos($url, "youtube.com") !== false || strpos($url, "youtu.be") !== false) {
 					$mimetype = 'youtube_asset';
 					$data['is_processing'] = 0;
 				}
