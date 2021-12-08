@@ -39,17 +39,20 @@ By installing an add-on on each player, it is also possible to display a "live f
 + Easy administration
 + Dashboard
 + User management
-+ Group Management incl. access restrictions
++ Group access management incl. access restrictions
 + Simple overview of all players with status
 + Add / Edit / Remove / Order / Switch Assets
 + Auto discovery of players in a subnet
 + Upload assets simultaneously to multiple playes
++ Group players
 + Responsive Design
 + Dark and Light Mode
 + Public access to integrate in other monitoring tools
 + Add-on overview of all players
 + Add-on for displaying the player’s output remotely
 + Add-on for displaying the player’s system information
+
+__SOMO v4.2 tested on Raspbian buster and bullseye__
 
 ## Bugs
 No errors were found in the tests. If you find a problem or bug, please report it:<br />
@@ -59,10 +62,8 @@ No errors were found in the tests. If you find a problem or bug, please report i
 
 ## Requirements
 + RaspberryPi 3B+
-+ Raspbian Lite
-+ PHP 7.x (will be installed)
-+ SQLite 3.x (will be installed)
-+ Ansible (will be installed)
++ Raspbian Lite Buster
++ Docker (will be installed)
 
 ## Installation
 __IMPORTANT: The monitoring was designed to run on the local network with the Screenly OSE Player. Problems or restrictions may occur if the server is hosted externally or accessed from an external network!__
@@ -80,8 +81,8 @@ bash <(curl -sL https://git.io/JttTW)
 ## Login
 After the installation is the default login:
 
-http://[screenly-ip-address]:9000 (when Screenly OSE is installed)<br />
-http://[screenly-ip-address] (Server installation)
+http://[ip-address]:9000 (when Screenly OSE is installed)<br />
+http://[ip-address] (Server installation)
 
 Username: demo<br />
 Password: demo
