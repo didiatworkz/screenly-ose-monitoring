@@ -104,9 +104,9 @@ function systemPing($ip){
 function playerImage($url, $active = 1){
   if(checkAddress($url)) {
     if(checkAddress($url.':9020/screen/screenshot.png') && $active == 1) return 'http://'.$url.':9020/screen/screenshot.png?t='.time();
-    else return 'http://host.docker.internal/assets/img/online.png';
+    else return 'http://localhost/assets/img/online.png';
   }
-  else return 'http://host.docker.internal/assets/img/offline.png';
+  else return 'http://localhost/assets/img/offline.png';
 }
 
   //OLD
