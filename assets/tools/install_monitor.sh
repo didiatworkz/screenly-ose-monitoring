@@ -2,10 +2,11 @@
 # Created by didiatworkz
 # Screenly OSE Monitoring
 #
-# October 2021
-_BRANCH=v4.2
-_DBRANCH=nightly
-#_BRANCH=master
+# December 2021
+#_BRANCH=v4.2
+#_DBRANCH=nightly
+_DBRANCH=latest
+_BRANCH=master
 
 # ==========================
 PORT=""
