@@ -27,8 +27,8 @@ jobs:
        with:
          push: true
          platforms: linux/amd64,linux/arm/v7,linux/arm64
-         tags:  atowrkz/somo:latest
-         cache-from: type=registry,ref=atworkz/somo:latest
+         tags:  ${{ secrets.DOCKER_USERNAME }}/somo:latest
+         cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:latest
          cache-to: type=inline
          context: ./
          file: ./Dockerfile
