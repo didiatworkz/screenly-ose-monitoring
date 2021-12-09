@@ -18,7 +18,7 @@ _______________________________________
 */
 
 $devInfVersion	= '1.3';
-$monInfVersion	= '3.0';
+$monInfVersion	= '3.1';
 
 function timeago($timestamp) {
    $strTime = array("second", "minute", "hour", "day", "month", "year");

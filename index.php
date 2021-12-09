@@ -223,7 +223,7 @@ echo'
 		          </div>
 		          <div class="modal-footer">
 		            <input name="userID" type="hidden" value="'.$loginUserID.'" />
-		            <button type="button" class="btn btn-link link-link" data-close="#newPlayer">'.Translation::of('close').'</button>
+		            <button type="button" class="btn btn-link link-link" data-close="#newPlayer" data-dismiss="modal">'.Translation::of('close').'</button>
 		            <button type="submit" name="startDiscover" class="btn btn-primary ml-auto start_discovery">'.Translation::of('discovery').'</button>
 		          </div>
 		        </form>

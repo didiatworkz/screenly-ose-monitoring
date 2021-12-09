@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3] - 2021-12-09
+
+### Added
+- Database write permission check
+
+### Changed
+- Fix auto discovery auto name set #84
+- Fix auto discovery modal close button #85
+- Fix public link header title #82
+- Fix wrong add-on version number shown in overview #83
+- Fix wrong public link ip address #81
+
 ## [4.2] - 2021-12-08
 
 ### Added

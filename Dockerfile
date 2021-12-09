@@ -1,4 +1,5 @@
-FROM php:7.4.25-apache-buster
+FROM php:7.4.26-apache-buster
+LABEL maintainer="github@atworkz.de"
 
 # Install dependencies
 RUN apt update \
@@ -30,9 +31,11 @@ RUN echo "error_log=/var/www/php_error.log\n\
 
 WORKDIR /var/www/html
 
-COPY ./ /var/www/html
+COPY . /var/www/html
 COPY assets/tools/crontab /etc/cron.d/somo
 COPY assets/tools/somo /usr/bin/somo
-RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo && chown -R www-data:www-data /var/www/html && chmod 0755 /var/www/html/entrypoint.sh
+RUN chmod 0644 /etc/cron.d/somo 
+RUN chmod 0755 /usr/bin/somo
+RUN chmod 0755 /var/www/html/entrypoint.sh
 
 ENTRYPOINT /var/www/html/entrypoint.sh

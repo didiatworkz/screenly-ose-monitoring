@@ -1,7 +1,5 @@
 #!/bin/bash
-
-_VERSION=4.2
-
+_VERSION=4.3
 
 cat << "EOF"
                             _

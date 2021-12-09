@@ -79,9 +79,11 @@ elseif(isset($_POST['addonInstall']) && $_POST['addonInstall'] == 'true' && $_PO
 
   $test =  shell_exec("apt policy libssh2-1");
   if (strpos($test, 'Installed: (none)') === false) {
-      shell_exec("php /var/www/html/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass." ".$loginUserID. " ".$_SERVER['SERVER_ADDR'].($_SERVER['SERVER_PORT'] != '80' ? ':'.$_SERVER['SERVER_PORT'] : '')." > /dev/null 2>/dev/null &");
-      //shell_exec('php /var/www/html/assets/php/addon.php 192.168.178.54 22 pi raspberry 1 192.168.178.100');
-      die(Translation::of('soma.start_installation'));
+    if(getenv("HOST_IP")) $_SERVERIP = getenv("HOST_IP") . (getenv("HOST_PORT") != '80' ? ':' . getenv("HOST_PORT") : '');
+    else $_SERVERIP = $_SERVER['SERVER_ADDR'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '');
+    shell_exec("php /var/www/html/assets/php/addon.php ".$host." ".$port." ".$user." ".$pass." ".$loginUserID. " ".$_SERVERIP." > /dev/null 2>/dev/null &");
+    //shell_exec('php /var/www/html/assets/php/addon.php 192.168.178.54 22 pi raspberry 1 192.168.178.100');
+    die(Translation::of('soma.start_installation'));
   } else die(Translation::of('soma.no_package_found'));
 
 }

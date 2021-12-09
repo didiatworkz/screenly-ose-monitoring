@@ -4,9 +4,9 @@ This information is only for developers who want to further develop the script a
 ## Files
 + /assets/data/version.txt
 + /assets/php/database.php
++ /entrypoint.sh
 + /CHANGELOG.md
 + /README.md
 
 # Addon version string
 + /assets/php/functions.php
-+ /entrypoint.sh

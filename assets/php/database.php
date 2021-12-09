@@ -49,13 +49,28 @@ $reloadSite = '
 
 $systemVersion  = file_get_contents('assets/data/version.txt');
 
-$dbase_file      = 'assets/data/database.db';
+$dbase_file     = 'assets/data/database.db';
 $db 			      = new SQLite3($dbase_file);
 $db             ->busyTimeout(5000);
 $set 			      = $db->query("SELECT * FROM settings");
 $set 			      = $set->fetchArray(SQLITE3_ASSOC);
 $securityToken	= $set['token'];
 $updatecheck	  = $set['updatecheck'];
+
+if (!is_writable($dbase_file)) {
+  if (!chmod($filename, 0755)) {
+    echo '<div class="col-md-6 offset-md-3 mt-4">
+          <div class="card">
+            <div class="card-status-top bg-danger"></div>
+            <div class="card-body text-center">
+              <p><strong>The database cannot be written to! <br />Please check the write permissions of the file: database.db!</strong></p>
+            </div>
+          </div>
+        </div>
+      ';
+      exit;
+  }
+}
 
 
 
@@ -121,7 +136,7 @@ if(@file_exists('assets/data/version_old.txt')){
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
   }
-  if($oldVersion <= '4.2'){      // Update Database to Version 4.2
+  if($oldVersion <= '4.3'){      // Update Database to Version 4.3
     $db->exec("DROP TABLE `player_group`");
     $db->exec("CREATE TABLE `player_group` (`groupID`	INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`description`	TEXT,	`color`	TEXT DEFAULT 'white')");
     $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");

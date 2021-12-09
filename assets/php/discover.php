@@ -66,6 +66,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
     curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     $data = curl_exec($ch);
     curl_close($ch);
     if (strpos($data, $search) !== false) {
@@ -82,6 +83,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
     curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER[ 'HTTP_USER_AGENT' ] );
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		$data = curl_exec($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
@@ -100,18 +102,17 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
     $output = checkAddressData($ip, '<title>', true);
 
     $nameIP = explode('.', $ip);
-    $name = '[AUTO] '.$nameIP['3'];
+    $name = 'Player #'.$nameIP['3'];
 
     if(strpos($output, 'Screenly OSE') !== false){
-      if(preg_match_all("/<title>(.*)<\/title>/", $output, $result)){
-        $name = $result['1']['0'];
-        if(!strpos($name, ' - ') === false){
-          $name = str_replace("Screenly OSE", "", $name);
-          $name = str_replace(" - ", "", $name);
-        }
-      }
-    }
+      $res = preg_match("/<title>(.*)<\/title>/siU", $output, $result);
+      if(!$res) return $name;
 
+      $title = preg_replace('/\s+/', ' ', $result[1]);
+      $title = trim($title);
+      $title = str_replace("Screenly OSE", "", $title);
+      $name = str_replace(" - ", "", $title);
+    }
     return $name;
   }
 
@@ -137,7 +138,7 @@ Translation::setLocalesDir(__DIR__ . '/../locales');
       if(array_search($now, $players) == 0){
         $logDetail .=  ' - '.strtoupper(Translation::of('created'));
 
-        $name = getPlayerName($now);
+        $name = getPlayerName('http://'.$now);
 				$address 	= $now;
 				$location = $ipaddress;
         $userID   = $_GET['userID'];
