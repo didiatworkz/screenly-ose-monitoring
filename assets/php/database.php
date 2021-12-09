@@ -121,7 +121,7 @@ if(@file_exists('assets/data/version_old.txt')){
     $db->exec("INSERT INTO `users`(userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login) SELECT userID,username,password,firstname,name,refreshscreen,updateEntry,active,last_login FROM `users_tmp`");
     $db->exec("DROP TABLE `users_tmp`");
   }
-  if($oldVersion <= '4.2'){      // Update Database to Version 4.2
+  if($oldVersion <= '4.3'){      // Update Database to Version 4.3
     $db->exec("DROP TABLE `player_group`");
     $db->exec("CREATE TABLE `player_group` (`groupID`	INTEGER PRIMARY KEY AUTOINCREMENT, `name`	TEXT,	`description`	TEXT,	`color`	TEXT DEFAULT 'white')");
     $db->exec("ALTER TABLE `player` RENAME TO `player_tmp`");
