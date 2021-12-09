@@ -2,7 +2,8 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    tags: 
+      - '*'
 
 jobs:
  main:
@@ -27,7 +28,7 @@ jobs:
        with:
          push: true
          platforms: linux/amd64,linux/arm/v7,linux/arm64
-         tags:  ${{ secrets.DOCKER_USERNAME }}/somo:git
+         tags:  ${{ secrets.DOCKER_USERNAME }}/somo:git,${{ secrets.DOCKER_USERNAME }}/somo:${{ steps.meta.outputs.tags }}
          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:git
          cache-to: type=inline
-         content: ./
+         context: .
