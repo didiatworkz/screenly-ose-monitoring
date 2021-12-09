@@ -31,7 +31,7 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm/v7,linux/arm64
         tags:  ${{ secrets.DOCKER_USERNAME }}/somo:git,${{ secrets.DOCKER_USERNAME }}/somo:${{ env.RELEASE_VERSION }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:git
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:latest
         cache-to: type=inline
         context: .
         file: ./Dockerfile
