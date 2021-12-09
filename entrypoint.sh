@@ -56,4 +56,5 @@ if [ -x "$(command -v usermod)" ] ; then
     echo "-- Activate cronjob --"
     crontab /etc/cron.d/somo
 fi
+chown -R www-data:www-data /var/www/html/assets/data
 exec apache2-foreground
