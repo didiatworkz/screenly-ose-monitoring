@@ -168,7 +168,7 @@ if($set['firstStart'] != 0){
     ';
   }
   else if($set['firstStart'] == 3){
-    if(checkAddress($_SERVER['SERVER_ADDR'].'/api/v1.2/assets')){
+    if(checkAddress($_SERVERIP.'/api/v1.2/assets')){
       echo '
       <div class="hr-text hr-text-center hr-text-spaceless">'.Translation::of('player_settings').'</div>
         <form id="playerForm" action="'.$_SERVER['PHP_SELF'].'" method="POST" data-toggle="validator">
@@ -194,7 +194,7 @@ if($set['firstStart'] != 0){
             <div class="col">
               <div class="btn-list justify-content-end">
                 <input name="firstStartPlayer" type="hidden" value="1"/>
-                <input name="address" type="hidden" id="InputAdress" value="'.$_SERVER['SERVER_ADDR'].'" />
+                <input name="address" type="hidden" id="InputAdress" value="'.$_SERVERIP.'" />
                 <a href="index.php?action=startup" class="btn btn-link link-secondary">'.Translation::of('skip').'</a>
                 <button type="submit" name="saveIP" value="1" class="btn btn-primary">'.Translation::of('continue').'</button>
               </div>

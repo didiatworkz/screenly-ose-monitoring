@@ -37,6 +37,9 @@ $backLink						= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_
 $firstSetup 				= 0;
 $loadingImage 			= 'assets/img/spinner.gif';
 
+if(getenv("HOST_IP")) $_SERVERIP = getenv("HOST_IP") . (getenv("HOST_PORT") != '80' ? ':' . getenv("HOST_PORT") : '');
+else $_SERVERIP = $_SERVER['SERVER_ADDR'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '');
+
 if(isset($_GET['site'])){
 	$site = $_GET['site'];
 } else $site = NULL;
