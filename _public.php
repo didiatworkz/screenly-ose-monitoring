@@ -70,7 +70,7 @@ echo '
 		<script src="assets/js/tabler.min.js?t='.$set['updatecheck'].'"></script>
     <style>
       body {
-      	display: none;
+        overflow: hidden; /* Hide scrollbars */
       }
     </style>
   </head>
@@ -83,7 +83,7 @@ echo '
         <span class="navbar-toggler-icon"></span>
       </button>
       <a href="#" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-        SOMO
+        '._SYSTEM_NAME.'
       </a>
     </div>
   </header>
@@ -197,12 +197,10 @@ else {
 echo '
     </div>
     <footer class="footer footer-transparent">
-      <div class="container">
-        <div class="row text-center align-items-center flex-row-reverse">';
-          echo'<div class="col-12 col-lg-auto mt-3 mt-lg-0">';
-            if(isset($pagination)) echo $pagination; echo '
-            &copy; '.date('Y').' by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>
-          </div>
+      <div class="row text-center align-items-center flex-row-reverse">';
+        echo'<div class="col-12 col-lg-auto mt-3 mt-lg-0 mr-5">';
+          if(isset($pagination)) echo $pagination; echo '
+          &copy; '.date('Y').' by <a href="https://www.atworkz.de" target="_blank">atworkz.de</a>
         </div>
       </div>
     </footer>
