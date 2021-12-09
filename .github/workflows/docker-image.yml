@@ -3,32 +3,35 @@ name: Docker Image CI
 on:
   push:
     tags: 
-      - '*'
+      - 'v*'
 
 jobs:
  main:
    runs-on: ubuntu-latest
    steps:
-     -
-       name: Setup Docker Buildx
-       uses: docker/setup-buildx-action@v1
-     -
-       name: Login to DockerHub
-       uses: docker/login-action@v1
-       with:
-         username: ${{ secrets.DOCKER_USERNAME }}
-         password: ${{ secrets.DOCKER_TOKEN }}
-     -
-       name: Set up QEMU
-       uses: docker/setup-qemu-action@v1
-     -
-       name: Build and push
-       id: docker_build
-       uses: docker/build-push-action@v2
-       with:
-         push: true
-         platforms: linux/amd64,linux/arm/v7,linux/arm64
-         tags:  ${{ secrets.DOCKER_USERNAME }}/somo:git,${{ secrets.DOCKER_USERNAME }}/somo:${{ steps.meta.outputs.tags }}
-         cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:git
-         cache-to: type=inline
-         context: .
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set environment variable
+      run: echo "RELEASE_VERSION=${GITHUB_REF:11}" >> $GITHUB_ENV
+    - name: Test environment variable
+      run: echo ${{ env.RELEASE_VERSION }}
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        platforms: linux/amd64,linux/arm/v7,linux/arm64
+        tags:  ${{ secrets.DOCKER_USERNAME }}/somo:git,${{ secrets.DOCKER_USERNAME }}/somo:${{ env.RELEASE_VERSION }}
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:git
+        cache-to: type=inline
+        context: .
+        file: ./Dockerfile
