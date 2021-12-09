@@ -33,7 +33,7 @@ WORKDIR /var/www/html
 COPY ./ /var/www/html
 COPY assets/tools/crontab /etc/cron.d/somo
 COPY assets/tools/somo /usr/bin/somo
-RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo && chown -R www-data:www-data /var/www/html
+RUN chmod 0644 /etc/cron.d/somo && chmod 0755 /usr/bin/somo && chown -R www-data:www-data /var/www/html && chmod 755 /var/www/html/entrypoint.sh
 
 ENTRYPOINT /var/www/html/entrypoint.sh
 
