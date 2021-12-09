@@ -30,5 +30,3 @@ jobs:
          tags:  ${{ secrets.DOCKER_USERNAME }}/somo:latest
          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/somo:latest
          cache-to: type=inline
-         context: ./
-         file: ./Dockerfile
