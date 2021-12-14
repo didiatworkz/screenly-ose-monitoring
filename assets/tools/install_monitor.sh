@@ -3,10 +3,10 @@
 # Screenly OSE Monitoring
 #
 # December 2021
-_BRANCH=v4.3
-_DBRANCH=nightly
-# _DBRANCH=latest
-# _BRANCH=master
+#_BRANCH=v4.3
+#_DBRANCH=nightly
+_DBRANCH=latest
+_BRANCH=master
 
 # ==========================
 PORT=""
