@@ -3,7 +3,10 @@
 <img width="800px" title="Manage Monitoring" alt="Manage Monitoring" src="https://raw.githubusercontent.com/didiatworkz/screenly-ose-monitor/master/.github/IMAGES/manage5.png" />
 </p>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?color=green) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/didiatworkz/screenly-ose-monitor/v4.3) [![Docker Image](https://github.com/didiatworkz/screenly-ose-monitoring/actions/workflows/docker-image.yml/badge.svg?branch=master&event=push)](https://github.com/didiatworkz/screenly-ose-monitoring/actions/workflows/docker-image.yml) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor)  ![GitHub stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitor?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/didiatworkz/screenly-ose-monitoring?color=lightgrey&style=for-the-badge) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/didiatworkz/screenly-ose-monitor?style=for-the-badge) ![GitHub Release Date](https://img.shields.io/github/release-date/didiatworkz/screenly-ose-monitor?style=for-the-badge&color=green) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/didiatworkz/screenly-ose-monitor?style=for-the-badge)  ![GitHub issues](https://img.shields.io/github/issues-raw/didiatworkz/screenly-ose-monitor?style=for-the-badge) 
+
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/didiatworkz/screenly-ose-monitoring/Docker%20Image%20CI?style=for-the-badge&label=Docker%20image) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/atworkz/somo/latest?style=for-the-badge&label=atworkz%2Fsomo%3Alatest&logo=docker&logoColor=white) ![Docker Pulls](https://img.shields.io/docker/pulls/atworkz/somo?style=for-the-badge) 
+
 
 - [Intro](#what-is-this)
 - [Features](#features)
