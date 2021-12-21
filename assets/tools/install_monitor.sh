@@ -87,6 +87,11 @@ if [ -f "$FILE" ]; then
         echo -e "[ \e[33mSOMO\e[39m ] Backup user avatars"
         sudo cp -rf /var/www/html/monitor/assets/img/avatars "$D_SOMO_BACKUP"
         sudo chown -R "$(whoami)":"$(whoami)" "$D_SOMO_BACKUP"/avatars
+        
+        echo -e "[ \e[33mSOMO\e[39m ] Backup version string"
+        sudo cp -rf /var/www/html/monitor/assets/tools/version.txt "$D_SOMO_BACKUP"
+        sudo chown -R "$(whoami)":"$(whoami)" "$D_SOMO_BACKUP"/version.txt
+        sudo mv "$D_SOMO_BACKUP"/version.txt "$D_SOMO_BACKUP"/version_old.txt
 
         echo -e "[ \e[33mSOMO\e[39m ] Backup finished!"
         echo
