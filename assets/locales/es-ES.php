@@ -143,7 +143,7 @@ return [
     'familyname' => 'Apellidos',
     'finish' => 'Finalizar',
     'firstname' => 'Nombre',
-    'flatpickr.lang' => 'valores predeterminados', // Available languages: https://github.com/flatpickr/flatpickr/tree/master/src/l10n
+    'flatpickr.lang' => 'es', // Available languages: https://github.com/flatpickr/flatpickr/tree/master/src/l10n
     'forever' => 'Siempre',
     'found' => 'Encontrado',
     'frequency' => 'Frecuencia',
